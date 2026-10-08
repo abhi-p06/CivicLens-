@@ -1,0 +1,22 @@
+# Core Dependencies
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.0
+python-multipart>=0.0.9
+
+# Scientific & ML
+numpy>=1.26.0
+pandas>=2.2.0
+scikit-learn>=1.4.0
+
+# Optional Computer Vision & NLP (graceful fallback if not compiled)
+# ultralytics>=8.1.0
+# opencv-python-headless>=4.9.0
+pillow>=10.2.0
+
+# GIS & Mapping
+folium>=0.16.0
+
+# Utilities
+python-dotenv>=1.0.1
+pytest>=8.0.0
