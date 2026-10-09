@@ -7,7 +7,11 @@ from app.models.issue import (
     IssueCreate,
     IssueStatus,
     IssueCategory,
-    PriorityLevel
+    PriorityLevel,
+    ConsistencyLevel,
+    EvidenceConsistencyResult,
+    HotspotInfo,
+    RecurrenceInfo
 )
 from app.core.demo_store import demo_store
 from app.modules.nlp.classifier import nlp_classifier
@@ -17,6 +21,8 @@ from app.modules.vision.yolo_detector import yolo_detector
 from app.modules.vision.severity import visual_severity_estimator
 from app.modules.cross_validation.validator import cross_validation_engine
 from app.modules.spatiotemporal.analyzer import spatiotemporal_analyzer
+from app.modules.spatiotemporal.hotspot import hotspot_detector
+from app.modules.spatiotemporal.recurring import recurring_detector
 from app.modules.priority.engine import priority_engine
 from app.modules.routing.dispatcher import department_dispatcher
 
@@ -27,7 +33,7 @@ class CivicIssueIntelligencePipeline:
     Transforms:
         Complaint Text + Optional Image + Optional Location
              ↓
-        Unified Multimodal Analysis Pipeline
+        Unified Multimodal Analysis Pipeline (14 Original + 5 New Features)
              ↓
         Structured Decision-Support Intelligence Result
     """
@@ -109,19 +115,26 @@ class CivicIssueIntelligencePipeline:
         vis_severity = visual_severity_estimator.estimate_severity(detected_objs)
 
         # -------------------------------------------------------------
-        # Feature 13: Complaint–Detection Matching / Cross-Validation
+        # Feature 13 & Feature 18: Text–Image Evidence Consistency
         # -------------------------------------------------------------
         if is_auto_draft:
-            consistency_score = 1.0
-            consistency_flag = "Auto-Drafted Unreported Issue"
+            consistency_detail = EvidenceConsistencyResult(
+                consistencyScore=1.0,
+                consistencyLevel=ConsistencyLevel.CONSISTENT,
+                textEvidence="Auto-drafted from visual detection.",
+                visualEvidence=f"CV confirmed {vis_primary} ({vis_conf:.2f}).",
+                reason="Unreported issue generated directly from verified camera detection."
+            )
         else:
-            consistency_score, consistency_flag = cross_validation_engine.validate_consistency(
+            consistency_detail = cross_validation_engine.validate_consistency(
                 category=category,
-                visual_detection=vis_primary
+                complaint_text=text,
+                visual_detection=vis_primary,
+                visual_confidence=vis_conf
             )
 
         # -------------------------------------------------------------
-        # Feature 7: Spatiotemporal Hotspot & Recurrence Analysis
+        # Feature 7 & Feature 16: Spatiotemporal Analysis & Hotspot Detection
         # -------------------------------------------------------------
         st_out = spatiotemporal_analyzer.analyze_location_context(
             lat=lat,
@@ -132,21 +145,39 @@ class CivicIssueIntelligencePipeline:
         is_hotspot = st_out["isHotspot"]
         cluster_id = st_out["hotspotClusterId"]
 
+        # Hotspot Detection Evaluation
+        active_hotspots = hotspot_detector.detect_hotspots(existing_issues)
+        matched_hotspot = next((h for h in active_hotspots if h.hotspotId == cluster_id), None)
+
         # -------------------------------------------------------------
-        # Feature 10: Text + Visual Risk-Aware Priority Score
+        # Feature 17: Recurring Issue Detection
         # -------------------------------------------------------------
-        priority_score, priority_level, priority_breakdown = priority_engine.calculate_priority(
-            urgency=urgency,
-            visual_severity=vis_severity,
-            recurrence=recurrence,
-            is_hotspot=is_hotspot,
-            is_recent=True
+        recurrence_detail = recurring_detector.evaluate_recurrence(
+            lat=lat,
+            lng=lng,
+            category=category,
+            location_name=resolved_location,
+            existing_issues=existing_issues
         )
 
         # -------------------------------------------------------------
-        # Department Routing & Recommended Operational Action
+        # Feature 10 & Feature 15: Risk-Aware Dynamic Priority Engine
         # -------------------------------------------------------------
-        department, recommended_action, sla_hours = department_dispatcher.route_issue(
+        priority_score, priority_level, priority_breakdown, priority_reasoning = priority_engine.calculate_priority(
+            urgency=urgency,
+            text_severity=text_severity,
+            visual_severity=vis_severity,
+            visual_confidence=vis_conf,
+            related_reports_count=near_count,
+            hours_elapsed=1.0,
+            recurrence_count=recurrence_detail.reportCount,
+            is_hotspot=is_hotspot
+        )
+
+        # -------------------------------------------------------------
+        # Feature 19: Configurable Department Routing & Recommended Action
+        # -------------------------------------------------------------
+        department, recommended_action, sla_hours, dept_code = department_dispatcher.route_issue(
             category=category,
             priority=priority_level
         )
@@ -177,17 +208,34 @@ class CivicIssueIntelligencePipeline:
             "visualConfidence": vis_conf,
             "detectedObjects": detected_objs,
             "visionMode": vision_mode,
-            "evidenceConsistency": consistency_score,
-            "consistencyFlag": consistency_flag,
+            
+            # Feature 18 Output
+            "evidenceConsistency": consistency_detail.consistencyScore,
+            "consistencyLevel": consistency_detail.consistencyLevel,
+            "consistencyFlag": consistency_detail.consistencyLevel.value,
+            "consistencyDetail": consistency_detail,
+            
+            # Features 7 & 16 Output
             "recurrence": recurrence,
             "isHotspot": is_hotspot,
             "hotspotClusterId": cluster_id,
+            "hotspotDetail": matched_hotspot,
+            
+            # Feature 17 Output
+            "recurringDetail": recurrence_detail,
+            
+            # Feature 15 Output (Explainable 0-100 Score)
             "priorityScore": priority_score,
             "priorityLevel": priority_level,
             "priorityBreakdown": priority_breakdown,
+            "priorityReasoning": priority_reasoning,
+            
+            # Feature 19 Output
             "department": department,
             "recommendedAction": recommended_action,
             "slaHours": sla_hours,
+            "departmentCode": dept_code,
+            
             "isAutoDrafted": is_auto_draft,
             "timestamp": now_iso
         }
@@ -199,7 +247,7 @@ class CivicIssueIntelligencePipeline:
         analysis = self.analyze(payload)
         issue_id = f"CIVIC-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
 
-        status = IssueStatus.TRIAGED if analysis["isAutoDrafted"] else IssueStatus.REPORTED
+        status = IssueStatus.TRIAGED if analysis["isAutoDrafted"] else IssueStatus.OPEN
 
         issue = Issue(
             issueId=issue_id,
@@ -219,13 +267,18 @@ class CivicIssueIntelligencePipeline:
             visualSeverity=analysis["visualSeverity"],
             detectedObjects=analysis["detectedObjects"],
             evidenceConsistency=analysis["evidenceConsistency"],
+            consistencyLevel=analysis["consistencyLevel"],
             consistencyFlag=analysis["consistencyFlag"],
+            consistencyDetail=analysis["consistencyDetail"],
             recurrence=analysis["recurrence"],
             hotspot=analysis["isHotspot"],
             hotspotClusterId=analysis["hotspotClusterId"],
+            hotspotDetail=analysis["hotspotDetail"],
+            recurringDetail=analysis["recurringDetail"],
             priorityScore=analysis["priorityScore"],
             priorityLevel=analysis["priorityLevel"],
             priorityBreakdown=analysis["priorityBreakdown"],
+            priorityReasoning=analysis["priorityReasoning"],
             department=analysis["department"],
             recommendedAction=analysis["recommendedAction"],
             slaHours=analysis["slaHours"],
@@ -235,7 +288,8 @@ class CivicIssueIntelligencePipeline:
                 "ward": analysis["ward"],
                 "classificationMode": analysis["classificationMode"],
                 "visionMode": analysis["visionMode"],
-                "isAutoDrafted": analysis["isAutoDrafted"]
+                "isAutoDrafted": analysis["isAutoDrafted"],
+                "departmentCode": analysis["departmentCode"]
             }
         )
 

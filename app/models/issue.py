@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -9,35 +9,70 @@ class IssueCategory(str, Enum):
     WATER_SUPPLY = "Water Supply & Drainage"
     ELECTRICAL = "Electricity & Streetlights"
     TRAFFIC_SAFETY = "Traffic & Public Safety"
+    STORM_WATER = "Storm Water & Drainage"
     UNSPECIFIED = "General Civic Issue"
 
 class PriorityLevel(str, Enum):
-    CRITICAL = "Critical"
-    HIGH = "High"
-    MEDIUM = "Medium"
-    LOW = "Low"
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
 
 class IssueStatus(str, Enum):
+    # Standard 7-stage lifecycle
+    OPEN = "OPEN"
+    ANALYZED = "ANALYZED"
+    PRIORITIZED = "PRIORITIZED"
+    ASSIGNED = "ASSIGNED"
+    ACTION_IN_PROGRESS = "ACTION IN PROGRESS"
+    VERIFICATION = "VERIFICATION"
+    RESOLVED = "RESOLVED"
+    
+    # Backwards compatibility aliases
     REPORTED = "Reported"
     TRIAGED = "Triaged"
     IN_PROGRESS = "In Progress"
-    RESOLVED = "Resolved"
     VERIFIED_CLOSED = "Verified Closed"
     REOPENED = "Reopened"
 
-class PriorityFactors(BaseModel):
+class ConsistencyLevel(str, Enum):
+    CONSISTENT = "CONSISTENT"
+    PARTIALLY_CONSISTENT = "PARTIALLY CONSISTENT"
+    INCONSISTENT = "INCONSISTENT"
+    MANUAL_REVIEW = "MANUAL REVIEW"
+
+class ResolutionStatus(str, Enum):
+    LIKELY_RESOLVED = "LIKELY RESOLVED"
+    STILL_PRESENT = "STILL PRESENT"
+    REQUIRES_MANUAL_VERIFICATION = "REQUIRES MANUAL VERIFICATION"
+
+class HotspotLevel(str, Enum):
+    SEVERE = "SEVERE"
+    HIGH = "HIGH"
+    MODERATE = "MODERATE"
+    LOW = "LOW"
+
+class RecurrenceTrend(str, Enum):
+    INCREASING = "INCREASING"
+    STABLE = "STABLE"
+    DECREASING = "DECREASING"
+
+class DynamicPriorityBreakdown(BaseModel):
+    urgency_points: float = Field(..., description="Max 20 pts: Based on immediate hazard cues")
+    text_severity_points: float = Field(..., description="Max 20 pts: Physical disruption magnitude")
+    visual_severity_points: float = Field(..., description="Max 20 pts: CV surface damage proportion")
+    related_reports_points: float = Field(..., description="Max 15 pts: Duplicate/near-duplicate report volume")
+    recency_points: float = Field(..., description="Max 10 pts: Hours elapsed since report")
+    location_risk_points: float = Field(..., description="Max 15 pts: Corridor vulnerability/hotspot status")
+    total_score: float = Field(..., description="Total 0-100 score")
+    
+    # Legacy sub-factors for backward compatibility
     urgency_weight: float = 0.30
     visual_weight: float = 0.25
     frequency_weight: float = 0.20
     recency_weight: float = 0.15
     exposure_weight: float = 0.10
-    
-    urgency_score: float = Field(0.0, ge=0.0, le=1.0)
-    visual_score: float = Field(0.0, ge=0.0, le=1.0)
-    frequency_score: float = Field(0.0, ge=0.0, le=1.0)
-    recency_score: float = Field(0.0, ge=0.0, le=1.0)
-    exposure_score: float = Field(0.0, ge=0.0, le=1.0)
-    composite_score: float = Field(0.0, ge=0.0, le=1.0)
+    composite_score: float = Field(0.0, description="Normalized 0.0-1.0 score")
 
 class VisualDetectionDetail(BaseModel):
     label: str
@@ -55,9 +90,43 @@ class IssueCreate(BaseModel):
 class ResolutionEvidence(BaseModel):
     verified_at: Optional[str] = None
     inspector_id: Optional[str] = None
+    original_image_url: Optional[str] = None
     resolution_image_url: Optional[str] = None
-    inspection_notes: Optional[str] = None
+    original_detection: Optional[str] = None
+    post_action_detection: Optional[str] = None
+    resolutionStatus: ResolutionStatus = ResolutionStatus.REQUIRES_MANUAL_VERIFICATION
+    resolutionConfidence: float = 0.0
+    remainingDetection: Optional[str] = None
+    verificationSummary: str = ""
     post_repair_cv_cleared: bool = False
+
+class HotspotInfo(BaseModel):
+    hotspotId: str
+    center: List[float]  # [lat, lng]
+    radius: float  # in meters
+    issueCount: int
+    dominantCategory: str
+    averagePriority: float
+    growthRate: float
+    hotspotLevel: HotspotLevel
+    densityPerKm2: float = 0.0
+
+class RecurrenceInfo(BaseModel):
+    recurringIssue: bool = False
+    location: str
+    category: str
+    reportCount: int = 1
+    firstReported: str
+    lastReported: str
+    recurrenceScore: float = 0.0  # 0.0 to 1.0
+    trend: RecurrenceTrend = RecurrenceTrend.STABLE
+
+class EvidenceConsistencyResult(BaseModel):
+    consistencyScore: float = 0.50  # 0.0 to 1.0
+    consistencyLevel: ConsistencyLevel = ConsistencyLevel.MANUAL_REVIEW
+    textEvidence: str
+    visualEvidence: str
+    reason: str
 
 class Issue(BaseModel):
     issueId: str
@@ -70,38 +139,45 @@ class Issue(BaseModel):
     longitude: float
     timestamp: str
     
-    # Deduplication & Grouping
+    # Deduplication & Grouping (Features 5, 6)
     duplicateGroup: Optional[str] = None
     isDuplicate: bool = False
     nearDuplicateCount: int = 0
     
-    # Computer Vision Details
+    # Computer Vision Details (Features 8, 9)
     visualDetection: Optional[str] = None
     visualConfidence: float = 0.0
     visualSeverity: float = Field(0.0, ge=0.0, le=1.0)
     detectedObjects: List[VisualDetectionDetail] = []
     
-    # Cross-Modal Cross-Validation
-    evidenceConsistency: float = Field(0.0, ge=0.0, le=1.0, description="Text-Image consistency alignment")
-    consistencyFlag: str = "Unverified"  # "Consistent", "Contradictory", "No Image"
+    # Text-Image Evidence Consistency (Feature 18)
+    evidenceConsistency: float = Field(0.0, ge=0.0, le=1.0)
+    consistencyLevel: ConsistencyLevel = ConsistencyLevel.MANUAL_REVIEW
+    consistencyFlag: str = "Unverified"
+    consistencyDetail: Optional[EvidenceConsistencyResult] = None
     
-    # Spatiotemporal Intelligence
-    recurrence: int = Field(1, description="Times reported in this 200m zone in past 90 days")
-    hotspot: bool = Field(False, description="Flagged as part of high-density spatial cluster")
+    # Spatiotemporal Intelligence & Hotspots (Features 7, 16)
+    recurrence: int = Field(1, description="Times reported in corridor")
+    hotspot: bool = Field(False, description="Flagged as high-density hotspot")
     hotspotClusterId: Optional[str] = None
+    hotspotDetail: Optional[HotspotInfo] = None
     
-    # Priority Advisory
-    priorityScore: float = Field(0.0, ge=0.0, le=1.0)
+    # Recurring Issue Detection (Feature 17)
+    recurringDetail: Optional[RecurrenceInfo] = None
+    
+    # Risk-Aware Dynamic Priority (Feature 15: 0-100 explainable score)
+    priorityScore: float = Field(..., description="0-100 explainable priority score")
     priorityLevel: PriorityLevel = PriorityLevel.LOW
-    priorityBreakdown: Optional[PriorityFactors] = None
+    priorityBreakdown: Optional[DynamicPriorityBreakdown] = None
+    priorityReasoning: str = ""
     
-    # Governance & Routing
+    # Department Routing & Recommended Action (Feature 19)
     department: str = "Municipal Administration"
     recommendedAction: str = "Inspect and triage"
     slaHours: int = 72
     
-    # Lifecycle Tracking
-    status: IssueStatus = IssueStatus.REPORTED
+    # Issue Lifecycle & Resolution Verification (Feature 20)
+    status: IssueStatus = IssueStatus.OPEN
     resolutionEvidence: Optional[ResolutionEvidence] = None
     
     metadata: Dict[str, Any] = {}
