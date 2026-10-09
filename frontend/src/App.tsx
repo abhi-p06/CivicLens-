@@ -11,6 +11,7 @@ import { NewComplaintModal } from './components/issues/NewComplaintModal'
 import { ResolutionModal } from './components/issues/ResolutionModal'
 import { IssueDetailDrawer } from './components/issues/IssueDetailDrawer'
 import { ToastProvider, useToast } from './components/common/Toast'
+import { ErrorBoundary } from './components/common/ErrorBoundary'
 import { GuidedDemoController } from './components/demo/GuidedDemoController'
 import { DEMO_SCENARIO } from './services/demoScenario'
 
@@ -383,9 +384,11 @@ function AppContent() {
 
 export function App() {
   return (
-    <ToastProvider>
-      <AppContent />
-    </ToastProvider>
+    <ErrorBoundary fallbackTitle="CiviLens Command Center Initialization Notice">
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }
 

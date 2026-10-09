@@ -19,6 +19,7 @@ import { PriorityGauge } from '../common/PriorityGauge'
 import { ConsistencyBadge } from '../common/ConsistencyBadge'
 import { CivicMap } from '../map/CivicMap'
 import { AnimatedCounter } from '../common/AnimatedCounter'
+import { ErrorBoundary } from '../common/ErrorBoundary'
 
 interface OverviewViewProps {
   issues: Issue[]
@@ -187,12 +188,14 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           </div>
 
           <div className="flex-1 w-full min-h-[400px] rounded-lg overflow-hidden border border-slate-800/80">
-            <CivicMap
-              issues={issues}
-              hotspots={hotspots}
-              onSelectIssue={onSelectIssue}
-              className="h-full w-full"
-            />
+            <ErrorBoundary fallbackTitle="Tactical GIS Layer Loading">
+              <CivicMap
+                issues={issues}
+                hotspots={hotspots}
+                onSelectIssue={onSelectIssue}
+                className="h-full w-full"
+              />
+            </ErrorBoundary>
           </div>
         </div>
 

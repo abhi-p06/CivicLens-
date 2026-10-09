@@ -106,8 +106,13 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         const isCritical = h.hotspotLevel === 'CRITICAL' || h.averagePriority >= 75
         const color = isCritical ? '#ef4444' : '#f97316'
 
+        // Safely extract coordinates (supports both { lat, lng } and [lat, lng])
+        const lat = typeof h.center?.lat === 'number' ? h.center.lat : Array.isArray(h.center) ? Number(h.center[0]) : null
+        const lng = typeof h.center?.lng === 'number' ? h.center.lng : Array.isArray(h.center) ? Number(h.center[1]) : null
+        if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) return
+
         // Hotspot Boundary Circle
-        const circle = L.circle([h.center.lat, h.center.lng], {
+        const circle = L.circle([lat, lng], {
           radius: h.radiusMeters || 600,
           color: color,
           fillColor: color,
@@ -129,7 +134,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
           iconAnchor: [14, 14],
         })
 
-        const beacon = L.marker([h.center.lat, h.center.lng], { icon: beaconIcon })
+        const beacon = L.marker([lat, lng], { icon: beaconIcon })
 
         const tooltipHtml = `
           <div style="font-family: monospace; font-size: 11px; padding: 4px;">
@@ -154,7 +159,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         beacon.bindTooltip(tooltipHtml, { className: 'leaflet-dark-tooltip' })
 
         const handleHotspotClick = () => {
-          map.flyTo([h.center.lat, h.center.lng], 14, { duration: 1.2, easeLinearity: 0.25 })
+          map.flyTo([lat, lng], 14, { duration: 1.2, easeLinearity: 0.25 })
           if (onSelectHotspot) onSelectHotspot(h)
         }
 

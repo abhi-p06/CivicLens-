@@ -499,7 +499,7 @@ export const MapView: React.FC<MapViewProps> = ({
                 Radius: {inspectingHotspot.radiusMeters} Meters
               </div>
               <div className="text-[10px] text-slate-400">
-                Centroid: {inspectingHotspot.center.lat.toFixed(4)}° N, {inspectingHotspot.center.lng.toFixed(4)}° E
+                Centroid: {(typeof inspectingHotspot.center?.lat === 'number' ? inspectingHotspot.center.lat : Array.isArray(inspectingHotspot.center) ? Number(inspectingHotspot.center[0]) : 19.076).toFixed(4)}° N, {(typeof inspectingHotspot.center?.lng === 'number' ? inspectingHotspot.center.lng : Array.isArray(inspectingHotspot.center) ? Number(inspectingHotspot.center[1]) : 72.885).toFixed(4)}° E
               </div>
             </div>
 

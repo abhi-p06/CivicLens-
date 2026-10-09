@@ -120,7 +120,7 @@ export const HotspotsView: React.FC<HotspotsViewProps> = ({ hotspots, issues, on
                   <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-slate-800/80">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-slate-500" />
-                      Center: {h.center.lat.toFixed(4)}, {h.center.lng.toFixed(4)} (Radius: {h.radiusMeters}m)
+                      Center: {(typeof h.center?.lat === 'number' ? h.center.lat : Array.isArray(h.center) ? Number(h.center[0]) : 19.076).toFixed(4)}, {(typeof h.center?.lng === 'number' ? h.center.lng : Array.isArray(h.center) ? Number(h.center[1]) : 72.885).toFixed(4)} (Radius: {h.radiusMeters || 300}m)
                     </span>
                     <span className="text-cyan-400 font-mono">Click to center map</span>
                   </div>

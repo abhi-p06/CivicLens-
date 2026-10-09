@@ -59,7 +59,17 @@ export const api = {
   async getHotspots(): Promise<HotspotInfo[]> {
     const res = await fetch(`${BASE_URL}/hotspots`)
     if (!res.ok) throw new Error('Failed to fetch hotspots')
-    return res.json()
+    const data = await res.json()
+    return (data || []).map((h: any) => {
+      const lat = Array.isArray(h.center) ? Number(h.center[0]) : Number(h.center?.lat ?? 19.076)
+      const lng = Array.isArray(h.center) ? Number(h.center[1]) : Number(h.center?.lng ?? 72.885)
+      return {
+        ...h,
+        center: { lat: isNaN(lat) ? 19.076 : lat, lng: isNaN(lng) ? 72.885 : lng },
+        radiusMeters: h.radiusMeters || h.radius || 300,
+        hotspotLevel: h.hotspotLevel === 'SEVERE' ? 'CRITICAL' : (h.hotspotLevel || 'MODERATE'),
+      }
+    })
   },
 
   async getRecurringIssues(): Promise<RecurrenceInfo[]> {
