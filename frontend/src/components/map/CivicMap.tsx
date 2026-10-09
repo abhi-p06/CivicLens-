@@ -55,12 +55,23 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       // Elegant Zoom Controls top-right
       L.control.zoom({ position: 'topright' }).addTo(map)
 
-      // Tactical Dark-Filtered OpenStreetMap Tiles (No watermark, reliable public CDN)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        subdomains: ['a', 'b', 'c'],
-        className: 'dark-map-tiles',
-      }).addTo(map)
+      // Professional ESRI Dark Gray Canvas (High contrast roads, zero watermark, dark graphite)
+      L.tileLayer(
+        'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        {
+          maxZoom: 16,
+          attribution: 'Tiles &copy; Esri, DeLorme, NAVTEQ',
+        }
+      ).addTo(map)
+
+      // ESRI Dark Gray Reference Labels Overlay (Crisp street names & landmarks)
+      L.tileLayer(
+        'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+        {
+          maxZoom: 16,
+          opacity: 0.9,
+        }
+      ).addTo(map)
 
       // Layer Groups
       const ml = L.layerGroup().addTo(map)
