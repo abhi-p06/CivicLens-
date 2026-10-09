@@ -1,5 +1,6 @@
 from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException, Query, status
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from app.models.issue import (
@@ -13,8 +14,7 @@ from app.models.issue import (
 from app.core.demo_store import demo_store
 from app.core.pipeline import pipeline
 from app.modules.lifecycle.tracker import lifecycle_tracker
-from app.modules.vision.yolo_detector import yolo_detector
-from app.modules.vision.severity import visual_severity_estimator
+from app.modules.gis.mapper import gis_mapper
 
 router = APIRouter(prefix="/api/v1", tags=["Civic Issue Intelligence"])
 
@@ -34,6 +34,20 @@ def health_check() -> Dict[str, Any]:
         "version": "1.0.0",
         "totalIssuesTracked": len(demo_store.list_issues())
     }
+
+@router.post("/analyze")
+def analyze_complaint_endpoint(payload: IssueCreate) -> Dict[str, Any]:
+    """
+    Stateless endpoint: Executes the full 14-feature analysis pipeline
+    and returns rich structured results without writing to persistent store.
+    """
+    try:
+        return pipeline.analyze(payload)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Analysis pipeline error: {str(e)}"
+        )
 
 @router.get("/issues", response_model=List[Issue])
 def get_issues(
@@ -133,6 +147,14 @@ def get_gis_geojson() -> Dict[str, Any]:
         "type": "FeatureCollection",
         "features": features
     }
+
+@router.get("/gis/map", response_class=HTMLResponse)
+def get_gis_interactive_map() -> str:
+    """
+    Renders and serves an interactive Folium map visualization.
+    """
+    issues = demo_store.list_issues()
+    return gis_mapper.generate_map_html(issues)
 
 @router.post("/demo/reset")
 def reset_demo_data() -> Dict[str, str]:
