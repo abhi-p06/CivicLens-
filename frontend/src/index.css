@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --bg-app: #080a0f;
+  --bg-sidebar: #0c0e14;
+  --bg-panel: #10141d;
+  --bg-card: #131824;
+  --bg-card-hover: #182030;
+  --border-subtle: #1e2638;
+  --border-active: #2c3852;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --civic-cyan: #06b6d4;
+  --civic-green: #10b981;
+  --civic-yellow: #eab308;
+  --civic-orange: #f97316;
+  --civic-red: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Operational Palantir-Style Grid Background */
+.bg-ops-grid {
+  background-image: 
+    linear-gradient(to right, rgba(30, 38, 56, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 38, 56, 0.3) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Precision Glass Panels */
+.glass-panel {
+  background: rgba(16, 20, 29, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(24, 32, 48, 0.85);
+  border-color: var(--border-active);
+}
+
+/* Custom Tactical Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e2638;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2c3852;
+}
+
+/* Leaflet Dark Filter & Customization */
+.leaflet-container {
+  background-color: #0c0e14 !important;
+  font-family: inherit !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #10141d !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #1e2638 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
+}
+
+.leaflet-popup-tip {
+  background: #10141d !important;
+  border: 1px solid #1e2638 !important;
+}
+
+/* Pulsing AI Indicator */
+@keyframes ai-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.92); }
+}
+
+.animate-ai-pulse {
+  animation: ai-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radar-sweep 4s linear infinite;
+}

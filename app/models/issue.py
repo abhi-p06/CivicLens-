@@ -137,7 +137,9 @@ class Issue(BaseModel):
     location: str
     latitude: float
     longitude: float
+    ward: Optional[str] = "N-Ward"
     timestamp: str
+    imageUrl: Optional[str] = None
     
     # Deduplication & Grouping (Features 5, 6)
     duplicateGroup: Optional[str] = None

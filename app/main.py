@@ -20,10 +20,22 @@ app.add_middleware(
 
 app.include_router(router)
 
+import os
+from fastapi import Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+if os.path.exists("frontend/dist/assets"):
+    app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
 @app.get("/")
-def root():
+def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept and os.path.exists("frontend/dist/index.html"):
+        return FileResponse("frontend/dist/index.html")
     return {
         "title": settings.app_name,
+        "dashboard": "/dashboard",
         "docs": "/docs",
         "health": "/api/v1/health",
         "endpoints": {
@@ -32,6 +44,13 @@ def root():
             "reset_demo": "/api/v1/demo/reset"
         }
     }
+
+@app.get("/dashboard")
+@app.get("/dashboard/{full_path:path}")
+def serve_dashboard():
+    if os.path.exists("frontend/dist/index.html"):
+        return FileResponse("frontend/dist/index.html")
+    return {"message": "Frontend build not found. Please build frontend first."}
 
 if __name__ == "__main__":
     import uvicorn

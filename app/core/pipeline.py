@@ -282,6 +282,8 @@ class CivicIssueIntelligencePipeline:
             department=analysis["department"],
             recommendedAction=analysis["recommendedAction"],
             slaHours=analysis["slaHours"],
+            ward=analysis.get("ward", "N-Ward"),
+            imageUrl=payload.imageUrl,
             status=status,
             metadata={
                 "source": payload.source,

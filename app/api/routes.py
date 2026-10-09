@@ -1,4 +1,5 @@
 from typing import List, Optional, Dict, Any
+import numpy as np
 from fastapi import APIRouter, HTTPException, Query, status
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
@@ -257,10 +258,33 @@ def get_evaluation_metrics() -> Dict[str, Any]:
     y_pred_depts = [pipeline.analyze(IssueCreate(complaintText=i.complaintText))["department"] for i in issues]
     dept_metrics = evaluator.evaluate_department_routing(y_true_depts, y_pred_depts)
 
+    # Hotspot clustering evaluation
+    coords = np.radians([[i.latitude, i.longitude] for i in issues])
+    labels = [
+        0 if (i.metadata.get("ward") == "N-Ward" or "Vidyavihar" in i.location)
+        else (1 if (i.metadata.get("ward") == "G/North" or "Dharavi" in i.location) else 2)
+        for i in issues
+    ]
+    clustering_metrics = evaluator.evaluate_clustering(coords, labels)
+
+    # Text-image consistency evaluation
+    y_true_cons = [i.consistencyFlag or "CONSISTENT" for i in issues]
+    y_pred_cons = [pipeline.analyze(IssueCreate(complaintText=i.complaintText, imageUrl=i.imageUrl))["consistencyFlag"] for i in issues]
+    consistency_metrics = evaluator.evaluate_text_image_consistency(y_true_cons, y_pred_cons)
+
+    # Resolution verification evaluation
+    y_true_res = ["LIKELY RESOLVED" if i.status.value in ["RESOLVED", "Resolved"] else "REQUIRES MANUAL VERIFICATION" for i in issues]
+    y_pred_res = ["LIKELY RESOLVED" if (i.resolutionEvidence and i.resolutionEvidence.resolutionStatus.value == "LIKELY RESOLVED") else "REQUIRES MANUAL VERIFICATION" for i in issues]
+    resolution_metrics = evaluator.evaluate_resolution_verification(y_true_res, y_pred_res)
+
     return {
         "classification": clf_metrics,
+        "priority": pri_metrics,
         "priority_mae": pri_metrics,
         "department_routing": dept_metrics,
+        "hotspot_clustering": clustering_metrics,
+        "text_image_consistency": consistency_metrics,
+        "resolution_verification": resolution_metrics,
         "evaluated_sample_count": len(issues)
     }
 
