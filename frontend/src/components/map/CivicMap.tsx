@@ -55,10 +55,11 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       // Elegant Zoom Controls top-right
       L.control.zoom({ position: 'topright' }).addTo(map)
 
-      // Tactical Dark Matter Carto Tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // Tactical Dark-Filtered OpenStreetMap Tiles (No watermark, reliable public CDN)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        subdomains: 'abcd',
+        subdomains: ['a', 'b', 'c'],
+        className: 'dark-map-tiles',
       }).addTo(map)
 
       // Layer Groups

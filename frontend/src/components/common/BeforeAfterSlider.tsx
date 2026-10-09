@@ -1,64 +1,132 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
+import { CheckCircle2, ShieldAlert, Sparkles, Scan } from 'lucide-react'
 
 interface BeforeAfterSliderProps {
+  beforeImage?: string
+  afterImage?: string
   beforeLabel?: string
   afterLabel?: string
   beforeSubtext?: string
   afterSubtext?: string
   confidence?: number
+  isScanning?: boolean
 }
 
 export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
+  beforeImage = '/sample_pothole.jpg',
+  afterImage = '/sample_repaired_pothole.jpg',
   beforeLabel = 'ORIGINAL DEFECT (BEFORE)',
-  afterLabel = 'POST-REPAIR RESTORATION (AFTER)',
-  beforeSubtext = 'Pothole (Detected, 94% conf)',
-  afterSubtext = 'Clean asphalt patch (No residual defect)',
-  confidence = 0.95,
+  afterLabel = 'RESTORED SURFACE (AFTER)',
+  beforeSubtext = 'Severe Pothole (Depth: 12cm, Area: 0.85m²)',
+  afterSubtext = 'Asphalt Patch Completed (0 residual defect)',
+  confidence = 0.942,
+  isScanning = false,
 }) => {
   const [sliderPos, setSliderPos] = useState(50)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleMove = useCallback((clientX: number) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = clientX - rect.left
+    const percent = Math.max(0, Math.min(100, (x / rect.width) * 100))
+    setSliderPos(percent)
+  }, [])
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) handleMove(e.touches[0].clientX)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging) handleMove(e.clientX)
+  }
 
   return (
-    <div className="relative w-full h-44 sm:h-52 bg-[#090c13] rounded-xl overflow-hidden border border-slate-800 select-none font-mono text-xs shadow-inner">
-      {/* Background / Before Layer */}
-      <div className="absolute inset-0 bg-[#120808] flex items-center justify-center p-4">
-        <div className="text-center space-y-1">
-          <div className="text-[10px] uppercase font-bold text-rose-400 tracking-wider">
+    <div
+      ref={containerRef}
+      onMouseDown={() => setIsDragging(true)}
+      onMouseUp={() => setIsDragging(false)}
+      onMouseLeave={() => setIsDragging(false)}
+      onMouseMove={handleMouseMove}
+      onTouchMove={handleTouchMove}
+      className="relative w-full h-64 sm:h-80 md:h-96 rounded-xl overflow-hidden border border-slate-800 bg-[#07090e] select-none shadow-2xl group cursor-ew-resize"
+    >
+      {/* 1. Before Image (Background Layer) */}
+      <img
+        src={beforeImage}
+        alt="Before repair"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {/* Before Defect Bounding Box HUD */}
+      <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-rose-500/70 text-rose-300 text-[11px] font-mono font-bold flex items-center gap-1.5 shadow-lg">
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
             {beforeLabel}
-          </div>
-          <div className="text-slate-300 font-sans text-xs">{beforeSubtext}</div>
-          <div className="inline-block mt-2 px-2 py-0.5 rounded bg-rose-950/80 border border-rose-800 text-rose-300 text-[10px]">
-            Visual Defect Area: 14.2%
-          </div>
+          </span>
+          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm text-slate-300 text-[10px] font-mono">
+            {beforeSubtext}
+          </span>
+        </div>
+
+        <div className="text-[10px] font-mono text-rose-400/90 font-bold bg-black/60 backdrop-blur-sm px-2 py-1 rounded w-fit">
+          &larr; SLIDE RIGHT TO REVEAL REPAIRED STATE
         </div>
       </div>
 
-      {/* Foreground / After Layer (clipped by slider) */}
+      {/* 2. After Image (Clipped Overlay Layer) */}
       <div
-        className="absolute inset-0 bg-[#08140e] flex items-center justify-center p-4 overflow-hidden"
+        className="absolute inset-0 overflow-hidden"
         style={{ clipPath: `inset(0 0 0 ${sliderPos}%)` }}
       >
-        <div className="text-center space-y-1">
-          <div className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">
-            {afterLabel}
+        <img
+          src={afterImage}
+          alt="After repair"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* After HUD */}
+        <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between items-end">
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm text-emerald-300 text-[10px] font-mono">
+              {afterSubtext}
+            </span>
+            <span className="px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-emerald-500/70 text-emerald-300 text-[11px] font-mono font-bold flex items-center gap-1.5 shadow-lg">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              {afterLabel}
+            </span>
           </div>
-          <div className="text-slate-300 font-sans text-xs">{afterSubtext}</div>
-          <div className="inline-block mt-2 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[10px]">
-            Verification Confidence: {(confidence * 100).toFixed(1)}%
+
+          <div className="text-[10px] font-mono text-emerald-400/90 font-bold bg-black/60 backdrop-blur-sm px-2 py-1 rounded w-fit">
+            LIKELY RESOLVED (SSIM: 0.89 &bull; {(confidence * 100).toFixed(1)}%) &rarr;
           </div>
         </div>
       </div>
 
-      {/* Divider Line */}
+      {/* 3. Divider Line & Interactive Handle */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-cyan-400 cursor-ew-resize z-20 shadow-[0_0_10px_#06b6d4]"
+        className="absolute top-0 bottom-0 w-1 bg-cyan-400 z-20 shadow-[0_0_15px_rgba(6,182,212,0.9)]"
         style={{ left: `${sliderPos}%` }}
       >
-        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-cyan-500 border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-[9px] shadow-lg">
+        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-slate-900 border-2 border-cyan-400 text-cyan-300 flex items-center justify-center text-xs font-bold shadow-xl group-hover:scale-110 transition-transform">
           &harr;
         </div>
       </div>
 
-      {/* Interactive Range Input */}
+      {/* 4. Scanning Beam Animation */}
+      {isScanning && (
+        <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
+          <div className="w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_20px_#06b6d4] animate-bounce" />
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded bg-black/80 border border-cyan-500 text-cyan-300 text-[11px] font-mono font-bold flex items-center gap-2 animate-pulse">
+            <Scan className="w-3.5 h-3.5" />
+            COMPUTER VISION INSPECTION RUNNING...
+          </div>
+        </div>
+      )}
+
+      {/* Native Range Slider for accessibility & drag */}
       <input
         type="range"
         min={0}
@@ -66,15 +134,10 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
         value={sliderPos}
         onChange={(e) => setSliderPos(Number(e.target.value))}
         className="absolute inset-0 opacity-0 cursor-ew-resize z-30 w-full h-full"
+        aria-label="Before after comparison slider"
       />
-
-      {/* Watermarks */}
-      <div className="absolute bottom-2 left-3 z-10 text-[9px] text-rose-400/80 font-bold pointer-events-none">
-        &larr; BEFORE REPAIR
-      </div>
-      <div className="absolute bottom-2 right-3 z-10 text-[9px] text-emerald-400/80 font-bold pointer-events-none">
-        AFTER REPAIR &rarr;
-      </div>
     </div>
   )
 }
+
+export default BeforeAfterSlider

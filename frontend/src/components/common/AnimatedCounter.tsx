@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 export const AnimatedCounter: React.FC<{
   value: number
   durationMs?: number
   suffix?: string
-}> = ({ value, durationMs = 1000, suffix = '' }) => {
+}> = ({ value, durationMs = 700, suffix = '' }) => {
   const [displayValue, setDisplayValue] = useState(0)
+  const prevValueRef = useRef(0)
 
   useEffect(() => {
-    let startTimestamp: number | null = null
-    const startValue = 0
+    const startValue = prevValueRef.current
     const endValue = value
+    prevValueRef.current = value
 
+    let startTimestamp: number | null = null
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp
       const progress = Math.min((timestamp - startTimestamp) / durationMs, 1)
       const easeOut = 1 - Math.pow(1 - progress, 3)
-      const current = Math.floor(startValue + (endValue - startValue) * easeOut)
+      const current = Math.round(startValue + (endValue - startValue) * easeOut)
       setDisplayValue(current)
       if (progress < 1) {
         window.requestAnimationFrame(step)
@@ -36,3 +38,5 @@ export const AnimatedCounter: React.FC<{
     </span>
   )
 }
+
+export default AnimatedCounter

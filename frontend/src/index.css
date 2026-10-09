@@ -92,6 +92,11 @@ code, kbd, samp, pre, .font-mono {
   font-family: inherit !important;
 }
 
+.leaflet-tile,
+.dark-map-tiles {
+  filter: brightness(0.65) invert(1) contrast(1.6) hue-rotate(200deg) saturate(0.25) brightness(0.7) !important;
+}
+
 .leaflet-popup-content-wrapper {
   background: #10141d !important;
   color: #f1f5f9 !important;

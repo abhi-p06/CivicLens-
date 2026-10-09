@@ -30,7 +30,34 @@ import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
 function AppContent() {
   const { success, info } = useToast()
-  const [activeView, setActiveView] = useState<string>('overview')
+  const getInitialView = () => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '')
+      if (hash) return hash
+      const params = new URLSearchParams(window.location.search)
+      const v = params.get('view')
+      if (v) return v
+    }
+    return 'overview'
+  }
+  const [activeView, setActiveView] = useState<string>(getInitialView)
+
+  const handleSelectView = (view: string) => {
+    setActiveView(view)
+    if (typeof window !== 'undefined') {
+      window.location.hash = view
+    }
+  }
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '')
+      if (hash) setActiveView(hash)
+    }
+    window.addEventListener('hashchange', handleHash)
+    return () => window.removeEventListener('hashchange', handleHash)
+  }, [])
+
   const [issues, setIssues] = useState<Issue[]>([])
   const [hotspots, setHotspots] = useState<HotspotInfo[]>([])
   const [recurringIssues, setRecurringIssues] = useState<RecurrenceInfo[]>([])
@@ -187,7 +214,7 @@ function AppContent() {
       {/* Persistent Left Sidebar */}
       <Sidebar
         activeView={activeView}
-        onSelectView={setActiveView}
+        onSelectView={handleSelectView}
         criticalCount={criticalCount}
         hotspotCount={hotspots.length}
         unreportedCount={unreportedCount}
@@ -218,10 +245,10 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}
-              initial={{ opacity: 0, y: 4 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.16, ease: 'easeOut' }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="h-full w-full overflow-hidden"
             >
               {activeView === 'overview' && (

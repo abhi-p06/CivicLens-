@@ -78,7 +78,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   ).length
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-mono text-xs">
+    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-sans">
       {/* 1. Header Banner */}
       <div className="p-5 bg-[#0e131d] border border-slate-800/90 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1.5 h-full bg-cyan-500" />

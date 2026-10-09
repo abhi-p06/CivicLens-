@@ -24,7 +24,7 @@ export const RecurringView: React.FC<RecurringViewProps> = ({
   onSelectIssue,
 }) => {
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-mono text-xs">
+    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-sans">
       {/* Header */}
       <div className="p-4 bg-[#101420] border border-amber-900/60 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xl">
         <div>
