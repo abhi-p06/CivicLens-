@@ -25,6 +25,7 @@ interface IssueDetailDrawerProps {
   onClose: () => void
   onUpdateIssue: (updated: Issue) => void
   onOpenResolutionModal: (issue: Issue) => void
+  onNavigateToIntelligence?: (issue: Issue) => void
 }
 
 export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
@@ -32,6 +33,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   onClose,
   onUpdateIssue,
   onOpenResolutionModal,
+  onNavigateToIntelligence,
 }) => {
   const [updatingStatus, setUpdatingStatus] = useState(false)
 
@@ -87,9 +89,24 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             </div>
           </div>
 
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-200 p-1">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onNavigateToIntelligence && (
+              <button
+                onClick={() => {
+                  onNavigateToIntelligence(issue)
+                  onClose()
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-950/70 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 rounded text-[11px] transition"
+                title="Open complete Issue Intelligence Dossier"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Open Dossier</span>
+              </button>
+            )}
+            <button onClick={onClose} className="text-slate-400 hover:text-slate-200 p-1">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Content */}

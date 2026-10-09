@@ -21,6 +21,7 @@ import { RecurringView } from './components/views/RecurringView'
 import { UnreportedView } from './components/views/UnreportedView'
 import { ResolutionView } from './components/views/ResolutionView'
 import { AnalyticsView } from './components/views/AnalyticsView'
+import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
 export function App() {
   const [activeView, setActiveView] = useState<string>('overview')
@@ -157,6 +158,16 @@ export function App() {
             <AnalysisPipelineView onIssueCreated={handleIssueCreated} />
           )}
 
+          {activeView === 'intelligence' && (
+            <IssueIntelligenceView
+              issues={displayedIssues}
+              selectedIssue={inspectingIssue}
+              onSelectIssue={setInspectingIssue}
+              onUpdateIssue={handleIssueUpdated}
+              onOpenResolutionModal={handleOpenResolution}
+            />
+          )}
+
           {activeView === 'explorer' && (
             <ExplorerView
               issues={displayedIssues}
@@ -204,7 +215,13 @@ export function App() {
             />
           )}
 
-          {activeView === 'analytics' && <AnalyticsView />}
+          {activeView === 'analytics' && (
+            <AnalyticsView
+              issues={displayedIssues}
+              hotspots={hotspots}
+              recurringIssues={recurringIssues}
+            />
+          )}
         </main>
       </div>
 
@@ -242,6 +259,10 @@ export function App() {
         onClose={() => setInspectingIssue(null)}
         onUpdateIssue={handleIssueUpdated}
         onOpenResolutionModal={handleOpenResolution}
+        onNavigateToIntelligence={(iss) => {
+          setInspectingIssue(iss)
+          setActiveView('intelligence')
+        }}
       />
 
       <ModelStatusModal

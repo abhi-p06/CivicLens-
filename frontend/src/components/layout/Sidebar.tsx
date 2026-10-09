@@ -14,6 +14,7 @@ import {
   Settings2,
   Activity,
   ShieldAlert,
+  FileText,
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -37,28 +38,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSettings,
 }) => {
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'live', label: 'Live Intelligence', icon: Radio, pulse: true },
-    { id: 'analyze', label: 'Analyze Complaint', icon: Sparkles },
-    { id: 'explorer', label: 'Complaint Explorer', icon: ListFilter },
-    { id: 'map', label: 'Issue Map', icon: Map },
+    { id: 'overview', label: '1. Command Center', icon: LayoutDashboard },
+    { id: 'analyze', label: '2. Analyze Complaint', icon: Sparkles },
+    { id: 'intelligence', label: '3. Issue Intelligence', icon: FileText },
+    { id: 'map', label: '4. Tactical GIS Map', icon: Map },
     {
       id: 'hotspots',
-      label: 'Hotspots',
+      label: '5. Hotspots',
       icon: Flame,
       badge: hotspotCount > 0 ? String(hotspotCount) : undefined,
       badgeColor: 'bg-rose-950 text-rose-300 border-rose-800',
     },
-    { id: 'recurring', label: 'Recurring Issues', icon: RotateCcw },
+    { id: 'recurring', label: '6. Recurring Issues', icon: RotateCcw },
     {
       id: 'unreported',
-      label: 'Unreported Issues',
+      label: '7. Unreported Issues',
       icon: Camera,
       badge: unreportedCount > 0 ? String(unreportedCount) : undefined,
       badgeColor: 'bg-cyan-950 text-cyan-300 border-cyan-800',
     },
-    { id: 'resolution', label: 'Resolution Tracking', icon: CheckCircle2 },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'resolution', label: '8. Resolution Center', icon: CheckCircle2 },
+    { id: 'analytics', label: '9. Analytics', icon: BarChart3 },
+    { id: 'live', label: 'Live Incident Radar', icon: Radio, pulse: true },
+    { id: 'explorer', label: 'Complaint Explorer', icon: ListFilter },
   ]
 
   return (

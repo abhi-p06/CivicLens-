@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils'
 
 interface KpiCardProps {
   title: string
-  value: string | number
+  value: React.ReactNode
   delta?: string
   deltaType?: 'positive' | 'negative' | 'neutral' | 'critical'
   icon?: LucideIcon
