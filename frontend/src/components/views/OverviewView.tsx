@@ -26,6 +26,7 @@ interface OverviewViewProps {
   recurringIssues: RecurrenceInfo[]
   onSelectIssue: (issue: Issue) => void
   onNavigate: (viewId: string) => void
+  onStartDemo?: () => void
   loading?: boolean
   error?: string | null
 }
@@ -36,6 +37,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   recurringIssues,
   onSelectIssue,
   onNavigate,
+  onStartDemo,
   loading = false,
   error = null,
 }) => {
@@ -90,6 +92,17 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (onStartDemo) onStartDemo()
+              else onNavigate('analyze')
+            }}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold font-mono tracking-wide shadow-lg shadow-cyan-950/60 transition active:scale-95 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-cyan-200" />
+            <span>ANALYZE CIVIC ISSUE</span>
+          </button>
+
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#121824] border border-slate-700/80 text-emerald-400 text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>REAL-TIME INFERENCE ONLINE</span>

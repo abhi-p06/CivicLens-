@@ -14,6 +14,8 @@ interface TopBarProps {
   onOpenCommandPalette: () => void
   onOpenNewComplaint: () => void
   onResetDemo: () => void
+  onStartDemo?: () => void
+  isDemoMode?: boolean
   selectedWard: string
   onSelectWard: (ward: string) => void
   totalIssuesCount: number
@@ -24,6 +26,8 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenCommandPalette,
   onOpenNewComplaint,
   onResetDemo,
+  onStartDemo,
+  isDemoMode = false,
   selectedWard,
   onSelectWard,
   totalIssuesCount,
@@ -132,11 +136,31 @@ export const TopBar: React.FC<TopBarProps> = ({
           <span>{currentTime || 'SYNCHRONIZING...'}</span>
         </div>
 
+        {/* Dedicated Demo Mode Trigger */}
+        {onStartDemo && (
+          <button
+            onClick={onStartDemo}
+            title="Launch Guided Presentation Demo (Alt+D)"
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold tracking-wider transition active:scale-95 cursor-pointer ${
+              isDemoMode
+                ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-400/40'
+                : 'bg-gradient-to-r from-cyan-950 to-blue-950 hover:from-cyan-900 hover:to-blue-900 border border-cyan-700/80 text-cyan-300 shadow-md shadow-cyan-950/40'
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isDemoMode ? 'bg-black animate-ping' : 'bg-cyan-400 animate-pulse'
+              }`}
+            />
+            <span>DEMO MODE</span>
+          </button>
+        )}
+
         {/* Reset Demo button */}
         <button
           onClick={onResetDemo}
-          title="Reset sample database to default seed state"
-          className="p-1.5 bg-[#101420] hover:bg-[#151c2a] border border-slate-800 text-slate-400 hover:text-slate-200 rounded transition"
+          title="Reset sample database to default seed state (Alt+R)"
+          className="p-1.5 bg-[#101420] hover:bg-[#151c2a] border border-slate-800 text-slate-400 hover:text-slate-200 rounded transition cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
         </button>

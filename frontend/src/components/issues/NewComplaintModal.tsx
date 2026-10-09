@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, Sparkles, Image, MapPin, AlertCircle } from 'lucide-react'
 import { api } from '../../services/api'
 import { Issue } from '../../types'
@@ -103,11 +104,25 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-[#0e131d] border border-slate-700 rounded-xl shadow-2xl overflow-hidden font-mono text-xs max-h-[90vh] flex flex-col">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-3xl bg-[#0e131d] border border-slate-700 rounded-xl shadow-2xl overflow-hidden font-mono text-xs max-h-[90vh] flex flex-col"
+          >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#121824] shrink-0">
           <div className="flex items-center gap-2">
@@ -320,7 +335,9 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

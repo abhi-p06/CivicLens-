@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -30,23 +31,23 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   let iconColor = 'text-slate-400'
 
   if (accentColor === 'cyan') {
-    accentBorder = 'border-cyan-900/50 hover:border-cyan-700/60'
+    accentBorder = 'border-cyan-900/40 hover:border-cyan-600/70'
     topHighlight = 'bg-cyan-500'
     iconColor = 'text-cyan-400'
   } else if (accentColor === 'red') {
-    accentBorder = 'border-rose-900/50 hover:border-rose-700/60'
+    accentBorder = 'border-rose-900/40 hover:border-rose-600/70'
     topHighlight = 'bg-rose-500'
     iconColor = 'text-rose-400'
   } else if (accentColor === 'orange') {
-    accentBorder = 'border-orange-900/50 hover:border-orange-700/60'
+    accentBorder = 'border-orange-900/40 hover:border-orange-600/70'
     topHighlight = 'bg-orange-500'
     iconColor = 'text-orange-400'
   } else if (accentColor === 'yellow') {
-    accentBorder = 'border-amber-900/50 hover:border-amber-700/60'
+    accentBorder = 'border-amber-900/40 hover:border-amber-600/70'
     topHighlight = 'bg-amber-500'
     iconColor = 'text-amber-400'
   } else if (accentColor === 'green') {
-    accentBorder = 'border-emerald-900/50 hover:border-emerald-700/60'
+    accentBorder = 'border-emerald-900/40 hover:border-emerald-600/70'
     topHighlight = 'bg-emerald-500'
     iconColor = 'text-emerald-400'
   }
@@ -57,10 +58,11 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   if (deltaType === 'critical') deltaClasses = 'text-rose-300 bg-rose-950/80 border-rose-800 animate-pulse'
 
   return (
-    <div
+    <motion.div
       onClick={onClick}
+      whileHover={onClick ? { y: -2, transition: { duration: 0.15, ease: 'easeOut' } } : undefined}
       className={cn(
-        'relative bg-[#10141e]/90 border rounded-lg p-3.5 transition-all duration-200 overflow-hidden group shadow-lg',
+        'relative bg-[#10141e]/90 border rounded-lg p-3.5 transition-colors duration-200 overflow-hidden group shadow-lg',
         accentBorder,
         onClick && 'cursor-pointer hover:bg-[#131926]',
         className
@@ -74,7 +76,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
           {title}
         </span>
         {Icon && (
-          <div className={cn('p-1.5 rounded bg-slate-900/90 border border-slate-800 shrink-0', iconColor)}>
+          <div className={cn('p-1.5 rounded bg-slate-900/90 border border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-200', iconColor)}>
             <Icon className="w-3.5 h-3.5" />
           </div>
         )}
@@ -96,6 +98,8 @@ export const KpiCard: React.FC<KpiCardProps> = ({
           {subtitle}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
+
+export default KpiCard

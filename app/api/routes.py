@@ -30,8 +30,9 @@ class StatusUpdateRequest(BaseModel):
     status: str
 
 class VerifyResolutionRequest(BaseModel):
-    inspectorId: str
+    inspectorId: str = "INSP-FIELD-01"
     resolutionImageUrl: Optional[str] = None
+    postActionImageUrl: Optional[str] = None
     notes: Optional[str] = None
 
 class DepartmentConfigUpdate(BaseModel):
@@ -137,7 +138,7 @@ def verify_issue_resolution(issue_id: str, payload: VerifyResolutionRequest) -> 
     evidence = lifecycle_tracker.verify_resolution(
         issue=issue,
         inspector_id=payload.inspectorId,
-        resolution_image_url=payload.resolutionImageUrl,
+        resolution_image_url=payload.resolutionImageUrl or payload.postActionImageUrl,
         notes=payload.notes
     )
     issue.resolutionEvidence = evidence

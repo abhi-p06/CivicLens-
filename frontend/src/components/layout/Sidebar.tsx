@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
   Radio,
@@ -128,7 +129,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
 
               {isActive && (
-                <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-cyan-400 rounded-r" />
+                <motion.div
+                  layoutId="sidebarActivePill"
+                  className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-cyan-400 rounded-r shadow-[0_0_8px_rgba(6,182,212,0.8)]"
+                  transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                />
               )}
             </button>
           )

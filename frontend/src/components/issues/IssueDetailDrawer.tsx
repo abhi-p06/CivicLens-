@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   X,
   MapPin,
@@ -37,8 +38,6 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 }) => {
   const [updatingStatus, setUpdatingStatus] = useState(false)
 
-  if (!issue) return null
-
   const lifecycleStages: IssueStatus[] = [
     'OPEN',
     'ANALYZED',
@@ -50,6 +49,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   ]
 
   const handleStatusChange = async (newStatus: IssueStatus) => {
+    if (!issue) return
     setUpdatingStatus(true)
     try {
       const updated = await api.updateStatus(issue.issueId, newStatus, `Lifecycle state advanced to ${newStatus}`)
@@ -62,8 +62,24 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex justify-end">
-      <div className="w-full max-w-2xl bg-[#0c1018] border-l border-[#1a2130] h-full flex flex-col shadow-2xl font-mono text-xs overflow-hidden animate-in slide-in-from-right duration-200">
+    <AnimatePresence>
+      {issue && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex justify-end"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 32, stiffness: 350 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl bg-[#0c1018] border-l border-[#1a2130] h-full flex flex-col shadow-2xl font-mono text-xs overflow-hidden"
+          >
         {/* Header */}
         <div className="px-5 py-4 border-b border-[#1a2130] bg-[#0e131d] flex items-center justify-between shrink-0">
           <div>
@@ -311,7 +327,9 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             <span>Verify Field Resolution</span>
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

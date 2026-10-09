@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { api } from './services/api'
 import { Issue, HotspotInfo, RecurrenceInfo } from './types'
 import { Sidebar } from './components/layout/Sidebar'
@@ -9,6 +10,9 @@ import { SettingsModal } from './components/common/SettingsModal'
 import { NewComplaintModal } from './components/issues/NewComplaintModal'
 import { ResolutionModal } from './components/issues/ResolutionModal'
 import { IssueDetailDrawer } from './components/issues/IssueDetailDrawer'
+import { ToastProvider, useToast } from './components/common/Toast'
+import { GuidedDemoController } from './components/demo/GuidedDemoController'
+import { DEMO_SCENARIO } from './services/demoScenario'
 
 // Views
 import { OverviewView } from './components/views/OverviewView'
@@ -23,14 +27,19 @@ import { ResolutionView } from './components/views/ResolutionView'
 import { AnalyticsView } from './components/views/AnalyticsView'
 import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
-export function App() {
+function AppContent() {
+  const { success, info } = useToast()
   const [activeView, setActiveView] = useState<string>('overview')
   const [issues, setIssues] = useState<Issue[]>([])
   const [hotspots, setHotspots] = useState<HotspotInfo[]>([])
   const [recurringIssues, setRecurringIssues] = useState<RecurrenceInfo[]>([])
   const [healthData, setHealthData] = useState<any | null>(null)
   const [selectedWard, setSelectedWard] = useState<string>('ALL WARDS (MUMBAI REGION)')
-  
+
+  // Demo Presentation Mode State
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(false)
+  const [activeDemoStep, setActiveDemoStep] = useState<number>(1)
+
   // Modals & Drawers
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [modelStatusOpen, setModelStatusOpen] = useState(false)
@@ -63,34 +72,73 @@ export function App() {
     loadData()
   }, [])
 
+  // Keyboard shortcut listener for Demo Mode (Alt+D)
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase()
+      if (tag === 'input' || tag === 'textarea') return
+
+      if (e.altKey && e.key.toLowerCase() === 'd') {
+        e.preventDefault()
+        setIsDemoMode((prev) => {
+          const next = !prev
+          if (next) handleSetDemoStep(1)
+          return next
+        })
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
+
   // Filter issues by ward if selected
   const displayedIssues = issues.filter((i) => {
     if (selectedWard === 'ALL WARDS (MUMBAI REGION)') return true
-    if (selectedWard.includes('N-Ward') && (i.ward === 'N-Ward' || i.location.includes('Vidyavihar') || i.location.includes('Ghatkopar'))) return true
-    if (selectedWard.includes('L-Ward') && (i.ward === 'L-Ward' || i.location.includes('Kurla'))) return true
-    if (selectedWard.includes('G/North') && (i.ward === 'G/North' || i.location.includes('Dharavi'))) return true
-    if (selectedWard.includes('K/West') && (i.ward === 'K/West' || i.location.includes('Andheri'))) return true
+    if (
+      selectedWard.includes('N-Ward') &&
+      (i.ward === 'N-Ward' || i.location.includes('Vidyavihar') || i.location.includes('Ghatkopar'))
+    )
+      return true
+    if (selectedWard.includes('L-Ward') && (i.ward === 'L-Ward' || i.location.includes('Kurla')))
+      return true
+    if (
+      selectedWard.includes('G/North') &&
+      (i.ward === 'G/North' || i.location.includes('Dharavi'))
+    )
+      return true
+    if (
+      selectedWard.includes('K/West') &&
+      (i.ward === 'K/West' || i.location.includes('Andheri'))
+    )
+      return true
     return true
   })
 
-  const criticalCount = issues.filter((i) => i.priorityLevel === 'CRITICAL' || i.priorityScore >= 80).length
-  const unreportedCount = issues.filter((i) => i.metadata?.isAutoDrafted || i.source === 'patrol_camera').length
+  const criticalCount = issues.filter(
+    (i) => i.priorityLevel === 'CRITICAL' || i.priorityScore >= 80
+  ).length
+  const unreportedCount = issues.filter(
+    (i) => i.metadata?.isAutoDrafted || i.source === 'patrol_camera'
+  ).length
 
   const handleIssueCreated = (created: Issue) => {
     setIssues((prev) => [created, ...prev])
     setInspectingIssue(created)
+    success('Incident Ingested & Dispatched', `Work order ${created.issueId} routed to ${created.department}`)
     loadData()
   }
 
   const handleIssueUpdated = (updated: Issue) => {
     setIssues((prev) => prev.map((i) => (i.issueId === updated.issueId ? updated : i)))
     setInspectingIssue(updated)
+    info('Lifecycle State Advanced', `${updated.issueId} status is now ${updated.status}`)
   }
 
   const handleResetDemo = async () => {
     try {
       await api.resetDemo()
       await loadData()
+      info('Demo State Reset', 'Baseline municipal records restored across all wards.')
     } catch (err) {
       console.error(err)
     }
@@ -104,6 +152,33 @@ export function App() {
   const handleOpenResolution = (issue: Issue) => {
     setTargetResolutionIssue(issue)
     setResolutionModalOpen(true)
+  }
+
+  // Demo Sequence Stepper (Screens 1 to 6)
+  const handleSetDemoStep = (step: number) => {
+    const bounded = Math.max(1, Math.min(6, step))
+    setActiveDemoStep(bounded)
+
+    if (bounded === 1) {
+      setActiveView('overview')
+    } else if (bounded === 2 || bounded === 3) {
+      setActiveView('analyze')
+    } else if (bounded === 4) {
+      setActiveView('map')
+      setInspectingIssue(DEMO_SCENARIO.issueRecord)
+    } else if (bounded === 5) {
+      setActiveView('intelligence')
+      setInspectingIssue(DEMO_SCENARIO.issueRecord)
+    } else if (bounded === 6) {
+      setActiveView('resolution')
+      setInspectingIssue(DEMO_SCENARIO.issueRecord)
+    }
+  }
+
+  const handleStartDemo = () => {
+    setIsDemoMode(true)
+    handleSetDemoStep(1)
+    info('Presentation Demo Started', 'Screen 1: Command Center Overview. Alt+D to toggle, Alt+R to reset.')
   }
 
   return (
@@ -130,100 +205,126 @@ export function App() {
             setNewComplaintOpen(true)
           }}
           onResetDemo={handleResetDemo}
+          onStartDemo={handleStartDemo}
+          isDemoMode={isDemoMode}
           selectedWard={selectedWard}
           onSelectWard={setSelectedWard}
           totalIssuesCount={issues.length}
         />
 
-        {/* View Surface */}
+        {/* View Surface with Subtle Fast Page Transition */}
         <main className="flex-1 overflow-hidden relative bg-[#090b10] bg-ops-grid">
-          {activeView === 'overview' && (
-            <OverviewView
-              issues={displayedIssues}
-              hotspots={hotspots}
-              recurringIssues={recurringIssues}
-              onSelectIssue={setInspectingIssue}
-              onNavigate={setActiveView}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16, ease: 'easeOut' }}
+              className="h-full w-full overflow-hidden"
+            >
+              {activeView === 'overview' && (
+                <OverviewView
+                  issues={displayedIssues}
+                  hotspots={hotspots}
+                  recurringIssues={recurringIssues}
+                  onSelectIssue={setInspectingIssue}
+                  onNavigate={setActiveView}
+                  onStartDemo={handleStartDemo}
+                />
+              )}
 
-          {activeView === 'live' && (
-            <LiveIntelligenceView
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'live' && (
+                <LiveIntelligenceView
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'analyze' && (
-            <AnalysisPipelineView onIssueCreated={handleIssueCreated} />
-          )}
+              {activeView === 'analyze' && (
+                <AnalysisPipelineView onIssueCreated={handleIssueCreated} />
+              )}
 
-          {activeView === 'intelligence' && (
-            <IssueIntelligenceView
-              issues={displayedIssues}
-              selectedIssue={inspectingIssue}
-              onSelectIssue={setInspectingIssue}
-              onUpdateIssue={handleIssueUpdated}
-              onOpenResolutionModal={handleOpenResolution}
-            />
-          )}
+              {activeView === 'intelligence' && (
+                <IssueIntelligenceView
+                  issues={displayedIssues}
+                  selectedIssue={inspectingIssue || DEMO_SCENARIO.issueRecord}
+                  onSelectIssue={setInspectingIssue}
+                  onUpdateIssue={handleIssueUpdated}
+                  onOpenResolutionModal={handleOpenResolution}
+                />
+              )}
 
-          {activeView === 'explorer' && (
-            <ExplorerView
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'explorer' && (
+                <ExplorerView
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'map' && (
-            <MapView
-              issues={displayedIssues}
-              hotspots={hotspots}
-              recurringIssues={recurringIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'map' && (
+                <MapView
+                  issues={displayedIssues}
+                  hotspots={hotspots}
+                  recurringIssues={recurringIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'hotspots' && (
-            <HotspotsView
-              hotspots={hotspots}
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'hotspots' && (
+                <HotspotsView
+                  hotspots={hotspots}
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'recurring' && (
-            <RecurringView
-              recurringIssues={recurringIssues}
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'recurring' && (
+                <RecurringView
+                  recurringIssues={recurringIssues}
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'unreported' && (
-            <UnreportedView
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-            />
-          )}
+              {activeView === 'unreported' && (
+                <UnreportedView
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                />
+              )}
 
-          {activeView === 'resolution' && (
-            <ResolutionView
-              issues={displayedIssues}
-              onSelectIssue={setInspectingIssue}
-              onOpenResolutionModal={handleOpenResolution}
-            />
-          )}
+              {activeView === 'resolution' && (
+                <ResolutionView
+                  issues={displayedIssues}
+                  onSelectIssue={setInspectingIssue}
+                  onOpenResolutionModal={handleOpenResolution}
+                />
+              )}
 
-          {activeView === 'analytics' && (
-            <AnalyticsView
-              issues={displayedIssues}
-              hotspots={hotspots}
-              recurringIssues={recurringIssues}
-            />
-          )}
+              {activeView === 'analytics' && (
+                <AnalyticsView
+                  issues={displayedIssues}
+                  hotspots={hotspots}
+                  recurringIssues={recurringIssues}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
+
+      {/* Presentation Demo Controller Bar */}
+      <AnimatePresence>
+        {isDemoMode && (
+          <GuidedDemoController
+            activeDemoStep={activeDemoStep}
+            onSetDemoStep={handleSetDemoStep}
+            onExitDemo={() => setIsDemoMode(false)}
+            onResetDemo={handleResetDemo}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Global Modals & Drawers */}
       <CommandPalette
@@ -279,4 +380,13 @@ export function App() {
     </div>
   )
 }
+
+export function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
+  )
+}
+
 export default App
