@@ -13,6 +13,7 @@ interface KpiCardProps {
   accentColor?: 'cyan' | 'green' | 'yellow' | 'orange' | 'red' | 'slate'
   className?: string
   onClick?: () => void
+  variants?: any
 }
 
 export const KpiCard: React.FC<KpiCardProps> = ({
@@ -25,6 +26,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   accentColor = 'slate',
   className,
   onClick,
+  variants,
 }) => {
   let accentBorder = 'border-slate-800/80 hover:border-slate-700'
   let topHighlight = 'bg-slate-700/50'
@@ -60,7 +62,8 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   return (
     <motion.div
       onClick={onClick}
-      whileHover={onClick ? { y: -3, transition: { duration: 0.18, ease: 'easeOut' } } : undefined}
+      variants={variants}
+      whileHover={{ y: -3, transition: { duration: 0.18, ease: 'easeOut' } }}
       className={cn(
         'relative bg-[#0d111a] border rounded-xl p-5 transition-all duration-200 overflow-hidden group shadow-lg',
         accentBorder,

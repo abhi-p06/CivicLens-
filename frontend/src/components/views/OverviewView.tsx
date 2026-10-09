@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { motion, Variants } from 'framer-motion'
 import {
   ShieldAlert,
   Flame,
@@ -23,6 +24,44 @@ import { CivicMap, MapLayerMode } from '../map/CivicMap'
 import { AnimatedCounter } from '../common/AnimatedCounter'
 import { ErrorBoundary } from '../common/ErrorBoundary'
 import { cn } from '../../lib/utils'
+
+const kpiContainerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+}
+
+const kpiItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+}
+
+const feedContainerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+    },
+  },
+}
+
+const feedItemVariants: Variants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.22, ease: 'easeOut' },
+  },
+}
 
 interface OverviewViewProps {
   issues: Issue[]
@@ -115,9 +154,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
       </div>
 
-      {/* 2. Four Prominent Primary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      {/* 2. Four Prominent Primary KPI Cards with Staggered Entrance */}
+      <motion.div
+        variants={kpiContainerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+      >
         <KpiCard
+          variants={kpiItemVariants}
           title="Total Monitored Issues"
           value={<AnimatedCounter value={totalIssues} />}
           subtitle="Active civic complaints & sensor detections"
@@ -126,6 +171,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         />
 
         <KpiCard
+          variants={kpiItemVariants}
           title="High & Critical Priority"
           value={<AnimatedCounter value={highPriorityCount} />}
           subtitle="Require urgent municipal dispatch"
@@ -136,6 +182,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         />
 
         <KpiCard
+          variants={kpiItemVariants}
           title="Unreported Discoveries"
           value={<AnimatedCounter value={unreportedCount} />}
           subtitle="Proactive patrol camera survey detections"
@@ -145,6 +192,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         />
 
         <KpiCard
+          variants={kpiItemVariants}
           title="Active Spatiotemporal Hotspots"
           value={<AnimatedCounter value={hotspotsCount} />}
           subtitle="High-density Haversine DBSCAN clusters"
@@ -152,7 +200,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           icon={Flame}
           onClick={() => onNavigate('hotspots')}
         />
-      </div>
+      </motion.div>
 
       {/* Secondary Operational Metrics Bar */}
       <div className="px-5 py-3.5 bg-[#0b0f17] border border-slate-800/80 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs shadow-md">
@@ -268,98 +316,108 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 No priority incidents in intake queue.
               </div>
             ) : (
-              issues.slice(0, 6).map((issue) => {
-                const isCritical = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
-                const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
-                const isMedium = issue.priorityLevel === 'MEDIUM' || issue.priorityScore >= 40
+              <motion.div
+                variants={feedContainerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-3.5"
+              >
+                {issues.slice(0, 6).map((issue) => {
+                  const isCritical = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
+                  const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
+                  const isMedium = issue.priorityLevel === 'MEDIUM' || issue.priorityScore >= 40
 
-                let priorityBadgeBg = 'bg-emerald-950/80 text-emerald-300 border-emerald-800'
-                if (isCritical) {
-                  priorityBadgeBg = 'bg-rose-950/90 text-rose-200 border-rose-700 shadow-sm'
-                } else if (isHigh) {
-                  priorityBadgeBg = 'bg-orange-950/80 text-orange-200 border-orange-700'
-                } else if (isMedium) {
-                  priorityBadgeBg = 'bg-amber-950/80 text-amber-200 border-amber-700'
-                }
+                  let priorityBadgeBg = 'bg-emerald-950/80 text-emerald-300 border-emerald-800'
+                  if (isCritical) {
+                    priorityBadgeBg = 'bg-rose-950/90 text-rose-200 border-rose-700 shadow-sm'
+                  } else if (isHigh) {
+                    priorityBadgeBg = 'bg-orange-950/80 text-orange-200 border-orange-700'
+                  } else if (isMedium) {
+                    priorityBadgeBg = 'bg-amber-950/80 text-amber-200 border-amber-700'
+                  }
 
-                return (
-                  <div
-                    key={issue.issueId}
-                    onClick={() => onSelectIssue(issue)}
-                    className={cn(
-                      'p-4 rounded-xl border transition-all duration-200 cursor-pointer shadow-md group relative overflow-hidden',
-                      isCritical
-                        ? 'bg-[#121622] hover:bg-[#161c2c] border-rose-900/60 hover:border-rose-500/80'
-                        : 'bg-[#0f1420] hover:bg-[#131928] border-slate-800/90 hover:border-slate-700'
-                    )}
-                  >
-                    {/* Left Accent indicator */}
-                    <div
+                  return (
+                    <motion.div
+                      key={issue.issueId}
+                      variants={feedItemVariants}
+                      whileHover={{ y: -2, x: 2, transition: { duration: 0.15 } }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => onSelectIssue(issue)}
                       className={cn(
-                        'absolute top-0 bottom-0 left-0 w-1',
-                        isCritical ? 'bg-rose-500 shadow-[0_0_8px_#f43f5e]' : isHigh ? 'bg-orange-500' : 'bg-cyan-500'
+                        'p-4 rounded-xl border transition-all duration-200 cursor-pointer shadow-md group relative overflow-hidden',
+                        isCritical
+                          ? 'bg-[#121622] hover:bg-[#161c2c] border-rose-900/60 hover:border-rose-500/80'
+                          : 'bg-[#0f1420] hover:bg-[#131928] border-slate-800/90 hover:border-slate-700'
                       )}
-                    />
+                    >
+                      {/* Left Accent indicator */}
+                      <div
+                        className={cn(
+                          'absolute top-0 bottom-0 left-0 w-1',
+                          isCritical ? 'bg-rose-500 shadow-[0_0_8px_#f43f5e]' : isHigh ? 'bg-orange-500' : 'bg-cyan-500'
+                        )}
+                      />
 
-                    {/* Card Header: Priority Level, Score, Category, Status */}
-                    <div className="flex items-start justify-between gap-3 mb-2 pl-1.5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span
-                          className={cn(
-                            'text-xs font-bold font-mono px-2.5 py-0.5 rounded-md border tracking-wider uppercase',
-                            priorityBadgeBg
-                          )}
-                        >
-                          {issue.priorityLevel}
-                        </span>
+                      {/* Card Header: Priority Level, Score, Category, Status */}
+                      <div className="flex items-start justify-between gap-3 mb-2 pl-1.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span
+                            className={cn(
+                              'text-xs font-bold font-mono px-2.5 py-0.5 rounded-md border tracking-wider uppercase',
+                              priorityBadgeBg
+                            )}
+                          >
+                            {issue.priorityLevel}
+                          </span>
 
-                        <span className="text-sm font-bold text-slate-100">
-                          {issue.category}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <div className="text-right">
-                          <span className="text-xs font-mono font-bold text-cyan-400">
-                            Priority {issue.priorityScore.toFixed(0)}
+                          <span className="text-sm font-bold text-slate-100">
+                            {issue.category}
                           </span>
                         </div>
-                      </div>
-                    </div>
 
-                    {/* Body: Complaint Description (High legibility 14px text) */}
-                    <p className="text-sm text-slate-300 leading-relaxed font-sans mb-3 pl-1.5 line-clamp-2 group-hover:text-white transition-colors">
-                      {issue.complaintText}
-                    </p>
-
-                    {/* Card Footer: Location, Evidence Consistency, Workflow Status */}
-                    <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-slate-800/80 pl-1.5 text-xs text-slate-400">
-                      <div className="flex items-center gap-1.5 truncate max-w-[240px]">
-                        <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                        <span className="truncate">{issue.location}</span>
-                        {issue.ward && (
-                          <span className="text-slate-500 font-mono shrink-0">({issue.ward})</span>
-                        )}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="text-right">
+                            <span className="text-xs font-mono font-bold text-cyan-400">
+                              Priority {issue.priorityScore.toFixed(0)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        {issue.consistencyDetail ? (
-                          <ConsistencyBadge
-                            level={issue.consistencyDetail.consistencyLevel}
-                            score={issue.consistencyDetail.consistencyScore}
-                          />
-                        ) : issue.consistencyFlag ? (
-                          <ConsistencyBadge
-                            level={issue.consistencyFlag}
-                            score={issue.evidenceConsistency}
-                          />
-                        ) : null}
-                        <StatusBadge status={issue.status} />
+                      {/* Body: Complaint Description (High legibility 14px text) */}
+                      <p className="text-sm text-slate-300 leading-relaxed font-sans mb-3 pl-1.5 line-clamp-2 group-hover:text-white transition-colors">
+                        {issue.complaintText}
+                      </p>
+
+                      {/* Card Footer: Location, Evidence Consistency, Workflow Status */}
+                      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-slate-800/80 pl-1.5 text-xs text-slate-400">
+                        <div className="flex items-center gap-1.5 truncate max-w-[240px]">
+                          <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          <span className="truncate">{issue.location}</span>
+                          {issue.ward && (
+                            <span className="text-slate-500 font-mono shrink-0">({issue.ward})</span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          {issue.consistencyDetail ? (
+                            <ConsistencyBadge
+                              level={issue.consistencyDetail.consistencyLevel}
+                              score={issue.consistencyDetail.consistencyScore}
+                            />
+                          ) : issue.consistencyFlag ? (
+                            <ConsistencyBadge
+                              level={issue.consistencyFlag}
+                              score={issue.evidenceConsistency}
+                            />
+                          ) : null}
+                          <StatusBadge status={issue.status} />
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )
-              })
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
             )}
           </div>
         </div>

@@ -109,11 +109,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               const Icon = item.icon
               const isActive = activeView === item.id
               return (
-                <button
+                <motion.button
                   key={item.id}
                   onClick={() => onSelectView(item.id)}
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}
                   className={cn(
-                    'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all group relative cursor-pointer',
+                    'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group relative cursor-pointer',
                     isActive
                       ? 'bg-[#131b29] text-cyan-300 font-semibold shadow-sm border border-cyan-800/50'
                       : 'text-slate-300 hover:text-white hover:bg-[#0e1420]'
@@ -122,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className="flex items-center gap-3 truncate">
                     <Icon
                       className={cn(
-                        'w-[18px] h-[18px] transition-colors shrink-0',
+                        'w-[18px] h-[18px] transition-all duration-200 shrink-0 group-hover:scale-110',
                         isActive
                           ? 'text-cyan-400'
                           : 'text-slate-400 group-hover:text-slate-200'
@@ -149,7 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                     />
                   )}
-                </button>
+                </motion.button>
               )
             })}
           </div>

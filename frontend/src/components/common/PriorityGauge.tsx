@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PriorityLevel, PriorityBreakdown } from '../../types'
 import { cn } from '../../lib/utils'
 import { Info } from 'lucide-react'
+import { AnimatedCounter } from './AnimatedCounter'
 
 interface PriorityGaugeProps {
   score: number // 0 to 100
@@ -69,12 +70,14 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
           <span className="text-slate-400 text-[11px]">PRIORITY</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className={cn('text-sm font-bold', textColor)}>{score.toFixed(1)}</span>
+          <span className={cn('text-sm font-bold', textColor)}>
+            <AnimatedCounter value={Math.round(score)} />
+          </span>
           <span className="text-slate-500 text-[10px]">/ 100</span>
           {(breakdown || reasoning) && (
             <button
               onClick={() => setOpen(!open)}
-              className="text-slate-400 hover:text-cyan-400 transition ml-0.5"
+              className="text-slate-400 hover:text-cyan-400 transition ml-0.5 cursor-pointer"
               title="Explain priority factors"
             >
               <Info className="w-3.5 h-3.5" />
@@ -107,44 +110,41 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
               <span>Explainable Scoring Vectors</span>
               <span className="text-cyan-400">Total: {score.toFixed(1)}/100</span>
             </div>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Urgency:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.urgency === 'number' ? breakdown.urgency.toFixed(1) : (breakdown as any).urgencyScore || 0}/20
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Text Severity:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.textSeverity === 'number' ? breakdown.textSeverity.toFixed(1) : (breakdown as any).textSeverityScore || 0}/20
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Visual Severity:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.visualSeverity === 'number' ? breakdown.visualSeverity.toFixed(1) : (breakdown as any).visualSeverityScore || 0}/20
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Related Reports:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.relatedReports === 'number' ? breakdown.relatedReports.toFixed(1) : (breakdown as any).relatedReportsScore || 0}/15
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Recency:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.recency === 'number' ? breakdown.recency.toFixed(1) : (breakdown as any).recencyScore || 0}/10
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Location Risk:</span>
-                <span className="font-semibold text-slate-200">
-                  {typeof breakdown.locationRisk === 'number' ? breakdown.locationRisk.toFixed(1) : (breakdown as any).locationRiskScore || 0}/15
-                </span>
-              </div>
-            </div>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.05 },
+                },
+              }}
+              className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300"
+            >
+              {[
+                { label: 'Urgency:', val: typeof breakdown.urgency === 'number' ? breakdown.urgency.toFixed(1) : (breakdown as any).urgencyScore || 0, max: 20 },
+                { label: 'Text Severity:', val: typeof breakdown.textSeverity === 'number' ? breakdown.textSeverity.toFixed(1) : (breakdown as any).textSeverityScore || 0, max: 20 },
+                { label: 'Visual Severity:', val: typeof breakdown.visualSeverity === 'number' ? breakdown.visualSeverity.toFixed(1) : (breakdown as any).visualSeverityScore || 0, max: 20 },
+                { label: 'Related Reports:', val: typeof breakdown.relatedReports === 'number' ? breakdown.relatedReports.toFixed(1) : (breakdown as any).relatedReportsScore || 0, max: 15 },
+                { label: 'Recency:', val: typeof breakdown.recency === 'number' ? breakdown.recency.toFixed(1) : (breakdown as any).recencyScore || 0, max: 10 },
+                { label: 'Location Risk:', val: typeof breakdown.locationRisk === 'number' ? breakdown.locationRisk.toFixed(1) : (breakdown as any).locationRiskScore || 0, max: 15 },
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={{
+                    hidden: { opacity: 0, y: 4 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  className="flex justify-between"
+                >
+                  <span className="text-slate-400">{item.label}</span>
+                  <span className="font-semibold text-slate-200">
+                    {item.val}/{item.max}
+                  </span>
+                </motion.div>
+              ))}
+            </motion.div>
             {reasoning && (
               <div className="pt-1 text-[10px] text-slate-400 border-t border-slate-900 leading-relaxed font-sans">
                 {reasoning}

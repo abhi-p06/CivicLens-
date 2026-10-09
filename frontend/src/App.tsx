@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { api } from './services/api'
 import { Issue, HotspotInfo, RecurrenceInfo } from './types'
 import { Sidebar } from './components/layout/Sidebar'
@@ -30,6 +30,7 @@ import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
 function AppContent() {
   const { success, info } = useToast()
+  const shouldReduceMotion = useReducedMotion()
   const getInitialView = () => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '')
@@ -245,10 +246,10 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -6 }}
+              transition={{ duration: shouldReduceMotion ? 0.05 : 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="h-full w-full overflow-hidden"
             >
               {activeView === 'overview' && (

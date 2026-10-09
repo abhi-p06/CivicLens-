@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Layers,
   Flame,
@@ -322,40 +323,47 @@ export const MapView: React.FC<MapViewProps> = ({
       {/* ------------------------------------------------------------- */}
       {/* RIGHT SIDE PANEL: ISSUE INTELLIGENCE DOSSIER                   */}
       {/* ------------------------------------------------------------- */}
-      {inspectingIssue && (
-        <div className="absolute top-16 bottom-12 right-4 w-96 z-30 bg-[#0c1018]/95 backdrop-blur-md rounded-xl border border-cyan-800/80 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-200 font-mono text-xs">
-          {/* Header */}
-          <div className="p-3.5 bg-[#0f1422] border-b border-slate-800 flex items-center justify-between shrink-0">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-cyan-400 text-sm">
-                  {inspectingIssue.issueId}
-                </span>
-                <span
-                  className={cn(
-                    'px-1.5 py-0.5 rounded text-[10px] font-bold border uppercase',
-                    inspectingIssue.priorityLevel === 'CRITICAL'
-                      ? 'bg-rose-950 border-rose-700 text-rose-300'
-                      : inspectingIssue.priorityLevel === 'HIGH'
-                      ? 'bg-orange-950 border-orange-700 text-orange-300'
-                      : 'bg-amber-950 border-amber-700 text-amber-300'
-                  )}
-                >
-                  {inspectingIssue.priorityLevel}
-                </span>
+      <AnimatePresence>
+        {inspectingIssue && (
+          <motion.div
+            initial={{ opacity: 0, x: 80 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 80 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 350 }}
+            className="absolute top-16 bottom-12 right-4 w-96 z-30 bg-[#0c1018]/95 backdrop-blur-md rounded-xl border border-cyan-800/80 shadow-2xl flex flex-col overflow-hidden font-mono text-xs"
+          >
+            {/* Header */}
+            <div className="p-3.5 bg-[#0f1422] border-b border-slate-800 flex items-center justify-between shrink-0">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-cyan-400 text-sm">
+                    {inspectingIssue.issueId}
+                  </span>
+                  <span
+                    className={cn(
+                      'px-1.5 py-0.5 rounded text-[10px] font-bold border uppercase',
+                      inspectingIssue.priorityLevel === 'CRITICAL'
+                        ? 'bg-rose-950 border-rose-700 text-rose-300'
+                        : inspectingIssue.priorityLevel === 'HIGH'
+                        ? 'bg-orange-950 border-orange-700 text-orange-300'
+                        : 'bg-amber-950 border-amber-700 text-amber-300'
+                    )}
+                  >
+                    {inspectingIssue.priorityLevel}
+                  </span>
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5">
+                  {inspectingIssue.location} &bull; {inspectingIssue.ward}
+                </div>
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">
-                {inspectingIssue.location} &bull; {inspectingIssue.ward}
-              </div>
-            </div>
 
-            <button
-              onClick={() => setInspectingIssue(null)}
-              className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+              <button
+                onClick={() => setInspectingIssue(null)}
+                className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
@@ -454,28 +462,36 @@ export const MapView: React.FC<MapViewProps> = ({
           <div className="p-3 bg-[#0f1422] border-t border-slate-800 shrink-0">
             <button
               onClick={() => onSelectIssue(inspectingIssue)}
-              className="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-bold text-xs flex items-center justify-center gap-1.5 shadow transition"
+              className="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-bold text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
             >
               <span>Open Intelligence Dossier</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* ------------------------------------------------------------- */}
       {/* RIGHT SIDE PANEL: HOTSPOT INTELLIGENCE DOSSIER                */}
       {/* ------------------------------------------------------------- */}
-      {inspectingHotspot && (
-        <div className="absolute top-16 bottom-12 right-4 w-96 z-30 bg-[#0c1018]/95 backdrop-blur-md rounded-xl border border-rose-800/80 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-200 font-mono text-xs">
-          {/* Header */}
-          <div className="p-3.5 bg-[#140e16] border-b border-rose-950 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
-              <Radar className="w-4 h-4 text-rose-400 animate-spin" style={{ animationDuration: '6s' }} />
-              <div>
-                <span className="font-bold text-rose-300 text-sm">
-                  {inspectingHotspot.hotspotId}
-                </span>
+      <AnimatePresence>
+        {inspectingHotspot && (
+          <motion.div
+            initial={{ opacity: 0, x: 80 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 80 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 350 }}
+            className="absolute top-16 bottom-12 right-4 w-96 z-30 bg-[#0c1018]/95 backdrop-blur-md rounded-xl border border-rose-800/80 shadow-2xl flex flex-col overflow-hidden font-mono text-xs"
+          >
+            {/* Header */}
+            <div className="p-3.5 bg-[#140e16] border-b border-rose-950 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <Radar className="w-4 h-4 text-rose-400 animate-spin" style={{ animationDuration: '6s' }} />
+                <div>
+                  <span className="font-bold text-rose-300 text-sm">
+                    {inspectingHotspot.hotspotId}
+                  </span>
                 <div className="text-[10px] text-rose-400 font-bold">
                   DBSCAN SPATIAL CLUSTER &bull; {inspectingHotspot.hotspotLevel}
                 </div>
@@ -565,8 +581,9 @@ export const MapView: React.FC<MapViewProps> = ({
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* ------------------------------------------------------------- */}
       {/* BOTTOM FLOATING MAP LEGEND BAR                                */}
