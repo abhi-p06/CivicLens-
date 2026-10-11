@@ -30,30 +30,30 @@ export const UnreportedView: React.FC<UnreportedViewProps> = ({ issues, onSelect
   )
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-5 sm:p-7 space-y-6 font-sans">
+    <div className="h-full flex flex-col overflow-y-auto p-6 space-y-6 font-sans bg-[#F6F7FC]">
       {/* Header */}
-      <div className="p-6 bg-[#0c1018] border border-slate-800/90 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-2 h-full bg-cyan-500 shadow-[0_0_12px_#06b6d4]" />
+      <div className="p-6 bg-white border border-[#E4E7F1] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-[#6457E8]" />
         
         <div className="space-y-1 pl-2">
           <div className="flex items-center gap-2.5">
-            <Camera className="w-6 h-6 text-cyan-400" />
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            <Camera className="w-6 h-6 text-[#6457E8]" />
+            <h1 className="text-xl sm:text-2xl font-bold text-[#11162A] tracking-normal">
               Autonomous Patrol Discoveries
             </h1>
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-cyan-950/80 border border-cyan-700 text-cyan-300">
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 border border-indigo-200 text-[#6457E8]">
               FEATURE 11
             </span>
           </div>
-          <p className="text-slate-400 text-sm max-w-2xl leading-relaxed">
+          <p className="text-[#65708B] text-sm max-w-2xl leading-relaxed">
             Vehicle-mounted and bus dashcam feeds proactively detect infrastructure defects before citizen escalation.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0 pl-2 md:pl-0">
-          <div className="px-4 py-2 bg-[#101622] border border-slate-800 rounded-xl text-right">
-            <div className="text-xs text-slate-400 font-mono">Camera Detections</div>
-            <div className="text-base font-bold font-mono text-cyan-400">
+          <div className="px-4 py-2 bg-[#F0F2F9] border border-[#E4E7F1] rounded-xl text-right">
+            <div className="text-xs text-[#65708B]">Camera Detections</div>
+            <div className="text-base font-bold font-mono text-[#6457E8]">
               {unreported.length} Discovered
             </div>
           </div>
@@ -69,15 +69,15 @@ export const UnreportedView: React.FC<UnreportedViewProps> = ({ issues, onSelect
             <div
               key={issue.issueId}
               onClick={() => onSelectIssue(issue)}
-              className="p-6 bg-[#0c1018] hover:bg-[#101624] border border-slate-800/90 hover:border-cyan-500/70 rounded-2xl cursor-pointer transition-all duration-200 shadow-xl space-y-4 group relative overflow-hidden"
+              className="p-6 bg-white hover:bg-[#F0F2F9]/50 border border-[#E4E7F1] hover:border-[#8B5CF6]/60 rounded-2xl cursor-pointer transition-all duration-200 shadow-xs space-y-4 group relative overflow-hidden"
             >
               {/* Header with UNREPORTED ISSUE pill */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-950/90 border border-cyan-600/80 text-cyan-300 tracking-wider font-mono">
+                  <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-50 border border-indigo-200 text-[#6457E8]">
                     AUTONOMOUS PATROL
                   </span>
-                  <span className="font-mono text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <span className="font-mono text-sm font-bold text-[#11162A] group-hover:text-[#6457E8] transition-colors">
                     {issue.issueId}
                   </span>
                 </div>
@@ -85,62 +85,62 @@ export const UnreportedView: React.FC<UnreportedViewProps> = ({ issues, onSelect
               </div>
 
               {/* Image & YOLO Detection */}
-              <div className="p-3.5 bg-[#080b11] rounded-xl border border-slate-800/90 flex items-center justify-between gap-3">
+              <div className="p-3.5 bg-[#F0F2F9] rounded-xl border border-[#E4E7F1] flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <Eye className="w-5 h-5 text-cyan-400 shrink-0" />
+                  <Eye className="w-5 h-5 text-[#6457E8] shrink-0" />
                   <div>
-                    <div className="text-white font-bold text-sm">
+                    <div className="text-[#11162A] font-bold text-sm">
                       {issue.visualDetection || 'Pothole (Detected)'}
                     </div>
-                    <div className="text-xs text-slate-500 font-mono">
+                    <div className="text-xs text-[#65708B]">
                       YOLOv8 Feature Extraction
                     </div>
                   </div>
                 </div>
-                <span className="text-cyan-400 font-mono text-xs font-bold px-2 py-1 rounded bg-[#0e1422] border border-cyan-900/60">
+                <span className="text-[#6457E8] font-mono text-xs font-semibold px-2.5 py-1 rounded-md bg-white border border-[#E4E7F1]">
                   {confidence}% Confidence
                 </span>
               </div>
 
               {/* Location */}
-              <div className="flex items-center gap-2 text-slate-200 text-sm">
-                <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
+              <div className="flex items-center gap-2 text-[#11162A] text-sm">
+                <MapPin className="w-4 h-4 text-[#6457E8] shrink-0" />
                 <span className="font-semibold">{issue.location}</span>
                 {issue.ward && (
-                  <span className="text-slate-400 font-mono">({issue.ward})</span>
+                  <span className="text-[#65708B] font-mono text-xs">({issue.ward})</span>
                 )}
               </div>
 
               {/* Description (14px readable) */}
-              <p className="text-slate-300 text-sm leading-relaxed font-sans line-clamp-3">
+              <p className="text-[#11162A] text-sm leading-relaxed font-sans line-clamp-3">
                 {issue.complaintText}
               </p>
 
               {/* Spatial Matching Audit */}
-              <div className="p-3 bg-[#111724] rounded-xl border border-slate-800 space-y-1.5 text-xs">
-                <div className="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono">
+              <div className="p-3.5 bg-[#F0F2F9] rounded-xl border border-[#E4E7F1] space-y-1.5 text-xs">
+                <div className="text-[#65708B] text-xs font-semibold">
                   Spatial Deduplication Audit
                 </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Adjacent Citizen Complaints:</span>
-                  <strong className="text-amber-400 font-mono">
+                <div className="flex justify-between text-[#11162A]">
+                  <span className="text-[#65708B]">Adjacent Citizen Complaints:</span>
+                  <strong className="text-[#F97316] font-mono">
                     {issue.metadata?.nearDuplicateCount ?? (issue.isDuplicate ? 1 : 0)} nearby reports
                   </strong>
                 </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Routing Recommendation:</span>
-                  <strong className="text-emerald-400 font-mono">
+                <div className="flex justify-between text-[#11162A]">
+                  <span className="text-[#65708B]">Routing Recommendation:</span>
+                  <strong className="text-emerald-700 font-semibold">
                     Auto-drafted Municipal Work Order
                   </strong>
                 </div>
               </div>
 
               {/* Footer Priority */}
-              <div className="border-t border-slate-800/90 pt-3.5 flex items-center justify-between gap-3">
+              <div className="border-t border-[#E4E7F1] pt-3.5 flex items-center justify-between gap-3">
                 <PriorityGauge score={issue.priorityScore} level={issue.priorityLevel} compact />
                 <button
                   type="button"
-                  className="px-3.5 py-1.5 bg-cyan-600 group-hover:bg-cyan-500 text-white rounded-lg text-xs font-semibold shadow-md transition flex items-center gap-1.5"
+                  className="px-3.5 py-2 bg-[#6457E8] group-hover:bg-[#5145CF] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>View Dossier</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -151,12 +151,12 @@ export const UnreportedView: React.FC<UnreportedViewProps> = ({ issues, onSelect
         })}
 
         {unreported.length === 0 && (
-          <div className="col-span-2 p-12 text-center bg-[#0c1018] border border-slate-800 rounded-2xl text-slate-400 space-y-2">
-            <Camera className="w-8 h-8 text-slate-600 mx-auto" />
-            <div className="text-base font-semibold text-slate-200">
+          <div className="col-span-2 p-12 text-center bg-white border border-[#E4E7F1] rounded-2xl text-[#65708B] space-y-2 shadow-xs">
+            <Camera className="w-8 h-8 text-slate-400 mx-auto" />
+            <div className="text-base font-semibold text-[#11162A]">
               No Unreported Patrol Detections In Queue
             </div>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">
+            <p className="text-xs text-[#65708B] max-w-md mx-auto">
               Automated sensor surveillance vehicles have cleared active patrol sectors.
             </p>
           </div>

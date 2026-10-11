@@ -5,6 +5,7 @@ import { api } from '../../services/api'
 import { Issue } from '../../types'
 import { PriorityGauge } from '../common/PriorityGauge'
 import { ConsistencyBadge } from '../common/ConsistencyBadge'
+import { Portal } from '../common/Portal'
 
 interface NewComplaintModalProps {
   isOpen: boolean
@@ -105,70 +106,71 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
   }
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={onClose}
-        >
+    <Portal>
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-3xl bg-[#0e131d] border border-slate-700 rounded-xl shadow-2xl overflow-hidden font-mono text-xs max-h-[90vh] flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[9000] layer-modal-backdrop bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+            onClick={onClose}
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-[9001] layer-modal-content w-full max-w-3xl bg-white border border-[#E4E7F1] rounded-2xl shadow-2xl overflow-hidden font-sans text-xs max-h-[90vh] flex flex-col"
+            >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#121824] shrink-0">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span className="font-bold text-slate-100 text-sm tracking-wide">
-              INTAKE CIVIC COMPLAINT // AI PIPELINE
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E4E7F1] bg-[#F0F2F9] shrink-0">
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="w-4 h-4 text-[#6457E8]" />
+            <span className="font-bold text-[#11162A] text-sm tracking-normal">
+              Intake Civic Complaint &bull; AI Pipeline
             </span>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-200">
+          <button onClick={onClose} className="text-[#65708B] hover:text-[#11162A] p-1 rounded-lg hover:bg-black/5 transition cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-5 space-y-4 overflow-y-auto flex-1">
+        <div className="p-6 space-y-4 overflow-y-auto flex-1 bg-[#F6F7FC]">
           {/* Quick Scenario Fillers */}
-          <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg space-y-2">
-            <div className="text-[10px] uppercase font-bold text-slate-400">
+          <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs space-y-2.5">
+            <div className="text-xs font-semibold text-[#65708B]">
               Load Evaluated Test Scenarios
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 type="button"
                 onClick={() => loadScenario(1)}
-                className="px-2 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/80 text-rose-300 rounded text-[11px] truncate text-left"
+                className="px-2.5 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
                 1. Pothole / Crash
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(2)}
-                className="px-2 py-1.5 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-800/80 text-amber-300 rounded text-[11px] truncate text-left"
+                className="px-2.5 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
                 2. Garbage Dump
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(3)}
-                className="px-2 py-1.5 bg-sky-950/40 hover:bg-sky-900/60 border border-sky-800/80 text-sky-300 rounded text-[11px] truncate text-left"
+                className="px-2.5 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
                 3. Water Main Burst
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(4)}
-                className="px-2 py-1.5 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/80 text-cyan-300 rounded text-[11px] truncate text-left"
+                className="px-2.5 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[#6457E8] rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
                 4. Patrol Camera
               </button>
@@ -177,24 +179,24 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
 
           {/* Complaint Text */}
           <div className="space-y-1.5">
-            <label className="text-[11px] uppercase font-bold text-slate-300 flex justify-between">
+            <label className="text-xs font-semibold text-[#11162A] flex justify-between">
               <span>Citizen Complaint Description</span>
-              <span className="text-slate-500 font-normal">NLP text analytics & cues</span>
+              <span className="text-[#65708B] font-normal">NLP text analytics & cues</span>
             </label>
             <textarea
               rows={3}
               value={complaintText}
               onChange={(e) => setComplaintText(e.target.value)}
               placeholder="e.g. Huge dangerous pothole near Somaiya Vidyavihar campus gate, bikes skidding causing serious accident risk..."
-              className="w-full bg-[#111724] border border-slate-700/80 text-slate-100 placeholder-slate-500 rounded p-3 text-xs font-sans outline-none focus:border-cyan-500 leading-relaxed"
+              className="w-full bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-3 text-sm font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs leading-relaxed"
             />
           </div>
 
           {/* Location & Image Inputs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] uppercase font-bold text-slate-300 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+              <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-[#6457E8]" />
                 <span>Reported Landmark / Location</span>
               </label>
               <input
@@ -202,13 +204,13 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Vidyavihar, LBS Marg, Dharavi"
-                className="w-full bg-[#111724] border border-slate-700/80 text-slate-100 placeholder-slate-500 rounded p-2 text-xs font-mono outline-none focus:border-cyan-500"
+                className="w-full bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-2.5 text-xs font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[11px] uppercase font-bold text-slate-300 flex items-center gap-1.5">
-                <Image className="w-3.5 h-3.5 text-cyan-400" />
+              <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
+                <Image className="w-3.5 h-3.5 text-[#6457E8]" />
                 <span>Image Path / URL (Optional)</span>
               </label>
               <input
@@ -216,13 +218,13 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="e.g. data/sample_pothole.jpg"
-                className="w-full bg-[#111724] border border-slate-700/80 text-slate-100 placeholder-slate-500 rounded p-2 text-xs font-mono outline-none focus:border-cyan-500"
+                className="w-full bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-2.5 text-xs font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
               />
             </div>
           </div>
 
           {error && (
-            <div className="p-2.5 bg-rose-950/60 border border-rose-800 text-rose-300 rounded flex items-center gap-2">
+            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-center gap-2 text-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -230,11 +232,11 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
 
           {/* Pre-Analysis Result Panel */}
           {previewAnalysis && (
-            <div className="p-3.5 bg-[#0a0d14] border border-cyan-900/60 rounded-lg space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <div className="text-[11px] font-bold text-cyan-400 flex items-center gap-1.5">
+            <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-[#E4E7F1] pb-2.5">
+                <div className="text-xs font-bold text-[#6457E8] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>PRE-SUBMISSION INTELLIGENCE PREVIEW</span>
+                  <span>Pre-Submission Intelligence Preview</span>
                 </div>
                 <ConsistencyBadge
                   level={previewAnalysis.consistencyFlag || 'CONSISTENT'}
@@ -242,31 +244,31 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[11px]">
-                <div className="p-2 bg-[#121824] rounded border border-slate-800">
-                  <div className="text-slate-400 text-[10px]">CATEGORY (NLP)</div>
-                  <div className="font-bold text-slate-200 mt-0.5 truncate">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                <div className="p-2.5 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
+                  <div className="text-[#65708B] text-[11px] font-medium">Category (NLP)</div>
+                  <div className="font-bold text-[#11162A] mt-0.5 truncate">
                     {previewAnalysis.category}
                   </div>
                 </div>
 
-                <div className="p-2 bg-[#121824] rounded border border-slate-800">
-                  <div className="text-slate-400 text-[10px]">URGENCY / SEVERITY</div>
-                  <div className="font-bold text-amber-400 mt-0.5">
+                <div className="p-2.5 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
+                  <div className="text-[#65708B] text-[11px] font-medium">Urgency / Severity</div>
+                  <div className="font-bold text-[#F97316] mt-0.5">
                     {(previewAnalysis.urgency * 100).toFixed(0)}% / {(previewAnalysis.severity * 100).toFixed(0)}%
                   </div>
                 </div>
 
-                <div className="p-2 bg-[#121824] rounded border border-slate-800">
-                  <div className="text-slate-400 text-[10px]">DEPARTMENT SLA</div>
-                  <div className="font-bold text-emerald-400 mt-0.5 truncate">
+                <div className="p-2.5 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
+                  <div className="text-[#65708B] text-[11px] font-medium">Department SLA</div>
+                  <div className="font-bold text-emerald-700 mt-0.5 truncate">
                     {previewAnalysis.slaHours}h &bull; {previewAnalysis.departmentCode}
                   </div>
                 </div>
               </div>
 
               {/* Priority Gauge */}
-              <div className="p-2.5 bg-[#121824] rounded border border-slate-800">
+              <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
                 <PriorityGauge
                   score={previewAnalysis.priorityScore}
                   level={previewAnalysis.priorityLevel}
@@ -277,24 +279,24 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
               </div>
 
               {/* Duplicate check & Hotspot status */}
-              <div className="flex flex-wrap items-center gap-3 text-[10px] text-slate-400">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-[#65708B]">
                 <span>
                   Duplicate Match:{' '}
-                  <strong className={previewAnalysis.isDuplicate ? 'text-amber-400' : 'text-slate-300'}>
+                  <strong className={previewAnalysis.isDuplicate ? 'text-amber-600' : 'text-[#11162A]'}>
                     {previewAnalysis.isDuplicate ? `YES (${previewAnalysis.duplicateGroup})` : 'NO'}
                   </strong>
                 </span>
                 <span>&bull;</span>
                 <span>
                   Hotspot Cluster:{' '}
-                  <strong className={previewAnalysis.isHotspot ? 'text-rose-400' : 'text-slate-300'}>
+                  <strong className={previewAnalysis.isHotspot ? 'text-[#EF4444]' : 'text-[#11162A]'}>
                     {previewAnalysis.isHotspot ? previewAnalysis.hotspotClusterId : 'NONE'}
                   </strong>
                 </span>
                 {previewAnalysis.recurringDetail?.recurringIssue && (
                   <>
                     <span>&bull;</span>
-                    <span className="text-amber-400 font-bold">
+                    <span className="text-amber-600 font-bold">
                       RECURRING DEFECT ({previewAnalysis.recurringDetail.reportCount} prior reports)
                     </span>
                   </>
@@ -305,22 +307,22 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 bg-[#0c1018] border-t border-slate-800 flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex items-center justify-between shrink-0">
           <button
             type="button"
             onClick={handlePreAnalyze}
             disabled={analyzing}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#151c2a] hover:bg-[#1a2336] border border-slate-700 text-slate-200 rounded text-xs transition disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F0F2F9] hover:bg-slate-200/70 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-medium transition disabled:opacity-50 cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <Sparkles className="w-3.5 h-3.5 text-[#6457E8]" />
             <span>{analyzing ? 'Analyzing Pipeline...' : 'Test Full AI Pipeline'}</span>
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 bg-transparent hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-xs transition"
+              className="px-3.5 py-2 bg-transparent hover:bg-slate-100 text-[#65708B] hover:text-[#11162A] rounded-lg text-xs font-medium transition cursor-pointer"
             >
               Cancel
             </button>
@@ -328,7 +330,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium text-xs transition disabled:opacity-50 shadow-lg shadow-cyan-950/50"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-lg font-semibold text-xs transition disabled:opacity-50 shadow-xs cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{loading ? 'Registering...' : 'Commit & Dispatch Issue'}</span>
@@ -339,5 +341,6 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  </Portal>
+)
 }

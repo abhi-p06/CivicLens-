@@ -2,19 +2,34 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
-  Sparkles,
+  ScanSearch,
+  Activity,
   Map,
   Flame,
-  RotateCcw,
-  Camera,
+  History,
+  Radar,
   CheckCircle2,
   BarChart3,
-  ShieldAlert,
-  FileText,
-  Activity,
+  ShieldCheck,
   Cpu,
   Settings2,
+  Radio,
+  FolderOpen,
 } from 'lucide-react'
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarFooter,
+  SidebarTrigger,
+  useSidebar,
+} from '../ui/sidebar'
 import { cn } from '../../lib/utils'
 
 interface SidebarProps {
@@ -27,6 +42,19 @@ interface SidebarProps {
   onOpenSettings: () => void
 }
 
+interface NavItem {
+  id: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  badge?: string
+  badgeColor?: string
+}
+
+interface NavSection {
+  title: string
+  items: NavItem[]
+}
+
 export const Sidebar: React.FC<SidebarProps> = ({
   activeView,
   onSelectView,
@@ -36,14 +64,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenModelStatus,
   onOpenSettings,
 }) => {
-  const navSections = [
+  const { open } = useSidebar()
+
+  const navSections: NavSection[] = [
     {
       title: 'OPERATIONS',
       items: [
         { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
-        { id: 'analyze', label: 'Analyze Complaint', icon: Sparkles },
-        { id: 'intelligence', label: 'Issue Intelligence', icon: FileText },
+        { id: 'analyze', label: 'Analyze Complaint', icon: ScanSearch },
+        { id: 'intelligence', label: 'Issue Intelligence', icon: Activity },
         { id: 'map', label: 'Tactical GIS Map', icon: Map },
+        { id: 'live', label: 'Live Radar', icon: Radio },
+        { id: 'explorer', label: 'Issue Catalog', icon: FolderOpen },
       ],
     },
     {
@@ -51,23 +83,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         {
           id: 'hotspots',
-          label: 'Spatiotemporal Hotspots',
+          label: 'Hotspots',
           icon: Flame,
           badge: hotspotCount > 0 ? String(hotspotCount) : undefined,
-          badgeColor: 'bg-rose-950/80 text-rose-300 border-rose-800',
+          badgeColor: 'bg-rose-500/15 text-rose-300 border-rose-500/25',
         },
-        { id: 'recurring', label: 'Recurring Defects', icon: RotateCcw },
+        { id: 'recurring', label: 'Recurring Issues', icon: History },
         {
           id: 'unreported',
-          label: 'Unreported Patrols',
-          icon: Camera,
+          label: 'Unreported Issues',
+          icon: Radar,
           badge: unreportedCount > 0 ? String(unreportedCount) : undefined,
-          badgeColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-800',
+          badgeColor: 'bg-[#8B5CF6]/20 text-[#C4B5FD] border-[#8B5CF6]/30',
         },
       ],
     },
     {
-      title: 'VERIFICATION & AUDIT',
+      title: 'VERIFICATION',
       items: [
         { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
         { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
@@ -76,132 +108,166 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ]
 
   return (
-    <aside className="w-64 bg-[#090c13] border-r border-slate-800/90 flex flex-col h-screen shrink-0 select-none z-30 font-sans">
-      {/* Brand Header */}
-      <div className="p-5 border-b border-slate-800/80 bg-[#0b0f17]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center shadow-lg shadow-cyan-950/60 border border-cyan-400/40 shrink-0">
-            <ShieldAlert className="w-5 h-5 text-white" />
+    <ShadcnSidebar>
+      {/* 1. BRAND HEADER */}
+      <SidebarHeader className="justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-[#6457E8]/15 border border-[#8B5CF6]/30 flex items-center justify-center text-[#8B5CF6] shrink-0">
+            <ShieldCheck className="w-4 h-4 text-[#8B5CF6]" />
           </div>
-          <div className="min-w-0">
-            <div className="font-mono text-base font-bold tracking-wider text-slate-100 flex items-center gap-2">
-              CIVILENS
-              <span className="text-[10px] px-1.5 py-0.5 bg-cyan-950 border border-cyan-700/80 text-cyan-400 rounded-md font-mono font-medium">
-                v2.4
-              </span>
-            </div>
-            <div className="text-xs text-slate-400 tracking-wide font-sans">
-              Civic Infrastructure AI
-            </div>
-          </div>
+
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -6 }}
+              transition={{ duration: 0.16 }}
+              className="min-w-0 flex flex-col justify-center"
+            >
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-bold tracking-tight text-white font-sans">
+                  CIVILENS
+                </span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/[0.08] border border-white/[0.1] text-slate-300 font-medium font-mono">
+                  v2.4
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-normal leading-none mt-0.5">
+                Civic Intelligence
+              </p>
+            </motion.div>
+          )}
         </div>
-      </div>
 
-      {/* Grouped Navigation Links */}
-      <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
+        <SidebarTrigger />
+      </SidebarHeader>
+
+      {/* 2. PRIMARY NAVIGATION GROUPS */}
+      <SidebarContent>
         {navSections.map((section) => (
-          <div key={section.title} className="space-y-1.5">
-            <div className="px-3 pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase font-mono">
-              {section.title}
-            </div>
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => {
+                  const Icon = item.icon
+                  const isActive = activeView === item.id
 
-            {section.items.map((item) => {
-              const Icon = item.icon
-              const isActive = activeView === item.id
-              return (
-                <motion.button
-                  key={item.id}
-                  onClick={() => onSelectView(item.id)}
-                  whileHover={{ x: 2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group relative cursor-pointer',
-                    isActive
-                      ? 'bg-[#131b29] text-cyan-300 font-semibold shadow-sm border border-cyan-800/50'
-                      : 'text-slate-300 hover:text-white hover:bg-[#0e1420]'
-                  )}
-                >
-                  <div className="flex items-center gap-3 truncate">
-                    <Icon
-                      className={cn(
-                        'w-[18px] h-[18px] transition-all duration-200 shrink-0 group-hover:scale-110',
-                        isActive
-                          ? 'text-cyan-400'
-                          : 'text-slate-400 group-hover:text-slate-200'
-                      )}
-                    />
-                    <span className="truncate">{item.label}</span>
-                  </div>
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        tooltip={item.label}
+                        onClick={() => onSelectView(item.id)}
+                      >
+                        <Icon
+                          className={cn(
+                            'w-4 h-4 shrink-0 transition-colors',
+                            isActive ? 'text-[#8B5CF6]' : 'text-slate-300 group-hover:text-white'
+                          )}
+                        />
 
-                  {item.badge && (
-                    <span
-                      className={cn(
-                        'text-xs font-mono px-2 py-0.5 rounded-md border font-semibold shrink-0 ml-1.5',
-                        item.badgeColor
-                      )}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
+                        {open && (
+                          <span className="truncate flex-1 text-left">
+                            {item.label}
+                          </span>
+                        )}
 
-                  {isActive && (
-                    <motion.div
-                      layoutId="sidebarActivePill"
-                      className="absolute left-0 top-2 bottom-2 w-1 bg-cyan-400 rounded-r shadow-[0_0_10px_rgba(6,182,212,0.9)]"
-                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                </motion.button>
-              )
-            })}
-          </div>
+                        {open && item.badge && (
+                          <span
+                            className={cn(
+                              'px-1.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border shrink-0',
+                              item.badgeColor
+                            )}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         ))}
-      </div>
+      </SidebarContent>
 
-      {/* Critical Incidents Warning Banner */}
-      {criticalCount > 0 && (
-        <div className="px-3.5 py-2.5 mx-3.5 mb-3 rounded-lg bg-rose-950/40 border border-rose-900/70 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2 text-rose-300">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
-            <span className="text-xs font-semibold">Critical Incidents</span>
+      {/* 3. CRITICAL INCIDENTS BANNER */}
+      {criticalCount > 0 && open && (
+        <div className="px-3 py-2 mx-3 mb-2 rounded-lg bg-[#EF4444]/15 border border-[#EF4444]/25 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-rose-300 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#EF4444] animate-pulse shrink-0" />
+            <span className="font-medium truncate">Critical Incidents</span>
           </div>
-          <span className="px-2 py-0.5 rounded bg-rose-900 text-rose-100 font-mono font-bold text-xs">
+          <span className="px-2 py-0.5 rounded-full bg-[#EF4444]/20 text-rose-200 font-mono font-semibold text-[11px] shrink-0">
             {criticalCount}
           </span>
         </div>
       )}
 
-      {/* Bottom Operational Controls */}
-      <div className="p-4 border-t border-slate-800/80 bg-[#0b0f17] space-y-2 text-xs">
-        <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#101622] border border-slate-800">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs text-slate-300 font-medium">Pipeline Status</span>
+      {/* 4. BOTTOM UTILITY CONTROLS */}
+      <SidebarFooter>
+        {/* System Status Indicator */}
+        {open ? (
+          <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            <span className="text-slate-400 text-xs font-normal">Pipeline Engine</span>
+            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Online
+            </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-bold font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            ONLINE
-          </span>
-        </div>
+        ) : (
+          <div
+            className="flex items-center justify-center py-1.5 relative group cursor-help"
+            title="Pipeline Engine: Online"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
+        )}
 
-        <div className="flex items-center gap-2 pt-0.5">
-          <button
-            onClick={onOpenModelStatus}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 bg-[#101622] hover:bg-[#151c2a] text-slate-300 hover:text-white border border-slate-800 rounded-lg text-xs font-medium transition cursor-pointer"
-          >
-            <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-            <span>AI Models</span>
-          </button>
-          <button
-            onClick={onOpenSettings}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 bg-[#101622] hover:bg-[#151c2a] text-slate-300 hover:text-white border border-slate-800 rounded-lg text-xs font-medium transition cursor-pointer"
-          >
-            <Settings2 className="w-3.5 h-3.5 text-slate-400" />
-            <span>Dispatch</span>
-          </button>
-        </div>
-      </div>
-    </aside>
+        {/* AI Models & Settings Buttons */}
+        {open ? (
+          <div className="flex items-center gap-2 pt-0.5">
+            <button
+              id="sidebar-model-status-btn"
+              onClick={onOpenModelStatus}
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
+            >
+              <Cpu className="w-3.5 h-3.5 text-[#8B5CF6]" />
+              <span>AI Models</span>
+            </button>
+            <button
+              id="sidebar-settings-btn"
+              onClick={onOpenSettings}
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
+            >
+              <Settings2 className="w-3.5 h-3.5 text-slate-400" />
+              <span>Settings</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-1.5">
+            <button
+              id="sidebar-model-status-btn"
+              onClick={onOpenModelStatus}
+              className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-[#8B5CF6] border border-white/[0.08] rounded-lg transition cursor-pointer"
+              title="AI Models Status"
+            >
+              <Cpu className="w-4 h-4" />
+            </button>
+            <button
+              id="sidebar-settings-btn"
+              onClick={onOpenSettings}
+              className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/[0.08] rounded-lg transition cursor-pointer"
+              title="Platform Settings"
+            >
+              <Settings2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </SidebarFooter>
+    </ShadcnSidebar>
   )
 }
 

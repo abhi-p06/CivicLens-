@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { MotionProvider, useCivicMotion } from './lib/motionContext'
 import { api } from './services/api'
 import { Issue, HotspotInfo, RecurrenceInfo } from './types'
 import { Sidebar } from './components/layout/Sidebar'
+import { SidebarProvider } from './components/ui/sidebar'
 import { TopBar } from './components/layout/TopBar'
 import { CommandPalette } from './components/common/CommandPalette'
 import { ModelStatusModal } from './components/common/ModelStatusModal'
@@ -30,7 +32,7 @@ import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
 function AppContent() {
   const { success, info } = useToast()
-  const shouldReduceMotion = useReducedMotion()
+  const { isReduced } = useCivicMotion()
   const getInitialView = () => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '')
@@ -211,7 +213,7 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen w-screen bg-[#080a0f] text-slate-100 overflow-hidden font-sans select-none">
+    <div className="flex h-screen w-screen bg-[#F6F7FC] text-slate-900 overflow-hidden font-sans select-none">
       {/* Persistent Left Sidebar */}
       <Sidebar
         activeView={activeView}
@@ -224,7 +226,7 @@ function AppContent() {
       />
 
       {/* Main Operational Stage */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0a0d14] relative">
+      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#F6F7FC] relative">
         {/* Top Command Bar */}
         <TopBar
           activeView={activeView}
@@ -242,14 +244,14 @@ function AppContent() {
         />
 
         {/* View Surface with Subtle Fast Page Transition */}
-        <main className="flex-1 overflow-hidden relative bg-[#090b10] bg-ops-grid">
+        <main className="flex-1 overflow-hidden relative bg-[#F6F7FC]">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 6 }}
+              initial={{ opacity: 0, y: isReduced ? 0 : 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -6 }}
-              transition={{ duration: shouldReduceMotion ? 0.05 : 0.22, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: isReduced ? 0 : -10 }}
+              transition={{ duration: isReduced ? 0.05 : 0.32, ease: [0.16, 1, 0.3, 1] }}
               className="h-full w-full overflow-hidden"
             >
               {activeView === 'overview' && (
@@ -413,9 +415,13 @@ function AppContent() {
 export function App() {
   return (
     <ErrorBoundary fallbackTitle="CiviLens Command Center Initialization Notice">
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
+      <MotionProvider>
+        <ToastProvider>
+          <SidebarProvider defaultOpen={true} className="h-screen w-screen overflow-hidden bg-[#F5F7FA]">
+            <AppContent />
+          </SidebarProvider>
+        </ToastProvider>
+      </MotionProvider>
     </ErrorBoundary>
   )
 }

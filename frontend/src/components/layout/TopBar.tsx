@@ -3,12 +3,14 @@ import {
   Search,
   PlusCircle,
   RotateCcw,
-  Clock,
   Command,
   Building2,
   Sparkles,
-  Activity,
+  Zap,
+  ChevronRight,
 } from 'lucide-react'
+import { useCivicMotion } from '../../lib/motionContext'
+import { cn } from '../../lib/utils'
 
 interface TopBarProps {
   activeView: string
@@ -33,35 +35,46 @@ export const TopBar: React.FC<TopBarProps> = ({
   onSelectWard,
   totalIssuesCount,
 }) => {
-  const [currentTime, setCurrentTime] = useState('')
+  const { motionMode, toggleMotionMode } = useCivicMotion()
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date()
-      const timeStr = now.toLocaleTimeString('en-US', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-      setCurrentTime(`${timeStr} IST`)
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement
+      if (target && typeof target.scrollTop === 'number') {
+        setIsScrolled(target.scrollTop > 8)
+      }
     }
-    updateTime()
-    const timer = setInterval(updateTime, 1000)
-    return () => clearInterval(timer)
+    window.addEventListener('scroll', handleScroll, { capture: true, passive: true })
+    return () => window.removeEventListener('scroll', handleScroll, { capture: true })
   }, [])
 
+  const viewCategories: Record<string, string> = {
+    overview: 'Operations',
+    live: 'Operations',
+    analyze: 'Operations',
+    explorer: 'Operations',
+    map: 'Operations',
+    hotspots: 'Spatial Intelligence',
+    recurring: 'Spatial Intelligence',
+    unreported: 'Spatial Intelligence',
+    resolution: 'Verification',
+    analytics: 'Verification',
+    intelligence: 'Operations',
+  }
+
   const viewTitles: Record<string, string> = {
-    overview: 'Command Center Overview',
-    live: 'Live Incident Radar',
-    analyze: 'Analyze Complaint Pipeline',
-    explorer: 'Complaint Catalog',
-    map: 'Tactical GIS Spatial Map',
-    hotspots: 'Spatiotemporal Hotspot Detection',
-    recurring: 'Recurring Infrastructure Defects',
-    unreported: 'Autonomous Patrol Detections',
-    resolution: 'Work-Order Resolution Center',
-    analytics: 'Model Benchmarks & Metrics',
-    intelligence: 'Issue Intelligence Dossier',
+    overview: 'Command Center',
+    live: 'Live Radar',
+    analyze: 'Analyze Complaint',
+    explorer: 'Issue Catalog',
+    map: 'Tactical GIS Map',
+    hotspots: 'Spatiotemporal Hotspots',
+    recurring: 'Recurring Infrastructure',
+    unreported: 'Patrol Detections',
+    resolution: 'Resolution Center',
+    analytics: 'Model Benchmarks',
+    intelligence: 'Issue Dossier',
   }
 
   const wards = [
@@ -72,98 +85,120 @@ export const TopBar: React.FC<TopBarProps> = ({
     'K/West (Andheri West)',
   ]
 
-  return (
-    <header className="h-16 bg-[#090c13] border-b border-slate-800/90 px-6 flex items-center justify-between z-20 shrink-0 font-sans select-none gap-5">
-      {/* 1. Left: View Title & Record Counter */}
-      <div className="flex items-center gap-3.5 min-w-0 shrink">
-        <div className="flex items-center gap-2.5 truncate">
-          <Sparkles className="w-5 h-5 text-cyan-400 shrink-0" />
-          <h1 className="text-base sm:text-lg font-bold text-slate-100 tracking-tight truncate">
-            {viewTitles[activeView] || 'Civic Intelligence'}
-          </h1>
-        </div>
+  const currentCategory = viewCategories[activeView] || 'Operations'
+  const currentTitle = viewTitles[activeView] || 'Command Center'
 
-        <div className="hidden lg:flex items-center gap-2 text-xs text-slate-400 font-mono shrink-0">
-          <span className="text-slate-600">&bull;</span>
-          <span className="px-2 py-0.5 rounded bg-[#111724] border border-slate-800 text-slate-300 font-medium">
-            {totalIssuesCount} Active Issues
-          </span>
-        </div>
+  return (
+    <header
+      className={cn(
+        'sticky top-0 h-14 px-6 sm:px-8 flex items-center justify-between z-30 shrink-0 font-sans select-none gap-4 transition-all duration-200 border-b border-[#E4E7F1]',
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-sm'
+          : 'bg-white shadow-[0_1px_2px_rgba(17,22,42,0.02)]'
+      )}
+    >
+      {/* 1. Left: Breadcrumb Context & Incident Count */}
+      <div className="flex items-center gap-2.5 shrink-0">
+        <span className="text-xs font-medium text-[#65708B]">
+          {currentCategory}
+        </span>
+        <ChevronRight className="w-3.5 h-3.5 text-[#65708B]/60" />
+        <span className="text-sm font-semibold text-[#11162A] tracking-tight">
+          {currentTitle}
+        </span>
+
+        <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#F0F2F9] border border-[#E4E7F1] text-[#65708B] ml-1">
+          {totalIssuesCount} Active Incidents
+        </span>
       </div>
 
-      {/* 2. Center: Global Search & Command Palette trigger */}
-      <div className="hidden md:flex items-center justify-center flex-1 max-w-xs lg:max-w-md mx-2">
+      {/* 2. Center: Linear-style Search / Command Palette Trigger */}
+      <div className="hidden md:flex items-center justify-center flex-1 max-w-sm lg:max-w-md mx-2">
         <button
           onClick={onOpenCommandPalette}
-          className="w-full flex items-center justify-between px-3.5 py-2 bg-[#101622] hover:bg-[#141b2a] border border-slate-800 hover:border-slate-700 text-slate-400 rounded-lg text-sm transition group cursor-pointer shadow-inner"
+          className="w-full flex items-center justify-between px-3.5 py-1.5 bg-[#F0F2F9] hover:bg-[#E4E7F1]/70 border border-[#E4E7F1] text-[#65708B] hover:text-[#11162A] rounded-xl text-xs sm:text-sm transition cursor-pointer shadow-xs"
         >
           <div className="flex items-center gap-2.5 truncate">
-            <Search className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors shrink-0" />
-            <span className="text-slate-400 group-hover:text-slate-200 text-xs sm:text-sm truncate">
-              Search issues, categories, wards...
+            <Search className="w-4 h-4 text-[#65708B] shrink-0" />
+            <span className="text-[#65708B] text-xs sm:text-sm truncate">
+              Search issues, wards, actions...
             </span>
           </div>
-          <div className="flex items-center gap-1 px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-xs text-slate-400 font-mono shrink-0 ml-2">
+          <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-white border border-[#E4E7F1] rounded text-[11px] text-[#65708B] font-mono shrink-0 ml-2">
             <Command className="w-3 h-3" />
             <span>K</span>
           </div>
         </button>
       </div>
 
-      {/* 3. Right: Filters & Action Controls */}
-      <div className="flex items-center gap-3 shrink-0">
+      {/* 3. Right: Clean Controls */}
+      <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
         {/* Ward Filter */}
-        <div className="hidden xl:flex items-center gap-2 bg-[#101622] border border-slate-800 rounded-lg px-3 py-1.5 text-xs">
-          <Building2 className="w-4 h-4 text-slate-400 shrink-0" />
+        <div className="hidden lg:flex items-center gap-2 bg-white border border-[#E4E7F1] hover:border-slate-300 rounded-xl px-3 py-1.5 text-xs text-[#11162A] transition shadow-xs">
+          <Building2 className="w-3.5 h-3.5 text-[#65708B] shrink-0" />
           <select
             value={selectedWard}
             onChange={(e) => onSelectWard(e.target.value)}
-            className="bg-transparent text-slate-200 text-xs font-medium outline-none cursor-pointer"
+            className="bg-transparent text-[#11162A] text-xs font-medium outline-none cursor-pointer"
           >
             {wards.map((w) => (
-              <option key={w} value={w} className="bg-[#0e131d] text-slate-200">
+              <option key={w} value={w} className="bg-white text-[#11162A]">
                 {w}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Guided Demo Mode Trigger */}
+        {/* Motion Preference Toggle */}
+        <button
+          onClick={toggleMotionMode}
+          title={`Animation Mode: ${motionMode.toUpperCase()} (Click to toggle)`}
+          className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer border shadow-xs ${
+            motionMode === 'full'
+              ? 'bg-[#6457E8]/10 border-[#6457E8]/30 text-[#6457E8]'
+              : 'bg-white border-[#E4E7F1] text-[#65708B] hover:bg-slate-50'
+          }`}
+        >
+          <Zap className="w-3.5 h-3.5 text-[#6457E8]" />
+          <span className="text-[11px]">Motion</span>
+        </button>
+
+        {/* Demo Mode Button */}
         {onStartDemo && (
           <button
             onClick={onStartDemo}
-            title="Launch Guided Presentation Demo (Alt+D)"
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono tracking-wider transition active:scale-95 cursor-pointer ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer border shadow-xs ${
               isDemoMode
-                ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-400/40'
-                : 'bg-gradient-to-r from-cyan-950 to-blue-950 hover:from-cyan-900 hover:to-blue-900 border border-cyan-700/80 text-cyan-300 shadow-md shadow-cyan-950/40'
+                ? 'bg-amber-50 border-amber-300 text-amber-800'
+                : 'bg-white hover:bg-slate-50 border-[#E4E7F1] text-[#11162A]'
             }`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                isDemoMode ? 'bg-black animate-ping' : 'bg-cyan-400 animate-pulse'
+              className={`w-1.5 h-1.5 rounded-full ${
+                isDemoMode ? 'bg-[#F97316] animate-pulse' : 'bg-slate-400'
               }`}
             />
-            <span>DEMO MODE</span>
+            <span>Demo</span>
           </button>
         )}
 
-        {/* Reset Demo State Button */}
+        {/* Reset Demo Button */}
         <button
           onClick={onResetDemo}
-          title="Reset database to seed baseline (Alt+R)"
-          className="p-2 bg-[#101622] hover:bg-[#151c2a] border border-slate-800 text-slate-400 hover:text-slate-200 rounded-lg transition cursor-pointer"
+          title="Reset database (Alt+R)"
+          className="p-1.5 bg-white hover:bg-slate-50 border border-[#E4E7F1] text-[#65708B] hover:text-[#11162A] rounded-xl transition cursor-pointer shadow-xs"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
 
-        {/* Primary CTA: New Complaint */}
+        {/* Primary Action: New Complaint (Violet with restrained subtle hover) */}
         <button
           onClick={onOpenNewComplaint}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-lg text-sm font-semibold shadow-lg shadow-cyan-950/50 transition active:scale-95 cursor-pointer"
+          className="flex items-center gap-2 px-3.5 py-1.5 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-xl text-xs sm:text-sm font-semibold transition active:scale-95 cursor-pointer shadow-sm"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>New Complaint</span>
+          <span className="hidden sm:inline">New Complaint</span>
+          <span className="sm:hidden">New</span>
         </button>
       </div>
     </header>

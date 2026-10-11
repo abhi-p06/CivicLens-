@@ -1,24 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+@theme {
+  --color-canvas: #F6F7FC;
+  --color-card: #FFFFFF;
+  --color-muted-surface: #F0F2F9;
+  --color-primary-text: #11162A;
+  --color-secondary-text: #65708B;
+  --color-border-subtle: #E4E7F1;
+  --color-sidebar: #13152E;
+  --color-sidebar-hover: #212348;
+  --color-primary-action: #6457E8;
+  --color-primary-hover: #5145CF;
+  --color-secondary-accent: #8B5CF6;
+  --color-info: #3B82F6;
+  --color-critical: #EF4444;
+  --color-high: #F97316;
+  --color-medium: #EAB308;
+  --color-resolved: #10B981;
+  --color-map-bg: #10162A;
+}
+
 :root {
-  --bg-app: #080a0f;
-  --bg-sidebar: #0c0e14;
-  --bg-panel: #10141d;
-  --bg-card: #131824;
-  --bg-card-hover: #182030;
-  --border-subtle: #1e2638;
-  --border-active: #2c3852;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  /* CIVILENS / AURORA INDIGO Design Tokens */
+  --app-bg: #F6F7FC;
+  --surface: #FFFFFF;
+  --surface-muted: #F0F2F9;
+  --text-primary: #11162A;
+  --text-secondary: #65708B;
+  --border: #E4E7F1;
+
+  --sidebar-bg: #13152E;
+  --sidebar-hover: #212348;
+  --sidebar-active: linear-gradient(100deg, #3A326F, #29264F);
+
+  --accent: #6457E8;
+  --accent-hover: #5145CF;
+  --primary-action: #6457E8;
+  --primary-hover: #5145CF;
+  --secondary-accent: #8B5CF6;
+  --info: #3B82F6;
+  --critical: #EF4444;
+  --high: #F97316;
+  --medium: #EAB308;
+  --resolved: #10B981;
+  --success: #10B981;
+
+  --map-bg: #10162A;
+
+  /* Aliases & Semantic Compatibility Tokens */
+  --bg-app: #F6F7FC;
+  --bg-sidebar: #13152E;
+  --bg-panel: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F0F2F9;
+  --bg-map: #10162A;
   
-  --civic-cyan: #06b6d4;
-  --civic-green: #10b981;
-  --civic-yellow: #eab308;
-  --civic-orange: #f97316;
-  --civic-red: #ef4444;
+  --border-subtle: #E4E7F1;
+  --border-active: #CBD5E1;
+  --border-strong: #94A3B8;
+
+  --status-critical: #EF4444;
+  --status-high: #F97316;
+  --status-medium: #EAB308;
+  --status-low: #3B82F6;
+  --status-resolved: #10B981;
+
+  /* Stacking Layer Architecture Hierarchy */
+  --z-base: 0;
+  --z-map: 1;
+  --z-header: 100;
+  --z-sidebar: 200;
+  --z-dropdown: 300;
+  --z-floating-hud: 400;
+  --z-drawer: 8000;
+  --z-modal-backdrop: 9000;
+  --z-modal-content: 9001;
+  --z-toast: 9999;
+  --z-tooltip: 10000;
 }
 
 * {
@@ -28,143 +88,167 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-app);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 code, kbd, samp, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Operational Palantir-Style Grid Background */
-.bg-ops-grid {
-  background-image: 
-    linear-gradient(to right, rgba(30, 38, 56, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 38, 56, 0.3) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* Layering Architecture Utilities */
+.layer-map-container {
+  isolation: isolate;
+  position: relative;
+  z-index: 0;
 }
 
-.bg-dot-matrix {
-  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
-  background-size: 20px 20px;
+.layer-drawer {
+  z-index: 8000 !important;
 }
 
-/* Precision Glass Panels */
-.glass-panel {
-  background: rgba(16, 20, 29, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
+.layer-modal-backdrop {
+  z-index: 9000 !important;
 }
 
-.glass-panel-hover:hover {
-  background: rgba(24, 32, 48, 0.85);
-  border-color: var(--border-active);
+.layer-modal-content {
+  z-index: 9001 !important;
 }
 
-/* Custom Tactical Scrollbars */
+.layer-toast {
+  z-index: 9999 !important;
+}
+
+/* Aurora Indigo Card Surfaces */
+.surface-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E4E7F1;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(17, 22, 42, 0.04), 0 1px 2px -1px rgba(17, 22, 42, 0.03);
+}
+
+.surface-card-hover {
+  transition: all 0.2s ease;
+}
+
+.surface-card-hover:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 14px -2px rgba(17, 22, 42, 0.06), 0 2px 6px -1px rgba(17, 22, 42, 0.03);
+}
+
+/* Minimalist Clean Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #080a0f;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e2638;
-  border-radius: 3px;
+  background: #CBD5E1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2c3852;
+  background: #94A3B8;
 }
 
-/* Leaflet Dark Filter & Customization */
+/* Leaflet Container Stacking Isolation & Dark GIS Integration */
 .leaflet-container {
-  background-color: #0c0e14 !important;
+  isolation: isolate !important;
+  z-index: 1 !important;
+  background-color: #10162A !important;
   font-family: inherit !important;
 }
 
-
 .leaflet-popup-content-wrapper {
-  background: #10141d !important;
-  color: #f1f5f9 !important;
-  border: 1px solid #1e2638 !important;
-  border-radius: 6px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7) !important;
+  background: #13152E !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(228, 231, 241, 0.15) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.5) !important;
 }
 
 .leaflet-popup-tip {
-  background: #10141d !important;
-  border: 1px solid #1e2638 !important;
+  background: #13152E !important;
+  border: 1px solid rgba(228, 231, 241, 0.15) !important;
 }
 
-/* Pulsing AI Indicator */
-@keyframes ai-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.92); }
+.leaflet-dark-tooltip {
+  background: rgba(19, 21, 46, 0.95) !important;
+  border: 1px solid rgba(228, 231, 241, 0.18) !important;
+  color: #F8FAFC !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
 }
 
-.animate-ai-pulse {
-  animation: ai-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Custom Dark Leaflet Zoom Controls */
+.leaflet-bar {
+  border: 1px solid rgba(228, 231, 241, 0.16) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
 }
 
-@keyframes radar-sweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.leaflet-bar a {
+  background-color: #13152E !important;
+  color: #94A3B8 !important;
+  border-bottom: 1px solid rgba(228, 231, 241, 0.1) !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 14px !important;
+  transition: all 0.15s ease !important;
 }
 
-.animate-radar {
-  animation: radar-sweep 4s linear infinite;
+.leaflet-bar a:hover {
+  background-color: #212348 !important;
+  color: #FFFFFF !important;
 }
 
-/* Tactical Map Clusters & Tooltips */
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
+
 .tactical-cluster-icon {
-  background: rgba(14, 19, 29, 0.92);
-  border: 1.5px solid #06b6d4;
+  background: rgba(19, 21, 46, 0.94);
+  border: 2px solid #6457E8;
   border-radius: 9999px;
-  color: #38bdf8;
+  color: #A78BFA;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(100, 87, 232, 0.35);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tactical-cluster-icon:hover {
-  transform: scale(1.15);
-  border-color: #38bdf8;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+  transform: scale(1.08);
+  border-color: #8B5CF6;
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.5);
 }
 
 .tactical-cluster-icon.critical {
-  border-color: #ef4444;
-  color: #fca5a5;
-  box-shadow: 0 0 18px rgba(239, 68, 68, 0.5);
+  border-color: #EF4444;
+  color: #FECACA;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
 }
 
 .tactical-cluster-icon.high {
-  border-color: #f97316;
-  color: #fdba74;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
-}
-
-.leaflet-dark-tooltip {
-  background: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid #1e293b !important;
-  color: #f8fafc !important;
-  border-radius: 6px !important;
-  padding: 6px 10px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
+  border-color: #F97316;
+  color: #FED7AA;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
 }

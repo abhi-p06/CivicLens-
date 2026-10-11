@@ -37,15 +37,17 @@ export const CivicMap: React.FC<CivicMapProps> = ({
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
   const heatmapLayerRef = useRef<L.LayerGroup | null>(null)
   const clustersLayerRef = useRef<L.LayerGroup | null>(null)
+  const hasFittedInitialBoundsRef = useRef<boolean>(false)
 
   // 1. Initialize Map Instance
   useEffect(() => {
     if (!mapContainerRef.current) return
 
     if (!mapInstanceRef.current) {
+      // Centered on the active urban corridor (Vidyavihar / Ghatkopar / Kurla) to eliminate empty sea space
       const map = L.map(mapContainerRef.current, {
-        center: [19.076, 72.885],
-        zoom: 12,
+        center: [19.0728, 72.8998],
+        zoom: 13,
         minZoom: 10,
         maxZoom: 18,
         zoomControl: false,
@@ -192,7 +194,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
         const isCrit = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
         const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
-        const heatColor = isCrit ? '#ef4444' : isHigh ? '#f97316' : '#06b6d4'
+        const heatColor = isCrit ? '#EF4444' : isHigh ? '#F97316' : '#6457E8'
         const heatRadius = isCrit ? 600 : isHigh ? 450 : 320
 
         const heatCircle = L.circle([issue.latitude, issue.longitude], {
@@ -317,7 +319,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         coreSize = 12
       }
 
-      // Tactical SVG Icon with strong visual emphasis on critical incidents
+      // Tactical SVG Icon with strong visual emphasis on critical incidents and selected issue
       const customIcon = L.divIcon({
         className: 'custom-incident-pin',
         html: `
@@ -329,10 +331,10 @@ export const CivicMap: React.FC<CivicMapProps> = ({
             }
             ${
               isSelected
-                ? `<div style="position: absolute; width: ${outerSize + 8}px; height: ${outerSize + 8}px; border-radius: 9999px; border: 2px dashed #06b6d4; opacity: 0.9;" class="animate-spin"></div>`
+                ? `<div style="position: absolute; width: ${outerSize + 14}px; height: ${outerSize + 14}px; border-radius: 9999px; border: 2px solid #8B5CF6; box-shadow: 0 0 16px rgba(139,92,246,0.8); background: rgba(139,92,246,0.15);" class="animate-pulse"></div>`
                 : ''
             }
-            <div style="width: ${coreSize}px; height: ${coreSize}px; border-radius: 9999px; background-color: ${markerColor}; border: 2px solid #080a0f; box-shadow: 0 0 ${isCritical ? '14px' : '8px'} ${markerColor};"></div>
+            <div style="width: ${coreSize}px; height: ${coreSize}px; border-radius: 9999px; background-color: ${markerColor}; border: 2px solid #080a0f; box-shadow: 0 0 ${isSelected ? '18px #8B5CF6' : isCritical ? '14px ' + markerColor : '8px ' + markerColor};"></div>
           </div>
         `,
         iconSize: [outerSize, outerSize],
@@ -341,26 +343,26 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
       const marker = L.marker([issue.latitude, issue.longitude], {
         icon: customIcon,
-        zIndexOffset: isCritical ? 1000 : isHigh ? 500 : 100,
+        zIndexOffset: isSelected ? 2000 : isCritical ? 1000 : isHigh ? 500 : 100,
       })
 
-      // Popup Content
+      // Popup Content (Clean, readable Inter styling)
       const popupHtml = `
-        <div style="font-family: monospace; font-size: 11px; padding: 4px; min-width: 210px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <strong style="color: #06b6d4; font-size: 12px;">${issue.issueId}</strong>
-            <span style="color: ${markerColor}; font-weight: bold; font-size: 10px; border: 1px solid ${markerColor}; padding: 1px 4px; border-radius: 3px;">
-              ${issue.priorityLevel} (${issue.priorityScore.toFixed(0)})
+        <div style="font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px; min-width: 230px; line-height: 1.4;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="color: #A78BFA; font-size: 12px; font-family: monospace;">${issue.issueId}</strong>
+            <span style="color: ${markerColor}; font-weight: 600; font-size: 11px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 9999px;">
+              ${issue.priorityLevel} &bull; ${issue.priorityScore.toFixed(0)}
             </span>
           </div>
-          <div style="color: #e2e8f0; font-weight: bold; margin-bottom: 2px;">${issue.category}</div>
-          <div style="color: #94a3b8; font-size: 10px; margin-bottom: 4px;">${issue.location} (${issue.ward})</div>
-          <div style="color: #cbd5e1; font-family: sans-serif; font-size: 10px; line-height: 1.3; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+          <div style="color: #ffffff; font-weight: 600; font-size: 13px; margin-bottom: 2px;">${issue.category}</div>
+          <div style="color: #94a3b8; font-size: 11px; margin-bottom: 6px;">${issue.location} ${issue.ward ? `(${issue.ward})` : ''}</div>
+          <div style="color: #cbd5e1; font-size: 11px; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
             ${issue.complaintText}
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #64748b; border-top: 1px solid #1e2638; padding-top: 4px;">
-            <span>SLA: ${issue.slaHours}h</span>
-            <span style="color: #06b6d4; font-weight: bold;">${issue.status}</span>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px;">
+            <span>SLA: <strong style="color: #cbd5e1;">${issue.slaHours}h</strong></span>
+            <span style="color: #A78BFA; font-weight: 500;">${issue.status}</span>
           </div>
         </div>
       `
@@ -388,7 +390,57 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     onSelectHotspot,
   ])
 
-  // 3. Smooth Camera FlyTo on selectedIssue change
+  // 3. Optimal Viewport Bounds Fitting (Framing active incident cluster without empty sea)
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map) return
+
+    // If an issue is already explicitly selected by the user, keep focus on it
+    if (selectedIssue) return
+
+    const validPoints: [number, number][] = []
+
+    issues.forEach((issue) => {
+      if (
+        typeof issue.latitude === 'number' &&
+        typeof issue.longitude === 'number' &&
+        !isNaN(issue.latitude) &&
+        !isNaN(issue.longitude)
+      ) {
+        validPoints.push([issue.latitude, issue.longitude])
+      }
+    })
+
+    hotspots.forEach((h) => {
+      const lat =
+        typeof h.center?.lat === 'number'
+          ? h.center.lat
+          : Array.isArray(h.center)
+          ? Number(h.center[0])
+          : null
+      const lng =
+        typeof h.center?.lng === 'number'
+          ? h.center.lng
+          : Array.isArray(h.center)
+          ? Number(h.center[1])
+          : null
+      if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
+        validPoints.push([lat, lng])
+      }
+    })
+
+    if (validPoints.length > 0) {
+      const bounds = L.latLngBounds(validPoints)
+      map.fitBounds(bounds, {
+        padding: [36, 36],
+        maxZoom: 14,
+        animate: hasFittedInitialBoundsRef.current,
+      })
+      hasFittedInitialBoundsRef.current = true
+    }
+  }, [issues, hotspots, selectedIssue])
+
+  // 4. Smooth Camera FlyTo on selectedIssue change
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map || !selectedIssue) return
@@ -402,7 +454,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
   }, [selectedIssue])
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-lg border border-slate-800 bg-[#0a0d14]">
+    <div className="relative isolate z-0 layer-map-container h-full w-full overflow-hidden rounded-lg border border-[#212348] bg-[#10162A]">
       <div ref={mapContainerRef} className={className} />
     </div>
   )

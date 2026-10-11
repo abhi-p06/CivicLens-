@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PriorityLevel, PriorityBreakdown } from '../../types'
 import { cn } from '../../lib/utils'
 import { Info } from 'lucide-react'
-import { AnimatedCounter } from './AnimatedCounter'
+import { CountUp } from '../reactbits/CountUp'
+import { useCivicMotion } from '../../lib/motionContext'
 
 interface PriorityGaugeProps {
   score: number // 0 to 100
@@ -23,76 +24,83 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
   showDetails = false,
 }) => {
   const [open, setOpen] = useState(false)
+  const { isReduced } = useCivicMotion()
   const normLevel = (level || 'LOW').toUpperCase()
 
-  // Color mapping
-  let barColor = 'bg-emerald-500'
-  let textColor = 'text-emerald-400'
-  let badgeBg = 'bg-emerald-950/60 text-emerald-300 border-emerald-800'
+  // Color mapping per Aurora Indigo standards
+  let barColor = 'bg-[#10B981]'
+  let textColor = 'text-[#10B981]'
+  let badgeBg = 'bg-emerald-50 text-emerald-800 border-emerald-200'
 
   if (normLevel === 'CRITICAL' || score >= 80) {
-    barColor = 'bg-rose-500'
-    textColor = 'text-rose-400'
-    badgeBg = 'bg-rose-950/60 text-rose-300 border-rose-800'
+    barColor = 'bg-[#EF4444]'
+    textColor = 'text-[#EF4444]'
+    badgeBg = 'bg-rose-50 text-rose-800 border-rose-200'
   } else if (normLevel === 'HIGH' || score >= 65) {
-    barColor = 'bg-orange-500'
-    textColor = 'text-orange-400'
-    badgeBg = 'bg-orange-950/60 text-orange-300 border-orange-800'
+    barColor = 'bg-[#F97316]'
+    textColor = 'text-[#F97316]'
+    badgeBg = 'bg-orange-50 text-orange-800 border-orange-200'
   } else if (normLevel === 'MEDIUM' || score >= 40) {
-    barColor = 'bg-amber-500'
-    textColor = 'text-amber-400'
-    badgeBg = 'bg-amber-950/60 text-amber-300 border-amber-800'
+    barColor = 'bg-[#EAB308]'
+    textColor = 'text-[#EAB308]'
+    badgeBg = 'bg-amber-50 text-amber-800 border-amber-200'
   }
+
+  const safeScore = Math.min(100, Math.max(0, score))
 
   if (compact) {
     return (
-      <div className="inline-flex items-center gap-1.5 font-mono text-xs">
-        <div className="w-12 h-1.5 bg-slate-800 rounded-full overflow-hidden shrink-0">
+      <div className="inline-flex items-center gap-2 font-mono text-xs">
+        <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden shrink-0 border border-slate-200">
           <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${Math.min(100, Math.max(0, score))}%` }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className={cn('h-full', barColor)}
+            initial={{ width: isReduced ? `${safeScore}%` : 0 }}
+            animate={{ width: `${safeScore}%` }}
+            transition={{ duration: isReduced ? 0.05 : 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className={cn('h-full rounded-full', barColor)}
           />
         </div>
-        <span className={cn('font-semibold', textColor)}>{score.toFixed(0)}</span>
+        <span className={cn('font-bold', textColor)}>
+          <CountUp to={Math.round(score)} duration={0.8} />
+        </span>
       </div>
     )
   }
 
   return (
-    <div className="relative font-mono text-xs">
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <div className="flex items-center gap-1.5">
-          <span className={cn('px-1.5 py-0.5 rounded text-[10px] font-bold border tracking-wider', badgeBg)}>
+    <div className="relative font-sans text-xs">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <span className={cn('px-2.5 py-0.5 rounded-full text-xs font-semibold border', badgeBg)}>
             {normLevel}
           </span>
-          <span className="text-slate-400 text-[11px]">PRIORITY</span>
+          <span className="text-slate-600 text-xs font-medium">Risk Priority Score</span>
         </div>
-        <div className="flex items-center gap-1">
-          <span className={cn('text-sm font-bold', textColor)}>
-            <AnimatedCounter value={Math.round(score)} />
+        <div className="flex items-center gap-1 font-mono">
+          <span className={cn('text-base font-bold', textColor)}>
+            <CountUp to={Math.round(score)} duration={0.8} />
           </span>
-          <span className="text-slate-500 text-[10px]">/ 100</span>
+          <span className="text-slate-400 text-xs">/ 100</span>
           {(breakdown || reasoning) && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => setOpen(!open)}
-              className="text-slate-400 hover:text-cyan-400 transition ml-0.5 cursor-pointer"
+              className="text-slate-400 hover:text-[#6457E8] transition ml-1 p-0.5 rounded cursor-pointer"
               title="Explain priority factors"
             >
               <Info className="w-3.5 h-3.5" />
-            </button>
+            </motion.button>
           )}
         </div>
       </div>
 
-      {/* Segmented bar */}
-      <div className="h-2 w-full bg-slate-900 border border-slate-800 rounded overflow-hidden flex">
+      {/* Segmented Animated Bar */}
+      <div className="h-2.5 w-full bg-slate-100 border border-slate-200 rounded-full overflow-hidden flex relative">
         <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${Math.min(100, Math.max(0, score))}%` }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className={cn('h-full rounded-sm', barColor)}
+          initial={{ width: isReduced ? `${safeScore}%` : 0 }}
+          animate={{ width: `${safeScore}%` }}
+          transition={{ duration: isReduced ? 0.05 : 0.85, ease: [0.16, 1, 0.3, 1] }}
+          className={cn('h-full rounded-full', barColor)}
         />
       </div>
 
@@ -103,12 +111,12 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
             initial={{ opacity: 0, height: 0, marginTop: 0 }}
             animate={{ opacity: 1, height: 'auto', marginTop: 10 }}
             exit={{ opacity: 0, height: 0, marginTop: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden p-2.5 bg-slate-950/95 border border-slate-800 rounded text-[11px] space-y-1.5 shadow-2xl z-20"
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="overflow-hidden p-3.5 bg-white border border-[#E4E7F1] rounded-xl text-xs space-y-2.5 shadow-sm z-20"
           >
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-1 font-semibold flex justify-between">
+            <div className="text-xs text-slate-800 border-b border-slate-100 pb-2 font-semibold flex justify-between">
               <span>Explainable Scoring Vectors</span>
-              <span className="text-cyan-400">Total: {score.toFixed(1)}/100</span>
+              <span className="text-[#6457E8] font-bold font-mono">Total: {score.toFixed(1)}/100</span>
             </div>
             <motion.div
               initial="hidden"
@@ -120,15 +128,15 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
                   transition: { staggerChildren: 0.05 },
                 },
               }}
-              className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300"
+              className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-slate-700"
             >
               {[
-                { label: 'Urgency:', val: typeof breakdown.urgency === 'number' ? breakdown.urgency.toFixed(1) : (breakdown as any).urgencyScore || 0, max: 20 },
-                { label: 'Text Severity:', val: typeof breakdown.textSeverity === 'number' ? breakdown.textSeverity.toFixed(1) : (breakdown as any).textSeverityScore || 0, max: 20 },
-                { label: 'Visual Severity:', val: typeof breakdown.visualSeverity === 'number' ? breakdown.visualSeverity.toFixed(1) : (breakdown as any).visualSeverityScore || 0, max: 20 },
-                { label: 'Related Reports:', val: typeof breakdown.relatedReports === 'number' ? breakdown.relatedReports.toFixed(1) : (breakdown as any).relatedReportsScore || 0, max: 15 },
-                { label: 'Recency:', val: typeof breakdown.recency === 'number' ? breakdown.recency.toFixed(1) : (breakdown as any).recencyScore || 0, max: 10 },
-                { label: 'Location Risk:', val: typeof breakdown.locationRisk === 'number' ? breakdown.locationRisk.toFixed(1) : (breakdown as any).locationRiskScore || 0, max: 15 },
+                { label: 'Urgency:', val: typeof breakdown.urgency === 'number' ? breakdown.urgency.toFixed(1) : (breakdown as any).urgencyScore ?? (breakdown as any).urgency_points ?? 0, max: 20 },
+                { label: 'Text Severity:', val: typeof breakdown.textSeverity === 'number' ? breakdown.textSeverity.toFixed(1) : (breakdown as any).textSeverityScore ?? (breakdown as any).text_severity_points ?? 0, max: 20 },
+                { label: 'Visual Severity:', val: typeof breakdown.visualSeverity === 'number' ? breakdown.visualSeverity.toFixed(1) : (breakdown as any).visualSeverityScore ?? (breakdown as any).visual_severity_points ?? 0, max: 20 },
+                { label: 'Related Reports:', val: typeof breakdown.relatedReports === 'number' ? breakdown.relatedReports.toFixed(1) : (breakdown as any).relatedReportsScore ?? (breakdown as any).related_reports_points ?? 0, max: 15 },
+                { label: 'Recency:', val: typeof breakdown.recency === 'number' ? breakdown.recency.toFixed(1) : (breakdown as any).recencyScore ?? (breakdown as any).recency_points ?? 0, max: 10 },
+                { label: 'Location Risk:', val: typeof breakdown.locationRisk === 'number' ? breakdown.locationRisk.toFixed(1) : (breakdown as any).locationRiskScore ?? (breakdown as any).location_risk_points ?? 0, max: 15 },
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -136,17 +144,17 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
                     hidden: { opacity: 0, y: 4 },
                     visible: { opacity: 1, y: 0 },
                   }}
-                  className="flex justify-between"
+                  className="flex justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100"
                 >
-                  <span className="text-slate-400">{item.label}</span>
-                  <span className="font-semibold text-slate-200">
+                  <span className="text-slate-500">{item.label}</span>
+                  <span className="font-semibold text-slate-800">
                     {item.val}/{item.max}
                   </span>
                 </motion.div>
               ))}
             </motion.div>
             {reasoning && (
-              <div className="pt-1 text-[10px] text-slate-400 border-t border-slate-900 leading-relaxed font-sans">
+              <div className="pt-2 text-[11px] text-slate-500 border-t border-slate-100 leading-relaxed font-sans">
                 {reasoning}
               </div>
             )}

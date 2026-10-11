@@ -70,19 +70,19 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
   }
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-mono text-xs">
+    <div className="h-full flex flex-col overflow-y-auto p-6 space-y-5 font-sans text-xs bg-[#F6F7FC]">
       {/* Top Header & Issue Selector */}
-      <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl">
+      <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-cyan-950/60 border border-cyan-800 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-indigo-50 border border-indigo-200 text-[#6457E8]">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-              ISSUE INTELLIGENCE DOSSIER
+            <div className="text-xs text-[#65708B] font-semibold">
+              Issue Intelligence Dossier
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-lg font-bold text-slate-100">{current.issueId}</span>
+              <span className="text-lg font-bold text-[#11162A] font-mono">{current.issueId}</span>
               <StatusBadge status={current.status} />
               <ConsistencyBadge level={current.consistencyFlag || 'CONSISTENT'} />
             </div>
@@ -91,17 +91,17 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
 
         {/* Dropdown selector to switch between issues */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-slate-400 uppercase">Select Issue:</span>
+          <span className="text-xs text-[#65708B]">Select Issue:</span>
           <select
             value={current.issueId}
             onChange={(e) => {
               const found = issues.find((i) => i.issueId === e.target.value)
               if (found) onSelectIssue(found)
             }}
-            className="bg-[#121824] border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 text-xs outline-none focus:border-cyan-500 cursor-pointer"
+            className="bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#6457E8] cursor-pointer"
           >
             {issues.map((i) => (
-              <option key={i.issueId} value={i.issueId} className="bg-[#0e131d]">
+              <option key={i.issueId} value={i.issueId}>
                 {i.issueId} &bull; {i.category} ({i.location})
               </option>
             ))}
@@ -111,36 +111,36 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
 
       {/* Overview Metadata Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">STATUS</div>
-          <div className="font-bold text-cyan-400 text-xs mt-1 truncate">{current.status}</div>
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">STATUS</div>
+          <div className="font-bold text-[#6457E8] text-xs mt-1 truncate">{current.status}</div>
         </div>
 
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">CATEGORY</div>
-          <div className="font-bold text-slate-100 text-xs mt-1 truncate">{current.category}</div>
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">CATEGORY</div>
+          <div className="font-bold text-[#11162A] text-xs mt-1 truncate">{current.category}</div>
         </div>
 
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">LOCATION</div>
-          <div className="font-bold text-slate-200 text-xs mt-1 truncate">{current.location}</div>
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">LOCATION</div>
+          <div className="font-bold text-[#11162A] text-xs mt-1 truncate">{current.location}</div>
         </div>
 
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">WARD</div>
-          <div className="font-bold text-slate-300 text-xs mt-1 truncate">{current.ward}</div>
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">WARD</div>
+          <div className="font-bold text-[#11162A] text-xs mt-1 truncate">{current.ward}</div>
         </div>
 
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">DATE INGESTED</div>
-          <div className="font-bold text-slate-300 text-xs mt-1 truncate">
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">DATE INGESTED</div>
+          <div className="font-bold text-[#11162A] text-xs mt-1 truncate">
             {new Date(current.timestamp).toLocaleDateString()}
           </div>
         </div>
 
-        <div className="p-3 bg-[#111724] border border-slate-800 rounded-lg">
-          <div className="text-slate-400 text-[10px] uppercase">PRIORITY SCORE</div>
-          <div className="font-bold text-rose-400 text-sm mt-0.5">
+        <div className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs">
+          <div className="text-[#65708B] text-xs font-semibold">PRIORITY SCORE</div>
+          <div className="font-bold text-[#EF4444] text-sm mt-0.5">
             {current.priorityScore.toFixed(0)}/100 ({current.priorityLevel})
           </div>
         </div>
@@ -151,45 +151,45 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
         {/* Left: Complaint Text & NLP Analytics */}
         <div className="lg:col-span-6 space-y-4">
           {/* Complaint Text */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-2 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-2 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B] flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#6457E8]" />
               <span>Citizen Complaint Narrative</span>
             </div>
-            <p className="text-slate-200 font-sans text-xs leading-relaxed">
+            <p className="text-[#11162A] font-sans text-sm leading-relaxed">
               {current.complaintText || '(Patrol Automated Ingestion - No narrative provided)'}
             </p>
           </div>
 
           {/* NLP Extraction Result */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-3 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400">
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-3 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B]">
               NLP Analysis & Semantic Cues
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
-              <div className="p-2.5 bg-[#121824] rounded border border-slate-800">
-                <div className="text-slate-400 text-[10px]">EXTRACTED URGENCY</div>
-                <div className="text-sm font-bold text-amber-400 mt-0.5">
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
+                <div className="text-[#65708B] text-xs font-medium">Extracted Urgency</div>
+                <div className="text-sm font-bold text-[#F97316] mt-0.5">
                   {(current.urgency * 100).toFixed(0)}%
                 </div>
               </div>
-              <div className="p-2.5 bg-[#121824] rounded border border-slate-800">
-                <div className="text-slate-400 text-[10px]">TEXT SEVERITY</div>
-                <div className="text-sm font-bold text-rose-400 mt-0.5">
+              <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1]">
+                <div className="text-[#65708B] text-xs font-medium">Text Severity</div>
+                <div className="text-sm font-bold text-[#EF4444] mt-0.5">
                   {(current.severity * 100).toFixed(0)}%
                 </div>
               </div>
             </div>
 
-            <div className="p-2.5 bg-[#121824] rounded border border-slate-800 text-slate-300 font-sans text-xs">
+            <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] text-[#11162A] font-sans text-xs">
               <strong>Consistency Analysis: </strong>
               {current.consistencyDetail?.reason || 'Cross-validated NLP tokens with visual detection.'}
             </div>
           </div>
 
           {/* Explainable Dynamic Priority Breakdown */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-2 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400">
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-2 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B]">
               Feature 15: Explainable Priority Factors
             </div>
             <PriorityGauge
@@ -205,51 +205,51 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
         {/* Right: Vision / YOLO Detection & Department Routing */}
         <div className="lg:col-span-6 space-y-4">
           {/* YOLO Detection Panel */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-3 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-between">
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-3 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
               <span className="flex items-center gap-1.5">
-                <Eye className="w-3.5 h-3.5 text-cyan-400" />
+                <Eye className="w-3.5 h-3.5 text-[#6457E8]" />
                 <span>YOLOv8 Computer Vision Detection</span>
               </span>
-              <span className="text-cyan-400 font-mono">
+              <span className="text-[#6457E8] font-mono text-xs font-semibold">
                 {((current.visualConfidence || 0.9) * 100).toFixed(0)}% Confidence
               </span>
             </div>
 
             {/* Visual Box Representation */}
-            <div className="relative h-48 bg-[#0a0d14] rounded-lg border border-slate-800 flex items-center justify-center overflow-hidden">
+            <div className="relative h-48 bg-[#10162A] rounded-xl border border-[#212348] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 bg-dot-matrix opacity-30" />
-              {/* Simulated Bounding Box Overlay */}
-              <div className="relative z-10 p-3 border-2 border-cyan-400 bg-cyan-950/20 rounded shadow-lg shadow-cyan-950/50 flex flex-col items-center">
-                <span className="text-[10px] bg-cyan-500 text-black px-1.5 py-0.5 rounded font-bold uppercase mb-1">
+              {/* Bounding Box Overlay */}
+              <div className="relative z-10 p-3 border-2 border-[#8B5CF6] bg-[#6457E8]/20 rounded-lg shadow-lg flex flex-col items-center">
+                <span className="text-xs bg-[#6457E8] text-white px-2 py-0.5 rounded font-semibold uppercase mb-1">
                   {current.visualDetection || 'Pothole (Detected)'}
                 </span>
-                <span className="text-[11px] text-cyan-300 font-mono">
+                <span className="text-xs text-indigo-200 font-mono">
                   Confidence: {((current.visualConfidence || 0.9) * 100).toFixed(1)}%
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+            <div className="flex items-center justify-between text-xs text-[#65708B] pt-1">
               <span>Image Evidence URI: {current.imageUrl || 'Patrol Survey Imagery'}</span>
-              <span className="text-emerald-400">YOLOv8s Ingested</span>
+              <span className="text-emerald-700 font-medium">YOLOv8s Ingested</span>
             </div>
           </div>
 
           {/* Department Dispatch & Recommended Action */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-2.5 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-between">
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-2.5 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
               <span>Feature 19: Department Routing Protocol</span>
-              <span className="text-emerald-400 font-bold">SLA: {current.slaHours} Hours</span>
+              <span className="text-[#6457E8] font-bold">SLA: {current.slaHours} Hours</span>
             </div>
 
-            <div className="flex items-center gap-2 text-slate-100 font-bold text-sm">
-              <Building className="w-4 h-4 text-cyan-400 shrink-0" />
+            <div className="flex items-center gap-2 text-[#11162A] font-bold text-sm">
+              <Building className="w-4 h-4 text-[#6457E8] shrink-0" />
               <span>{current.department}</span>
             </div>
 
-            <div className="p-2.5 bg-[#121824] rounded border border-slate-800 text-slate-200 text-xs font-sans">
-              <strong className="text-cyan-400 font-mono text-[10px] block mb-1">
+            <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] text-[#11162A] text-xs font-sans">
+              <strong className="text-[#6457E8] font-semibold text-xs block mb-1">
                 RECOMMENDED ACTION:
               </strong>
               {current.recommendedAction}
@@ -257,19 +257,19 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
           </div>
 
           {/* Timeline & Lifecycle Action Bar */}
-          <div className="p-4 bg-[#0e131d] border border-slate-800 rounded-xl space-y-3 shadow-xl">
-            <div className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-between">
+          <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-3 shadow-xs">
+            <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
               <span>Work Order Lifecycle Timeline</span>
               <button
                 onClick={() => onOpenResolutionModal(current)}
-                className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold shadow transition flex items-center gap-1"
+                className="px-3 py-1.5 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center gap-1 cursor-pointer"
               >
-                <Camera className="w-3 h-3" />
+                <Camera className="w-3.5 h-3.5" />
                 <span>Verify Resolution</span>
               </button>
             </div>
 
-            <div className="flex items-center gap-1 overflow-x-auto py-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               {lifecycleStages.map((st) => {
                 const isActive = current.status === st
                 return (
@@ -278,13 +278,13 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
                     disabled={advancing}
                     onClick={() => handleAdvanceStatus(st)}
                     className={cn(
-                      'px-2 py-1 rounded text-[10px] uppercase transition border whitespace-nowrap',
+                      'px-2.5 py-1 rounded-lg text-xs font-medium transition border whitespace-nowrap cursor-pointer',
                       isActive
-                        ? 'bg-cyan-950 border-cyan-500 text-cyan-200 font-bold shadow'
-                        : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
+                        ? 'bg-[#6457E8] border-[#6457E8] text-white font-semibold shadow-xs'
+                        : 'bg-[#F0F2F9] border-[#E4E7F1] text-[#65708B] hover:text-[#11162A] hover:bg-slate-200/60'
                     )}
                   >
-                    {st}
+                    {st.replace(/_/g, ' ')}
                   </button>
                 )
               })}

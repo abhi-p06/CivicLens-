@@ -57,45 +57,45 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
   })
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-4 font-mono text-xs">
+    <div className="h-full flex flex-col overflow-y-auto p-6 space-y-4 font-sans text-xs bg-[#F6F7FC]">
       {/* Search & Filter Bar */}
-      <div className="bg-[#0e131d] border border-slate-800 rounded-xl p-4 space-y-3 shadow-xl">
+      <div className="bg-white border border-[#E4E7F1] rounded-2xl p-5 space-y-3.5 shadow-xs">
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-[#65708B] absolute left-3 top-2.5" />
             <input
               type="text"
               placeholder="Filter by keyword, issue ID, or landmark..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#121824] border border-slate-700/80 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 outline-none focus:border-cyan-500 font-mono"
+              className="w-full bg-[#F0F2F9] border border-[#E4E7F1] rounded-xl pl-9 pr-3 py-2 text-xs text-[#11162A] placeholder-[#65708B] outline-none focus:border-[#6457E8] font-sans"
             />
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-auto">
             <button
               onClick={() => setSortField(sortField === 'priority' ? 'time' : 'priority')}
-              className="flex items-center gap-1.5 px-3 py-2 bg-[#121824] hover:bg-[#162030] border border-slate-700 text-slate-300 rounded-lg text-xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#F0F2F9] hover:bg-slate-200/70 border border-[#E4E7F1] text-[#11162A] rounded-xl text-xs font-medium cursor-pointer transition"
             >
-              <ArrowUpDown className="w-3.5 h-3.5 text-cyan-400" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#6457E8]" />
               <span>Sort: {sortField === 'priority' ? 'Priority Score' : 'Timestamp'}</span>
             </button>
           </div>
         </div>
 
         {/* Filter Dropdowns */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
           <div>
-            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+            <label className="text-xs font-semibold text-[#65708B] block mb-1">
               Category
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-[#121824] border border-slate-700 text-slate-300 rounded p-1.5 text-xs outline-none focus:border-cyan-500"
+              className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8] cursor-pointer"
             >
               {categories.map((c) => (
-                <option key={c} value={c} className="bg-[#0e131d]">
+                <option key={c} value={c}>
                   {c}
                 </option>
               ))}
@@ -103,16 +103,16 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
           </div>
 
           <div>
-            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+            <label className="text-xs font-semibold text-[#65708B] block mb-1">
               Priority Level
             </label>
             <select
               value={selectedPriority}
               onChange={(e) => setSelectedPriority(e.target.value)}
-              className="w-full bg-[#121824] border border-slate-700 text-slate-300 rounded p-1.5 text-xs outline-none focus:border-cyan-500"
+              className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8] cursor-pointer"
             >
               {priorities.map((p) => (
-                <option key={p} value={p} className="bg-[#0e131d]">
+                <option key={p} value={p}>
                   {p}
                 </option>
               ))}
@@ -120,16 +120,16 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
           </div>
 
           <div>
-            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+            <label className="text-xs font-semibold text-[#65708B] block mb-1">
               Lifecycle Stage
             </label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full bg-[#121824] border border-slate-700 text-slate-300 rounded p-1.5 text-xs outline-none focus:border-cyan-500"
+              className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8] cursor-pointer"
             >
               {statuses.map((s) => (
-                <option key={s} value={s} className="bg-[#0e131d]">
+                <option key={s} value={s}>
                   {s}
                 </option>
               ))}
@@ -139,59 +139,59 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
       </div>
 
       {/* Issues Table */}
-      <div className="bg-[#0e131d] border border-slate-800 rounded-xl overflow-hidden shadow-xl flex-1 flex flex-col">
-        <div className="px-4 py-2.5 bg-[#121824] border-b border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+      <div className="bg-white border border-[#E4E7F1] rounded-2xl overflow-hidden shadow-xs flex-1 flex flex-col">
+        <div className="px-5 py-3 bg-[#F0F2F9] border-b border-[#E4E7F1] flex items-center justify-between text-xs text-[#65708B]">
           <span>
-            Displaying <strong className="text-slate-100">{filtered.length}</strong> of{' '}
+            Displaying <strong className="text-[#11162A]">{filtered.length}</strong> of{' '}
             {issues.length} Registered Issues
           </span>
-          <span className="text-cyan-400">Click row to inspect complete audit trace</span>
+          <span className="text-[#6457E8] font-medium">Click row to inspect complete audit trace</span>
         </div>
 
         <div className="overflow-x-auto flex-1">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 bg-[#0a0d14] text-[10px] uppercase tracking-wider text-slate-400">
-                <th className="py-2.5 px-3">Issue ID</th>
-                <th className="py-2.5 px-3">Category</th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Location & Ward</th>
-                <th className="py-2.5 px-3">Assigned Department</th>
-                <th className="py-2.5 px-3">Evidence</th>
-                <th className="py-2.5 px-3">Status</th>
+              <tr className="border-b border-[#E4E7F1] bg-[#F6F7FC] text-xs font-semibold text-[#65708B]">
+                <th className="py-3 px-4">Issue ID</th>
+                <th className="py-3 px-4">Category</th>
+                <th className="py-3 px-4">Priority</th>
+                <th className="py-3 px-4">Location & Ward</th>
+                <th className="py-3 px-4">Assigned Department</th>
+                <th className="py-3 px-4">Evidence</th>
+                <th className="py-3 px-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-xs">
+            <tbody className="divide-y divide-[#E4E7F1]/70 text-xs">
               {filtered.map((issue) => (
                 <tr
                   key={issue.issueId}
                   onClick={() => onSelectIssue(issue)}
-                  className="hover:bg-[#131926] cursor-pointer transition"
+                  className="hover:bg-[#F0F2F9]/60 cursor-pointer transition"
                 >
-                  <td className="py-3 px-3 font-bold text-cyan-400 whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-bold text-[#6457E8] font-mono whitespace-nowrap">
                     {issue.issueId}
                   </td>
-                  <td className="py-3 px-3 font-sans text-slate-200">
+                  <td className="py-3.5 px-4 font-sans text-[#11162A]">
                     <div className="font-semibold">{issue.category}</div>
-                    <div className="text-[10px] text-slate-400 truncate max-w-xs font-sans">
+                    <div className="text-xs text-[#65708B] truncate max-w-xs font-sans">
                       {issue.complaintText}
                     </div>
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <PriorityGauge score={issue.priorityScore} level={issue.priorityLevel} compact />
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap text-slate-300">
-                    <div>{issue.location}</div>
-                    <div className="text-[10px] text-slate-500">{issue.ward}</div>
+                  <td className="py-3.5 px-4 whitespace-nowrap text-[#11162A]">
+                    <div className="font-medium">{issue.location}</div>
+                    <div className="text-xs text-[#65708B]">{issue.ward}</div>
                   </td>
-                  <td className="py-3 px-3 text-slate-300 text-[11px]">
-                    <div className="truncate max-w-[180px]">{issue.department}</div>
-                    <div className="text-[10px] text-emerald-400 font-mono">SLA: {issue.slaHours}h</div>
+                  <td className="py-3.5 px-4 text-[#11162A] text-xs">
+                    <div className="truncate max-w-[180px] font-medium">{issue.department}</div>
+                    <div className="text-xs text-emerald-700 font-mono">SLA: {issue.slaHours}h</div>
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <ConsistencyBadge level={issue.consistencyFlag || 'CONSISTENT'} />
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <StatusBadge status={issue.status} />
                   </td>
                 </tr>

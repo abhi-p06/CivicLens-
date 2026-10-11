@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Settings2, Save, RotateCcw } from 'lucide-react'
+import { X, Settings2, Save, RotateCcw, Zap } from 'lucide-react'
 import { api } from '../../services/api'
 import { IssueCategory } from '../../types'
+import { useCivicMotion, MotionMode } from '../../lib/motionContext'
+import { Portal } from './Portal'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -15,6 +17,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   onConfigSaved,
 }) => {
+  const { motionMode, setMotionMode } = useCivicMotion()
   const [config, setConfig] = useState<Record<string, any>>({})
   const [selectedCategory, setSelectedCategory] = useState<string>('Roads & Footpaths')
   const [department, setDepartment] = useState('')
@@ -93,53 +96,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const categories = Object.keys(config)
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={onClose}
-        >
+    <Portal>
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-[#0e131d] border border-slate-700 rounded-xl shadow-2xl overflow-hidden font-mono text-xs"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[9000] layer-modal-backdrop bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+            onClick={onClose}
           >
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#121824]">
-              <div className="flex items-center gap-2">
-                <Settings2 className="w-5 h-5 text-cyan-400" />
-                <span className="font-bold text-slate-100 text-sm tracking-wide">
-                  MUNICIPAL DISPATCH & ROUTING CONFIGURATION
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-[9001] layer-modal-content w-full max-w-2xl bg-white border border-[#E4E7F1] rounded-2xl shadow-2xl overflow-hidden font-sans text-xs"
+            >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E4E7F1] bg-[#F0F2F9]">
+              <div className="flex items-center gap-2.5">
+                <Settings2 className="w-5 h-5 text-[#6457E8]" />
+                <span className="font-bold text-[#11162A] text-sm tracking-normal">
+                  Municipal Dispatch & Routing Configuration
                 </span>
               </div>
-              <button onClick={onClose} className="text-slate-400 hover:text-slate-200">
+              <button onClick={onClose} className="text-[#65708B] hover:text-[#11162A] p-1 rounded-lg hover:bg-black/5 transition cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
-              <div className="text-slate-400 text-[11px] font-sans leading-relaxed">
+            <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto bg-[#F6F7FC]">
+              <div className="text-[#65708B] text-xs font-sans leading-relaxed">
                 Configure dynamic department assignments, automated action directives, and target SLA hours. This decouples administrative dispatch protocols from machine learning inference.
               </div>
 
-              <div className="space-y-1">
-                <label className="text-slate-400 font-bold uppercase text-[10px]">Select Target Domain</label>
+              <div className="space-y-1.5">
+                <label className="text-[#65708B] font-semibold text-xs">Select Target Domain</label>
                 <div className="flex flex-wrap gap-1.5">
                   {categories.map((cat) => (
                     <button
                       key={cat}
                       type="button"
                       onClick={() => handleCategoryChange(cat)}
-                      className={`px-2.5 py-1 rounded text-[11px] border transition ${
+                      className={`px-3 py-1.5 rounded-lg text-xs border transition cursor-pointer ${
                         selectedCategory === cat
-                          ? 'bg-cyan-950 border-cyan-500 text-cyan-300 font-bold'
-                          : 'bg-[#121824] border-slate-800 text-slate-400 hover:text-slate-200'
+                          ? 'bg-[#6457E8] border-[#6457E8] text-white font-semibold shadow-xs'
+                          : 'bg-white border-[#E4E7F1] text-[#65708B] hover:text-[#11162A] hover:bg-slate-50'
                       }`}
                     >
                       {cat}
@@ -150,67 +154,98 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-slate-400 font-bold uppercase text-[10px]">Responsible Department</label>
+                  <label className="text-[#11162A] font-semibold text-xs">Responsible Department</label>
                   <input
                     type="text"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full bg-[#121824] border border-slate-700 rounded-lg p-2.5 text-slate-100 outline-none focus:border-cyan-500"
+                    className="w-full bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-slate-400 font-bold uppercase text-[10px]">Department Agency Code</label>
+                  <label className="text-[#11162A] font-semibold text-xs">Department Agency Code</label>
                   <input
                     type="text"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    className="w-full bg-[#121824] border border-slate-700 rounded-lg p-2.5 text-slate-100 outline-none focus:border-cyan-500"
+                    className="w-full bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-slate-400 font-bold uppercase text-[10px]">Emergency Action Directive (Critical Incidents)</label>
+                <label className="text-[#11162A] font-semibold text-xs">Emergency Action Directive (Critical Incidents)</label>
                 <textarea
                   rows={2}
                   value={criticalAction}
                   onChange={(e) => setCriticalAction(e.target.value)}
-                  className="w-full bg-[#121824] border border-slate-700 rounded-lg p-2.5 text-slate-100 outline-none focus:border-cyan-500 font-sans"
+                  className="w-full bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs font-sans leading-relaxed"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-slate-400 font-bold uppercase text-[10px]">Target Resolution Window (Hours SLA)</label>
+                <label className="text-[#11162A] font-semibold text-xs">Target Resolution Window (Hours SLA)</label>
                 <input
                   type="number"
                   value={criticalSla}
                   onChange={(e) => setCriticalSla(Number(e.target.value))}
-                  className="w-32 bg-[#121824] border border-slate-700 rounded-lg p-2.5 text-slate-100 outline-none focus:border-cyan-500"
+                  className="w-32 bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
                 />
               </div>
 
+              {/* Animation & Accessibility Preferences */}
+              <div className="pt-3 border-t border-[#E4E7F1] space-y-2">
+                <div className="flex items-center gap-1.5 text-[#11162A] font-semibold text-xs">
+                  <Zap className="w-3.5 h-3.5 text-[#6457E8]" />
+                  <span>UI Animations & Motion Accessibility</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['full', 'system', 'reduced'] as MotionMode[]).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setMotionMode(mode)}
+                      className={`p-2.5 rounded-lg border text-xs font-medium transition cursor-pointer text-center ${
+                        motionMode === mode
+                          ? 'bg-[#6457E8] border-[#6457E8] text-white font-semibold shadow-xs'
+                          : 'bg-white border-[#E4E7F1] text-[#65708B] hover:text-[#11162A] hover:bg-slate-50'
+                      }`}
+                    >
+                      {mode === 'full' ? 'Full Motion' : mode === 'system' ? 'System Match' : 'Reduced'}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-[#65708B]">
+                  {motionMode === 'full'
+                    ? 'Presentation Grade: All cinematic entrances, counters, and pipeline animations active.'
+                    : motionMode === 'system'
+                    ? 'Respects your operating system reduce-motion accessibility setting.'
+                    : 'Disables transitions and reduces visual movement for accessibility.'}
+                </p>
+              </div>
+
               {savedSuccess && (
-                <div className="p-2.5 bg-emerald-950/60 border border-emerald-800 text-emerald-300 rounded text-xs flex items-center gap-2">
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
                   <span>Routing rule successfully updated in active system registry.</span>
                 </div>
               )}
             </div>
 
-            <div className="px-5 py-3.5 bg-[#0a0d14] border-t border-slate-800 flex items-center justify-between">
-              <span className="text-[10px] text-slate-500">Persists to runtime memory store</span>
-              <div className="flex items-center gap-2">
+            <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex items-center justify-between">
+              <span className="text-xs text-[#65708B]">Persists to runtime memory store</span>
+              <div className="flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-3 py-1.5 bg-transparent hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-xs transition"
+                  className="px-3.5 py-2 bg-transparent hover:bg-slate-100 text-[#65708B] hover:text-[#11162A] rounded-lg text-xs font-medium transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-1.5 px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium text-xs transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-lg font-semibold text-xs transition disabled:opacity-50 shadow-xs cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{saving ? 'Saving...' : 'Apply Protocol'}</span>
@@ -221,7 +256,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  </Portal>
+)
 }
 
 export default SettingsModal

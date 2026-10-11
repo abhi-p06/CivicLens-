@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, CheckCircle, Cpu, Eye, Network, Database, Sparkles, Layers } from 'lucide-react'
+import { Portal } from './Portal'
 
 interface ModelStatusModalProps {
   isOpen: boolean
@@ -71,55 +72,61 @@ export const ModelStatusModal: React.FC<ModelStatusModalProps> = ({
   ]
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={onClose}
-        >
+    <Portal>
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-[#0e131d] border border-slate-700 rounded-xl shadow-2xl overflow-hidden font-mono"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[9000] layer-modal-backdrop bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 font-sans text-xs"
+            onClick={onClose}
           >
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#121824]">
-              <div className="flex items-center gap-2">
-                <Cpu className="w-5 h-5 text-cyan-400" />
-                <span className="font-bold text-slate-100 text-sm tracking-wide">
-                  SYSTEM & MODEL TELEMETRY MONITOR
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-[9001] layer-modal-content w-full max-w-2xl bg-white border border-[#E4E7F1] rounded-2xl shadow-2xl overflow-hidden font-sans"
+            >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E4E7F1] bg-[#F0F2F9]">
+              <div className="flex items-center gap-2.5">
+                <Cpu className="w-5 h-5 text-[#6457E8]" />
+                <span className="font-bold text-[#11162A] text-sm tracking-normal">
+                  System & Model Telemetry Monitor
                 </span>
               </div>
-              <button onClick={onClose} className="text-slate-400 hover:text-slate-200">
+              <button
+                id="modal-close-btn"
+                aria-label="Close modal"
+                onClick={onClose}
+                className="text-[#65708B] hover:text-[#11162A] p-1 rounded-lg hover:bg-black/5 transition cursor-pointer"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
-              <div className="p-3 bg-slate-900/90 border border-slate-800 rounded-lg flex items-center justify-between">
+            <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs bg-[#F6F7FC]">
+              <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs flex items-center justify-between">
                 <div>
-                  <div className="text-slate-400 text-[11px]">CORE ENGINE HEALTH</div>
-                  <div className="text-sm font-bold text-emerald-400 flex items-center gap-1.5 mt-0.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <div className="text-[#65708B] text-xs font-medium">Core Engine Health</div>
+                  <div className="text-sm font-bold text-emerald-600 flex items-center gap-1.5 mt-0.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     {healthData?.status || 'OPERATIONAL'} (All Subsystems Resilient)
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-slate-400 text-[11px]">MANAGED INCIDENTS</div>
-                  <div className="text-sm font-bold text-slate-100 mt-0.5">
+                  <div className="text-[#65708B] text-xs font-medium">Managed Incidents</div>
+                  <div className="text-sm font-bold text-[#11162A] mt-0.5">
                     {healthData?.activeIssues ?? 6} Active
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2.5">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="text-xs font-semibold text-[#65708B]">
                   Active Model Subsystems
                 </div>
                 {modules.map((m) => {
@@ -127,24 +134,24 @@ export const ModelStatusModal: React.FC<ModelStatusModalProps> = ({
                   return (
                     <div
                       key={m.name}
-                      className="p-3 bg-[#111724] border border-slate-800 rounded-lg flex items-start justify-between gap-3 hover:border-slate-700 transition"
+                      className="p-3.5 bg-white border border-[#E4E7F1] rounded-xl shadow-xs flex items-start justify-between gap-3 hover:border-slate-300 transition"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="p-2 bg-slate-900 rounded border border-slate-800 mt-0.5">
+                        <div className="p-2 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] mt-0.5">
                           <Icon className={`w-4 h-4 ${m.color}`} />
                         </div>
                         <div>
-                          <div className="font-bold text-slate-200">{m.name}</div>
-                          <div className="text-slate-400 text-[11px] mt-0.5">{m.tech}</div>
-                          <div className="text-[10px] text-cyan-400 mt-1 font-sans">{m.mode}</div>
+                          <div className="font-bold text-[#11162A] text-xs">{m.name}</div>
+                          <div className="text-[#65708B] text-xs mt-0.5">{m.tech}</div>
+                          <div className="text-xs text-[#6457E8] mt-1 font-medium">{m.mode}</div>
                         </div>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800 text-emerald-400 font-bold text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-[10px]">
                           {m.status}
                         </span>
-                        <div className="text-[10px] text-slate-400 mt-1">{m.accuracy}</div>
+                        <div className="text-xs text-[#65708B] mt-1">{m.accuracy}</div>
                       </div>
                     </div>
                   )
@@ -152,10 +159,10 @@ export const ModelStatusModal: React.FC<ModelStatusModalProps> = ({
               </div>
             </div>
 
-            <div className="px-5 py-3 bg-[#0a0d14] border-t border-slate-800 flex justify-end">
+            <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex justify-end">
               <button
                 onClick={onClose}
-                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs transition"
+                className="px-4 py-2 bg-[#F0F2F9] hover:bg-slate-200/70 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-medium transition cursor-pointer"
               >
                 Close Telemetry
               </button>
@@ -164,7 +171,8 @@ export const ModelStatusModal: React.FC<ModelStatusModalProps> = ({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  </Portal>
+)
 }
 
 export default ModelStatusModal

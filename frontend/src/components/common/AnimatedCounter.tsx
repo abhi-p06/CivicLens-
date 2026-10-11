@@ -1,51 +1,67 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { useCivicMotion } from '../../lib/motionContext'
 
 export const AnimatedCounter: React.FC<{
   value: number
   durationMs?: number
+  delayMs?: number
   suffix?: string
-}> = ({ value, durationMs = 600, suffix = '' }) => {
+}> = ({ value, durationMs = 750, delayMs = 0, suffix = '' }) => {
+  const { isReduced } = useCivicMotion()
   const [displayValue, setDisplayValue] = useState(0)
-  const prevValueRef = useRef(0)
+  const prevValueRef = useRef<number>(0)
+  const isFirstRender = useRef<boolean>(true)
 
   useEffect(() => {
-    // Check user preference for reduced motion
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    if (prefersReducedMotion) {
+    if (isReduced) {
       setDisplayValue(value)
       prevValueRef.current = value
       return
     }
 
-    const startValue = prevValueRef.current
+    const startValue = isFirstRender.current ? 0 : prevValueRef.current
+    isFirstRender.current = false
     const endValue = value
     prevValueRef.current = value
 
-    if (startValue === endValue) {
+    if (startValue === endValue && endValue !== 0) {
       setDisplayValue(endValue)
       return
     }
 
-    let startTimestamp: number | null = null
-    const step = (timestamp: number) => {
-      if (!startTimestamp) startTimestamp = timestamp
-      const progress = Math.min((timestamp - startTimestamp) / durationMs, 1)
-      const easeOut = 1 - Math.pow(1 - progress, 3)
-      const current = Math.round(startValue + (endValue - startValue) * easeOut)
-      setDisplayValue(current)
-      if (progress < 1) {
-        window.requestAnimationFrame(step)
-      } else {
-        setDisplayValue(endValue)
+    let frameId: number
+    let timeoutId: ReturnType<typeof setTimeout>
+
+    const startAnimation = () => {
+      let startTimestamp: number | null = null
+      const step = (timestamp: number) => {
+        if (!startTimestamp) startTimestamp = timestamp
+        const elapsed = timestamp - startTimestamp
+        const progress = Math.min(elapsed / durationMs, 1)
+        // Smooth easeOutCubic
+        const easeOut = 1 - Math.pow(1 - progress, 3)
+        const current = Math.round(startValue + (endValue - startValue) * easeOut)
+        setDisplayValue(current)
+        if (progress < 1) {
+          frameId = window.requestAnimationFrame(step)
+        } else {
+          setDisplayValue(endValue)
+        }
       }
+      frameId = window.requestAnimationFrame(step)
     }
 
-    const frameId = window.requestAnimationFrame(step)
-    return () => window.cancelAnimationFrame(frameId)
-  }, [value, durationMs])
+    if (delayMs > 0) {
+      timeoutId = setTimeout(startAnimation, delayMs)
+    } else {
+      startAnimation()
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      if (frameId) window.cancelAnimationFrame(frameId)
+    }
+  }, [value, durationMs, delayMs, isReduced])
 
   return (
     <span>

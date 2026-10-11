@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, Variants } from 'framer-motion'
 import {
   ShieldCheck,
   Camera,
@@ -18,6 +18,24 @@ import { BeforeAfterSlider } from '../common/BeforeAfterSlider'
 import { useToast } from '../common/Toast'
 import { api } from '../../services/api'
 import { cn } from '../../lib/utils'
+import { useCivicMotion } from '../../lib/motionContext'
+
+const queueStaggerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 },
+  },
+}
+
+const queueItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+}
 
 interface ResolutionViewProps {
   issues: Issue[]
@@ -31,6 +49,7 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
   onOpenResolutionModal,
 }) => {
   const { success, info } = useToast()
+  const { isReduced } = useCivicMotion()
   // Default to first issue with evidence or first road issue
   const defaultIssue =
     issues.find((i) => i.resolutionEvidence) ||
@@ -106,35 +125,35 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
   ).length
 
   return (
-    <div className="h-full flex flex-col overflow-y-auto p-4 sm:p-6 space-y-5 font-sans">
+    <div className="h-full flex flex-col overflow-y-auto p-6 space-y-5 font-sans bg-[#F6F7FC]">
       {/* 1. Executive Summary Header */}
-      <div className="p-4 sm:p-5 bg-[#0e131d] border border-slate-800 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+      <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
-            <h1 className="text-base sm:text-lg font-bold text-slate-100 tracking-tight">
+            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+            <h1 className="text-base sm:text-lg font-bold text-[#11162A] tracking-normal">
               Work-Order Verification & Lifecycle
             </h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950/80 border border-emerald-800 text-emerald-300">
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800">
               FEATURE 20
             </span>
           </div>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+          <p className="text-[#65708B] text-xs sm:text-sm mt-1">
             Automated before/after computer vision delta inspection verifying physical field repairs.
           </p>
         </div>
 
         {/* Header Stats */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="px-3 py-2 rounded-lg bg-[#121824] border border-slate-800 text-right">
-            <div className="text-[10px] font-mono text-slate-400 uppercase">Verified Orders</div>
-            <div className="text-sm font-bold font-mono text-emerald-400">
+          <div className="px-3.5 py-2 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] text-right">
+            <div className="text-[10px] text-[#65708B] uppercase font-semibold">Verified Orders</div>
+            <div className="text-sm font-bold font-mono text-emerald-700">
               {verifiedCount} / {localIssues.length}
             </div>
           </div>
-          <div className="px-3 py-2 rounded-lg bg-[#121824] border border-slate-800 text-right">
-            <div className="text-[10px] font-mono text-slate-400 uppercase">Pass Rate</div>
-            <div className="text-sm font-bold font-mono text-cyan-400">94.2%</div>
+          <div className="px-3.5 py-2 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] text-right">
+            <div className="text-[10px] text-[#65708B] uppercase font-semibold">Pass Rate</div>
+            <div className="text-sm font-bold font-mono text-[#6457E8]">94.2%</div>
           </div>
         </div>
       </div>
@@ -146,19 +165,19 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="p-5 bg-[#0e131d] border border-slate-800 rounded-xl shadow-2xl space-y-4"
+          className="p-5 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-4"
         >
           {/* Active Issue Header Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E4E7F1]">
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-base font-bold font-mono text-cyan-400">
+              <span className="text-base font-bold font-mono text-[#6457E8]">
                 {selectedIssue.issueId}
               </span>
               <StatusBadge status={selectedIssue.status} />
-              <span className="text-xs text-slate-300 font-medium">
+              <span className="text-xs text-[#11162A] font-semibold">
                 {selectedIssue.category}
               </span>
-              <span className="text-xs text-slate-500 font-mono">
+              <span className="text-xs text-[#65708B] font-mono">
                 &bull; {selectedIssue.ward}
               </span>
             </div>
@@ -166,20 +185,20 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onSelectIssue(selectedIssue)}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition cursor-pointer flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-lg bg-[#F0F2F9] hover:bg-slate-200/70 border border-[#E4E7F1] text-[#11162A] text-xs font-medium transition cursor-pointer flex items-center gap-1.5"
               >
                 <span>Dossier</span>
-                <ExternalLink className="w-3 h-3 text-slate-400" />
+                <ExternalLink className="w-3 h-3 text-[#65708B]" />
               </button>
 
               <button
                 disabled={isVerifying}
                 onClick={handleRunVerification}
                 className={cn(
-                  'px-3.5 py-1.5 rounded-lg text-xs font-medium font-mono font-bold flex items-center gap-2 transition cursor-pointer shadow-lg active:scale-95',
+                  'px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition cursor-pointer shadow-xs',
                   isVerifying
-                    ? 'bg-cyan-950 text-cyan-400 border border-cyan-800 cursor-not-allowed'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/60'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-not-allowed'
+                    : 'bg-[#10B981] hover:bg-[#059669] text-white'
                 )}
               >
                 {isVerifying ? (
@@ -197,29 +216,29 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
 
               <button
                 onClick={() => onOpenResolutionModal(selectedIssue)}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                className="px-3 py-1.5 rounded-lg bg-[#F0F2F9] hover:bg-slate-200/70 border border-[#E4E7F1] text-[#11162A] text-xs font-medium transition cursor-pointer flex items-center gap-1"
                 title="Upload custom inspector proof"
               >
-                <Camera className="w-3.5 h-3.5 text-cyan-400" />
+                <Camera className="w-3.5 h-3.5 text-[#6457E8]" />
                 <span>Upload Proof</span>
               </button>
             </div>
           </div>
 
           {/* Issue Context Text */}
-          <p className="text-xs text-slate-300 leading-relaxed font-sans bg-[#0a0d14] p-3 rounded-lg border border-slate-800/80">
-            <strong className="text-slate-100 font-semibold">Incident: </strong>
+          <p className="text-xs text-[#11162A] leading-relaxed font-sans bg-[#F0F2F9] p-3.5 rounded-xl border border-[#E4E7F1]">
+            <strong className="text-[#11162A] font-semibold">Incident: </strong>
             {selectedIssue.complaintText}
           </p>
 
           {/* The High-Impact Before / After Comparison Slider */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-medium text-slate-400">
+            <div className="flex items-center justify-between text-xs font-medium text-[#65708B]">
               <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <Sparkles className="w-3.5 h-3.5 text-[#6457E8]" />
                 <span>Interactive Field Evidence Inspection (Drag horizontal slider)</span>
               </span>
-              <span className="text-cyan-400 font-mono text-[11px]">
+              <span className="text-[#6457E8] font-mono text-[11px] font-semibold">
                 Computer Vision Delta SSIM Analysis
               </span>
             </div>
@@ -242,22 +261,22 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
           </div>
 
           {/* AI Inspection Findings Banner */}
-          <div className="p-3.5 rounded-xl bg-[#0a0d14] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="p-3.5 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-400 shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 shrink-0">
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <div className="font-semibold text-slate-200 flex items-center gap-2">
+                <div className="font-semibold text-[#11162A] flex items-center gap-2">
                   <span>Verdict: </span>
-                  <strong className="text-emerald-400 font-mono">
+                  <strong className="text-emerald-700 font-mono">
                     {selectedIssue.resolutionEvidence?.resolutionStatus || 'LIKELY RESOLVED'}
                   </strong>
-                  <span className="text-[10px] text-slate-500 font-mono">
+                  <span className="text-[10px] text-[#65708B] font-mono">
                     (Strictly Non-Certain)
                   </span>
                 </div>
-                <div className="text-slate-400 text-xs mt-0.5">
+                <div className="text-[#65708B] text-xs mt-0.5">
                   {selectedIssue.resolutionEvidence?.verificationSummary ||
                     'Defect cleared: structural asphalt restored. No residual crater detected.'}
                 </div>
@@ -266,12 +285,12 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
 
             <div className="flex items-center gap-4 text-xs font-mono shrink-0">
               <div>
-                <span className="text-slate-500">SSIM Index: </span>
-                <strong className="text-cyan-400">0.89</strong>
+                <span className="text-[#65708B]">SSIM Index: </span>
+                <strong className="text-[#6457E8]">0.89</strong>
               </div>
               <div>
-                <span className="text-slate-500">Confidence: </span>
-                <strong className="text-emerald-400">
+                <span className="text-[#65708B]">Confidence: </span>
+                <strong className="text-emerald-700">
                   {((selectedIssue.resolutionEvidence?.resolutionConfidence || 0.942) * 100).toFixed(1)}%
                 </strong>
               </div>
@@ -280,76 +299,90 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
         </motion.div>
       )}
 
-      {/* 3. Work Order Ledger (Clean Queue Table) */}
-      <div className="p-5 bg-[#0e131d] border border-slate-800 rounded-xl shadow-xl space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-          <h2 className="text-xs font-bold font-mono tracking-wider text-slate-300 uppercase">
+      {/* 3. Work Order Ledger (Clean Queue Table with Staged Entrance) */}
+      <motion.div
+        initial={isReduced ? {} : { opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-30px' }}
+        transition={{ duration: 0.38, ease: 'easeOut' }}
+        className="p-5 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-3"
+      >
+        <div className="flex items-center justify-between pb-2.5 border-b border-[#E4E7F1]">
+          <h2 className="text-xs font-bold tracking-normal text-[#11162A] uppercase">
             Work-Order Resolution Queue ({localIssues.length} Incidents)
           </h2>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-xs text-[#65708B]">
             Click any row to inspect in verification station
           </span>
         </div>
 
-        <div className="divide-y divide-slate-800/80 overflow-hidden">
+        <motion.div
+          variants={isReduced ? {} : queueStaggerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="divide-y divide-[#E4E7F1]/70 overflow-hidden"
+        >
           {localIssues.map((issue) => {
             const isSelected = issue.issueId === activeIssueId
             const isResolved = issue.status === 'RESOLVED' || Boolean(issue.resolutionEvidence)
             return (
-              <div
+              <motion.div
                 key={issue.issueId}
+                variants={isReduced ? {} : queueItemVariants}
+                whileHover={{ y: isReduced ? 0 : -1, transition: { duration: 0.12 } }}
                 onClick={() => setActiveIssueId(issue.issueId)}
                 className={cn(
-                  'py-3 px-3 rounded-lg flex items-center justify-between gap-3 transition-colors cursor-pointer',
+                  'py-3 px-3.5 rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer',
                   isSelected
-                    ? 'bg-[#151c2a] border border-cyan-900/60 shadow-sm'
-                    : 'hover:bg-[#101420]'
+                    ? 'bg-[#F0F2F9] border border-[#6457E8]/40 shadow-xs'
+                    : 'hover:bg-[#F0F2F9]/50'
                 )}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div
                     className={cn(
-                      'w-2 h-2 rounded-full shrink-0',
-                      isResolved ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]' : 'bg-amber-400'
+                      'w-2.5 h-2.5 rounded-full shrink-0',
+                      isResolved ? 'bg-emerald-500' : 'bg-[#F97316]'
                     )}
                   />
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-cyan-400">
+                      <span className="font-mono text-xs font-bold text-[#6457E8]">
                         {issue.issueId}
                       </span>
                       <StatusBadge status={issue.status} />
-                      <span className="text-xs text-slate-300 font-medium truncate">
+                      <span className="text-xs text-[#11162A] font-semibold truncate">
                         {issue.category}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 truncate mt-0.5 max-w-xl font-sans">
+                    <p className="text-xs text-[#65708B] truncate mt-0.5 max-w-xl font-sans">
                       {issue.complaintText}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="hidden md:inline-block text-xs font-mono text-slate-500">
+                  <span className="hidden md:inline-block text-xs font-mono text-[#65708B]">
                     {issue.ward}
                   </span>
                   <span
                     className={cn(
-                      'px-2 py-0.5 rounded text-[10px] font-mono font-bold',
+                      'px-2.5 py-0.5 rounded text-xs font-semibold',
                       isResolved
-                        ? 'bg-emerald-950/80 border border-emerald-800 text-emerald-300'
-                        : 'bg-amber-950/80 border border-amber-800 text-amber-300'
+                        ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                        : 'bg-amber-50 border border-amber-200 text-amber-800'
                     )}
                   >
                     {isResolved ? 'VERIFIED' : 'PENDING PROOF'}
                   </span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                  <ChevronRight className="w-4 h-4 text-[#65708B]" />
                 </div>
-              </div>
+              </motion.div>
             )
           })}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
