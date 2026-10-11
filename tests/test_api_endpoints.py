@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
+client.headers["Authorization"] = "Bearer demo-admin-token"
 
 def test_api_health():
     res = client.get("/api/v1/health")
@@ -54,14 +55,15 @@ def test_api_status_update():
 
 def test_api_verify_resolution():
     res = client.post(
-        "/api/v1/issues/CIVIC-2026-003/verify",
+        "/api/v1/issues/CIVIC-2026-001/verify",
         json={
             "inspectorId": "INSP-MUMBAI-04",
-            "resolutionImageUrl": "https://civic.internal/res/repaired_003.jpg",
-            "notes": "Debris cleared, bin washed and sanitized."
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg",
+            "notes": "Asphalt patching completed, road leveled."
         }
     )
     assert res.status_code == 200
     data = res.json()
     assert data["status"] in ["RESOLVED", "Verified Closed"]
     assert data["resolutionEvidence"]["post_repair_cv_cleared"] is True
+

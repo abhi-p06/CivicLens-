@@ -371,7 +371,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
       marker.on('click', () => {
         map.flyTo([issue.latitude, issue.longitude], 15, {
-          duration: 1.2,
+          duration: 0.85,
           easeLinearity: 0.25,
         })
         if (onSelectIssue) onSelectIssue(issue)
@@ -447,7 +447,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
     if (selectedIssue.latitude && selectedIssue.longitude) {
       map.flyTo([selectedIssue.latitude, selectedIssue.longitude], 15, {
-        duration: 1.2,
+        duration: 0.85,
         easeLinearity: 0.25,
       })
     }

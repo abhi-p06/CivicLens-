@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, CheckCircle, AlertTriangle, ShieldCheck, Image as ImageIcon, Camera } from 'lucide-react'
+import { X, CheckCircle, AlertTriangle, ShieldCheck, Image as ImageIcon, Camera, Upload, Loader2, Check } from 'lucide-react'
 import { api } from '../../services/api'
 import { Issue } from '../../types'
 import { cn } from '../../lib/utils'
@@ -24,19 +24,76 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
   const [result, setResult] = useState<any | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // Real Image Upload State
+  const [uploadId, setUploadId] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
+  const [previewThumbnail, setPreviewThumbnail] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleClearImage = () => {
+    setUploadId(null)
+    setPostActionImage('')
+    setSelectedFileName(null)
+    setPreviewThumbnail(null)
+    setUploadError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Only JPEG, PNG, and WebP images are allowed.')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('File exceeds maximum upload size of 10 MB.')
+      return
+    }
+
+    setUploadError(null)
+    setError(null)
+    setSelectedFileName(file.name)
+    const localUrl = URL.createObjectURL(file)
+    setPreviewThumbnail(localUrl)
+    setIsUploading(true)
+
+    try {
+      const res = await api.uploadImage(file)
+      setUploadId(res.uploadId)
+      setPostActionImage(res.previewUrl)
+    } catch (err: any) {
+      setUploadError(err.message || 'Image upload failed')
+      setUploadId(null)
+      setPreviewThumbnail(null)
+      setSelectedFileName(null)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
   const handleVerify = async () => {
     if (!issue) return
-    if (!postActionImage.trim()) {
-      setError('Please provide a post-action verification image URL or path.')
+    if (isUploading) {
+      setError('Please wait for the image upload to complete.')
+      return
+    }
+    if (!postActionImage.trim() && !uploadId) {
+      setError('Please provide a post-action verification image or upload.')
       return
     }
     setError(null)
     setLoading(true)
     try {
-      const res = await api.verifyResolution(issue.issueId, postActionImage)
-      setResult(res)
-      // fetch updated issue
-      const updated = await api.getIssue(issue.issueId)
+      const updated = await api.verifyResolution(issue.issueId, postActionImage || undefined, uploadId || undefined)
+      setResult(updated.resolutionEvidence)
       onVerified(updated)
     } catch (err: any) {
       setError(err.message || 'Verification process failed')
@@ -46,9 +103,9 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
   }
 
   const sampleImages = [
-    { label: 'Repaired Surface (Clean Asphalt)', path: 'data/sample_repaired_pothole.jpg' },
-    { label: 'Unresolved (Pothole Still Visible)', path: 'data/sample_pothole.jpg' },
-    { label: 'Cleared Garbage Site', path: 'data/sample_cleared_site.jpg' },
+    { label: 'Repaired Surface (Clean Asphalt)', path: 'data/test_samples/repair_pothole_after_repaired.jpg' },
+    { label: 'Unresolved (Pothole Still Visible)', path: 'data/test_samples/repair_pothole_before.jpg' },
+    { label: 'Incompatible Angle / Indoor Scene', path: 'data/test_samples/incompatible_scene.jpg' },
   ]
 
   return (
@@ -102,7 +159,10 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
                     <button
                       key={s.path}
                       type="button"
-                      onClick={() => setPostActionImage(s.path)}
+                      onClick={() => {
+                        handleClearImage()
+                        setPostActionImage(s.path)
+                      }}
                       className={cn(
                         'p-2.5 rounded-lg border text-left text-xs transition cursor-pointer',
                         postActionImage === s.path
@@ -118,17 +178,89 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
 
               {/* Custom Image Input */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
-                  <ImageIcon className="w-3.5 h-3.5 text-[#6457E8]" />
-                  <span>Post-Action Resolution Image Path / URI</span>
+                <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <ImageIcon className="w-3.5 h-3.5 text-[#6457E8]" />
+                    <span>Post-Action Resolution Evidence</span>
+                  </span>
+                  <span className="text-[#65708B] font-normal text-[11px]">
+                    JPEG, PNG, WebP &le; 10MB
+                  </span>
                 </label>
+
                 <input
-                  type="text"
-                  value={postActionImage}
-                  onChange={(e) => setPostActionImage(e.target.value)}
-                  placeholder="data/sample_repaired_pothole.jpg"
-                  className="w-full bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileSelect}
+                  className="hidden"
                 />
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={postActionImage}
+                    onChange={(e) => setPostActionImage(e.target.value)}
+                    placeholder={uploadId ? `Upload ID: ${uploadId}` : 'Image file or sample URI'}
+                    className="flex-1 bg-white border border-[#E4E7F1] rounded-xl p-2.5 text-xs text-[#11162A] font-mono outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
+                  />
+                  <button
+                    type="button"
+                    disabled={isUploading}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-3.5 h-3.5 text-white" />
+                        <span>Upload</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {(previewThumbnail || uploadId) && (
+                  <div className="flex items-center justify-between p-2 bg-[#F0F2F9] border border-[#E4E7F1] rounded-xl mt-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {previewThumbnail && (
+                        <img
+                          src={previewThumbnail}
+                          alt="Upload preview"
+                          className="w-8 h-8 object-cover rounded-lg border border-[#E4E7F1] shrink-0"
+                        />
+                      )}
+                      <div className="min-w-0">
+                        <div className="text-xs font-medium text-[#11162A] truncate">
+                          {selectedFileName || 'Uploaded Photo'}
+                        </div>
+                        <div className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                          <Check className="w-3 h-3" />
+                          <span>Ready for verification</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleClearImage}
+                      className="p-1 text-[#65708B] hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer shrink-0"
+                      title="Remove image"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {uploadError && (
+                  <div className="p-2 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-[11px] flex items-center gap-1.5 mt-1">
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{uploadError}</span>
+                  </div>
+                )}
               </div>
 
               {error && (
@@ -148,31 +280,53 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
                         'px-2 py-0.5 rounded text-[10px] font-bold border uppercase',
                         result.resolutionStatus === 'LIKELY RESOLVED'
                           ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
-                          : 'bg-rose-100 border-rose-300 text-rose-800'
+                          : result.resolutionStatus === 'STILL PRESENT'
+                          ? 'bg-rose-100 border-rose-300 text-rose-800'
+                          : 'bg-amber-100 border-amber-300 text-amber-800'
                       )}
                     >
                       {result.resolutionStatus}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[#65708B]">Confidence Score:</span>
-                      <div className="font-bold text-[#6457E8] text-sm mt-0.5">
-                        {(result.resolutionConfidence * 100).toFixed(1)}%
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                    <div className="p-2 bg-[#F0F2F9] rounded-lg">
+                      <span className="text-[10px] text-[#65708B] font-semibold uppercase block">Confidence</span>
+                      <div className="font-bold text-[#6457E8] text-xs mt-0.5">
+                        {((result.resolutionConfidence ?? 0) * 100).toFixed(1)}%
                       </div>
                     </div>
-                    <div>
-                      <span className="text-[#65708B]">Remaining Detection:</span>
-                      <div className="font-bold text-[#11162A] text-sm mt-0.5">
-                        {result.remainingDetection || 'None (Surface Cleared)'}
+                    <div className="p-2 bg-[#F0F2F9] rounded-lg">
+                      <span className="text-[10px] text-[#65708B] font-semibold uppercase block">Scene Aligned</span>
+                      <div className="font-bold text-[#11162A] text-xs mt-0.5">
+                        {result.sceneComparable ? 'Comparable' : 'Incompatible'}
+                      </div>
+                    </div>
+                    <div className="p-2 bg-[#F0F2F9] rounded-lg">
+                      <span className="text-[10px] text-[#65708B] font-semibold uppercase block">SSIM Index</span>
+                      <div className="font-bold text-[#11162A] text-xs mt-0.5">
+                        {result.comparisonMetrics?.ssim != null ? `${(result.comparisonMetrics.ssim * 100).toFixed(1)}%` : 'N/A'}
+                      </div>
+                    </div>
+                    <div className="p-2 bg-[#F0F2F9] rounded-lg">
+                      <span className="text-[10px] text-[#65708B] font-semibold uppercase block">Remaining</span>
+                      <div className="font-bold text-[#11162A] text-xs mt-0.5 truncate">
+                        {result.remainingDetection || 'None (Cleared)'}
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] text-[#11162A] text-xs leading-relaxed">
-                    {result.verificationSummary}
+                  <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] text-[#11162A] text-xs leading-relaxed space-y-1">
+                    <div className="font-semibold text-[#11162A]">Method: {result.verificationMethod || 'yolo_before_after_comparison'}</div>
+                    <div className="text-[#65708B]">{result.verificationSummary}</div>
                   </div>
+
+                  {result.requiresManualReview && (
+                    <div className="p-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-[11px] font-medium flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600" />
+                      <span>Flagged for on-site supervisory review by Municipal Ward Engineer.</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

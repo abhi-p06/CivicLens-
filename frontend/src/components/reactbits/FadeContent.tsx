@@ -13,12 +13,13 @@ export interface FadeContentProps extends HTMLMotionProps<'div'> {
 
 /**
  * React Bits Fade Content Component
- * Subtle unblur and opacity reveal for page transitions and card updates
+ * Clean, GPU-friendly opacity & subtle transform reveal.
+ * Avoids heavy full-element blur filters that cause rasterization stutter.
  */
 export const FadeContent: React.FC<FadeContentProps> = ({
   children,
-  blur = true,
-  duration = 0.45,
+  blur = false,
+  duration = 0.35,
   delay = 0,
   initialOpacity = 0,
   className,
@@ -34,20 +35,20 @@ export const FadeContent: React.FC<FadeContentProps> = ({
     <motion.div
       initial={{
         opacity: initialOpacity,
-        filter: blur ? 'blur(6px)' : 'none',
+        y: 8,
       }}
       animate={{
         opacity: 1,
-        filter: 'blur(0px)',
+        y: 0,
       }}
       exit={{
         opacity: 0,
-        filter: blur ? 'blur(4px)' : 'none',
+        y: -4,
       }}
       transition={{
         duration,
         delay,
-        ease: 'easeOut',
+        ease: [0.16, 1, 0.3, 1],
       }}
       className={className}
       {...props}

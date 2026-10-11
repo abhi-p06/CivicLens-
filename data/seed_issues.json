@@ -18,6 +18,7 @@
     "detectedObjects": [
       { "label": "pothole", "confidence": 0.94, "bbox": [0.42, 0.25, 0.78, 0.82] }
     ],
+    "imageUrl": "data/test_samples/repair_pothole_before.jpg",
     "evidenceConsistency": 0.96,
     "consistencyLevel": "CONSISTENT",
     "consistencyFlag": "CONSISTENT",

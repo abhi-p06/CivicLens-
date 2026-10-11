@@ -76,53 +76,30 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
     info('Initiating computer vision delta inspection on post-action evidence...')
 
     try {
-      const res = await api.verifyResolution(
-        selectedIssue.issueId,
-        '/sample_repaired_pothole.jpg'
-      )
-      setTimeout(() => {
-        setIsVerifying(false)
-        if (res) {
-          setLocalIssues((prev) =>
-            prev.map((i) => (i.issueId === selectedIssue.issueId ? res : i))
-          )
-          success(
-            `Inspection complete for ${selectedIssue.issueId}: LIKELY RESOLVED (94.2% confidence).`
-          )
-        }
-      }, 1200)
-    } catch {
-      setTimeout(() => {
-        setIsVerifying(false)
-        // Fallback local verification
+      const postImage = 'data/test_samples/repair_pothole_after_repaired.jpg'
+      const updated = await api.verifyResolution(selectedIssue.issueId, postImage)
+      setIsVerifying(false)
+      if (updated) {
         setLocalIssues((prev) =>
-          prev.map((i) => {
-            if (i.issueId === selectedIssue.issueId) {
-              return {
-                ...i,
-                status: 'RESOLVED',
-                resolutionEvidence: {
-                  resolutionStatus: 'LIKELY RESOLVED' as ResolutionStatus,
-                  resolutionConfidence: 0.942,
-                  remainingDetection: null,
-                  verificationSummary: 'Clean asphalt patch laid. Defect cleared.',
-                  verifiedAt: new Date().toISOString(),
-                },
-              }
-            }
-            return i
-          })
+          prev.map((i) => (i.issueId === selectedIssue.issueId ? updated : i))
         )
-        success(
-          `Field inspection verified: ${selectedIssue.issueId} marked LIKELY RESOLVED.`
-        )
-      }, 1200)
+        const status = updated.resolutionEvidence?.resolutionStatus || 'INSPECTED'
+        const conf = ((updated.resolutionEvidence?.resolutionConfidence || 0) * 100).toFixed(1)
+        success(`Inspection complete for ${selectedIssue.issueId}: ${status} (${conf}% confidence).`)
+      }
+    } catch (err: any) {
+      setIsVerifying(false)
+      info(err.message || 'Inspection failed. Please upload custom post-repair proof.')
     }
   }
 
   const verifiedCount = localIssues.filter(
     (i) => i.resolutionEvidence || i.status === 'RESOLVED'
   ).length
+  const resolvedCount = localIssues.filter(
+    (i) => i.status === 'RESOLVED' || i.resolutionEvidence?.resolutionStatus === 'LIKELY RESOLVED'
+  ).length
+  const passRate = verifiedCount > 0 ? ((resolvedCount / verifiedCount) * 100).toFixed(1) + '%' : '0.0%'
 
   return (
     <div className="h-full flex flex-col overflow-y-auto p-6 space-y-5 font-sans bg-[#F6F7FC]">
@@ -153,7 +130,7 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
           </div>
           <div className="px-3.5 py-2 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] text-right">
             <div className="text-[10px] text-[#65708B] uppercase font-semibold">Pass Rate</div>
-            <div className="text-sm font-bold font-mono text-[#6457E8]">94.2%</div>
+            <div className="text-sm font-bold font-mono text-[#6457E8]">{passRate}</div>
           </div>
         </div>
       </div>
@@ -239,22 +216,34 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
                 <span>Interactive Field Evidence Inspection (Drag horizontal slider)</span>
               </span>
               <span className="text-[#6457E8] font-mono text-[11px] font-semibold">
-                Computer Vision Delta SSIM Analysis
+                Post-Repair Visual Evidence Inspection
               </span>
             </div>
 
             <BeforeAfterSlider
-              beforeImage="/sample_pothole.jpg"
-              afterImage="/sample_repaired_pothole.jpg"
+              beforeImage={
+                selectedIssue.imageUrl
+                  ? (selectedIssue.imageUrl.startsWith('/') || selectedIssue.imageUrl.startsWith('http') || selectedIssue.imageUrl.startsWith('blob:')
+                      ? selectedIssue.imageUrl
+                      : '/' + selectedIssue.imageUrl)
+                  : '/data/test_samples/repair_pothole_before.jpg'
+              }
+              afterImage={
+                selectedIssue.resolutionEvidence?.resolution_image_url
+                  ? (selectedIssue.resolutionEvidence.resolution_image_url.startsWith('/') || selectedIssue.resolutionEvidence.resolution_image_url.startsWith('http') || selectedIssue.resolutionEvidence.resolution_image_url.startsWith('blob:')
+                      ? selectedIssue.resolutionEvidence.resolution_image_url
+                      : '/' + selectedIssue.resolutionEvidence.resolution_image_url)
+                  : '/data/test_samples/repair_pothole_after_repaired.jpg'
+              }
               beforeLabel="DEFECT CAPTURED (BEFORE)"
               afterLabel="POST-REPAIR RESTORATION (AFTER)"
-              beforeSubtext={selectedIssue.visualDetection || 'Pothole (Detected, 94% conf)'}
+              beforeSubtext={selectedIssue.visualDetection || 'Pothole (Detected Baseline)'}
               afterSubtext={
                 selectedIssue.resolutionEvidence?.verificationSummary ||
-                'Clean asphalt patch laid (0 residual defect)'
+                'Clean asphalt patch verified (0 residual defect)'
               }
               confidence={
-                selectedIssue.resolutionEvidence?.resolutionConfidence || 0.942
+                selectedIssue.resolutionEvidence?.resolutionConfidence || 0.81
               }
               isScanning={isVerifying}
             />
@@ -263,14 +252,28 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
           {/* AI Inspection Findings Banner */}
           <div className="p-3.5 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 shrink-0">
+              <div className={cn(
+                "w-8 h-8 rounded-lg border flex items-center justify-center shrink-0",
+                selectedIssue.resolutionEvidence?.resolutionStatus === 'STILL PRESENT'
+                  ? 'bg-rose-100 border-rose-300 text-rose-700'
+                  : selectedIssue.resolutionEvidence?.resolutionStatus === 'REQUIRES MANUAL VERIFICATION'
+                  ? 'bg-amber-100 border-amber-300 text-amber-700'
+                  : 'bg-emerald-100 border-emerald-300 text-emerald-700'
+              )}>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
                 <div className="font-semibold text-[#11162A] flex items-center gap-2">
                   <span>Verdict: </span>
-                  <strong className="text-emerald-700 font-mono">
-                    {selectedIssue.resolutionEvidence?.resolutionStatus || 'LIKELY RESOLVED'}
+                  <strong className={cn(
+                    "font-mono",
+                    selectedIssue.resolutionEvidence?.resolutionStatus === 'STILL PRESENT'
+                      ? 'text-rose-700'
+                      : selectedIssue.resolutionEvidence?.resolutionStatus === 'REQUIRES MANUAL VERIFICATION'
+                      ? 'text-amber-700'
+                      : 'text-emerald-700'
+                  )}>
+                    {selectedIssue.resolutionEvidence?.resolutionStatus || 'PENDING INSPECTION'}
                   </strong>
                   <span className="text-[10px] text-[#65708B] font-mono">
                     (Strictly Non-Certain)
@@ -278,7 +281,7 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
                 </div>
                 <div className="text-[#65708B] text-xs mt-0.5">
                   {selectedIssue.resolutionEvidence?.verificationSummary ||
-                    'Defect cleared: structural asphalt restored. No residual crater detected.'}
+                    'Run AI verification or upload field photos to inspect surface delta.'}
                 </div>
               </div>
             </div>
@@ -286,12 +289,18 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
             <div className="flex items-center gap-4 text-xs font-mono shrink-0">
               <div>
                 <span className="text-[#65708B]">SSIM Index: </span>
-                <strong className="text-[#6457E8]">0.89</strong>
+                <strong className="text-[#6457E8]">
+                  {selectedIssue.resolutionEvidence?.comparisonMetrics?.ssim != null
+                    ? `${(selectedIssue.resolutionEvidence.comparisonMetrics.ssim * 100).toFixed(1)}%`
+                    : 'Evaluated on run'}
+                </strong>
               </div>
               <div>
                 <span className="text-[#65708B]">Confidence: </span>
                 <strong className="text-emerald-700">
-                  {((selectedIssue.resolutionEvidence?.resolutionConfidence || 0.942) * 100).toFixed(1)}%
+                  {selectedIssue.resolutionEvidence?.resolutionConfidence != null
+                    ? `${(selectedIssue.resolutionEvidence.resolutionConfidence * 100).toFixed(1)}%`
+                    : '—'}
                 </strong>
               </div>
             </div>

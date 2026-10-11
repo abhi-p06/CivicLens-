@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, Sparkles, Image, MapPin, AlertCircle } from 'lucide-react'
+import { X, Send, Sparkles, Image, MapPin, AlertCircle, Upload, Loader2, Check } from 'lucide-react'
 import { api } from '../../services/api'
 import { Issue } from '../../types'
 import { PriorityGauge } from '../common/PriorityGauge'
@@ -28,13 +28,69 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
   const [previewAnalysis, setPreviewAnalysis] = useState<any | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // Real Image Upload State
+  const [uploadId, setUploadId] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
+  const [previewThumbnail, setPreviewThumbnail] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   React.useEffect(() => {
     if (initialScenario) {
       loadScenario(initialScenario)
     }
   }, [initialScenario])
 
+  const handleClearImage = () => {
+    setUploadId(null)
+    setImageUrl('')
+    setSelectedFileName(null)
+    setPreviewThumbnail(null)
+    setUploadError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Only JPEG, PNG, and WebP images are allowed.')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('File exceeds maximum upload size of 10 MB.')
+      return
+    }
+
+    setUploadError(null)
+    setError(null)
+    setSelectedFileName(file.name)
+    const localUrl = URL.createObjectURL(file)
+    setPreviewThumbnail(localUrl)
+    setIsUploading(true)
+
+    try {
+      const res = await api.uploadImage(file)
+      setUploadId(res.uploadId)
+      setImageUrl(res.previewUrl)
+    } catch (err: any) {
+      setUploadError(err.message || 'Image upload failed')
+      setUploadId(null)
+      setPreviewThumbnail(null)
+      setSelectedFileName(null)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
   const loadScenario = (num: number) => {
+    handleClearImage()
     setPreviewAnalysis(null)
     setError(null)
     if (num === 1) {
@@ -63,7 +119,11 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
   }
 
   const handlePreAnalyze = async () => {
-    if (!complaintText.trim() && !imageUrl.trim()) {
+    if (isUploading) {
+      setError('Please wait for the image upload to complete.')
+      return
+    }
+    if (!complaintText.trim() && !imageUrl.trim() && !uploadId) {
       setError('Please provide complaint text or an image.')
       return
     }
@@ -74,6 +134,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         complaintText,
         location: location || undefined,
         imageUrl: imageUrl || undefined,
+        uploadId: uploadId || undefined,
       })
       setPreviewAnalysis(res)
     } catch (err: any) {
@@ -84,7 +145,11 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
   }
 
   const handleSubmit = async () => {
-    if (!complaintText.trim() && !imageUrl.trim()) {
+    if (isUploading) {
+      setError('Please wait for the image upload to complete.')
+      return
+    }
+    if (!complaintText.trim() && !imageUrl.trim() && !uploadId) {
       setError('Please provide complaint text or an image.')
       return
     }
@@ -95,6 +160,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         complaintText,
         location: location || undefined,
         imageUrl: imageUrl || undefined,
+        uploadId: uploadId || undefined,
       })
       onIssueCreated(res)
       onClose()
@@ -209,17 +275,89 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
-                <Image className="w-3.5 h-3.5 text-[#6457E8]" />
-                <span>Image Path / URL (Optional)</span>
+              <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Image className="w-3.5 h-3.5 text-[#6457E8]" />
+                  <span>Field Photo Evidence</span>
+                </span>
+                <span className="text-[#65708B] font-normal text-[11px]">
+                  JPEG, PNG, WebP &le; 10MB
+                </span>
               </label>
+
               <input
-                type="text"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="e.g. data/sample_pothole.jpg"
-                className="w-full bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-2.5 text-xs font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
+                type="file"
+                ref={fileInputRef}
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileSelect}
+                className="hidden"
               />
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder={uploadId ? `Upload ID: ${uploadId}` : 'Image file or sample URI'}
+                  className="flex-1 bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-2.5 text-xs font-mono outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
+                />
+                <button
+                  type="button"
+                  disabled={isUploading}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5 text-white" />
+                      <span>Upload</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {(previewThumbnail || uploadId) && (
+                <div className="flex items-center justify-between p-2 bg-[#F0F2F9] border border-[#E4E7F1] rounded-xl mt-1.5">
+                  <div className="flex items-center gap-2 min-w-0">
+                    {previewThumbnail && (
+                      <img
+                        src={previewThumbnail}
+                        alt="Upload preview"
+                        className="w-8 h-8 object-cover rounded-lg border border-[#E4E7F1] shrink-0"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <div className="text-xs font-medium text-[#11162A] truncate">
+                        {selectedFileName || 'Uploaded Image'}
+                      </div>
+                      <div className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        <span>Ready for AI analysis</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleClearImage}
+                    className="p-1 text-[#65708B] hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer shrink-0"
+                    title="Remove image"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {uploadError && (
+                <div className="p-2 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-[11px] flex items-center gap-1.5 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{uploadError}</span>
+                </div>
+              )}
             </div>
           </div>
 

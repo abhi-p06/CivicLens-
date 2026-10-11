@@ -25,6 +25,8 @@ import {
   FileCheck2,
   Layers,
   ChevronRight,
+  X,
+  Loader2,
 } from 'lucide-react'
 import { api } from '../../services/api'
 import { DEMO_SCENARIO } from '../../services/demoScenario'
@@ -143,6 +145,62 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
   const [error, setError] = useState<string | null>(null)
   const [isDemoScenario, setIsDemoScenario] = useState(false)
 
+  // Real Image Upload State
+  const [uploadId, setUploadId] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
+  const [previewThumbnail, setPreviewThumbnail] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Only JPEG, PNG, and WebP images are allowed.')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('File exceeds maximum upload size of 10 MB.')
+      return
+    }
+
+    setUploadError(null)
+    setError(null)
+    setSelectedFileName(file.name)
+    const localUrl = URL.createObjectURL(file)
+    setPreviewThumbnail(localUrl)
+    setIsUploading(true)
+
+    try {
+      const res = await api.uploadImage(file)
+      setUploadId(res.uploadId)
+      setImageUrl(res.previewUrl)
+      setIsDemoScenario(false)
+    } catch (err: any) {
+      setUploadError(err.message || 'Image upload failed')
+      setUploadId(null)
+      setPreviewThumbnail(null)
+      setSelectedFileName(null)
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleClearImage = () => {
+    setUploadId(null)
+    setImageUrl('')
+    setSelectedFileName(null)
+    setPreviewThumbnail(null)
+    setUploadError(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   // Execution & Animation State (0: Idle, 1-10: Active Stage)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [activeStage, setActiveStage] = useState<number>(0)
@@ -178,6 +236,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
   // Presets
   const loadPreset = (type: string) => {
     handleReset()
+    handleClearImage()
     if (type === 'pothole' || type === 'demo') {
       setComplaintText(DEMO_SCENARIO.complaintText)
       setLocation(DEMO_SCENARIO.location)
@@ -186,7 +245,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     } else if (type === 'garbage') {
       setComplaintText('Massive overflowing garbage dump on LBS Marg, rotten food waste and flies creating extreme health hazard')
       setLocation('LBS Marg, Ghatkopar West')
-      setImageUrl('data/sample_garbage.jpg')
+      setImageUrl('data/test_samples/litter.jpg')
       setIsDemoScenario(false)
     } else if (type === 'water') {
       setComplaintText('Major drinking water pipeline burst flooding 90 Feet Road Dharavi, millions of liters escaping onto road')
@@ -337,7 +396,12 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
 
   // Handle ANALYZE button click
   const handleAnalyze = async () => {
-    if (!complaintText.trim() && !imageUrl.trim()) {
+    if (isUploading) {
+      setError('Please wait for the image upload to complete.')
+      return
+    }
+
+    if (!complaintText.trim() && !imageUrl.trim() && !uploadId) {
       setError('Please provide a description or an image of the civic issue.')
       return
     }
@@ -408,6 +472,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         complaintText,
         location,
         imageUrl: imageUrl.trim() ? imageUrl : undefined,
+        uploadId: uploadId || undefined,
       })
 
       const synthesizedResult = {
@@ -420,10 +485,10 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         department: analysisRes.department || analysisRes.suggestedDepartment || 'Municipal Engineering',
         priorityScore: analysisRes.priorityScore || 85,
         priorityLevel: analysisRes.priorityLevel?.value || analysisRes.priorityLevel || 'HIGH',
-        evidenceConsistency: analysisRes.consistencyFlag || analysisRes.consistencyLevel?.value || analysisRes.consistencyLevel || 'CONSISTENT',
-        consistencyScore: typeof analysisRes.evidenceConsistency === 'number' ? Math.round(analysisRes.evidenceConsistency * 100) : 92,
-        visualDetection: analysisRes.visualDetection || 'Structural defect identified',
-        visualConfidence: analysisRes.visualConfidence ? Math.round(analysisRes.visualConfidence * 100) : 89,
+        visualDetection: analysisRes.visualDetection || null,
+        visualConfidence: analysisRes.visualConfidence ? Math.round(analysisRes.visualConfidence * 100) : 0,
+        detectedObjects: analysisRes.detectedObjects || [],
+        visionMode: analysisRes.visionMode || analysisRes.visionExecutionMode,
         recommendedAction: analysisRes.recommendedAction || 'Dispatch municipal survey team for immediate on-site inspection.',
         priorityReasoning: analysisRes.priorityReasoning || 'Multi-factor risk assessment generated from verified municipal report.',
         slaHours: analysisRes.slaHours || 12,
@@ -544,6 +609,35 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     setError(null)
   }
 
+  // Fallback and computed values for rendering and commit
+  const targetCategory = result?.category || 'Pothole'
+  const targetLocation = result?.location || location || DEMO_SCENARIO.location
+  const targetUrgency = result?.urgency ?? 92
+  const targetSeverity = result?.severity ?? 88
+  const visualDetection = isDemoScenario
+    ? (result?.visualDetection || 'Pothole (Confidence: 89.2%)')
+    : result?.visualDetection
+  const visualConfidence = isDemoScenario
+    ? (result?.visualConfidence ?? 89.2)
+    : (result?.visualConfidence ?? 0)
+  const detectedObjects = result?.detectedObjects || []
+  const consistencyScore = result?.consistencyScore ?? 94
+  const consistencyLevel = result?.evidenceConsistency || 'CONSISTENT'
+  const department = result?.department || 'Roads & Traffic Department'
+  const recommendedAction =
+    result?.recommendedAction || 'Deploy cold-mix asphalt patch team & erect emergency barricades.'
+  const priorityScore = result?.priorityScore ? Math.round(result.priorityScore) : 91
+  const priorityLevel = result?.priorityLevel || 'CRITICAL'
+  const priorityReasoning = result?.priorityReasoning
+  const breakdown = result?.priorityBreakdown || {
+    urgencyScore: 20,
+    textSeverityScore: 16,
+    visualSeverityScore: 17,
+    relatedReportsScore: 12,
+    recencyScore: 9,
+    locationRiskScore: 9,
+  }
+
   const handleCommitIssue = async () => {
     if (!result) return
     setCommitLoading(true)
@@ -553,6 +647,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         location: targetLocation,
         ward: 'N-Ward',
         imageUrl: imageUrl || DEMO_SCENARIO.imageUrl,
+        uploadId: uploadId || undefined,
         category: targetCategory,
         department: department,
         priorityLevel: priorityLevel,
@@ -583,30 +678,6 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     } finally {
       setCommitLoading(false)
     }
-  }
-
-  // Fallback values for rendering
-  const targetCategory = result?.category || 'Pothole'
-  const targetUrgency = result?.urgency ?? 92
-  const targetSeverity = result?.severity ?? 88
-  const targetLocation = result?.location || location || 'Vidyavihar Station Road, Ghatkopar West'
-  const visualDetection = result?.visualDetection || 'Pothole (Confidence: 89.2%)'
-  const visualConfidence = result?.visualConfidence ?? 89.2
-  const consistencyScore = result?.consistencyScore ?? 94
-  const consistencyLevel = result?.evidenceConsistency || 'CONSISTENT'
-  const department = result?.department || 'Roads & Traffic Department'
-  const recommendedAction =
-    result?.recommendedAction || 'Deploy cold-mix asphalt patch team & erect emergency barricades.'
-  const priorityScore = result?.priorityScore ? Math.round(result.priorityScore) : 91
-  const priorityLevel = result?.priorityLevel || 'CRITICAL'
-  const priorityReasoning = result?.priorityReasoning
-  const breakdown = result?.priorityBreakdown || {
-    urgencyScore: 20,
-    textSeverityScore: 16,
-    visualSeverityScore: 17,
-    relatedReportsScore: 12,
-    recencyScore: 9,
-    locationRiskScore: 9,
   }
 
   // Status Badge for each stage
@@ -752,29 +823,106 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
 
                 {/* Image Upload */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-[#65708B]" />
-                    <span>Field Photo Evidence URI</span>
+                  <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5 text-[#65708B]" />
+                      <span>Field Photo Evidence</span>
+                    </span>
+                    <span className="text-[#65708B] font-normal text-[11px]">
+                      JPG, PNG, WebP &le; 10MB
+                    </span>
                   </label>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={imageUrl}
                       onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="e.g. /sample_pothole.jpg"
+                      placeholder={uploadId ? `Upload ID: ${uploadId}` : "Select image file or sample URI"}
                       className="flex-1 bg-[#F0F2F9]/50 border border-[#E4E7F1] focus:border-[#6457E8] focus:bg-white rounded-xl p-3 text-sm text-[#11162A] placeholder-slate-400 outline-none transition font-mono text-xs"
                     />
+
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => setImageUrl('/sample_pothole.jpg')}
-                      className="px-3.5 py-2 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-xl text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
+                      disabled={isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3.5 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50"
                     >
-                      <Upload className="w-3.5 h-3.5 text-[#6457E8]" />
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                          <span>Uploading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-3.5 h-3.5 text-white" />
+                          <span>Upload File</span>
+                        </>
+                      )}
+                    </motion.button>
+
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        handleClearImage()
+                        setImageUrl('/sample_pothole.jpg')
+                      }}
+                      className="px-3 py-2 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-xl text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
+                    >
                       <span>Sample</span>
                     </motion.button>
                   </div>
+
+                  {/* Thumbnail / Upload Status Card */}
+                  {(previewThumbnail || uploadId) && (
+                    <div className="flex items-center justify-between p-2.5 bg-[#F0F2F9] border border-[#E4E7F1] rounded-xl mt-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {previewThumbnail && (
+                          <img
+                            src={previewThumbnail}
+                            alt="Selected upload preview"
+                            className="w-10 h-10 object-cover rounded-lg border border-[#E4E7F1] shrink-0"
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <div className="text-xs font-semibold text-[#11162A] truncate">
+                            {selectedFileName || 'Uploaded Photo'}
+                          </div>
+                          <div className="text-[11px] text-[#10B981] font-medium flex items-center gap-1">
+                            <Check className="w-3 h-3 text-[#10B981]" />
+                            <span>Ready for AI analysis</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleClearImage}
+                        className="p-1.5 text-[#65708B] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer shrink-0"
+                        title="Remove uploaded image"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+
+                  {uploadError && (
+                    <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center gap-2 mt-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                      <span>{uploadError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1092,21 +1240,38 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
                               />
                             )}
                             <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#212348_1px,transparent_1px)] [background-size:12px_12px]" />
-                            <div className="border border-[#8B5CF6] bg-[#13152E]/90 rounded-lg z-10 p-2 shadow-md min-w-[200px] text-center">
-                              <div className="text-xs font-bold text-[#E4E7F1] flex items-center justify-between">
-                                <span>{visualDetection.split('(')[0]}</span>
-                                <span className="text-[10px] bg-[#3A326F] px-1.5 py-0.5 rounded font-mono font-bold text-[#C4B5FD]">
-                                  {visualConfidence}%
-                                </span>
+                            {visualDetection ? (
+                              <div className="border border-[#8B5CF6] bg-[#13152E]/90 rounded-lg z-10 p-2 shadow-md min-w-[210px] text-center">
+                                <div className="text-xs font-bold text-[#E4E7F1] flex items-center justify-between gap-2">
+                                  <span className="truncate max-w-[140px]">{visualDetection.split('(')[0].trim()}</span>
+                                  <span className="text-[10px] bg-[#3A326F] px-1.5 py-0.5 rounded font-mono font-bold text-[#C4B5FD] shrink-0">
+                                    {visualConfidence}%
+                                  </span>
+                                </div>
+                                <div className="text-[9px] text-[#C4B5FD] font-mono flex items-center justify-between mt-1 pt-1 border-t border-[#3A326F]">
+                                  <span className="flex items-center gap-1">
+                                    <Crosshair className="w-2.5 h-2.5" />
+                                    <span>{detectedObjects.length > 1 ? `${detectedObjects.length} BBOXES CONFIRMED` : 'BBOX CONFIRMED'}</span>
+                                  </span>
+                                  <span className="truncate max-w-[120px]">{isDemoScenario ? 'DEMO' : (result?.visionModel || 'YOLO Multi-Task')}</span>
+                                </div>
                               </div>
-                              <div className="text-[9px] text-[#C4B5FD] font-mono flex items-center justify-between mt-1 pt-1 border-t border-[#3A326F]">
-                                <span className="flex items-center gap-1">
-                                  <Crosshair className="w-2.5 h-2.5" />
-                                  <span>BBOX CONFIRMED</span>
-                                </span>
-                                <span>CLASS: POTHOLE</span>
+                            ) : (
+                              <div className="border border-slate-700 bg-[#13152E]/80 rounded-lg z-10 p-2 shadow-md text-center">
+                                <div className="text-xs font-semibold text-slate-300">
+                                  {result?.category === 'Water Supply & Drainage' || result?.category === 'Storm Water & Drainage'
+                                    ? 'Unvalidated Subsurface Leak'
+                                    : result?.category === 'Sanitation & Garbage'
+                                    ? 'No Waste Accumulation Detected'
+                                    : 'No Road Damage Detected'}
+                                </div>
+                                <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                  {result?.category === 'Water Supply & Drainage' || result?.category === 'Storm Water & Drainage'
+                                    ? 'Field acoustic inspection required'
+                                    : 'Clean surface \u2022 0 detections'}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         )}
 
@@ -1225,7 +1390,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
           {/* Evidence Consistency -> Priority -> Department -> Action  */}
           {/* ======================================================== */}
           {activeStage >= 10 && (
-            <FadeContent blur={true} duration={0.4} className="p-6 sm:p-7 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-5 font-sans">
+            <FadeContent blur={false} duration={0.35} className="p-6 sm:p-7 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-5 font-sans">
               {/* Header & Commit Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#E4E7F1] gap-3">
                 <div className="flex items-center gap-3">

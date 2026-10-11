@@ -104,6 +104,7 @@ class ComplaintNLPClassifier:
         keyword_map = {
             IssueCategory.ROAD_DAMAGE: ["pothole", "crater", "road", "tar", "footpath", "divider", "asphalt", "skid"],
             IssueCategory.SANITATION: ["garbage", "trash", "waste", "stench", "dump", "bin", "filth", "debris"],
+            IssueCategory.STORM_WATER: ["culvert", "storm water", "stormwater", "nullah", "nalah", "storm drain"],
             IssueCategory.WATER_SUPPLY: ["water", "leak", "pipe", "drain", "sewage", "flooding", "potable", "burst", "manhole"],
             IssueCategory.ELECTRICAL: ["light", "streetlight", "electric", "pole", "wire", "spark", "dark"],
             IssueCategory.TRAFFIC_SAFETY: ["traffic", "signal", "accident", "zebra", "speed breaker", "jam"]
@@ -143,7 +144,7 @@ class ComplaintNLPClassifier:
         Severity reflects the physical magnitude and danger profile
         """
         base_severity = 0.40
-        if category in [IssueCategory.ROAD_DAMAGE, IssueCategory.WATER_SUPPLY]:
+        if category in [IssueCategory.ROAD_DAMAGE, IssueCategory.WATER_SUPPLY, IssueCategory.STORM_WATER]:
             base_severity = 0.50
         severity = base_severity + (0.50 * urgency)
         return min(round(severity, 2), 1.0)

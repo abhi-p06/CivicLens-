@@ -100,7 +100,7 @@ export const BeforeAfterSlider: React.FC<BeforeAfterSliderProps> = ({
           </div>
 
           <div className="text-[10px] font-mono text-emerald-400/90 font-bold bg-black/60 backdrop-blur-sm px-2 py-1 rounded w-fit">
-            LIKELY RESOLVED (SSIM: 0.89 &bull; {(confidence * 100).toFixed(1)}%) &rarr;
+            LIKELY RESOLVED (Confidence: {(confidence * 100).toFixed(1)}%) &rarr;
           </div>
         </div>
       </div>

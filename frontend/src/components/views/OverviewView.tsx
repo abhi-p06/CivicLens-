@@ -37,6 +37,17 @@ import { ErrorBoundary } from '../common/ErrorBoundary'
 import { cn } from '../../lib/utils'
 import { useCivicMotion } from '../../lib/motionContext'
 
+// Helper to gracefully fallback variants without stripping properties when reduced motion is preferred
+const getVariants = (variants: Variants, isReduced: boolean): Variants => {
+  if (isReduced) {
+    return {
+      hidden: { opacity: 1, y: 0 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0 } },
+    }
+  }
+  return variants
+}
+
 // --- Coordinated Entrance Variants (Main Page Sequence < 1.4s) ---
 const pageContainerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -50,11 +61,11 @@ const pageContainerVariants: Variants = {
 }
 
 const headerVariants: Variants = {
-  hidden: { opacity: 0, y: -10 },
+  hidden: { opacity: 0, y: -8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
   },
 }
 
@@ -69,29 +80,29 @@ const kpiStaggerVariants: Variants = {
 }
 
 const kpiItemVariants: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
   },
 }
 
 const secondaryStripVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' },
+    transition: { duration: 0.28, ease: 'easeOut' },
   },
 }
 
 const workspaceVariants: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
   },
 }
 
@@ -101,40 +112,44 @@ const queueFeedContainerVariants: Variants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.05,
-      delayChildren: 0.05,
+      delayChildren: 0.04,
     },
   },
 }
 
 const queueCardVariants: Variants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.28, ease: 'easeOut' },
+    transition: { duration: 0.25, ease: 'easeOut' },
   },
 }
 
 // --- Scroll-Triggered Section Stagger Variants ---
 const scrollSectionVariants: Variants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.45,
+      duration: 0.42,
       ease: [0.16, 1, 0.3, 1],
-      staggerChildren: 0.07,
+      staggerChildren: 0.06,
+      delayChildren: 0.03,
     },
   },
 }
 
 const childRevealVariants: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.36, ease: 'easeOut' },
+    transition: {
+      duration: 0.36,
+      ease: [0.16, 1, 0.3, 1],
+    },
   },
 }
 
@@ -163,6 +178,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   const [mapLayer, setMapLayer] = useState<MapLayerMode>('markers')
   const [focusedIssue, setFocusedIssue] = useState<Issue | null>(null)
   const [canScroll, setCanScroll] = useState<boolean>(false)
+  const [activeCategoryTooltip, setActiveCategoryTooltip] = useState<string | null>(null)
   const { isReduced } = useCivicMotion()
 
   // Track the actual internal scroll container
@@ -175,8 +191,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
     restDelta: 0.001,
   })
 
-  // Subtle Header Parallax movement (maximum 12px)
-  const headerParallaxY = useTransform(scrollY, [0, 260], [0, -12])
+  // Subtle Header Parallax movement (restrained 10px range over full scroll, non-essential background only)
+  const headerParallaxY = useTransform(scrollY, [0, 360], [0, 10])
 
   // Check if content is scrollable to avoid showing a broken static progress bar
   useEffect(() => {
@@ -207,10 +223,6 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   const hotspotsCount = hotspots.length
   const recurringCount = recurringIssues.filter((r) => r.recurringIssue).length
   const pendingResolutionCount = issues.filter((i) => i.status !== 'RESOLVED').length
-
-  // Featured risk incident for selective Aceternity CardSpotlight
-  const featuredCriticalIssue =
-    issues.find((i) => i.priorityLevel === 'CRITICAL' || i.priorityScore >= 80) || issues[0]
 
   // Handler: Selecting an issue smoothly focuses the map and opens the detail panel
   const handleIssueClick = (issue: Issue) => {
@@ -251,18 +263,30 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   // --- Category & Priority Trends (Actual Project Data) ---
   const categoryCounts: Record<string, { count: number; totalScore: number }> = {}
   issues.forEach((i) => {
-    if (!categoryCounts[i.category]) {
-      categoryCounts[i.category] = { count: 0, totalScore: 0 }
+    const cat = i.category || 'Other'
+    if (!categoryCounts[cat]) {
+      categoryCounts[cat] = { count: 0, totalScore: 0 }
     }
-    categoryCounts[i.category].count += 1
-    categoryCounts[i.category].totalScore += i.priorityScore
+    categoryCounts[cat].count += 1
+    categoryCounts[cat].totalScore += i.priorityScore || 50
   })
 
+  // Color mapping for category trends
+  const getCategoryColor = (cat: string) => {
+    const l = cat.toLowerCase()
+    if (l.includes('road') || l.includes('pothole')) return '#6457E8'
+    if (l.includes('garbage') || l.includes('solid waste') || l.includes('sanitation')) return '#10B981'
+    if (l.includes('water') || l.includes('pipeline')) return '#3B82F6'
+    if (l.includes('street') || l.includes('light') || l.includes('electric')) return '#EAB308'
+    if (l.includes('drain') || l.includes('flood') || l.includes('sewage')) return '#8B5CF6'
+    return '#F97316'
+  }
+
   const priorityBins = [
-    { label: 'Low Risk', range: '0–25', count: issues.filter((i) => i.priorityScore <= 25).length, color: '#10B981' },
-    { label: 'Moderate', range: '26–50', count: issues.filter((i) => i.priorityScore > 25 && i.priorityScore <= 50).length, color: '#EAB308' },
-    { label: 'High Priority', range: '51–75', count: issues.filter((i) => i.priorityScore > 50 && i.priorityScore <= 75).length, color: '#F97316' },
-    { label: 'Critical Hazard', range: '76–100', count: issues.filter((i) => i.priorityScore > 75).length, color: '#EF4444' },
+    { label: 'Low Risk', range: '0–25', count: issues.filter((i) => (i.priorityScore || 0) <= 25).length, color: '#10B981' },
+    { label: 'Moderate', range: '26–50', count: issues.filter((i) => (i.priorityScore || 0) > 25 && (i.priorityScore || 0) <= 50).length, color: '#EAB308' },
+    { label: 'High Priority', range: '51–75', count: issues.filter((i) => (i.priorityScore || 0) > 50 && (i.priorityScore || 0) <= 75).length, color: '#F97316' },
+    { label: 'Critical Hazard', range: '76–100', count: issues.filter((i) => (i.priorityScore || 0) > 75).length, color: '#EF4444' },
   ]
 
   // --- Real Shimmer Loading State ---
@@ -270,34 +294,33 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
     return (
       <div className="h-full flex flex-col overflow-y-auto px-6 sm:px-8 py-6 space-y-6 font-sans bg-[#F6F7FC]">
         {/* Skeleton Header */}
-        <div className="p-6 bg-white border border-[#E4E7F1] rounded-2xl flex justify-between items-center animate-pulse">
+        <div className="p-5 sm:p-6 bg-white border border-[#E4E7F1] rounded-2xl flex justify-between items-center animate-pulse min-h-[80px]">
           <div className="space-y-2">
-            <div className="h-7 w-56 bg-slate-200 rounded-lg" />
-            <div className="h-4 w-72 bg-slate-100 rounded-md" />
+            <div className="h-8 w-64 bg-slate-200 rounded-lg" />
+            <div className="h-4 w-80 bg-slate-100 rounded-md" />
           </div>
-          <div className="h-10 w-36 bg-slate-200 rounded-xl" />
+          <div className="h-10 w-40 bg-slate-200 rounded-xl" />
         </div>
 
         {/* Skeleton KPI Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, idx) => (
-            <div key={idx} className="h-36 bg-white border border-[#E4E7F1] rounded-2xl p-5 space-y-3 animate-pulse">
+            <div key={idx} className="h-28 bg-white border border-[#E4E7F1] rounded-2xl p-4 space-y-2.5 animate-pulse">
               <div className="h-4 w-28 bg-slate-200 rounded" />
-              <div className="h-9 w-20 bg-slate-200 rounded" />
+              <div className="h-8 w-20 bg-slate-200 rounded" />
               <div className="h-3 w-40 bg-slate-100 rounded" />
             </div>
           ))}
         </div>
 
         {/* Skeleton 55/45 Panels */}
-        <div className="flex flex-col lg:flex-row gap-5 h-[480px]">
+        <div className="flex flex-col lg:flex-row gap-5 min-h-[420px]">
           <div className="w-full lg:w-[55%] bg-white border border-[#E4E7F1] rounded-2xl p-5 animate-pulse">
             <div className="h-5 w-40 bg-slate-200 rounded mb-4" />
-            <div className="h-[380px] bg-slate-900 rounded-xl" />
+            <div className="h-[340px] bg-slate-900 rounded-xl" />
           </div>
           <div className="w-full lg:w-[45%] bg-white border border-[#E4E7F1] rounded-2xl p-5 animate-pulse space-y-3">
             <div className="h-5 w-48 bg-slate-200 rounded mb-4" />
-            <div className="h-28 bg-slate-100 rounded-xl" />
             <div className="h-24 bg-slate-100 rounded-xl" />
             <div className="h-24 bg-slate-100 rounded-xl" />
           </div>
@@ -320,30 +343,31 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative h-full flex flex-col overflow-y-auto px-6 sm:px-8 py-6 space-y-6 lg:space-y-7 font-sans select-none bg-[#F6F7FC]"
+      className="relative h-full flex flex-col overflow-y-auto px-6 sm:px-8 py-6 space-y-5 lg:space-y-6 font-sans select-none bg-[#F6F7FC]"
     >
       {/* ------------------------------------------------------------------ */}
-      {/* B. SCROLL PROGRESS INDICATOR (THIN VIOLET LINE)                    */}
+      {/* SCROLL PROGRESS INDICATOR (THIN VIOLET LINE ALONG TOP EDGE)        */}
       {/* ------------------------------------------------------------------ */}
-      {canScroll && !isReduced && (
-        <div className="sticky top-0 left-0 right-0 z-40 -mt-6 -mx-6 sm:-mx-8 h-[2.5px] bg-transparent overflow-hidden pointer-events-none">
+      {!isReduced && (
+        <div className="fixed top-0 left-0 right-0 z-[120] h-[3px] bg-transparent overflow-hidden pointer-events-none">
           <motion.div
+            id="scroll-progress-bar"
             style={{ scaleX, transformOrigin: '0%' }}
-            className="h-full w-full bg-gradient-to-r from-[#6457E8] via-[#8B5CF6] to-[#6457E8] shadow-[0_0_8px_rgba(100,87,232,0.4)]"
+            className="h-full w-full bg-gradient-to-r from-[#6457E8] via-[#8B5CF6] to-[#6457E8] shadow-[0_0_10px_rgba(100,87,232,0.6)]"
           />
         </div>
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* A & D. INITIAL ENTRANCE & PARALLAX HEADER                           */}
+      {/* 1. RESTORED CIVIC INTELLIGENCE HERO ROW (Approx 76–88px)           */}
       {/* ------------------------------------------------------------------ */}
       <motion.div
-        variants={isReduced ? {} : headerVariants}
+        variants={getVariants(headerVariants, isReduced)}
         initial="hidden"
         animate="visible"
-        className="relative overflow-hidden rounded-2xl border border-[#E4E7F1] bg-white p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="relative overflow-hidden rounded-2xl border border-[#E4E7F1] bg-white p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 min-h-[76px] lg:h-[84px]"
       >
-        {/* D. Decorative Mumbai Civic Skyline & Map-Lines Parallax Layer */}
+        {/* Subtle Decorative Mumbai Civic Skyline Parallax Layer */}
         <motion.div
           style={{ y: isReduced ? 0 : headerParallaxY }}
           className="pointer-events-none absolute inset-0 overflow-hidden select-none opacity-[0.05]"
@@ -367,24 +391,22 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               strokeWidth="1.5"
               strokeDasharray="6 6"
             />
-            <circle cx="245" cy="20" r="4" fill="currentColor" />
-            <circle cx="470" cy="15" r="4" fill="currentColor" />
-            <circle cx="970" cy="25" r="4" fill="currentColor" />
           </svg>
         </motion.div>
 
-        {/* Header Content (Stationary, Non-Parallax for Pristine Legibility) */}
+        {/* Left: 32–36px Bold Heading + 15–16px Subtitle */}
         <div className="relative z-10">
-          <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-bold tracking-tight text-[#11162A]">
+          <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-[#11162A] leading-tight">
             Civic Intelligence
           </h1>
-          <p className="text-[#65708B] text-sm sm:text-base mt-1 font-normal leading-relaxed">
+          <p className="text-[#65708B] text-[15px] sm:text-[16px] mt-1 font-normal leading-relaxed">
             Detect, prioritize and track civic issues across Mumbai.
           </p>
         </div>
 
+        {/* Right: Discreet System Health Indicator + Prominent Violet Analyze Action */}
         <div className="relative z-10 flex items-center gap-3 shrink-0">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium shadow-xs">
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium shadow-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>Inference Engine Online</span>
           </div>
@@ -393,7 +415,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             whileHover={{ scale: isReduced ? 1 : 1.02 }}
             whileTap={{ scale: isReduced ? 1 : 0.98 }}
             onClick={() => onNavigate('analyze')}
-            className="flex items-center gap-2 px-4.5 py-2.5 bg-[#6457E8] hover:bg-[#5145CF] text-white font-semibold text-sm rounded-xl shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#6457E8] hover:bg-[#5145CF] text-white font-semibold text-sm rounded-xl shadow-sm transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-white" />
             <span>Analyze an Issue</span>
@@ -402,28 +424,28 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </motion.div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* 2. FOUR EQUAL-WIDTH KPI CARDS WITH COUNTUP & STAGGER               */}
+      {/* 2. FOUR EQUAL-WIDTH KPI CARDS (Approx 105–120px)                   */}
       {/* ------------------------------------------------------------------ */}
       <motion.div
-        variants={isReduced ? {} : kpiStaggerVariants}
+        variants={getVariants(kpiStaggerVariants, isReduced)}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch shrink-0"
       >
         <KpiCard
-          variants={isReduced ? {} : kpiItemVariants}
+          variants={getVariants(kpiItemVariants, isReduced)}
           title="Total Issues"
           value={<CountUp to={totalIssues} duration={0.9} delay={0.05} />}
-          subtitle="Monitored citizen complaints & patrol survey detections"
+          subtitle="Monitored complaints & patrol detections"
           accentColor="slate"
           icon={Layers}
         />
 
         <KpiCard
-          variants={isReduced ? {} : kpiItemVariants}
+          variants={getVariants(kpiItemVariants, isReduced)}
           title="High Priority"
           value={<CountUp to={highPriorityCount} duration={0.9} delay={0.12} />}
-          subtitle="Require urgent municipal dispatch and immediate mitigation"
+          subtitle="Require urgent municipal dispatch triage"
           accentColor="red"
           icon={ShieldAlert}
           delta={highPriorityCount > 0 ? `${highPriorityCount} Urgent` : 'Nominal'}
@@ -431,20 +453,20 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         />
 
         <KpiCard
-          variants={isReduced ? {} : kpiItemVariants}
+          variants={getVariants(kpiItemVariants, isReduced)}
           title="Unreported Issues"
           value={<CountUp to={unreportedCount} duration={0.9} delay={0.18} />}
-          subtitle="Automated optical detections from mobile patrol cameras"
+          subtitle="Optical detections from patrol cameras"
           accentColor="violet"
           icon={Camera}
           onClick={() => onNavigate('unreported')}
         />
 
         <KpiCard
-          variants={isReduced ? {} : kpiItemVariants}
+          variants={getVariants(kpiItemVariants, isReduced)}
           title="Active Hotspots"
           value={<CountUp to={hotspotsCount} duration={0.9} delay={0.24} />}
-          subtitle="Spatiotemporal DBSCAN recurrence clusters across wards"
+          subtitle="Spatiotemporal DBSCAN recurrence clusters"
           accentColor="orange"
           icon={Flame}
           onClick={() => onNavigate('hotspots')}
@@ -452,13 +474,13 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </motion.div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* 3. SECONDARY METRICS STRIP (APPEARS SEQUENTIALLY)                  */}
+      {/* 3. SECONDARY METRICS STRIP (Approx 52–60px)                        */}
       {/* ------------------------------------------------------------------ */}
       <motion.div
-        variants={isReduced ? {} : secondaryStripVariants}
+        variants={getVariants(secondaryStripVariants, isReduced)}
         initial="hidden"
         animate="visible"
-        className="px-5 py-3 bg-[#F0F2F9] border border-[#E4E7F1] rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs text-[#65708B] shadow-xs"
+        className="px-5 py-3.5 bg-[#F0F2F9] border border-[#E4E7F1] rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs text-[#65708B] shadow-xs min-h-[52px]"
       >
         <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
           <div
@@ -487,10 +509,10 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#11162A] transition"
             onClick={() => onNavigate('analytics')}
           >
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-[#65708B]">Vision Verification Precision:</span>
-            <strong className="text-emerald-700 font-semibold font-mono">
-              96.2% SSIM Accuracy
+            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" />
+            <span className="text-[#65708B]">Closure Verification:</span>
+            <strong className="text-[#6457E8] font-semibold font-mono">
+              Inspection Mode
             </strong>
           </div>
         </div>
@@ -502,18 +524,18 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </motion.div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* 4. MAP & PRIORITY QUEUE (55% / 45% FIRST-SCREEN BALANCED VIEWPORT)  */}
+      {/* 4. MAP & PRIORITY QUEUE (55% / 45%, Approx 480–490px)              */}
       {/* ------------------------------------------------------------------ */}
       <motion.div
-        variants={isReduced ? {} : workspaceVariants}
+        variants={getVariants(workspaceVariants, isReduced)}
         initial="hidden"
         animate="visible"
-        className="flex flex-col lg:flex-row gap-5 items-stretch min-h-[490px] lg:h-[510px]"
+        className="flex flex-col lg:flex-row gap-5 items-stretch min-h-[480px] lg:h-[490px] shrink-0"
       >
         {/* LEFT COLUMN (55%): Geospatial Intelligence Tactical GIS Map */}
-        <div className="w-full lg:w-[55%] bg-white border border-[#E4E7F1] rounded-2xl p-5 sm:p-6 flex flex-col shadow-xs">
+        <div className="w-full lg:w-[55%] bg-white border border-[#E4E7F1] rounded-2xl p-4 sm:p-5 flex flex-col shadow-xs min-h-[480px] lg:h-[490px]">
           {/* Map Section Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-3.5 border-b border-[#E4E7F1]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-3 border-b border-[#E4E7F1] shrink-0">
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-semibold text-[#11162A] tracking-tight">
@@ -534,6 +556,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 {(['markers', 'clusters', 'hotspots', 'heatmap'] as MapLayerMode[]).map((mode) => (
                   <button
                     key={mode}
+                    data-cursor-target="true"
                     onClick={() => setMapLayer(mode)}
                     className={cn(
                       'px-2.5 py-1 rounded-md capitalize font-medium transition cursor-pointer text-xs',
@@ -548,6 +571,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
 
               <button
+                data-cursor-target="true"
                 onClick={() => onNavigate('map')}
                 className="text-[#65708B] hover:text-[#6457E8] text-xs font-medium px-2.5 py-1 hover:bg-[#F0F2F9] rounded-lg transition flex items-center gap-1 cursor-pointer border border-[#E4E7F1]"
               >
@@ -557,8 +581,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </div>
           </div>
 
-          {/* Deep Midnight GIS Map Surface */}
-          <div className="flex-1 w-full min-h-[360px] rounded-xl overflow-hidden border border-[#E4E7F1] relative bg-[#10162A]">
+          {/* Deep Midnight GIS Map Surface (Framed tightly on urban incidents) */}
+          <div className="flex-1 w-full rounded-xl overflow-hidden border border-[#E4E7F1] relative bg-[#10162A]">
             <ErrorBoundary fallbackTitle="Tactical GIS Spatial Layer Loading">
               <CivicMap
                 issues={issues}
@@ -572,10 +596,10 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           </div>
         </div>
 
-        {/* RIGHT COLUMN (45%): Live Priority Incident Queue */}
-        <div className="w-full lg:w-[45%] bg-white border border-[#E4E7F1] rounded-2xl p-5 sm:p-6 flex flex-col shadow-xs">
+        {/* RIGHT COLUMN (45%): Live Priority Incident Queue (Targeting 3–4 visible incidents) */}
+        <div className="w-full lg:w-[45%] bg-white border border-[#E4E7F1] rounded-2xl p-4 sm:p-5 flex flex-col shadow-xs min-h-[480px] lg:h-[490px]">
           {/* Feed Header */}
-          <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-[#E4E7F1]">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E4E7F1] shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 text-[#EF4444]">
                 <Activity className="w-4 h-4" />
@@ -591,93 +615,37 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </div>
 
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#F0F2F9] text-[#65708B] border border-[#E4E7F1]">
-              Top 4 of {issues.length}
+              {issues.length > 0 ? `${issues.length} Prioritized Incidents` : '0 Incidents'}
             </span>
           </div>
 
-          {/* Featured Risk Intelligence Card (Aceternity UI CardSpotlight) */}
-          {featuredCriticalIssue && (
-            <div className="mb-3 shrink-0">
-              <CardSpotlight
-                radius={240}
-                color="#6457E8"
-                data-incident-id={featuredCriticalIssue.issueId}
-                className={cn(
-                  'bg-[#F0F2F9]/70 border-[#E4E7F1] cursor-pointer p-3.5 rounded-xl transition-all',
-                  focusedIssue?.issueId === featuredCriticalIssue.issueId && 'ring-2 ring-[#6457E8]'
-                )}
-                onClick={() => handleIssueClick(featuredCriticalIssue)}
-              >
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 border border-rose-200">
-                      CRITICAL RISK FOCUS
-                    </span>
-                    <span className="text-xs font-semibold text-[#11162A]">
-                      {featuredCriticalIssue.category}
-                    </span>
-                  </div>
-                  <span className="text-xs font-mono font-bold text-[#EF4444]">
-                    Score: {featuredCriticalIssue.priorityScore.toFixed(0)}/100
-                  </span>
-                </div>
-                <p className="text-xs text-[#11162A] line-clamp-2 leading-relaxed">
-                  {featuredCriticalIssue.complaintText}
-                </p>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E4E7F1] text-[11px] text-[#65708B]">
-                  <span className="flex items-center gap-1 truncate">
-                    <MapPin className="w-3.5 h-3.5 text-[#65708B]" />
-                    {featuredCriticalIssue.location}
-                  </span>
-                  <span className="text-[#6457E8] font-semibold flex items-center gap-1 shrink-0">
-                    Focus on Map & Inspect <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
-              </CardSpotlight>
-            </div>
-          )}
-
-          {/* Incident Cards List (Remaining top incidents, scrollable with small stagger) */}
+          {/* Incident Cards List (Independent scroll, compact 3–4 visible entries, full records accessible) */}
           <motion.div
-            variants={isReduced ? {} : queueFeedContainerVariants}
+            variants={getVariants(queueFeedContainerVariants, isReduced)}
             initial="hidden"
             animate="visible"
-            className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[350px]"
+            className="flex-1 overflow-y-auto space-y-2.5 pr-1"
           >
             {issues.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-slate-400 text-sm text-center p-8">
-                No priority incidents currently in the intake queue.
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-[#65708B] space-y-2">
+                <Activity className="w-8 h-8 opacity-40 text-[#65708B]" />
+                <span className="text-sm font-medium">No priority incidents currently in intake queue.</span>
               </div>
             ) : (
-              (featuredCriticalIssue ? issues.slice(1, 5) : issues.slice(0, 4)).map((issue) => {
+              issues.map((issue, idx) => {
                 const isCritical = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
                 const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
                 const isSelected = focusedIssue?.issueId === issue.issueId
+                const isTopCritical = idx === 0 && (isCritical || issue.priorityScore >= 75)
 
-                return (
-                  <motion.div
-                    key={issue.issueId}
-                    variants={isReduced ? {} : queueCardVariants}
-                    whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.16 } }}
-                    whileTap={{ scale: isReduced ? 1 : 0.99 }}
-                    onClick={() => handleIssueClick(issue)}
-                    data-incident-id={issue.issueId}
-                    className={cn(
-                      'p-3.5 rounded-xl border transition-all duration-150 cursor-pointer shadow-xs group relative flex flex-col gap-2 bg-white hover:bg-[#F0F2F9]/60',
-                      isSelected && 'ring-2 ring-[#6457E8] bg-[#F0F2F9]/80',
-                      isCritical
-                        ? 'border-rose-200 hover:border-rose-300'
-                        : isHigh
-                        ? 'border-orange-200 hover:border-orange-300'
-                        : 'border-[#E4E7F1] hover:border-slate-300'
-                    )}
-                  >
-                    {/* ROW 1: Priority Level + Category + Score */}
+                const cardContent = (
+                  <div className="flex flex-col gap-1.5">
+                    {/* ROW 1: Priority Badge + Category Title (14–16px) + Consistently Aligned Score */}
                     <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2 flex-wrap min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
                         <span
                           className={cn(
-                            'text-xs font-semibold px-2 py-0.5 rounded-full border shrink-0',
+                            'text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
                             isCritical
                               ? 'bg-rose-50 text-rose-700 border-rose-200'
                               : isHigh
@@ -688,41 +656,41 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                           {issue.priorityLevel}
                         </span>
 
-                        <h3 className="text-xs sm:text-sm font-semibold text-[#11162A] tracking-tight truncate">
+                        <h3 className="text-[14px] sm:text-[15px] font-semibold text-[#11162A] tracking-tight truncate">
                           {issue.category}
                         </h3>
                       </div>
 
                       <div className="shrink-0 flex items-center gap-1 font-mono text-xs">
-                        <span className="text-[#65708B]">Score</span>
+                        <span className="text-[#65708B] text-[11px]">Score</span>
                         <span
                           className={cn(
-                            'font-bold text-xs sm:text-sm',
+                            'font-bold text-sm',
                             isCritical ? 'text-[#EF4444]' : isHigh ? 'text-[#F97316]' : 'text-[#6457E8]'
                           )}
                         >
                           {issue.priorityScore.toFixed(0)}
                         </span>
+                        <span className="text-[#65708B] text-[11px]">/ 100</span>
                       </div>
                     </div>
 
-                    {/* ROW 2: Readable Complaint Description */}
-                    <p className="text-xs sm:text-sm text-[#11162A] leading-relaxed font-normal">
+                    {/* ROW 2: Complaint Description (Max 2 lines, 13–14px, line-clamp-2) */}
+                    <p className="text-[13px] leading-snug text-slate-700 font-normal line-clamp-2">
                       {issue.complaintText}
                     </p>
 
-                    {/* ROW 3: Dedicated Location Metadata Row */}
-                    <div className="flex items-center gap-1.5 text-xs text-[#65708B]">
-                      <MapPin className="w-3.5 h-3.5 text-[#65708B] shrink-0" />
-                      <span className="font-medium text-[#11162A] truncate">{issue.location}</span>
-                      {issue.ward && (
-                        <span className="text-[#65708B] shrink-0">({issue.ward})</span>
-                      )}
-                    </div>
+                    {/* ROW 3: Predictable Location & Status Row (12px metadata) */}
+                    <div className="flex items-center justify-between gap-2 text-[12px] pt-1.5 border-t border-[#E4E7F1]/70">
+                      <div className="flex items-center gap-1.5 min-w-0 text-[#65708B] truncate">
+                        <MapPin className="w-3.5 h-3.5 text-[#65708B] shrink-0" />
+                        <span className="font-medium text-[#11162A] truncate">{issue.location}</span>
+                        {issue.ward && (
+                          <span className="text-[#65708B] shrink-0 font-normal">({issue.ward})</span>
+                        )}
+                      </div>
 
-                    {/* ROW 4: Evidence Consistency & Status */}
-                    <div className="flex items-center justify-between pt-2 border-t border-[#E4E7F1] text-xs">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         {issue.consistencyDetail ? (
                           <ConsistencyBadge
                             level={issue.consistencyDetail.consistencyLevel}
@@ -734,21 +702,44 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                             score={issue.evidenceConsistency}
                           />
                         ) : (
-                          <span className="text-[11px] text-[#65708B]">Multimodal Verified</span>
+                          <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+                            Verified
+                          </span>
                         )}
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
                         <StatusBadge status={issue.status} />
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
+                )
+
+                return (
+                  <GlareHover
+                    key={issue.issueId}
+                    data-incident-id={issue.issueId}
+                    data-cursor-target="true"
+                    variants={getVariants(queueCardVariants, isReduced)}
+                    whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.16 } }}
+                    whileTap={{ scale: isReduced ? 1 : 0.99 }}
+                    onClick={() => handleIssueClick(issue)}
+                    glareColor="rgba(100, 87, 232, 0.12)"
+                    glareSize={260}
+                    className={cn(
+                      'p-3 rounded-xl border transition-[border-color,background-color,box-shadow] duration-150 cursor-pointer shadow-xs group',
+                      isTopCritical
+                        ? 'border-rose-200/90 bg-[#F0F2F9]/50 hover:bg-[#F0F2F9]/80'
+                        : 'border-[#E4E7F1] hover:border-slate-300 bg-white hover:bg-[#F0F2F9]/60',
+                      isSelected && 'ring-2 ring-[#6457E8] bg-[#F0F2F9]/80',
+                      isHigh && !isTopCritical && 'border-orange-200/80 hover:border-orange-300'
+                    )}
+                  >
+                    {cardContent}
+                  </GlareHover>
                 )
               })
             )}
 
-            {/* View All Action */}
-            <div className="pt-1.5 text-center">
+            {/* Catalog navigation footer */}
+            <div className="pt-2 pb-1 text-center">
               <button
                 onClick={() => onNavigate('explorer')}
                 className="inline-flex items-center gap-1.5 text-xs text-[#6457E8] hover:text-[#5145CF] font-semibold transition cursor-pointer py-1.5 px-3 rounded-lg hover:bg-[#6457E8]/10"
@@ -762,16 +753,16 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </motion.div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* 5. C. SCROLL-TRIGGERED AI INSIGHTS SECTION (with GlareHover)        */}
+      {/* 5. SCROLL-TRIGGERED AI INSIGHTS SECTION (Observed on containerRef)  */}
       {/* ------------------------------------------------------------------ */}
       <motion.div
-        variants={isReduced ? {} : scrollSectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-40px' }}
-        className="space-y-3.5 pt-2"
+        variants={isReduced ? undefined : scrollSectionVariants}
+        initial={isReduced ? false : 'hidden'}
+        whileInView={isReduced ? undefined : 'visible'}
+        viewport={{ root: containerRef, once: true, amount: 0.08 }}
+        className="space-y-4 shrink-0"
       >
-        <div className="flex items-center justify-between pb-2 border-b border-[#E4E7F1]">
+        <div className="flex items-center justify-between pb-2.5 border-b border-[#E4E7F1]">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#6457E8]" />
             <h2 className="text-base font-bold text-[#11162A] tracking-tight">
@@ -787,138 +778,153 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Insight 1: React Bits Glare Hover on Featured DBSCAN Spatial Cluster Card */}
-          <motion.div variants={isReduced ? {} : childRevealVariants}>
+          {/* Insight 1: Featured DBSCAN Spatial Cluster Card */}
+          <motion.div variants={getVariants(childRevealVariants, isReduced)}>
             <GlareHover
-              glareColor="rgba(100, 87, 232, 0.16)"
-              glareSize={240}
-              className="rounded-2xl"
+              data-cursor-target="true"
+              onClick={() => onNavigate('hotspots')}
+              whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
+              whileTap={{ scale: isReduced ? 1 : 0.99 }}
+              glareColor="rgba(100, 87, 232, 0.12)"
+              glareSize={260}
+              className="p-4 bg-white border border-[#E4E7F1] hover:border-[#6457E8]/50 rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-200 hover:shadow-md cursor-pointer flex flex-col justify-between h-full group"
             >
-              <div
-                onClick={() => onNavigate('hotspots')}
-                className="p-4 bg-white border border-[#E4E7F1] hover:border-[#6457E8]/50 rounded-2xl shadow-xs transition-all hover:shadow-md cursor-pointer flex flex-col justify-between h-full group"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 border border-orange-200 text-orange-700">
-                      DBSCAN SPATIAL CLUSTER
-                    </span>
-                    <Flame className="w-4 h-4 text-[#F97316] group-hover:scale-110 transition-transform" />
-                  </div>
-                  <h3 className="text-sm font-bold text-[#11162A]">
-                    {topHotspot ? `Cluster ${topHotspot.hotspotId} (${topHotspot.dominantCategory})` : 'Stable Spatial Density'}
-                  </h3>
-                  <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
-                    {topHotspot
-                      ? `${topHotspot.issueCount} incidents concentrated within a ${topHotspot.radiusMeters}m radius with ${topHotspot.growthRate > 0 ? '+' : ''}${topHotspot.growthRate}% growth rate.`
-                      : 'Incident locations remain distributed across Mumbai ward boundaries without acute clustering.'}
-                  </p>
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-orange-50 border border-orange-200 text-orange-700">
+                    DBSCAN SPATIAL CLUSTER
+                  </span>
+                  <Flame className="w-4 h-4 text-[#F97316] group-hover:scale-110 transition-transform" />
                 </div>
-                <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-[#6457E8] font-semibold">
-                  <span>Inspect Hotspot Boundary</span>
-                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                </div>
+                <h3 className="text-sm font-bold text-[#11162A]">
+                  {topHotspot ? `Cluster ${topHotspot.hotspotId} (${topHotspot.dominantCategory})` : 'Stable Spatial Density'}
+                </h3>
+                <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
+                  {topHotspot
+                    ? `${topHotspot.issueCount} incidents concentrated within a ${topHotspot.radiusMeters}m radius with ${topHotspot.growthRate > 0 ? '+' : ''}${topHotspot.growthRate}% growth rate.`
+                    : 'Incident locations remain distributed across Mumbai ward boundaries without acute clustering.'}
+                </p>
+              </div>
+              <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-[#6457E8] font-semibold">
+                <span>Inspect Hotspot Boundary</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </GlareHover>
           </motion.div>
 
           {/* Insight 2: Multimodal Cross-Validation */}
-          <motion.div
-            variants={isReduced ? {} : childRevealVariants}
-            whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
-            onClick={() => onNavigate('unreported')}
-            className="p-4 bg-white border border-[#E4E7F1] hover:border-emerald-300 rounded-2xl shadow-xs transition-all hover:shadow-md cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 border border-emerald-200 text-emerald-700">
-                  OPTICAL ALIGNMENT
-                </span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+          <motion.div variants={getVariants(childRevealVariants, isReduced)}>
+            <GlareHover
+              data-cursor-target="true"
+              onClick={() => onNavigate('unreported')}
+              whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
+              whileTap={{ scale: isReduced ? 1 : 0.99 }}
+              glareColor="rgba(100, 87, 232, 0.12)"
+              glareSize={260}
+              className="p-4 bg-white border border-[#E4E7F1] hover:border-emerald-300 rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-200 hover:shadow-md cursor-pointer flex flex-col justify-between h-full group"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 border border-emerald-200 text-emerald-700">
+                    OPTICAL ALIGNMENT
+                  </span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                </div>
+                <h3 className="text-sm font-bold text-[#11162A]">
+                  {cvAlignmentPercent}% YOLOv8 Verification
+                </h3>
+                <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
+                  {highConsistencyCount} of {totalWithCV || totalIssues} inspected complaints exhibit high cosine alignment between citizen text description and optical defect bounding boxes.
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-[#11162A]">
-                {cvAlignmentPercent}% YOLOv8 Verification
-              </h3>
-              <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
-                {highConsistencyCount} of {totalWithCV || totalIssues} inspected complaints exhibit high cosine alignment between citizen text description and optical defect bounding boxes.
-              </p>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-emerald-700 font-semibold">
-              <span>View Optical Patrol Detections</span>
-              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </div>
+              <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-emerald-700 font-semibold">
+                <span>View Optical Patrol Detections</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </GlareHover>
           </motion.div>
 
           {/* Insight 3: Chronic Site Recurrence */}
-          <motion.div
-            variants={isReduced ? {} : childRevealVariants}
-            whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
-            onClick={() => onNavigate('recurring')}
-            className="p-4 bg-white border border-[#E4E7F1] hover:border-amber-300 rounded-2xl shadow-xs transition-all hover:shadow-md cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 border border-amber-200 text-amber-800">
-                  INFRASTRUCTURE FATIGUE
-                </span>
-                <RotateCcw className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
+          <motion.div variants={getVariants(childRevealVariants, isReduced)}>
+            <GlareHover
+              data-cursor-target="true"
+              onClick={() => onNavigate('recurring')}
+              whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
+              whileTap={{ scale: isReduced ? 1 : 0.99 }}
+              glareColor="rgba(100, 87, 232, 0.12)"
+              glareSize={260}
+              className="p-4 bg-white border border-[#E4E7F1] hover:border-amber-300 rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-200 hover:shadow-md cursor-pointer flex flex-col justify-between h-full group"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-50 border border-amber-200 text-amber-800">
+                    INFRASTRUCTURE FATIGUE
+                  </span>
+                  <RotateCcw className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
+                </div>
+                <h3 className="text-sm font-bold text-[#11162A]">
+                  {topChronic ? topChronic.location : `${recurringCount} Repeat Locations`}
+                </h3>
+                <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
+                  {topChronic
+                    ? `Reported ${topChronic.reportCount} times historically with a recurrence score of ${topChronic.recurrenceScore.toFixed(0)}/100 (trend: ${topChronic.trend}). Preventive resurfacing advised.`
+                    : 'Recurring failure sites analyzed via historical coordinate vector matching.'}
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-[#11162A]">
-                {topChronic ? topChronic.location : `${recurringCount} Repeat Locations`}
-              </h3>
-              <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
-                {topChronic
-                  ? `Reported ${topChronic.reportCount} times historically with a recurrence score of ${topChronic.recurrenceScore.toFixed(0)}/100 (trend: ${topChronic.trend}). Preventive resurfacing advised.`
-                  : 'Recurring failure sites analyzed via historical coordinate vector matching.'}
-              </p>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-amber-800 font-semibold">
-              <span>Inspect Chronic Recurrence</span>
-              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </div>
+              <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-amber-800 font-semibold">
+                <span>Inspect Chronic Recurrence</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </GlareHover>
           </motion.div>
 
           {/* Insight 4: Department SLA Dispatch Load */}
-          <motion.div
-            variants={isReduced ? {} : childRevealVariants}
-            whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
-            onClick={() => onNavigate('analytics')}
-            className="p-4 bg-white border border-[#E4E7F1] hover:border-[#6457E8]/50 rounded-2xl shadow-xs transition-all hover:shadow-md cursor-pointer flex flex-col justify-between group"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#6457E8]/10 border border-[#6457E8]/20 text-[#6457E8]">
-                  DISPATCH DIRECTIVE
-                </span>
-                <Building className="w-4 h-4 text-[#6457E8] group-hover:scale-110 transition-transform" />
+          <motion.div variants={getVariants(childRevealVariants, isReduced)}>
+            <GlareHover
+              data-cursor-target="true"
+              onClick={() => onNavigate('analytics')}
+              whileHover={{ y: isReduced ? 0 : -2, transition: { duration: 0.15 } }}
+              whileTap={{ scale: isReduced ? 1 : 0.99 }}
+              glareColor="rgba(100, 87, 232, 0.12)"
+              glareSize={260}
+              className="p-4 bg-white border border-[#E4E7F1] hover:border-[#6457E8]/50 rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-200 hover:shadow-md cursor-pointer flex flex-col justify-between h-full group"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#6457E8]/10 border border-[#6457E8]/20 text-[#6457E8]">
+                    DISPATCH DIRECTIVE
+                  </span>
+                  <Building className="w-4 h-4 text-[#6457E8] group-hover:scale-110 transition-transform" />
+                </div>
+                <h3 className="text-sm font-bold text-[#11162A]">
+                  {topDept ? topDept[0] : 'Load-Balanced Dispatch'}
+                </h3>
+                <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
+                  {topDept
+                    ? `Represents ${topDept[1]} of ${totalIssues} active grievances (${((topDept[1] / totalIssues) * 100).toFixed(0)}%). Target field crew intervention window under 12 hours.`
+                    : 'Dispatch queues balanced across Roads, Solid Waste, and Drainage authorities.'}
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-[#11162A]">
-                {topDept ? topDept[0] : 'Load-Balanced Dispatch'}
-              </h3>
-              <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
-                {topDept
-                  ? `Represents ${topDept[1]} of ${totalIssues} active grievances (${((topDept[1] / totalIssues) * 100).toFixed(0)}%). Target field crew intervention window under 12 hours.`
-                  : 'Dispatch queues balanced across Roads, Solid Waste, and Drainage authorities.'}
-              </p>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-[#6457E8] font-semibold">
-              <span>Explore Analytics Benchmarks</span>
-              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </div>
+              <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-[#6457E8] font-semibold">
+                <span>Explore Analytics Benchmarks</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </GlareHover>
           </motion.div>
         </div>
       </motion.div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* 6. RECENT ACTIVITY TIMELINE & 7. ANALYTICAL BREAKDOWNS             */}
+      {/* 6. RECENT ACTIVITY TIMELINE & 7. ISSUE CATEGORY TRENDS CHART       */}
+      {/* Observed on containerRef with real data and designed empty states   */}
       {/* ------------------------------------------------------------------ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 shrink-0 pb-8">
         {/* SECTION 6: RECENT ACTIVITY TIMELINE (7 COLS) */}
         <motion.div
-          variants={isReduced ? {} : scrollSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
+          variants={isReduced ? undefined : scrollSectionVariants}
+          initial={isReduced ? false : 'hidden'}
+          whileInView={isReduced ? undefined : 'visible'}
+          viewport={{ root: containerRef, once: true, amount: 0.08 }}
           className="lg:col-span-7 bg-white border border-[#E4E7F1] rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4"
         >
           <div>
@@ -943,64 +949,77 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </div>
 
             {/* Timeline Feed with Staggered Entrance */}
-            <div className="relative pl-6 space-y-3.5 mt-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#E4E7F1]">
-              {timelineIssues.slice(0, 5).map((issue) => {
-                const isCritical = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
-                const isResolved = issue.status === 'RESOLVED' || Boolean(issue.resolutionEvidence)
+            {timelineIssues.length === 0 ? (
+              <div className="py-12 text-center bg-[#F0F2F9]/40 rounded-xl border border-[#E4E7F1] mt-4 space-y-2">
+                <Clock className="w-8 h-8 text-[#65708B] mx-auto opacity-50" />
+                <h3 className="text-sm font-semibold text-[#11162A]">No Activity Events Recorded</h3>
+                <p className="text-xs text-[#65708B] max-w-xs mx-auto">
+                  New citizen complaints and patrol survey detections will appear here in real time.
+                </p>
+              </div>
+            ) : (
+              <div className="relative pl-6 space-y-3.5 mt-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#E4E7F1]">
+                {timelineIssues.slice(0, 5).map((issue) => {
+                  const isCritical = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
+                  const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
+                  const isResolved = issue.status === 'RESOLVED' || Boolean(issue.resolutionEvidence)
 
-                return (
-                  <motion.div
-                    key={issue.issueId}
-                    variants={isReduced ? {} : childRevealVariants}
-                    onClick={() => handleIssueClick(issue)}
-                    whileHover={{ x: isReduced ? 0 : 2, transition: { duration: 0.12 } }}
-                    className="relative group cursor-pointer p-3 rounded-xl border border-transparent hover:border-[#E4E7F1] hover:bg-[#F0F2F9]/50 transition-all"
-                  >
-                    {/* Node Dot */}
-                    <span
-                      className={cn(
-                        'absolute -left-[19px] top-4 w-3 h-3 rounded-full border-2 border-white transition-transform group-hover:scale-125 shadow-xs',
-                        isResolved
-                          ? 'bg-emerald-500'
-                          : isCritical
-                          ? 'bg-[#EF4444]'
-                          : 'bg-[#6457E8]'
-                      )}
-                    />
+                  return (
+                    <motion.div
+                      key={issue.issueId}
+                      variants={getVariants(childRevealVariants, isReduced)}
+                      onClick={() => handleIssueClick(issue)}
+                      whileHover={{ x: isReduced ? 0 : 2, transition: { duration: 0.12 } }}
+                      className="relative group cursor-pointer p-3.5 rounded-xl border border-transparent hover:border-[#E4E7F1] hover:bg-[#F0F2F9]/50 transition-all space-y-1.5"
+                    >
+                      {/* Node Dot */}
+                      <span
+                        className={cn(
+                          'absolute -left-[19px] top-4 w-3 h-3 rounded-full border-2 border-white transition-transform group-hover:scale-125 shadow-xs',
+                          isResolved
+                            ? 'bg-emerald-500'
+                            : isCritical
+                            ? 'bg-[#EF4444]'
+                            : isHigh
+                            ? 'bg-[#F97316]'
+                            : 'bg-[#6457E8]'
+                        )}
+                      />
 
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="font-mono text-xs font-bold text-[#6457E8]">
-                          {issue.issueId}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-mono text-xs font-bold text-[#6457E8]">
+                            {issue.issueId}
+                          </span>
+                          <span className="text-xs sm:text-sm font-semibold text-[#11162A] truncate">
+                            {issue.category}
+                          </span>
+                          <StatusBadge status={issue.status} />
+                        </div>
+
+                        <span className="text-[11px] font-mono text-[#65708B] shrink-0">
+                          {new Date(issue.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
-                        <span className="text-xs font-semibold text-[#11162A] truncate">
-                          {issue.category}
-                        </span>
-                        <StatusBadge status={issue.status} />
                       </div>
 
-                      <span className="text-[11px] font-mono text-[#65708B] shrink-0">
-                        {new Date(issue.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
+                      <p className="text-xs sm:text-sm text-[#11162A] group-hover:text-[#11162A] line-clamp-2 leading-relaxed transition-colors font-normal">
+                        "{issue.complaintText}"
+                      </p>
 
-                    <p className="text-xs text-[#65708B] group-hover:text-[#11162A] line-clamp-2 leading-relaxed transition-colors">
-                      "{issue.complaintText}"
-                    </p>
-
-                    <div className="flex items-center justify-between mt-2 pt-1.5 text-[11px] text-[#65708B]">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-[#65708B]" />
-                        {issue.location} {issue.ward ? `(${issue.ward})` : ''}
-                      </span>
-                      <span className="font-mono font-semibold text-[#11162A]">
-                        Score: {issue.priorityScore.toFixed(0)}/100
-                      </span>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
+                      <div className="flex items-center justify-between pt-1.5 text-xs text-[#65708B]">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-[#65708B]" />
+                          {issue.location} {issue.ward ? `(${issue.ward})` : ''}
+                        </span>
+                        <span className="font-mono font-semibold text-[#11162A]">
+                          Score: {issue.priorityScore.toFixed(0)}/100
+                        </span>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           <div className="pt-2 text-center border-t border-[#E4E7F1]">
@@ -1014,12 +1033,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           </div>
         </motion.div>
 
-        {/* SECTION 7: CATEGORY TRENDS & ANALYTICAL BREAKDOWNS (5 COLS) */}
+        {/* SECTION 7: ISSUE CATEGORY TRENDS (PROPERLY SIZED CHART & RISK SPECTRUM) (5 COLS) */}
         <motion.div
-          variants={isReduced ? {} : scrollSectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
+          variants={isReduced ? undefined : scrollSectionVariants}
+          initial={isReduced ? false : 'hidden'}
+          whileInView={isReduced ? undefined : 'visible'}
+          viewport={{ root: containerRef, once: true, amount: 0.08 }}
           className="lg:col-span-5 bg-white border border-[#E4E7F1] rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4"
         >
           <div>
@@ -1037,44 +1056,81 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   </p>
                 </div>
               </div>
+
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#F0F2F9] text-[#65708B] border border-[#E4E7F1]">
+                {Object.keys(categoryCounts).length} Categories
+              </span>
             </div>
 
-            {/* Category Breakdown Progress Bars */}
-            <div className="space-y-3 mt-4">
-              {Object.entries(categoryCounts).map(([cat, info]) => {
-                const pct = ((info.count / (totalIssues || 1)) * 100).toFixed(0)
-                const avgScore = (info.totalScore / info.count).toFixed(0)
-                return (
-                  <motion.div
-                    key={cat}
-                    variants={isReduced ? {} : childRevealVariants}
-                    className="space-y-1"
-                  >
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-medium text-[#11162A] truncate max-w-[200px]">
-                        {cat}
-                      </span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[#65708B] font-mono text-[11px]">Avg {avgScore} pts</span>
-                        <span className="font-semibold text-[#6457E8] font-mono">
-                          {info.count} ({pct}%)
+            {/* Category Trends Chart with Interactive Tooltips & Accessible Labels */}
+            {Object.keys(categoryCounts).length === 0 ? (
+              <div className="py-12 text-center bg-[#F0F2F9]/40 rounded-xl border border-[#E4E7F1] mt-4 space-y-2">
+                <BarChart3 className="w-8 h-8 text-[#65708B] mx-auto opacity-50" />
+                <h3 className="text-sm font-semibold text-[#11162A]">No Category Analytics Available</h3>
+                <p className="text-xs text-[#65708B] max-w-xs mx-auto">
+                  Category metrics will calculate automatically as civic reports are triaged.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 mt-4">
+                {Object.entries(categoryCounts).map(([cat, info]) => {
+                  const pct = ((info.count / (totalIssues || 1)) * 100).toFixed(0)
+                  const avgScore = (info.totalScore / info.count).toFixed(0)
+                  const barColor = getCategoryColor(cat)
+                  const isHovered = activeCategoryTooltip === cat
+
+                  return (
+                    <motion.div
+                      key={cat}
+                      variants={getVariants(childRevealVariants, isReduced)}
+                      onMouseEnter={() => setActiveCategoryTooltip(cat)}
+                      onMouseLeave={() => setActiveCategoryTooltip(null)}
+                      className="space-y-1.5 p-2 rounded-xl hover:bg-[#F0F2F9]/50 transition-colors relative"
+                    >
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-semibold text-[#11162A] truncate max-w-[200px] flex items-center gap-1.5">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: barColor }}
+                          />
+                          <span>{cat}</span>
                         </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[#65708B] font-mono text-[11px]">Avg {avgScore} pts</span>
+                          <span className="font-bold text-[#11162A] font-mono">
+                            {info.count} ({pct}%)
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="h-2 w-full bg-[#F0F2F9] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-[#6457E8] to-[#8B5CF6] rounded-full transition-all duration-700 ease-out"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
 
-            {/* Priority Risk Spectrum Bins */}
-            <div className="mt-5 pt-4 border-t border-[#E4E7F1]">
-              <div className="text-xs font-semibold text-[#11162A] mb-2.5 flex items-center justify-between">
+                      {/* Accessible Progress Bar with Smooth Gradient Fill */}
+                      <div className="h-2.5 w-full bg-[#F0F2F9] rounded-full overflow-hidden border border-[#E4E7F1]/80">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${pct}%` }}
+                          transition={{ duration: isReduced ? 0.05 : 0.6, ease: 'easeOut' }}
+                          className="h-full rounded-full"
+                          style={{
+                            background: `linear-gradient(90deg, ${barColor}, #8B5CF6)`,
+                          }}
+                        />
+                      </div>
+
+                      {/* Accessible Hover Card Tooltip */}
+                      {isHovered && (
+                        <div className="absolute right-2 -top-8 z-30 px-2.5 py-1 rounded-lg bg-[#11162A] text-white text-[11px] font-sans shadow-md pointer-events-none animate-in fade-in zoom-in-95">
+                          <span>{info.count} reports &bull; Mean Risk: {avgScore}/100</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Multi-Factor Risk Spectrum Bins (0–100 Scale) */}
+            <div className="mt-4 pt-3.5 border-t border-[#E4E7F1]">
+              <div className="text-xs font-semibold text-[#11162A] mb-2 flex items-center justify-between">
                 <span>Multi-Factor Risk Spectrum</span>
                 <span className="text-[11px] font-mono text-[#65708B]">0–100 Score</span>
               </div>
@@ -1082,7 +1138,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 {priorityBins.map((bin) => (
                   <motion.div
                     key={bin.label}
-                    variants={isReduced ? {} : childRevealVariants}
+                    variants={getVariants(childRevealVariants, isReduced)}
                     className="p-2.5 bg-[#F0F2F9] rounded-xl border border-[#E4E7F1]"
                   >
                     <div className="flex items-center justify-between">

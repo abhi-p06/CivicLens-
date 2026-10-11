@@ -1,9 +1,34 @@
-import { Issue, HotspotInfo, RecurrenceInfo, EvaluationMetrics } from '../types'
+import { Issue, HotspotInfo, RecurrenceInfo, EvaluationMetrics, SystemHealth, ResolutionEvidence } from '../types'
 
 const BASE_URL = '/api/v1'
 
+/**
+ * Resolves authorization headers for role-restricted operations.
+ * - In local demo/development mode: falls back to documented demo tokens if enabled.
+ * - In production mode: strictly requires an authenticated session/token from storage
+ *   and NEVER ships functional static privileged credentials.
+ */
+function getAuthHeader(role: 'inspector' | 'admin'): string | undefined {
+  if (typeof window !== 'undefined') {
+    const sessionToken = localStorage.getItem(`civilens_${role}_token`) || localStorage.getItem('civilens_auth_token')
+    if (sessionToken) {
+      return sessionToken.startsWith('Bearer ') ? sessionToken : `Bearer ${sessionToken}`
+    }
+  }
+
+  // Allow development tokens only in development or when explicitly enabled in environment
+  const isDev = import.meta.env.DEV
+  const demoAuthAllowed = isDev || import.meta.env.VITE_CIVILENS_DEMO_AUTH === 'true'
+
+  if (demoAuthAllowed) {
+    return role === 'admin' ? 'Bearer demo-admin-token' : 'Bearer demo-inspector-token'
+  }
+
+  return undefined
+}
+
 export const api = {
-  async getHealth(): Promise<{ status: string; models: Record<string, string>; activeIssues: number }> {
+  async getHealth(): Promise<SystemHealth> {
     const res = await fetch(`${BASE_URL}/health`)
     if (!res.ok) throw new Error('Health check failed')
     return res.json()
@@ -27,10 +52,31 @@ export const api = {
     return res.json()
   },
 
+  async uploadImage(file: File): Promise<{
+    uploadId: string
+    previewUrl: string
+    contentType: string
+    sizeBytes: number
+  }> {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await fetch(`${BASE_URL}/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null)
+      const detail = Array.isArray(errBody?.detail) ? errBody.detail[0]?.msg : errBody?.detail
+      throw new Error(detail || 'Image upload failed')
+    }
+    return res.json()
+  },
+
   async submitIssue(payload: {
     complaintText: string
     location?: string
     imageUrl?: string
+    uploadId?: string
     source?: string
   }): Promise<Issue> {
     const res = await fetch(`${BASE_URL}/issues`, {
@@ -46,6 +92,7 @@ export const api = {
     complaintText: string
     location?: string
     imageUrl?: string
+    uploadId?: string
   }): Promise<any> {
     const res = await fetch(`${BASE_URL}/analyze`, {
       method: 'POST',
@@ -79,22 +126,42 @@ export const api = {
   },
 
   async updateStatus(id: string, status: string, note?: string): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
     const res = await fetch(`${BASE_URL}/issues/${id}/status`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ status, note }),
     })
-    if (!res.ok) throw new Error('Failed to update status')
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to update status')
+    }
     return res.json()
   },
 
-  async verifyResolution(id: string, postActionImageUrl: string): Promise<any> {
+  async verifyResolution(id: string, postActionImageUrl?: string, uploadId?: string, notes?: string): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
     const res = await fetch(`${BASE_URL}/issues/${id}/verify`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ postActionImageUrl }),
+      headers,
+      body: JSON.stringify({ postActionImageUrl, uploadId, notes }),
     })
-    if (!res.ok) throw new Error('Failed to verify resolution')
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to verify resolution')
+    }
+    return res.json()
+  },
+
+  async getVerificationHistory(id: string): Promise<ResolutionEvidence[]> {
+    const res = await fetch(`${BASE_URL}/issues/${id}/verifications`)
+    if (!res.ok) throw new Error('Failed to fetch verification history')
     return res.json()
   },
 
@@ -105,12 +172,20 @@ export const api = {
   },
 
   async updateRoutingConfig(category: string, config: any): Promise<any> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('admin')
+    if (auth) headers['Authorization'] = auth
+
     const res = await fetch(`${BASE_URL}/routing/config`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ category, config }),
     })
-    if (!res.ok) throw new Error('Failed to update routing config')
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null)
+      const detail = Array.isArray(errBody?.detail) ? errBody.detail[0]?.msg : errBody?.detail
+      throw new Error(detail || 'Failed to update routing config')
+    }
     return res.json()
   },
 
@@ -121,8 +196,18 @@ export const api = {
   },
 
   async resetDemo(): Promise<any> {
-    const res = await fetch(`${BASE_URL}/demo/reset`, { method: 'POST' })
-    if (!res.ok) throw new Error('Failed to reset demo')
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader('admin')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/demo/reset`, {
+      method: 'POST',
+      headers,
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to reset demo')
+    }
     return res.json()
   },
 }

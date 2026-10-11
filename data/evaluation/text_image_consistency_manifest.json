@@ -1,0 +1,72 @@
+[
+  {
+    "pair_id": "PAIR-CONSISTENT-001",
+    "description": "Reported road damage with verified pothole crater imagery.",
+    "complaintText": "Huge deep pothole crater in road damaging vehicle tires and suspension near junction.",
+    "category": "Roads & Footpaths",
+    "image_path": "data/test_samples/repair_pothole_before.jpg",
+    "ground_truth": "CONSISTENT",
+    "evidence_status": "VALID_IMAGE",
+    "notes": "Text describes road pothole; computer vision detects D40 pothole."
+  },
+  {
+    "pair_id": "PAIR-CONSISTENT-002",
+    "description": "Reported road damage with verified fatigue asphalt crack imagery.",
+    "complaintText": "Severe fatigue alligator crack spreading across road surface causing uneven driving.",
+    "category": "Roads & Footpaths",
+    "image_path": "data/test_samples/alligator_crack.jpg",
+    "ground_truth": "CONSISTENT",
+    "evidence_status": "VALID_IMAGE",
+    "notes": "Text describes asphalt crack; computer vision detects D20 alligator crack."
+  },
+  {
+    "pair_id": "PAIR-INCONSISTENT-001",
+    "description": "Reported sanitation issue but attached photo shows road pothole.",
+    "complaintText": "Overflowing garbage dump and rotting waste on main road creating unbearable stench.",
+    "category": "Sanitation & Garbage",
+    "image_path": "data/test_samples/repair_pothole_before.jpg",
+    "ground_truth": "INCONSISTENT",
+    "evidence_status": "VALID_IMAGE",
+    "notes": "Text claims garbage dump; photo clearly shows asphalt road pothole. Evidence discrepancy flagged for supervisor triage."
+  },
+  {
+    "pair_id": "PAIR-INCONSISTENT-002",
+    "description": "Reported water pipeline burst but attached photo shows road defect.",
+    "complaintText": "Severe drinking water pipeline leak and flooding street for 18 hours.",
+    "category": "Water Supply & Drainage",
+    "image_path": "data/test_samples/repair_pothole_before.jpg",
+    "ground_truth": "INCONSISTENT",
+    "evidence_status": "VALID_IMAGE",
+    "notes": "Text claims water pipeline flood; photo shows road surface defect without water. Evidence discrepancy flagged."
+  },
+  {
+    "pair_id": "PAIR-AMBIGUOUS-001",
+    "description": "Severe road crater claimed in text, but photo depicts clean roadway with zero detectable defects.",
+    "complaintText": "Critical crater pothole right in front of school gate risking student safety.",
+    "category": "Roads & Footpaths",
+    "image_path": "data/test_samples/clean_road.jpg",
+    "ground_truth": "MANUAL REVIEW",
+    "evidence_status": "AMBIGUOUS_IMAGE",
+    "notes": "Zero defects detected in image; requires human inspector verification before classifying."
+  },
+  {
+    "pair_id": "PAIR-AMBIGUOUS-002",
+    "description": "Reported road damage with corrupted or unreadable byte payload.",
+    "complaintText": "Broken asphalt and road pavement damage on connector road.",
+    "category": "Roads & Footpaths",
+    "image_path": "data/test_samples/corrupt_file.jpg",
+    "ground_truth": "MANUAL REVIEW",
+    "evidence_status": "UNREADABLE_IMAGE",
+    "notes": "Image file cannot be decoded by imaging pipeline. Fallback to manual review without accusing citizen."
+  },
+  {
+    "pair_id": "PAIR-MISSING-001",
+    "description": "Complaint submitted without photographic evidence attached.",
+    "complaintText": "Streetlight cluster completely dark on Linking Road near college campus.",
+    "category": "Electricity & Streetlights",
+    "image_path": null,
+    "ground_truth": "MANUAL REVIEW",
+    "evidence_status": "MISSING_EVIDENCE",
+    "notes": "No image submitted. System must handle gracefully as pending field inspection, tracked as missing evidence."
+  }
+]

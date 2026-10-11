@@ -33,46 +33,54 @@ class RiskAwarePriorityEngine:
         recurrence_count: int = 1,            # 1, 2, 3+
         is_hotspot: bool = False              # hotspot corridor
     ) -> Tuple[float, PriorityLevel, DynamicPriorityBreakdown, str]:
+        # Input boundary sanitization and graceful handling of missing/None values
+        urg = max(0.0, min(1.0, float(urgency if urgency is not None else 0.0)))
+        txt_sev = max(0.0, min(1.0, float(text_severity if text_severity is not None else 0.0)))
+        vis_sev = max(0.0, min(1.0, float(visual_severity if visual_severity is not None else 0.0)))
+        vis_conf = max(0.0, min(1.0, float(visual_confidence if visual_confidence is not None else 0.0)))
+        related_cnt = max(0, int(related_reports_count if related_reports_count is not None else 0))
+        hrs = max(0.0, float(hours_elapsed if hours_elapsed is not None else 1.0))
+        rec_cnt = max(1, int(recurrence_count if recurrence_count is not None else 1))
+        hotspot = bool(is_hotspot)
 
         # 1. Urgency: max 20 pts
-        urgency_pts = round(min(urgency * 20.0, 20.0), 1)
+        urgency_pts = round(min(urg * 20.0, 20.0), 1)
 
         # 2. Text Severity: max 20 pts
-        text_sev_pts = round(min(text_severity * 20.0, 20.0), 1)
+        text_sev_pts = round(min(txt_sev * 20.0, 20.0), 1)
 
-        # 3. Visual Severity: max 20 pts (modulated by CV confidence if image present)
-        if visual_severity > 0:
-            conf_multiplier = max(0.70, visual_confidence) if visual_confidence > 0 else 0.85
-            visual_sev_pts = round(min(visual_severity * 20.0 * conf_multiplier, 20.0), 1)
+        # 3. Visual Severity: max 20 pts (explicitly modulated by CV confidence; 0.0 if no image/defect)
+        if vis_sev > 0.0:
+            conf_multiplier = max(0.70, vis_conf) if vis_conf > 0.0 else 0.85
+            visual_sev_pts = round(min(vis_sev * 20.0 * conf_multiplier, 20.0), 1)
         else:
-            # Baseline visual points when no image is uploaded
+            # Baseline visual points when no image is uploaded or no visual defect detected
             visual_sev_pts = 0.0
 
-        # 4. Related Reports: max 15 pts (each duplicate indicates amplified public friction)
-        # 0 related -> 3 pts; 1 related -> 7 pts; 2 related -> 11 pts; 3+ related -> 15 pts
-        related_pts = round(min(3.0 + (related_reports_count * 4.0), 15.0), 1)
+        # 4. Related Reports: max 15 pts (amplifies public friction; base 3 pts, +4 per duplicate)
+        related_pts = round(min(3.0 + (related_cnt * 4.0), 15.0), 1)
 
-        # 5. Recency: max 10 pts (more recent = higher urgency to intervene early)
-        if hours_elapsed <= 6.0:
+        # 5. Recency: max 10 pts (more recent = higher priority for early intervention)
+        if hrs <= 6.0:
             recency_pts = 10.0
-        elif hours_elapsed <= 24.0:
+        elif hrs <= 24.0:
             recency_pts = 8.0
-        elif hours_elapsed <= 72.0:
+        elif hrs <= 72.0:
             recency_pts = 5.0
         else:
             recency_pts = 3.0
 
-        # 6. Location Risk: max 15 pts (Hotspot corridor + recurrence history)
-        loc_base = 9.0 if is_hotspot else 4.0
-        recurrence_bonus = min((recurrence_count - 1) * 2.0, 6.0)
+        # 6. Location Risk: max 15 pts (Hotspot corridor base + recurrence bonus)
+        loc_base = 9.0 if hotspot else 4.0
+        recurrence_bonus = min((rec_cnt - 1) * 2.0, 6.0)
         loc_risk_pts = round(min(loc_base + recurrence_bonus, 15.0), 1)
 
         total_score = round(min(
-            urgency_pts + text_sev_pts + visual_sev_pts + related_pts + recency_pts + loc_risk_pts,
+            max(0.0, urgency_pts + text_sev_pts + visual_sev_pts + related_pts + recency_pts + loc_risk_pts),
             100.0
         ), 1)
 
-        # Priority Level thresholds
+        # Priority Level thresholds (deterministic categorization)
         if total_score >= 85.0:
             level = PriorityLevel.CRITICAL
         elif total_score >= 70.0:
@@ -90,7 +98,13 @@ class RiskAwarePriorityEngine:
             recency_points=recency_pts,
             location_risk_points=loc_risk_pts,
             total_score=total_score,
-            composite_score=round(total_score / 100.0, 2)
+            composite_score=round(total_score / 100.0, 2),
+            urgency=urgency_pts,
+            textSeverity=text_sev_pts,
+            visualSeverity=visual_sev_pts,
+            relatedReports=related_pts,
+            recency=recency_pts,
+            locationRisk=loc_risk_pts
         )
 
         # Explainable Reasoning narrative
@@ -99,9 +113,9 @@ class RiskAwarePriorityEngine:
             reasoning_parts.append(f"High urgency hazard ({urgency_pts}/20)")
         if visual_sev_pts >= 12.0:
             reasoning_parts.append(f"Confirmed visual surface destruction ({visual_sev_pts}/20)")
-        if related_reports_count > 0:
-            reasoning_parts.append(f"Amplified citizen complaint volume ({related_reports_count} related reports, {related_pts}/15)")
-        if is_hotspot:
+        if related_cnt > 0:
+            reasoning_parts.append(f"Amplified citizen complaint volume ({related_cnt} related reports, {related_pts}/15)")
+        if hotspot:
             reasoning_parts.append(f"High-frequency municipal hotspot zone ({loc_risk_pts}/15)")
 
         if not reasoning_parts:

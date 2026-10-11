@@ -1,24 +1,40 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
+from app.db.database import init_db
+from app.core.demo_store import demo_store
+from app.modules.routing.dispatcher import department_dispatcher
 from app.api.routes import router
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize SQLite schema and seed only if empty
+    init_db()
+    demo_store.seed_if_empty()
+    department_dispatcher.load_from_db()
+    yield
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.version,
-    description="Multimodal Civic Issue Detection & Priority Advisory Engine (NLP + YOLO + GIS)"
+    description="Multimodal Civic Issue Detection & Priority Advisory Engine (NLP + YOLO + GIS)",
+    lifespan=lifespan
 )
 
-# Enable CORS for flexible dashboard/frontend integrations
+# Restricted CORS for authorized dashboard and client origins
+cors_origins = settings.allowed_origins_list
+has_wildcard = "*" in cors_origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=cors_origins,
+    allow_credentials=not has_wildcard,  # Unsafe wildcard-plus-credentials is strictly forbidden
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
 app.include_router(router)
+
 
 import os
 from fastapi import Request

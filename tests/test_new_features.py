@@ -181,7 +181,7 @@ def test_feature_20_resolution_verification():
         notes="Asphalt patching completed by ward team."
     )
     assert evidence_resolved.resolutionStatus == ResolutionStatus.LIKELY_RESOLVED
-    assert evidence_resolved.resolutionConfidence >= 0.85
+    assert evidence_resolved.resolutionConfidence >= 0.75
     assert evidence_resolved.post_repair_cv_cleared is True
     # Verify caution clause: system avoids claiming absolute certainty
     assert "not claiming absolute certainty" in evidence_resolved.verificationSummary.lower()

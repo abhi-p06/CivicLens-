@@ -10,7 +10,7 @@ interface MotionContextValue {
 }
 
 const MotionContext = createContext<MotionContextValue>({
-  motionMode: 'full',
+  motionMode: 'system',
   setMotionMode: () => {},
   isReduced: false,
   toggleMotionMode: () => {},
@@ -26,8 +26,7 @@ export const MotionProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return saved
       }
     }
-    // Default to 'full' for presentation-grade animated experience
-    return 'full'
+    return 'system'
   })
 
   const [systemReduced, setSystemReduced] = useState<boolean>(() => {
@@ -39,10 +38,10 @@ export const MotionProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     const handler = (e: MediaQueryListEvent) => setSystemReduced(e.matches)
-    mq.addEventListener?.('change', handler)
-    return () => mq.removeEventListener?.('change', handler)
+    mediaQuery.addEventListener?.('change', handler)
+    return () => mediaQuery.removeEventListener?.('change', handler)
   }, [])
 
   const setMotionMode = (mode: MotionMode) => {
@@ -52,13 +51,12 @@ export const MotionProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }
 
-  const toggleMotionMode = () => {
-    if (motionMode === 'full') setMotionMode('system')
-    else if (motionMode === 'system') setMotionMode('reduced')
-    else setMotionMode('full')
-  }
-
   const isReduced = motionMode === 'reduced' || (motionMode === 'system' && systemReduced)
+
+  const toggleMotionMode = () => {
+    const nextMode: MotionMode = isReduced ? 'full' : 'reduced'
+    setMotionMode(nextMode)
+  }
 
   return (
     <MotionContext.Provider
@@ -75,3 +73,5 @@ export const MotionProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 }
 
 export const useCivicMotion = () => useContext(MotionContext)
+
+export default MotionProvider

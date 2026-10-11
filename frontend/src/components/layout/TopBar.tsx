@@ -35,7 +35,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onSelectWard,
   totalIssuesCount,
 }) => {
-  const { motionMode, toggleMotionMode } = useCivicMotion()
+  const { motionMode, toggleMotionMode, isReduced } = useCivicMotion()
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   return (
     <header
       className={cn(
-        'sticky top-0 h-14 px-6 sm:px-8 flex items-center justify-between z-30 shrink-0 font-sans select-none gap-4 transition-all duration-200 border-b border-[#E4E7F1]',
+        'sticky top-0 h-14 px-6 sm:px-8 flex items-center justify-between z-30 shrink-0 font-sans select-none gap-4 transition-[background-color,box-shadow,border-color] duration-200 border-b border-[#E4E7F1]',
         isScrolled
           ? 'bg-white/95 backdrop-blur-md shadow-sm'
           : 'bg-white shadow-[0_1px_2px_rgba(17,22,42,0.02)]'
@@ -152,15 +152,18 @@ export const TopBar: React.FC<TopBarProps> = ({
         {/* Motion Preference Toggle */}
         <button
           onClick={toggleMotionMode}
-          title={`Animation Mode: ${motionMode.toUpperCase()} (Click to toggle)`}
-          className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer border shadow-xs ${
-            motionMode === 'full'
-              ? 'bg-[#6457E8]/10 border-[#6457E8]/30 text-[#6457E8]'
-              : 'bg-white border-[#E4E7F1] text-[#65708B] hover:bg-slate-50'
-          }`}
+          title={`Animation Mode: ${isReduced ? 'REDUCED' : 'FULL'} (Click to toggle)`}
+          className={cn(
+            'hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer border shadow-xs',
+            !isReduced
+              ? 'bg-[#6457E8]/10 border-[#6457E8]/30 text-[#6457E8] hover:bg-[#6457E8]/15'
+              : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200/70'
+          )}
         >
-          <Zap className="w-3.5 h-3.5 text-[#6457E8]" />
-          <span className="text-[11px]">Motion</span>
+          <Zap className={cn('w-3.5 h-3.5', !isReduced ? 'text-[#6457E8]' : 'text-slate-500')} />
+          <span className="text-[11px] font-mono font-semibold tracking-tight">
+            {isReduced ? 'MOTION: REDUCED' : 'MOTION: FULL'}
+          </span>
         </button>
 
         {/* Demo Mode Button */}

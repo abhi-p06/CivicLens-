@@ -79,13 +79,47 @@ class ConfigurableDepartmentDispatcher:
     def __init__(self, routing_config: Optional[Dict[str, Dict[str, Any]]] = None):
         import copy
         self._config = copy.deepcopy(routing_config) if routing_config is not None else get_default_routing_config()
+        self.load_from_db()
+
+    def load_from_db(self):
+        """Loads persisted routing configurations from SQLite database."""
+        try:
+            from app.db.database import init_db
+            from app.db.repository import SqliteIssueRepository
+            init_db()
+            repo = SqliteIssueRepository()
+            repo.seed_routing_defaults_if_empty(get_default_routing_config())
+            saved = repo.load_routing_configs()
+            if saved:
+                self._config.update(saved)
+        except Exception:
+            # Fallback cleanly to in-memory defaults if database not yet initialized
+            pass
 
     def reset_to_defaults(self):
-        self._config = get_default_routing_config()
+        defaults = get_default_routing_config()
+        self._config = defaults
+        try:
+            from app.db.database import init_db
+            from app.db.repository import SqliteIssueRepository
+            init_db()
+            repo = SqliteIssueRepository()
+            for cat, cfg in defaults.items():
+                repo.save_routing_config(cat, cfg)
+        except Exception:
+            pass
 
     def update_routing_config(self, category_key: str, dept_info: Dict[str, Any]):
-        """Allows dynamic runtime configuration of department routing."""
+        """Allows dynamic runtime configuration of department routing and persists to SQLite."""
         self._config[category_key] = dept_info
+        try:
+            from app.db.database import init_db
+            from app.db.repository import SqliteIssueRepository
+            init_db()
+            repo = SqliteIssueRepository()
+            repo.save_routing_config(category_key, dept_info)
+        except Exception:
+            pass
 
     def get_routing_config(self) -> Dict[str, Dict[str, Any]]:
         return self._config
@@ -117,7 +151,18 @@ class ConfigurableDepartmentDispatcher:
 
         action_tuple = actions_dict.get(pri_key)
         if action_tuple:
-            action, sla = action_tuple
+            if isinstance(action_tuple, (list, tuple)) and len(action_tuple) >= 2:
+                action = str(action_tuple[0])
+                sla = int(action_tuple[1])
+            elif isinstance(action_tuple, (list, tuple)) and len(action_tuple) == 1:
+                action = str(action_tuple[0])
+                sla = int(dept_record.get("slaHours", {}).get(pri_key, 24))
+            elif isinstance(action_tuple, str):
+                action = action_tuple
+                sla = int(dept_record.get("slaHours", {}).get(pri_key, 24))
+            else:
+                action = str(action_tuple)
+                sla = 24
         else:
             action = f"Inspect and schedule {cat_key} resolution."
             sla = 48

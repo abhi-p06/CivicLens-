@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Settings2, Save, RotateCcw, Zap } from 'lucide-react'
+import { X, Settings2, Save, RotateCcw, Zap, AlertCircle } from 'lucide-react'
 import { api } from '../../services/api'
 import { IssueCategory } from '../../types'
 import { useCivicMotion, MotionMode } from '../../lib/motionContext'
@@ -26,6 +26,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [criticalSla, setCriticalSla] = useState(12)
   const [saving, setSaving] = useState(false)
   const [savedSuccess, setSavedSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (isOpen) {
@@ -40,8 +41,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       if (cfg[selectedCategory]) {
         updateFormFields(selectedCategory, cfg)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
+      setErrorMessage(err?.message || 'Failed to load configuration.')
     }
   }
 
@@ -50,44 +52,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     if (data) {
       setDepartment(data.department || '')
       setCode(data.code || '')
-      setCriticalAction(data.actions?.CRITICAL || '')
-      setCriticalSla(data.slaHours?.CRITICAL || 12)
+      const crit = data.actions?.CRITICAL
+      if (Array.isArray(crit)) {
+        setCriticalAction(crit[0] || '')
+        setCriticalSla(Number(crit[1]) || 12)
+      } else {
+        setCriticalAction(typeof crit === 'string' ? crit : '')
+        setCriticalSla(Number(data.slaHours?.CRITICAL) || 12)
+      }
     }
   }
 
   const handleCategoryChange = (cat: string) => {
     setSelectedCategory(cat)
+    setErrorMessage(null)
     updateFormFields(cat, config)
   }
 
   const handleSave = async () => {
     setSaving(true)
     setSavedSuccess(false)
+    setErrorMessage(null)
     try {
       const currentCatData = config[selectedCategory] || {}
-      const updatedConfig = {
-        ...config,
-        [selectedCategory]: {
-          ...currentCatData,
-          department,
-          code,
-          actions: {
-            ...currentCatData.actions,
-            CRITICAL: criticalAction,
-          },
-          slaHours: {
-            ...currentCatData.slaHours,
-            CRITICAL: Number(criticalSla),
-          },
+      const updatedCatConfig = {
+        ...currentCatData,
+        department: department.trim(),
+        code: code.trim(),
+        actions: {
+          ...currentCatData.actions,
+          CRITICAL: [criticalAction.trim(), Number(criticalSla)],
+        },
+        slaHours: {
+          ...currentCatData.slaHours,
+          CRITICAL: Number(criticalSla),
         },
       }
-      await api.updateRoutingConfig(selectedCategory, updatedConfig[selectedCategory])
+      const res = await api.updateRoutingConfig(selectedCategory, updatedCatConfig)
+      const updatedConfig = {
+        ...config,
+        [selectedCategory]: res?.config || updatedCatConfig,
+      }
       setConfig(updatedConfig)
       setSavedSuccess(true)
       onConfigSaved()
       setTimeout(() => setSavedSuccess(false), 2500)
-    } catch (err) {
-      console.error(err)
+    } catch (err: any) {
+      console.error('Failed to update routing configuration:', err)
+      setErrorMessage(err?.message || 'Failed to update department routing rules.')
     } finally {
       setSaving(false)
     }
@@ -228,6 +240,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               {savedSuccess && (
                 <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
                   <span>Routing rule successfully updated in active system registry.</span>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{errorMessage}</span>
                 </div>
               )}
             </div>

@@ -6,7 +6,9 @@ from sklearn.metrics import (
     recall_score,
     f1_score,
     mean_absolute_error,
-    silhouette_score
+    silhouette_score,
+    confusion_matrix,
+    precision_recall_fscore_support
 )
 
 class CivicIntelligenceEvaluator:
@@ -108,15 +110,63 @@ class CivicIntelligenceEvaluator:
     @staticmethod
     def evaluate_text_image_consistency(
         y_true_levels: Sequence[str],
-        y_pred_levels: Sequence[str]
-    ) -> Dict[str, float]:
-        """Evaluates multimodal evidence consistency classification."""
+        y_pred_levels: Sequence[str],
+        missing_evidence_count: int = 0
+    ) -> Dict[str, Any]:
+        """
+        Evaluates multimodal evidence consistency classification.
+        Computes accuracy, macro precision/recall/F1, per-class breakdown,
+        confusion matrix, manual-review rate, and missing-evidence rate.
+        """
+        if not y_true_levels or not y_pred_levels or len(y_true_levels) != len(y_pred_levels):
+            return {
+                "accuracy": 0.0,
+                "macro_precision": 0.0,
+                "macro_recall": 0.0,
+                "macro_f1": 0.0,
+                "sample_count": 0,
+                "manual_review_rate": 0.0,
+                "missing_evidence_count": missing_evidence_count,
+                "missing_evidence_rate": 0.0,
+                "per_class": {},
+                "confusion_matrix": []
+            }
+
+        labels = sorted(list(set(y_true_levels).union(set(y_pred_levels))))
+        prec, rec, f1s, sup = precision_recall_fscore_support(
+            y_true_levels,
+            y_pred_levels,
+            labels=labels,
+            zero_division=0
+        )
+        cm = confusion_matrix(y_true_levels, y_pred_levels, labels=labels).tolist()
+
+        per_class = {}
+        for idx, lbl in enumerate(labels):
+            per_class[lbl] = {
+                "precision": round(float(prec[idx]), 4),
+                "recall": round(float(rec[idx]), 4),
+                "f1": round(float(f1s[idx]), 4),
+                "support": int(sup[idx])
+            }
+
+        total_samples = len(y_true_levels)
+        total_with_missing = total_samples + missing_evidence_count
+        manual_reviews = sum(1 for pred in y_pred_levels if pred in ["MANUAL REVIEW", "Manual Review"])
+
         return {
             "accuracy": round(float(accuracy_score(y_true_levels, y_pred_levels)), 4),
             "macro_precision": round(float(precision_score(y_true_levels, y_pred_levels, average="macro", zero_division=0)), 4),
             "macro_recall": round(float(recall_score(y_true_levels, y_pred_levels, average="macro", zero_division=0)), 4),
             "macro_f1": round(float(f1_score(y_true_levels, y_pred_levels, average="macro", zero_division=0)), 4),
-            "sample_count": len(y_true_levels)
+            "sample_count": total_samples,
+            "classes": labels,
+            "per_class": per_class,
+            "confusion_matrix": cm,
+            "manual_review_count": manual_reviews,
+            "manual_review_rate": round(manual_reviews / total_samples, 4) if total_samples > 0 else 0.0,
+            "missing_evidence_count": missing_evidence_count,
+            "missing_evidence_rate": round(missing_evidence_count / total_with_missing, 4) if total_with_missing > 0 else 0.0
         }
 
     @staticmethod

@@ -1,0 +1,128 @@
+{
+  "manifest_version": "1.0.0",
+  "project": "CIVILENS — Civic Issue Intelligence Platform",
+  "generated_date": "2026-10-11",
+  "models": {
+    "road_damage_detector": {
+      "model_name": "YOLOv8s RDD2022 Road Damage Detector",
+      "architecture": "YOLOv8s (Ultralytics YOLOv8 small, C2f backbone/head, 11.14M parameters)",
+      "checkpoint_filename": "models/yolov8s_rdd2022.pt",
+      "checkpoint_sha256": "2cf3f60395de6591d8378294fc26b8d7c4ca8f227e455987b3713ce6eeeea119",
+      "size_bytes": 22533347,
+      "source_repository": "SreekarAditya/yolo-rdd2022-benchmark",
+      "source_url": "https://huggingface.co/SreekarAditya/yolo-rdd2022-benchmark",
+      "supported_task": "ROAD_DAMAGE",
+      "supported_categories": ["Roads & Footpaths", "Potholes", "Cracks"],
+      "class_count": 4,
+      "classes": {
+        "0": {"code": "D00", "description": "Longitudinal Crack"},
+        "1": {"code": "D10", "description": "Transverse Crack"},
+        "2": {"code": "D20", "description": "Alligator / Fatigue Crack"},
+        "3": {"code": "D40", "description": "Pothole"}
+      },
+      "upstream_benchmark_metrics": {
+        "metric_name": "mAP@50",
+        "value": 0.4643,
+        "dataset": "RDD2022 Multi-Country Benchmark Test Set (Japan/India/Czech Republic)",
+        "source": "Maeda et al., Crowdsensing-based Road Damage Detection Challenge 2022"
+      },
+      "local_evaluation": {
+        "dataset_size": 4,
+        "evaluation_protocol": "Functional verification on representative road conditions",
+        "results": {
+          "pothole_detection": "Verified localized D40 box (confidence >= 0.15)",
+          "crack_detection": "Verified alligator/transverse crack box (confidence >= 0.15)",
+          "clean_asphalt_specificity": "Zero false positive detections on pristine road surface",
+          "coordinate_convention": "Normalized [ymin, xmin, ymax, xmax] in [0.0, 1.0]"
+        }
+      },
+      "licenses": {
+        "checkpoint": "CC-BY-4.0 (RDD2022 Consortium)",
+        "framework": "AGPL-3.0 (Ultralytics YOLO)"
+      },
+      "operational_status": "ONLINE",
+      "known_limitations": "Optimized for asphalt roadways; lower sensitivity on gravel or mud tracks. Rain-slicked pavement can cause specular reflection artifacts."
+    },
+    "waste_detector": {
+      "model_name": "YOLO11s TACO Municipal Waste Detector",
+      "architecture": "YOLO11s (Ultralytics YOLO11 small, yolo11s.yaml with C3k2 and C2PSA layers, 9.43M parameters)",
+      "checkpoint_filename": "models/taco_yolo11s.pt",
+      "legacy_alias_filename": "models/yolov8_waste.pt",
+      "checkpoint_sha256": "1b9c8379aca95efa75ec1f6ac803cabd3ba531b7d4b3f459101bcfd3aaae95ef",
+      "size_bytes": 19187027,
+      "source_repository": "fabiocigaina/TACO-yolo11s",
+      "source_url": "https://huggingface.co/fabiocigaina/TACO-yolo11s",
+      "supported_task": "SANITATION",
+      "supported_categories": ["Sanitation & Garbage", "Solid Waste", "Litter"],
+      "class_count": 9,
+      "classes": {
+        "0": {"name": "Plastic bag & wrapper", "ui_display": "Plastic Waste / Wrapper"},
+        "1": {"name": "Cigarette", "ui_display": "Litter Debris"},
+        "2": {"name": "Bottle", "ui_display": "Bottle / Container"},
+        "3": {"name": "Bottle cap", "ui_display": "Bottle Cap / Small Plastic"},
+        "4": {"name": "Can", "ui_display": "Metal Can Debris"},
+        "5": {"name": "Other plastic", "ui_display": "Plastic Scrap"},
+        "6": {"name": "Carton", "ui_display": "Discarded Carton / Box"},
+        "7": {"name": "Cup", "ui_display": "Disposable Cup"},
+        "8": {"name": "Other", "ui_display": "Solid Waste / Litter"}
+      },
+      "upstream_benchmark_metrics": {
+        "mAP@50": 0.311,
+        "mAP@50-95": 0.234,
+        "dataset": "TACO (Trash Annotations in Context) validation split (120 epochs)",
+        "source": "fabiocigaina/TACO-yolo11s HuggingFace repository evaluation logs"
+      },
+      "local_evaluation": {
+        "dataset_size": 5,
+        "manifest_path": "data/evaluation/waste_detection_eval_manifest.json",
+        "metrics": {
+          "image_presence_accuracy": 1.0,
+          "precision_at_50": 0.273,
+          "recall_at_50": 1.0,
+          "f1_at_50": 0.429,
+          "true_positives": 6,
+          "false_positives": 16,
+          "false_negatives": 0
+        },
+        "critical_note": "Local evaluation confirms 100% presence detection on litter items, but precision is limited to 27.3% due to high false positives on complex municipal pavement textures. Upstream mAP is NOT claimed as local accuracy."
+      },
+      "licenses": {
+        "checkpoint": "MIT License (declared by checkpoint author)",
+        "framework": "AGPL-3.0 (Ultralytics YOLO)"
+      },
+      "operational_status": "ONLINE",
+      "known_limitations": "Significant domain gap between TACO dataset (controlled macro-photos of litter) and Indian municipal surveillance (wide street scenes, rubble, aggregate piles). High false-positive rate on textured pavements; confidence threshold configured at 0.20."
+    },
+    "street_flooding_detector": {
+      "model_name": "Street Flooding / Waterlogging Detector",
+      "architecture": "None (No Calibrated Ground-Level Object Detector Deployed)",
+      "checkpoint_filename": null,
+      "checkpoint_sha256": null,
+      "size_bytes": 0,
+      "source_repository": null,
+      "source_url": null,
+      "supported_task": "WATER_SUPPLY",
+      "supported_categories": ["Water Supply & Drainage", "Street Flooding", "Waterlogging"],
+      "class_count": 0,
+      "classes": {},
+      "upstream_benchmark_metrics": {
+        "note": "No credible open-source ground-level object detection model exists for municipal street waterlogging."
+      },
+      "local_evaluation": {
+        "dataset_size": 1,
+        "protocol": "Integrity test with test image data/test_samples/street_flooding.jpg",
+        "results": {
+          "fabricated_boxes": 0,
+          "visual_severity_generated": 0.0,
+          "routing_decision": "MANUAL_REVIEW (Evidence pending field inspection)"
+        }
+      },
+      "licenses": {
+        "checkpoint": "N/A",
+        "framework": "N/A"
+      },
+      "operational_status": "UNSUPPORTED",
+      "known_limitations": "Explicitly unsupported. Public vision models for flood detection are either SAR/satellite remote sensing or binary text classifiers. Surface water detection cannot establish municipal pipe rupture or subsurface sewer overflow. Handled via human supervisory review without fabricating synthetic detections."
+    }
+  }
+}

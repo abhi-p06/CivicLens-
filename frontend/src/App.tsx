@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import { MotionProvider, useCivicMotion } from './lib/motionContext'
 import { api } from './services/api'
-import { Issue, HotspotInfo, RecurrenceInfo } from './types'
+import { Issue, HotspotInfo, RecurrenceInfo, SystemHealth } from './types'
 import { Sidebar } from './components/layout/Sidebar'
 import { SidebarProvider } from './components/ui/sidebar'
 import { TopBar } from './components/layout/TopBar'
@@ -16,6 +16,7 @@ import { ToastProvider, useToast } from './components/common/Toast'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import { GuidedDemoController } from './components/demo/GuidedDemoController'
 import { DEMO_SCENARIO } from './services/demoScenario'
+import { TargetCursor } from './components/reactbits/TargetCursor'
 
 // Views
 import { OverviewView } from './components/views/OverviewView'
@@ -64,7 +65,7 @@ function AppContent() {
   const [issues, setIssues] = useState<Issue[]>([])
   const [hotspots, setHotspots] = useState<HotspotInfo[]>([])
   const [recurringIssues, setRecurringIssues] = useState<RecurrenceInfo[]>([])
-  const [healthData, setHealthData] = useState<any | null>(null)
+  const [healthData, setHealthData] = useState<SystemHealth | null>(null)
   const [selectedWard, setSelectedWard] = useState<string>('ALL WARDS (MUMBAI REGION)')
 
   // Demo Presentation Mode State
@@ -213,7 +214,11 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen w-screen bg-[#F6F7FC] text-slate-900 overflow-hidden font-sans select-none">
+    <MotionConfig reducedMotion={isReduced ? 'always' : 'never'}>
+      <div className="flex h-screen w-screen bg-[#F6F7FC] text-slate-900 overflow-hidden font-sans select-none">
+        {/* Precision Animated Target Cursor Reticle */}
+        <TargetCursor />
+
       {/* Persistent Left Sidebar */}
       <Sidebar
         activeView={activeView}
@@ -409,6 +414,7 @@ function AppContent() {
         onConfigSaved={loadData}
       />
     </div>
+    </MotionConfig>
   )
 }
 

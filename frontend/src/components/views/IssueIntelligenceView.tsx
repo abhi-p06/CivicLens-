@@ -219,15 +219,56 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
             {/* Visual Box Representation */}
             <div className="relative h-48 bg-[#10162A] rounded-xl border border-[#212348] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 bg-dot-matrix opacity-30" />
-              {/* Bounding Box Overlay */}
-              <div className="relative z-10 p-3 border-2 border-[#8B5CF6] bg-[#6457E8]/20 rounded-lg shadow-lg flex flex-col items-center">
-                <span className="text-xs bg-[#6457E8] text-white px-2 py-0.5 rounded font-semibold uppercase mb-1">
-                  {current.visualDetection || 'Pothole (Detected)'}
-                </span>
-                <span className="text-xs text-indigo-200 font-mono">
-                  Confidence: {((current.visualConfidence || 0.9) * 100).toFixed(1)}%
-                </span>
-              </div>
+              {current.imageUrl && (
+                <img
+                  src={current.imageUrl.startsWith('/') || current.imageUrl.startsWith('http') || current.imageUrl.startsWith('blob:') ? current.imageUrl : `/${current.imageUrl}`}
+                  alt="Incident Visual Evidence"
+                  className="absolute inset-0 w-full h-full object-cover opacity-50"
+                  onError={(e) => { (e.target as HTMLElement).style.display = 'none' }}
+                />
+              )}
+              {/* Dynamic Bounding Box Overlays */}
+              {current.detectedObjects && current.detectedObjects.length > 0 ? (
+                current.detectedObjects.map((obj: any, idx: number) => {
+                  const [ymin, xmin, ymax, xmax] = obj.bbox || [0.25, 0.25, 0.75, 0.75]
+                  const top = `${ymin * 100}%`
+                  const left = `${xmin * 100}%`
+                  const width = `${Math.max(6, (xmax - xmin) * 100)}%`
+                  const height = `${Math.max(6, (ymax - ymin) * 100)}%`
+                  return (
+                    <div
+                      key={idx}
+                      style={{ top, left, width, height }}
+                      className="absolute z-10 border-2 border-[#8B5CF6] bg-[#6457E8]/20 backdrop-blur-xs rounded-md shadow-lg pointer-events-none flex flex-col justify-between p-1"
+                    >
+                      <span className="text-[10px] bg-[#6457E8] text-white px-1.5 py-0.5 rounded font-semibold uppercase tracking-tight self-start truncate max-w-full">
+                        {obj.label}
+                      </span>
+                      <span className="text-[9px] bg-black/70 text-indigo-200 font-mono px-1 rounded self-end">
+                        {(obj.confidence * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  )
+                })
+              ) : current.visualDetection ? (
+                <div className="relative z-10 p-3 border-2 border-[#8B5CF6] bg-[#6457E8]/20 backdrop-blur-xs rounded-lg shadow-lg flex flex-col items-center">
+                  <span className="text-xs bg-[#6457E8] text-white px-2 py-0.5 rounded font-semibold uppercase mb-1">
+                    {current.visualDetection}
+                  </span>
+                  <span className="text-xs text-indigo-200 font-mono">
+                    Confidence: {((current.visualConfidence || 0.0) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              ) : (
+                <div className="relative z-10 p-3 bg-black/60 border border-slate-700/80 rounded-lg text-center backdrop-blur-xs">
+                  <span className="text-xs text-slate-300 font-semibold block">
+                    No Road Damage Detected
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+                    YOLOv8s RDD2022 Inspected &bull; Clean Surface
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-xs text-[#65708B] pt-1">

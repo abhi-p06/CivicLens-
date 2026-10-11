@@ -1,0 +1,69 @@
+[
+  {
+    "sample_id": "WASTE-EVAL-001",
+    "image_path": "data/test_samples/bottle.jpg",
+    "description": "Discarded plastic beverage bottle and cap lying on ground.",
+    "category": "Sanitation & Garbage",
+    "expected_waste_presence": true,
+    "ground_truth_objects": [
+      {
+        "class_name": "Bottle",
+        "bbox": [0.484, 0.411, 0.664, 0.735]
+      },
+      {
+        "class_name": "Bottle cap",
+        "bbox": [0.483, 0.411, 0.509, 0.441]
+      }
+    ]
+  },
+  {
+    "sample_id": "WASTE-EVAL-002",
+    "image_path": "data/test_samples/cup.jpg",
+    "description": "Discarded single-use disposable cup on surface.",
+    "category": "Sanitation & Garbage",
+    "expected_waste_presence": true,
+    "ground_truth_objects": [
+      {
+        "class_name": "Cup",
+        "bbox": [0.533, 0.464, 0.650, 0.616]
+      }
+    ]
+  },
+  {
+    "sample_id": "WASTE-EVAL-003",
+    "image_path": "data/test_samples/litter.jpg",
+    "description": "Mixed street litter accumulation including plastic wrappers, cans, and carton.",
+    "category": "Sanitation & Garbage",
+    "expected_waste_presence": true,
+    "ground_truth_objects": [
+      {
+        "class_name": "Plastic bag & wrapper",
+        "bbox": [0.584, 0.315, 0.922, 0.542]
+      },
+      {
+        "class_name": "Can",
+        "bbox": [0.557, 0.095, 0.848, 0.234]
+      },
+      {
+        "class_name": "Carton",
+        "bbox": [0.423, 0.252, 0.609, 0.385]
+      }
+    ]
+  },
+  {
+    "sample_id": "WASTE-EVAL-004",
+    "image_path": "data/test_samples/clean_road.jpg",
+    "description": "Clean paved asphalt road without garbage or litter (Negative control).",
+    "category": "Roads & Footpaths",
+    "expected_waste_presence": false,
+    "ground_truth_objects": []
+  },
+  {
+    "sample_id": "WASTE-EVAL-005",
+    "image_path": "data/test_samples/repair_pothole_before.jpg",
+    "description": "Road pothole defect without waste or garbage accumulation (Cross-domain negative control).",
+    "category": "Roads & Footpaths",
+    "expected_waste_presence": false,
+    "ground_truth_objects": []
+  }
+]

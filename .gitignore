@@ -8,3 +8,12 @@ __pycache__/
 *.onnx
 node_modules/
 frontend/node_modules/
+*.db
+*.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
+test_*.db*
+uploads/
+*.tmp
+test_*.png

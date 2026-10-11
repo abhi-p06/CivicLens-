@@ -52,7 +52,7 @@ def run_scenarios():
         print(f"  • Vision Detection   : {result['visualDetection']} (Severity V: {result['visualSeverity']}, Mode: {result['visionMode']})")
         print(f"  • Text-CV Alignment  : {result['consistencyFlag']} (Score: {result['evidenceConsistency']})")
         print(f"  • Spatiotemporal     : Recurrence={result['recurrence']}, Hotspot={result['isHotspot']}, Cluster={result['hotspotClusterId']}")
-        print(f"  • Priority Advisory  : {result['priorityLevel'].value} ({result['priorityScore']:.2f}) [Formula: 0.30U + 0.25V + 0.20F + 0.15R + 0.10E]")
+        print(f"  • Priority Advisory  : {result['priorityLevel'].value} ({result['priorityScore']:.2f}) [Formula: 20U + 20T + 20V + 15F + 10R + 15L = 100 pts]")
         print(f"  • Dept Routing       : {result['department']}")
         print(f"  • Action Directive   : {result['recommendedAction']} (SLA: {result['slaHours']}h)")
 

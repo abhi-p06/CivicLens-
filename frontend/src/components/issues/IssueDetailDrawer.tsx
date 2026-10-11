@@ -169,6 +169,16 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             <p className="text-[#11162A] text-sm font-sans leading-relaxed">
               {issue.complaintText || '(Patrol Automated Ingestion - No citizen narrative provided)'}
             </p>
+            {issue.imageUrl && (
+              <div className="mt-3 rounded-xl overflow-hidden border border-[#E4E7F1] bg-[#F0F2F9] flex items-center justify-center relative">
+                <img
+                  src={issue.imageUrl.startsWith('/') || issue.imageUrl.startsWith('http') || issue.imageUrl.startsWith('blob:') ? issue.imageUrl : `/${issue.imageUrl}`}
+                  alt="Incident Field Photo"
+                  className="w-full max-h-56 object-cover"
+                  onError={(e) => { (e.target as HTMLElement).style.display = 'none' }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Explainable Dynamic Priority Gauge */}
@@ -310,7 +320,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                 {issue.resolutionEvidence.verificationSummary}
               </div>
               <div className="text-[10px] text-emerald-700 font-mono">
-                Confidence: {(issue.resolutionEvidence.resolutionConfidence * 100).toFixed(1)}% &bull; Verified: {new Date(issue.resolutionEvidence.verifiedAt).toLocaleTimeString()}
+                Confidence: {(issue.resolutionEvidence.resolutionConfidence * 100).toFixed(1)}% &bull; Verified: {new Date(issue.resolutionEvidence.verifiedAt || issue.resolutionEvidence.verified_at || Date.now()).toLocaleTimeString()}
               </div>
             </div>
           )}

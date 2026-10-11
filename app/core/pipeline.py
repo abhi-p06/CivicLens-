@@ -18,6 +18,7 @@ from app.modules.nlp.classifier import nlp_classifier
 from app.modules.nlp.location import location_extractor
 from app.modules.nlp.deduplication import deduplication_engine
 from app.modules.vision.yolo_detector import yolo_detector
+from app.modules.vision.manager import vision_manager
 from app.modules.vision.severity import visual_severity_estimator
 from app.modules.cross_validation.validator import cross_validation_engine
 from app.modules.spatiotemporal.analyzer import spatiotemporal_analyzer
@@ -25,6 +26,8 @@ from app.modules.spatiotemporal.hotspot import hotspot_detector
 from app.modules.spatiotemporal.recurring import recurring_detector
 from app.modules.priority.engine import priority_engine
 from app.modules.routing.dispatcher import department_dispatcher
+from app.services.upload_service import upload_service
+from app.config import settings
 
 class CivicIssueIntelligencePipeline:
     """
@@ -45,13 +48,19 @@ class CivicIssueIntelligencePipeline:
         """
         existing_issues = demo_store.list_issues()
         now_iso = datetime.now(timezone.utc).isoformat()
+
+        # Resolve server-side verified image reference safely
+        server_image_path, preview_url, resolved_upload_id = upload_service.resolve_image_reference(
+            upload_id=payload.uploadId,
+            image_url=payload.imageUrl
+        )
         
         # -------------------------------------------------------------
         # Feature 11: Unreported Issue Auto-Drafting Check
         # -------------------------------------------------------------
         is_auto_draft = False
         text = payload.complaintText.strip() if payload.complaintText else ""
-        if len(text) < 4 and payload.imageUrl:
+        if len(text) < 4 and (server_image_path or preview_url):
             is_auto_draft = True
             text = "Auto-detected road surface damage detected from visual surveillance inspection."
 
@@ -104,14 +113,23 @@ class CivicIssueIntelligencePipeline:
         # -------------------------------------------------------------
         # Features 8, 9: YOLO Road Damage Detection & Visual Severity
         # -------------------------------------------------------------
-        vision_out = yolo_detector.detect(
-            image_path_or_url=payload.imageUrl,
-            category_hint=category.value
+        is_demo_scenario = False
+        if hasattr(payload, "metadata") and payload.metadata:
+            is_demo_scenario = bool(payload.metadata.get("isDemoPreserved", False))
+        if not is_demo_scenario and "sample_" in str(server_image_path or payload.imageUrl or ""):
+            is_demo_scenario = settings.civilens_demo_mode
+
+        vision_out = vision_manager.detect(
+            image_path_or_url=server_image_path or payload.imageUrl,
+            category_hint=category.value,
+            is_demo=is_demo_scenario
         )
         vis_primary = vision_out["visualDetection"]
         vis_conf = vision_out["visualConfidence"]
         detected_objs = vision_out["detectedObjects"]
         vision_mode = vision_out["visionExecutionMode"]
+        vis_model = vision_out.get("sourceModel", "none")
+        vis_task = vision_out.get("task", "NONE")
         vis_severity = visual_severity_estimator.estimate_severity(detected_objs)
 
         # -------------------------------------------------------------
@@ -208,6 +226,8 @@ class CivicIssueIntelligencePipeline:
             "visualConfidence": vis_conf,
             "detectedObjects": detected_objs,
             "visionMode": vision_mode,
+            "visionModel": vis_model,
+            "visionTask": vis_task,
             
             # Feature 18 Output
             "evidenceConsistency": consistency_detail.consistencyScore,
@@ -236,6 +256,9 @@ class CivicIssueIntelligencePipeline:
             "slaHours": sla_hours,
             "departmentCode": dept_code,
             
+            "imageUrl": preview_url or payload.imageUrl,
+            "uploadId": resolved_upload_id,
+            "resolvedImagePath": server_image_path,
             "isAutoDrafted": is_auto_draft,
             "timestamp": now_iso
         }
@@ -248,6 +271,8 @@ class CivicIssueIntelligencePipeline:
         issue_id = f"CIVIC-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
 
         status = IssueStatus.TRIAGED if analysis["isAutoDrafted"] else IssueStatus.OPEN
+        resolved_img = analysis.get("imageUrl") or payload.imageUrl
+        resolved_upload = analysis.get("uploadId") or payload.uploadId
 
         issue = Issue(
             issueId=issue_id,
@@ -266,6 +291,9 @@ class CivicIssueIntelligencePipeline:
             visualConfidence=analysis["visualConfidence"],
             visualSeverity=analysis["visualSeverity"],
             detectedObjects=analysis["detectedObjects"],
+            visionMode=analysis.get("visionMode"),
+            visionModel=analysis.get("visionModel"),
+            visionTask=analysis.get("visionTask"),
             evidenceConsistency=analysis["evidenceConsistency"],
             consistencyLevel=analysis["consistencyLevel"],
             consistencyFlag=analysis["consistencyFlag"],
@@ -283,7 +311,8 @@ class CivicIssueIntelligencePipeline:
             recommendedAction=analysis["recommendedAction"],
             slaHours=analysis["slaHours"],
             ward=analysis.get("ward", "N-Ward"),
-            imageUrl=payload.imageUrl,
+            imageUrl=resolved_img,
+            uploadId=resolved_upload,
             status=status,
             metadata={
                 "source": payload.source,
@@ -291,11 +320,17 @@ class CivicIssueIntelligencePipeline:
                 "classificationMode": analysis["classificationMode"],
                 "visionMode": analysis["visionMode"],
                 "isAutoDrafted": analysis["isAutoDrafted"],
-                "departmentCode": analysis["departmentCode"]
+                "departmentCode": analysis["departmentCode"],
+                "uploadId": resolved_upload
             }
         )
 
         demo_store.add_issue(issue)
+        if resolved_upload:
+            try:
+                demo_store.repository.associate_upload_with_issue(resolved_upload, issue.issueId)
+            except Exception:
+                pass
         return issue
 
 pipeline = CivicIssueIntelligencePipeline()
