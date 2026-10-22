@@ -95,26 +95,28 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
     setError(null)
     if (num === 1) {
       setComplaintText(
-        'Huge dangerous pothole near Somaiya Vidyavihar campus gate, bikes skidding causing serious accident risk'
+        'Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance.'
       )
-      setLocation('Vidyavihar')
-      setImageUrl('data/sample_pothole.jpg')
+      setLocation('Somaiya Vidyavihar Main Gate, Vidyavihar East')
+      setImageUrl('data/test_samples/repair_pothole_before.jpg')
     } else if (num === 2) {
       setComplaintText(
-        'Massive overflowing garbage dump on LBS Marg, rotten food waste and flies creating extreme stench'
+        'Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench.'
       )
-      setLocation('LBS Marg, Ghatkopar West')
-      setImageUrl('data/sample_garbage.jpg')
+      setLocation('Station Road, Kurla West')
+      setImageUrl('data/test_samples/bottle.jpg')
     } else if (num === 3) {
       setComplaintText(
-        'Major drinking water pipeline burst flooding 90 Feet Road Dharavi, millions of liters wasted'
+        'Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor.'
       )
-      setLocation('Dharavi')
-      setImageUrl('data/sample_water_leak.jpg')
+      setLocation('S.V. Road, Santacruz')
+      setImageUrl('data/test_samples/bottle.jpg')
     } else if (num === 4) {
-      setComplaintText('')
+      setComplaintText(
+        'Deep road depression detected during autonomous visual patrol inspection near school perimeter.'
+      )
       setLocation('Kurla West')
-      setImageUrl('data/patrol_survey_pothole.jpg')
+      setImageUrl('data/test_samples/pothole_multibox.jpg')
     }
   }
 
@@ -209,7 +211,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
           {/* Quick Scenario Fillers */}
           <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs space-y-2.5">
             <div className="text-xs font-semibold text-[#65708B]">
-              Load Evaluated Test Scenarios
+              Load Primary Evaluated Civic Scenarios
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
@@ -217,28 +219,28 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 onClick={() => loadScenario(1)}
                 className="px-2.5 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
-                1. Pothole / Crash
+                1. Pothole / Road
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(2)}
                 className="px-2.5 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
-                2. Garbage Dump
+                2. Garbage / Litter
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(3)}
-                className="px-2.5 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
+                className="px-2.5 py-2 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
-                3. Water Main Burst
+                3. Mismatch Check
               </button>
               <button
                 type="button"
                 onClick={() => loadScenario(4)}
                 className="px-2.5 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[#6457E8] rounded-lg text-xs font-medium truncate text-left transition cursor-pointer"
               >
-                4. Patrol Camera
+                4. Patrol Road Survey
               </button>
             </div>
           </div>

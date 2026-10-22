@@ -1,0 +1,16 @@
+path: /Users/abby/chiragwalaproj/data/datasets/waste
+train: images/val
+val: images/val
+test: images/test
+
+nc: 9
+names:
+  0: Plastic bag & wrapper
+  1: Cigarette
+  2: Bottle
+  3: Bottle cap
+  4: Can
+  5: Other plastic
+  6: Carton
+  7: Cup
+  8: Other

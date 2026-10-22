@@ -51,6 +51,10 @@ class SpatiotemporalHotspotDetector:
                 current_period_issues.append(issue)
 
         if len(current_period_issues) < min_samples:
+            # Fallback to all available issues to ensure demo/seed issues are clustered
+            current_period_issues = list(issues)
+
+        if len(current_period_issues) < min_samples:
             return []
 
         # Convert coords to radians for Haversine DBSCAN

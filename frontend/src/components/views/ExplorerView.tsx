@@ -26,13 +26,13 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
   const [sortField, setSortField] = useState<'priority' | 'time'>('priority')
 
   const categories = [
-    'ALL',
-    'Roads & Footpaths',
-    'Sanitation & Garbage',
-    'Water Supply & Drainage',
-    'Street Lighting',
-    'Storm Water Drains',
-    'Traffic & Safety',
+    { label: 'ALL Categories', value: 'ALL' },
+    { label: 'Roads & Footpaths (Core Focus 1)', value: 'Roads & Footpaths' },
+    { label: 'Sanitation & Garbage (Core Focus 2)', value: 'Sanitation & Garbage' },
+    { label: 'Water Supply & Drainage (Out of Scope)', value: 'Water Supply & Drainage' },
+    { label: 'Street Lighting (Out of Scope)', value: 'Street Lighting' },
+    { label: 'Storm Water Drains (Out of Scope)', value: 'Storm Water Drains' },
+    { label: 'Traffic & Safety (Out of Scope)', value: 'Traffic & Safety' },
   ]
 
   const priorities = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
@@ -95,8 +95,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
               className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8] cursor-pointer"
             >
               {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+                <option key={c.value} value={c.value}>
+                  {c.label}
                 </option>
               ))}
             </select>

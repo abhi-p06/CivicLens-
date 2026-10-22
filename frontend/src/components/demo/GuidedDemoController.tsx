@@ -18,7 +18,7 @@ import {
 import { cn } from '../../lib/utils'
 
 export interface GuidedDemoControllerProps {
-  activeDemoStep: number // 1 to 6
+  activeDemoStep: number // 1 to 5
   onSetDemoStep: (step: number) => void
   onExitDemo: () => void
   onResetDemo: () => void
@@ -27,49 +27,46 @@ export interface GuidedDemoControllerProps {
 export const DEMO_STEPS = [
   {
     step: 1,
-    title: 'Command Center',
-    viewId: 'overview',
-    instruction: 'Review high-priority intake feed & KPI alerts. Click "ANALYZE CIVIC ISSUE" to begin.',
-    actionLabel: 'Analyze Civic Issue',
+    title: 'Pothole & Road Damage Intake',
+    viewId: 'analyze',
+    preset: 'pothole',
+    instruction: 'Submit pothole complaint with image. Genuine YOLOv8s RDD2022 inference, Priority scoring, and Roads Dept routing.',
+    actionLabel: 'Next: Submit Garbage Complaint',
     icon: Sparkles,
   },
   {
     step: 2,
-    title: 'Complaint Analysis Pipeline',
+    title: 'Garbage & Street Litter Intake',
     viewId: 'analyze',
-    instruction: 'Ingesting complaint: "Large pothole near school gate..." Running 10-stage AI pipeline.',
-    actionLabel: 'View Synthesized Results',
+    preset: 'garbage',
+    instruction: 'Submit municipal waste complaint with image. Genuine YOLO11s TACO inference, SWM routing, transparent uncertainty disclosure.',
+    actionLabel: 'Next: Test Cross-Validation Mismatch',
     icon: Sliders,
   },
   {
     step: 3,
-    title: 'Cognitive Results & Advisory',
+    title: 'Cross-Category Mismatch Validation',
     viewId: 'analyze',
-    instruction: 'Review Priority (91/100), YOLO Confidence (94%), Consistency (HIGH), and Roads Dept routing.',
-    actionLabel: 'Inspect on Tactical Map',
-    icon: FileText,
+    preset: 'mismatch',
+    instruction: 'Test road complaint paired with garbage image. Waste detector assists cross-check; flagged INCONSISTENT for supervisory triage.',
+    actionLabel: 'Next: Compare Priority Scores & GIS',
+    icon: ShieldAlert,
   },
   {
     step: 4,
-    title: 'Tactical GIS Map',
+    title: 'Tactical GIS & Dual-Category Priorities',
     viewId: 'map',
-    instruction: 'Flying to Somaiya Vidyavihar. Visualizing detected incident, nearby reports & DBSCAN hotspot.',
-    actionLabel: 'Open Intelligence Dossier',
+    preset: undefined,
+    instruction: 'Spatial visualization across Mumbai wards. Compare 6-factor priority scores, Haversine DBSCAN hotspots, and department routing.',
+    actionLabel: 'Next: Verify Pothole Repair',
     icon: MapPin,
   },
   {
     step: 5,
-    title: 'Issue Intelligence Dossier',
-    viewId: 'intelligence',
-    instruction: 'Examining multimodal evidence: YOLO bounding box, 0-100 score breakdown & lifecycle timeline.',
-    actionLabel: 'Verify Field Resolution',
-    icon: ShieldAlert,
-  },
-  {
-    step: 6,
-    title: 'Resolution Verification',
+    title: 'Pothole Before & After Repair Verification',
     viewId: 'resolution',
-    instruction: 'Before/After field comparison: Cold-mix patch verified. Outcome: LIKELY RESOLVED.',
+    preset: 'resolution',
+    instruction: 'Lifecycle verification: Compare pothole before-and-after repair images using OpenCV SSIM & YOLO defect clearance (LIKELY RESOLVED).',
     actionLabel: 'Complete Presentation Demo',
     icon: CheckCircle2,
   },
@@ -84,7 +81,7 @@ export const GuidedDemoController: React.FC<GuidedDemoControllerProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false)
   const current = DEMO_STEPS.find((s) => s.step === activeDemoStep) || DEMO_STEPS[0]
   const isFirst = activeDemoStep <= 1
-  const isLast = activeDemoStep >= 6
+  const isLast = activeDemoStep >= DEMO_STEPS.length
 
   // Keyboard navigation for demo presenter
   useEffect(() => {

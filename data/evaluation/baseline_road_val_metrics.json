@@ -1,0 +1,486 @@
+{
+  "model_path": "models/yolov8s_rdd2022.pt",
+  "task": "ROAD_DAMAGE",
+  "split": "val",
+  "sample_count": 100,
+  "positive_images": 50,
+  "negative_images": 50,
+  "confidence_threshold": 0.15,
+  "iou_nms_threshold": 0.45,
+  "match_iou_threshold": 0.5,
+  "total_ground_truth_objects": 77,
+  "true_positives": 41,
+  "false_positives": 54,
+  "false_negatives": 36,
+  "precision": 0.4316,
+  "recall": 0.5325,
+  "f1_score": 0.4767,
+  "mAP_50": 0.4389,
+  "mAP_50_95": 0.2602,
+  "hard_neg_images_evaluated": 50,
+  "hard_neg_images_with_false_alarms": 10,
+  "hard_neg_false_alarm_rate": 0.2,
+  "latency_ms": {
+    "mean": 80.91,
+    "median": 74.01,
+    "p95": 80.53
+  },
+  "per_class": {
+    "2": {
+      "name": "D20",
+      "ground_truth_count": 39,
+      "true_positives": 31,
+      "false_positives": 10,
+      "false_negatives": 8,
+      "precision": 0.7561,
+      "recall": 0.7949,
+      "f1_score": 0.775
+    },
+    "3": {
+      "name": "D40",
+      "ground_truth_count": 19,
+      "true_positives": 0,
+      "false_positives": 41,
+      "false_negatives": 19,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0
+    },
+    "0": {
+      "name": "D00",
+      "ground_truth_count": 19,
+      "true_positives": 10,
+      "false_positives": 3,
+      "false_negatives": 9,
+      "precision": 0.7692,
+      "recall": 0.5263,
+      "f1_score": 0.625
+    }
+  },
+  "pr_curve_sample": [
+    {
+      "rank": 1,
+      "confidence": 0.8349,
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    {
+      "rank": 5,
+      "confidence": 0.7641,
+      "precision": 0.4,
+      "recall": 0.026
+    },
+    {
+      "rank": 9,
+      "confidence": 0.72,
+      "precision": 0.5556,
+      "recall": 0.0649
+    },
+    {
+      "rank": 13,
+      "confidence": 0.6943,
+      "precision": 0.6154,
+      "recall": 0.1039
+    },
+    {
+      "rank": 17,
+      "confidence": 0.6743,
+      "precision": 0.6471,
+      "recall": 0.1429
+    },
+    {
+      "rank": 21,
+      "confidence": 0.6542,
+      "precision": 0.6667,
+      "recall": 0.1818
+    },
+    {
+      "rank": 25,
+      "confidence": 0.6252,
+      "precision": 0.72,
+      "recall": 0.2338
+    },
+    {
+      "rank": 29,
+      "confidence": 0.5923,
+      "precision": 0.6897,
+      "recall": 0.2597
+    },
+    {
+      "rank": 33,
+      "confidence": 0.5683,
+      "precision": 0.697,
+      "recall": 0.2987
+    },
+    {
+      "rank": 37,
+      "confidence": 0.5422,
+      "precision": 0.6216,
+      "recall": 0.2987
+    }
+  ],
+  "false_positives_sample": [
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.3833,
+      "bbox": [
+        0.61,
+        0.288,
+        0.6703,
+        0.4265
+      ]
+    },
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.2123,
+      "bbox": [
+        0.6273,
+        0.0008,
+        0.6785,
+        0.1086
+      ]
+    },
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.1937,
+      "bbox": [
+        0.5575,
+        0.1755,
+        0.6249,
+        0.3719
+      ]
+    },
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.1792,
+      "bbox": [
+        0.5757,
+        0.1747,
+        0.6254,
+        0.2908
+      ]
+    },
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "D00",
+      "confidence": 0.1672,
+      "bbox": [
+        0.6151,
+        0.5518,
+        0.805,
+        0.626
+      ]
+    },
+    {
+      "image_name": "India_000067.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "D20",
+      "confidence": 0.1542,
+      "bbox": [
+        0.6285,
+        0.6036,
+        0.8216,
+        0.899
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "D20",
+      "confidence": 0.3917,
+      "bbox": [
+        0.6627,
+        0.665,
+        0.9476,
+        1.0
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "D20",
+      "confidence": 0.2769,
+      "bbox": [
+        0.6584,
+        0.192,
+        0.9304,
+        0.9796
+      ]
+    },
+    {
+      "image_name": "India_000230.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.3262,
+      "bbox": [
+        0.8732,
+        0.6077,
+        0.9364,
+        0.708
+      ]
+    },
+    {
+      "image_name": "India_000268.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.5933,
+      "bbox": [
+        0.6684,
+        0.4378,
+        0.7041,
+        0.5117
+      ]
+    },
+    {
+      "image_name": "India_000384.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.2725,
+      "bbox": [
+        0.7004,
+        0.5756,
+        0.7579,
+        0.7675
+      ]
+    },
+    {
+      "image_name": "India_000384.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.246,
+      "bbox": [
+        0.7644,
+        0.6831,
+        0.8735,
+        0.998
+      ]
+    },
+    {
+      "image_name": "India_000412.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "D00",
+      "confidence": 0.1761,
+      "bbox": [
+        0.6057,
+        0.7336,
+        0.8297,
+        0.9343
+      ]
+    },
+    {
+      "image_name": "India_000439.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "D40",
+      "confidence": 0.5724,
+      "bbox": [
+        0.733,
+        0.0753,
+        0.7897,
+        0.1856
+      ]
+    },
+    {
+      "image_name": "India_000439.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "D20",
+      "confidence": 0.5446,
+      "bbox": [
+        0.638,
+        0.0,
+        0.9913,
+        0.9474
+      ]
+    }
+  ],
+  "false_negatives_sample": [
+    {
+      "image_name": "India_000092.jpg",
+      "class_id": 3,
+      "class_label": "D40_pothole",
+      "bbox": [
+        0.6917,
+        0.7028,
+        0.7875,
+        0.7889
+      ]
+    },
+    {
+      "image_name": "India_000092.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.7986,
+        0.7625,
+        0.8986,
+        0.8653
+      ]
+    },
+    {
+      "image_name": "India_000092.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.6583,
+        0.4944,
+        0.7556,
+        0.5472
+      ]
+    },
+    {
+      "image_name": "India_000093.jpg",
+      "class_id": 3,
+      "class_label": "D40_pothole",
+      "bbox": [
+        0.6542,
+        0.5472,
+        0.7181,
+        0.5972
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.6639,
+        0.7167,
+        0.8,
+        0.8431
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.8417,
+        0.7847,
+        0.9347,
+        0.8292
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.6583,
+        0.6236,
+        0.7514,
+        0.6681
+      ]
+    },
+    {
+      "image_name": "India_000125.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.7,
+        0.3319,
+        0.9111,
+        0.4417
+      ]
+    },
+    {
+      "image_name": "India_000164.jpg",
+      "class_id": 3,
+      "class_label": "D40_pothole",
+      "bbox": [
+        0.7,
+        0.0958,
+        0.9625,
+        0.8722
+      ]
+    },
+    {
+      "image_name": "India_000268.jpg",
+      "class_id": 3,
+      "class_label": "D40_pothole",
+      "bbox": [
+        0.6375,
+        0.2861,
+        0.6847,
+        0.3625
+      ]
+    },
+    {
+      "image_name": "India_000298.jpg",
+      "class_id": 2,
+      "class_label": "D20_alligator_crack",
+      "bbox": [
+        0.6708,
+        0.2917,
+        0.7944,
+        0.4139
+      ]
+    },
+    {
+      "image_name": "India_000348.jpg",
+      "class_id": 3,
+      "class_label": "D40_pothole",
+      "bbox": [
+        0.7333,
+        0.5083,
+        0.9903,
+        0.5819
+      ]
+    },
+    {
+      "image_name": "India_000412.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.6667,
+        0.4569,
+        0.825,
+        0.5639
+      ]
+    },
+    {
+      "image_name": "India_000439.jpg",
+      "class_id": 2,
+      "class_label": "D20_alligator_crack",
+      "bbox": [
+        0.6069,
+        0.0222,
+        0.9819,
+        0.4264
+      ]
+    },
+    {
+      "image_name": "India_000482.jpg",
+      "class_id": 0,
+      "class_label": "D00_longitudinal_crack",
+      "bbox": [
+        0.8625,
+        0.3181,
+        0.9764,
+        0.3764
+      ]
+    }
+  ]
+}

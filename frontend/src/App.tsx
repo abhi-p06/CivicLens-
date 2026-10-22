@@ -186,22 +186,17 @@ function AppContent() {
     setResolutionModalOpen(true)
   }
 
-  // Demo Sequence Stepper (Screens 1 to 6)
+  // Demo Sequence Stepper (Screens 1 to 5)
   const handleSetDemoStep = (step: number) => {
-    const bounded = Math.max(1, Math.min(6, step))
+    const bounded = Math.max(1, Math.min(5, step))
     setActiveDemoStep(bounded)
 
-    if (bounded === 1) {
-      setActiveView('overview')
-    } else if (bounded === 2 || bounded === 3) {
+    if (bounded === 1 || bounded === 2 || bounded === 3) {
       setActiveView('analyze')
     } else if (bounded === 4) {
       setActiveView('map')
       setInspectingIssue(DEMO_SCENARIO.issueRecord)
     } else if (bounded === 5) {
-      setActiveView('intelligence')
-      setInspectingIssue(DEMO_SCENARIO.issueRecord)
-    } else if (bounded === 6) {
       setActiveView('resolution')
       setInspectingIssue(DEMO_SCENARIO.issueRecord)
     }
@@ -210,7 +205,7 @@ function AppContent() {
   const handleStartDemo = () => {
     setIsDemoMode(true)
     handleSetDemoStep(1)
-    info('Presentation Demo Started', 'Screen 1: Command Center Overview. Alt+D to toggle, Alt+R to reset.')
+    info('Presentation Demo Started', 'Step 1: Pothole & Road Damage Intake. Alt+D to toggle, Alt+R to reset.')
   }
 
   return (

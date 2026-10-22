@@ -13,7 +13,7 @@ class Settings(BaseModel):
     yolo_model_path: str = os.getenv("YOLO_MODEL_PATH", "models/yolov8s_rdd2022.pt")
     waste_model_path: str = os.getenv("WASTE_MODEL_PATH", "models/taco_yolo11s.pt")
     yolo_confidence_threshold: float = float(os.getenv("YOLO_CONFIDENCE_THRESHOLD", "0.15"))
-    waste_confidence_threshold: float = float(os.getenv("WASTE_CONFIDENCE_THRESHOLD", "0.20"))
+    waste_confidence_threshold: float = float(os.getenv("WASTE_CONFIDENCE_THRESHOLD", "0.45"))
     yolo_iou_threshold: float = float(os.getenv("YOLO_IOU_THRESHOLD", "0.45"))
     yolo_image_size: int = int(os.getenv("YOLO_IMAGE_SIZE", "640"))
     yolo_device: str = os.getenv("YOLO_DEVICE", "cpu")

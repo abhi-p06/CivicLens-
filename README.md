@@ -5,26 +5,48 @@
 [![React](https://img.shields.io/badge/React-19.0-61DAFB.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF.svg)](https://vitejs.dev/)
-[![Tests](https://img.shields.io/badge/Tests-168%20passing-brightgreen.svg)](./tests)
+[![Tests](https://img.shields.io/badge/Tests-169%20passing-brightgreen.svg)](./tests)
 [![Design](https://img.shields.io/badge/Design%20System-Aurora%20Indigo-6457E8.svg)](./DESIGN_SYSTEM.md)
+[![Scope](https://img.shields.io/badge/Scope%20Freeze-Two%20Core%20Civic%20Issues-6457E8.svg)](./docs/DEMO_GUIDE.md)
 
-**CIVILENS** is an explainable multimodal civic intelligence platform designed for municipal operations centers. It combines NLP complaint classification, computer-vision defect localization (road damage & waste accumulation), spatial corridor clustering (Haversine DBSCAN), explainable 6-factor composite priority scoring, and computer-vision-based resolution verification.
+**CIVILENS** is an explainable multimodal civic intelligence platform designed for municipal operations centers. Following faculty feedback, the platform focus is frozen to **two well-developed primary use cases**:
+1. **Pothole and road-damage detection** (YOLOv8s RDD2022)
+2. **Garbage and street-litter detection** (YOLO11s TACO)
+
+The system supports complaint submission, image upload, text–image cross-validation, visual severity estimation, explainable 6-factor priority ranking, GIS spatial clustering, department routing, and before-and-after computer-vision repair verification.
 
 ---
 
-## Key Capabilities
+## Core Capabilities & Two Primary Use Cases
 
-1. **Multimodal Civic Vision**: Genuine PyTorch inference across supported municipal defect domains:
-   - **Road Surface Damage**: Potholes (`D40`) and cracks (`D00`, `D10`, `D20`) via `YOLOv8s RDD2022` (11.14M params).
-   - **Sanitation & Waste**: Packaging debris, bottles, cans, and cartons via `YOLO11s TACO` (9.43M params).
-   - **Unsupported Categories (Flooding)**: Explicitly reported as unvalidated with zero synthetic detections; routed honestly to human engineering review.
-2. **Multimodal Evidence Consistency**: Cross-validates citizen text claims against computer-vision detections; detects category discrepancies and routes for supervisory review without labeling citizen reports "fake".
-3. **Explainable 6-Factor Priority Scoring**: Exact mathematical composite scoring (0–100 pts) summing:
+1. **Two Primary Computer-Vision Use Cases**:
+   - **Road Surface Damage**: Potholes (`D40`) and structural fissures (`D00`, `D10`, `D20`) via `YOLOv8s RDD2022` (11.14M params, CC-BY-4.0).
+   - **Garbage & Street Litter**: Discarded packaging, plastic bottles, cans, and cartons via `YOLO11s TACO` (9.43M params, MIT). Model uncertainty is transparently reported (27.3% local street Prec@50), with mandatory human supervisory review.
+2. **Cross-Category Evidence Consistency Check**: Multimodal cross-validation compares citizen narrative against detected visual features. A road damage claim paired with a garbage photograph triggers an `INCONSISTENT` flag and routes the complaint for human supervisory review without labeling the citizen fraudulent.
+3. **Pothole Before-and-After Lifecycle Verification**: Structural similarity (`OpenCV SSIM`), color histogram correlation, and dual-YOLO defect clearance verify physical repair evidence before ticket closure.
+4. **Explainable 6-Factor Priority Scoring**: Exact mathematical composite scoring (0–100 pts):
    $$\text{Priority} = \text{Urgency (20)} + \text{Text Severity (20)} + \text{Visual Severity (20)} + \text{Related Reports (15)} + \text{Recency (10)} + \text{Location Risk (15)}$$
-4. **Spatiotemporal GIS Hotspots**: Algorithmic spatial clustering using Haversine DBSCAN ($R=300\text{m}$) over municipal coordinates (Mumbai default).
-5. **Computer-Vision Resolution Verification**: Structural similarity (`OpenCV SSIM`), color histogram correlation, and dual-YOLO defect clearance verifying physical repair evidence before issue closure.
-6. **Role-Based Security & Governance**: Strict permission gates separating Citizen, Inspector, and Admin roles. Server-authenticated identities override client-supplied IDs; dev tokens are strictly disabled in production.
+5. **Tactical Spatial GIS & Hotspot Clustering**: Algorithmic Haversine DBSCAN ($R=400\text{m}$) clustering over municipal coordinates with departmental SLA dispatch.
+6. **Role-Based Security & Governance**: Strict permission gates separating Citizen, Inspector, and Admin roles. Dev tokens are strictly disabled in production.
 7. **Aurora Indigo Interface**: Clean, high-trust civic operations workspace adhering to [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) and [`AGENTS.md`](./AGENTS.md).
+
+---
+
+## Primary 5-Step Demo Sequence
+
+1. **Pothole Complaint with Image**: Ingest road damage with `data/test_samples/repair_pothole_before.jpg`; verify YOLOv8s detection and Roads Dept routing.
+2. **Garbage Complaint with Image**: Ingest street litter with `data/test_samples/bottle.jpg`; verify YOLO11s detection, SWM routing, and transparent uncertainty.
+3. **Cross-Category Mismatch Validation**: Submit a road complaint with a garbage photo; verify the waste detector assists the cross-modal check and flags `INCONSISTENT`.
+4. **Pothole Before-and-After Verification**: Compare before/after repair images (`repair_pothole_before.jpg` vs `repair_pothole_after_repaired.jpg`) using OpenCV SSIM and YOLO defect clearance (`LIKELY RESOLVED`).
+5. **Priority Scores, GIS & Department Routing**: Inspect the 0–100 composite score breakdown, GIS map distribution, and department dispatching across both categories.
+
+---
+
+## Out of Scope & Future Work
+
+Unsupported visual categories (flooding/waterlogging, streetlights, traffic signals) are treated as out of scope for automated vision:
+- **Street Flooding / Waterlogging**: Zero synthetic bounding boxes. Text NLP routes complaints to the Hydraulic Engineering Department (HED) with honest manual engineering review status. Future work will integrate municipal ultrasonic depth sensors.
+- **Streetlight & Electrical Failures**: Handled via text NLP; computer vision deferred to future nighttime lux sensor networks.
 
 ---
 

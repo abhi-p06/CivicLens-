@@ -1,0 +1,7646 @@
+{
+  "dataset_name": "CIVILENS Municipal Waste & Street Litter Benchmark Dataset",
+  "provenance": "TACO (Trash Annotations in Context) Batch 1 + Hard Negative Road/Pavement Controls",
+  "license": "MIT License (TACO) / CC-BY-4.0 (Negatives)",
+  "classes": {
+    "0": "Plastic bag & wrapper",
+    "1": "Cigarette",
+    "2": "Bottle",
+    "3": "Bottle cap",
+    "4": "Can",
+    "5": "Other plastic",
+    "6": "Carton",
+    "7": "Cup",
+    "8": "Other"
+  },
+  "summary": {
+    "total_images": 200,
+    "val_total": 100,
+    "val_pos": 50,
+    "val_neg": 50,
+    "test_total": 100,
+    "test_pos": 50,
+    "test_neg": 50,
+    "leakage_count": 0
+  },
+  "records": [
+    {
+      "sample_id": "WASTE-VAL-000006",
+      "filename": "waste_val_000006.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000006.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000006.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "331019ad99dfa549a9ec32359bcef873a983100e266c3beb840e4b92afc87c82",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.481783,
+            0.384578,
+            0.290826,
+            0.645193
+          ],
+          "bbox_normalized": [
+            0.062,
+            0.3364,
+            0.7072,
+            0.6272
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000008",
+      "filename": "waste_val_000008.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000008.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000008.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "180188fce219d1a3e9ba3a491f5bbae5a5249ac74dffcb009b7d21e11f79b390",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.465517,
+            0.593704,
+            0.929733,
+            0.741337
+          ],
+          "bbox_normalized": [
+            0.223,
+            0.0007,
+            0.9644,
+            0.9304
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.672739,
+            0.306491,
+            0.654522,
+            0.327965
+          ],
+          "bbox_normalized": [
+            0.1425,
+            0.3455,
+            0.4705,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000010",
+      "filename": "waste_val_000010.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000010.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000010.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "4c70d04ee137076990050ef37c105f86746aeef9e573a169de1a42c0e36b0dbc",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.573845,
+            0.572962,
+            0.325309,
+            0.182528
+          ],
+          "bbox_normalized": [
+            0.4817,
+            0.4112,
+            0.6642,
+            0.7365
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.425504,
+            0.49512,
+            0.028627,
+            0.02489
+          ],
+          "bbox_normalized": [
+            0.4827,
+            0.4112,
+            0.5076,
+            0.4398
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000019",
+      "filename": "waste_val_000019.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000019.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000019.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "0952d08c0d85dc1c6f5f48b1d7e14fa6505f1caf89b230a2d01ad80240db4568",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        2,
+        3,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.212787,
+            0.781392,
+            0.221571,
+            0.365647
+          ],
+          "bbox_normalized": [
+            0.5986,
+            0.102,
+            0.9642,
+            0.3236
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.635188,
+            0.679896,
+            0.08736,
+            0.290176
+          ],
+          "bbox_normalized": [
+            0.5348,
+            0.5915,
+            0.825,
+            0.6789
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.316496,
+            0.950878,
+            0.014153,
+            0.025374
+          ],
+          "bbox_normalized": [
+            0.9382,
+            0.3094,
+            0.9636,
+            0.3236
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.370669,
+            0.488289,
+            0.166423,
+            0.2635
+          ],
+          "bbox_normalized": [
+            0.3565,
+            0.2875,
+            0.62,
+            0.4539
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000026",
+      "filename": "waste_val_000026.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000026.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000026.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "d5e388723c797b09549c02b0bc8559b987acc5d9397ac83207c45dc6e21a3647",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.521145,
+            0.542704,
+            0.318803,
+            0.163982
+          ],
+          "bbox_normalized": [
+            0.4607,
+            0.3617,
+            0.6247,
+            0.6805
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000047",
+      "filename": "waste_val_000047.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000047.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000047.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "b9e20331e0de34fc97334729e9ca3ec1da4b26bd68fda62b92df0f0264d08cc8",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        2,
+        3,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.740117,
+            0.265127,
+            0.304051,
+            0.469096
+          ],
+          "bbox_normalized": [
+            0.0306,
+            0.5881,
+            0.4997,
+            0.8921
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.292582,
+            0.27391,
+            0.283553,
+            0.533507
+          ],
+          "bbox_normalized": [
+            0.0072,
+            0.1508,
+            0.5407,
+            0.4344
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.486823,
+            0.680221,
+            0.789165,
+            0.383214
+          ],
+          "bbox_normalized": [
+            0.4886,
+            0.0922,
+            0.8718,
+            0.8814
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.142265,
+            0.661028,
+            0.100049,
+            0.14704
+          ],
+          "bbox_normalized": [
+            0.5875,
+            0.0922,
+            0.7345,
+            0.1923
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.333089,
+            0.124268,
+            0.110786,
+            0.070267
+          ],
+          "bbox_normalized": [
+            0.0891,
+            0.2777,
+            0.1594,
+            0.3885
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.811615,
+            0.147365,
+            0.120059,
+            0.072219
+          ],
+          "bbox_normalized": [
+            0.1113,
+            0.7516,
+            0.1835,
+            0.8716
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000055",
+      "filename": "waste_val_000055.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000055.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000055.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "eeda551cff39f7252eac619cfb22ea058368ae7e40b8d6288b2d036d56e204ae",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.451204,
+            0.488775,
+            0.232271,
+            0.549048
+          ],
+          "bbox_normalized": [
+            0.2143,
+            0.3351,
+            0.7633,
+            0.5673
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000001",
+      "filename": "waste_val_000001.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000001.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000001.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "bc83062c93a93a22599499c2366f6ffd71c02ac57a8b8f268602e3dffd2f6b54",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.516349,
+            0.550748,
+            0.226452,
+            0.133377
+          ],
+          "bbox_normalized": [
+            0.4841,
+            0.4031,
+            0.6174,
+            0.6296
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.620791,
+            0.52082,
+            0.01757,
+            0.030579
+          ],
+          "bbox_normalized": [
+            0.5055,
+            0.612,
+            0.5361,
+            0.6296
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000005",
+      "filename": "waste_val_000005.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000005.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000005.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "ef7ecd2d2d68edc693d2c72ed5fce346dc8e4bb42b3a379d448db4c55a3978ca",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.565062,
+            0.329429,
+            0.057905,
+            0.115178
+          ],
+          "bbox_normalized": [
+            0.2718,
+            0.5361,
+            0.387,
+            0.594
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000007",
+      "filename": "waste_val_000007.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000007.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000007.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "e8a059a0a4f79b96abfd9a5b30da4a85e3faa21cd3b968f66b38ad2fb6647b76",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.564411,
+            0.210102,
+            0.17892,
+            0.297218
+          ],
+          "bbox_normalized": [
+            0.0615,
+            0.475,
+            0.3587,
+            0.6539
+          ]
+        },
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.595316,
+            0.039043,
+            0.144437,
+            0.078087
+          ],
+          "bbox_normalized": [
+            0.0,
+            0.5231,
+            0.0781,
+            0.6675
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.535784,
+            0.074915,
+            0.055303,
+            0.027818
+          ],
+          "bbox_normalized": [
+            0.061,
+            0.5081,
+            0.0888,
+            0.5634
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000012",
+      "filename": "waste_val_000012.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000012.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000012.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "d95b5fea7e47aecb1c80d27ee87fbf13b1fb77e84e91039a8d856813bc93c5f5",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.384841,
+            0.627623,
+            0.276513,
+            0.155198
+          ],
+          "bbox_normalized": [
+            0.55,
+            0.2466,
+            0.7052,
+            0.5231
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.600195,
+            0.534895,
+            0.024073,
+            0.012689
+          ],
+          "bbox_normalized": [
+            0.5286,
+            0.5882,
+            0.5412,
+            0.6122
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000014",
+      "filename": "waste_val_000014.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000014.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000014.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "f6e12bb36fcf1395bfcbd9e26166730986bc1f110dee3ec498843878c2e229de",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        0,
+        4,
+        5,
+        6,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.737801,
+            0.515617,
+            0.080677,
+            0.071742
+          ],
+          "bbox_normalized": [
+            0.4797,
+            0.6975,
+            0.5515,
+            0.7781
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.673715,
+            0.683992,
+            0.1581,
+            0.091264
+          ],
+          "bbox_normalized": [
+            0.6384,
+            0.5947,
+            0.7296,
+            0.7528
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.508458,
+            0.561005,
+            0.142485,
+            0.078575
+          ],
+          "bbox_normalized": [
+            0.5217,
+            0.4372,
+            0.6003,
+            0.5797
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.349707,
+            0.570766,
+            0.177619,
+            0.133236
+          ],
+          "bbox_normalized": [
+            0.5041,
+            0.2609,
+            0.6374,
+            0.4385
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.654196,
+            0.543436,
+            0.22056,
+            0.101025
+          ],
+          "bbox_normalized": [
+            0.4929,
+            0.5439,
+            0.5939,
+            0.7645
+          ]
+        },
+        {
+          "class_id": 5,
+          "bbox_yolo": [
+            0.555953,
+            0.468277,
+            0.103448,
+            0.048316
+          ],
+          "bbox_normalized": [
+            0.4441,
+            0.5042,
+            0.4924,
+            0.6077
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000048",
+      "filename": "waste_val_000048.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000048.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000048.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "4642eb9c6ac08161686b65f62386f8374813712951734243c3b2f3457051437b",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        2,
+        3,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.84651,
+            0.635329,
+            0.202538,
+            0.672088
+          ],
+          "bbox_normalized": [
+            0.2993,
+            0.7452,
+            0.9714,
+            0.9478
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.361152,
+            0.638582,
+            0.15715,
+            0.599219
+          ],
+          "bbox_normalized": [
+            0.339,
+            0.2826,
+            0.9382,
+            0.4397
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.204734,
+            0.461614,
+            0.203514,
+            0.921926
+          ],
+          "bbox_normalized": [
+            0.0007,
+            0.103,
+            0.9226,
+            0.3065
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.6796,
+            0.68445,
+            0.180088,
+            0.573845
+          ],
+          "bbox_normalized": [
+            0.3975,
+            0.5896,
+            0.9714,
+            0.7696
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.507321,
+            0.675342,
+            0.172279,
+            0.559532
+          ],
+          "bbox_normalized": [
+            0.3956,
+            0.4212,
+            0.9551,
+            0.5935
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.869937,
+            0.331165,
+            0.102977,
+            0.063761
+          ],
+          "bbox_normalized": [
+            0.2993,
+            0.8184,
+            0.363,
+            0.9214
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.68448,
+            0.46877,
+            0.075647,
+            0.074821
+          ],
+          "bbox_normalized": [
+            0.4314,
+            0.6467,
+            0.5062,
+            0.7223
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.508541,
+            0.454131,
+            0.071254,
+            0.080677
+          ],
+          "bbox_normalized": [
+            0.4138,
+            0.4729,
+            0.4945,
+            0.5442
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.34285,
+            0.370527,
+            0.090288,
+            0.06311
+          ],
+          "bbox_normalized": [
+            0.339,
+            0.2977,
+            0.4021,
+            0.388
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.144705,
+            0.034157,
+            0.082479,
+            0.067014
+          ],
+          "bbox_normalized": [
+            0.0007,
+            0.1035,
+            0.0677,
+            0.1859
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000053",
+      "filename": "waste_val_000053.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000053.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000053.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "9bf34b5caf9e9536456167b106fae248faecefdb3e704039dacf9a506a3923b4",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        0,
+        8,
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.627846,
+            0.443631,
+            0.737801,
+            0.487067
+          ],
+          "bbox_normalized": [
+            0.2001,
+            0.2589,
+            0.6872,
+            0.9967
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.932986,
+            0.251342,
+            0.127521,
+            0.102489
+          ],
+          "bbox_normalized": [
+            0.2001,
+            0.8692,
+            0.3026,
+            0.9967
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.109954,
+            0.162518,
+            0.219909,
+            0.324061
+          ],
+          "bbox_normalized": [
+            0.0005,
+            0.0,
+            0.3245,
+            0.2199
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.158426,
+            0.257931,
+            0.316851,
+            0.155686
+          ],
+          "bbox_normalized": [
+            0.1801,
+            0.0,
+            0.3358,
+            0.3169
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000056",
+      "filename": "waste_val_000056.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000056.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000056.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a54533ef47673cf25fd0450b8105ca8e800d9382ff513f1e29307156f7e19c0c",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.504554,
+            0.45632,
+            0.463891,
+            0.904832
+          ],
+          "bbox_normalized": [
+            0.0039,
+            0.2726,
+            0.9087,
+            0.7365
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000058",
+      "filename": "waste_val_000058.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000058.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000058.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "630528eaa94c10a4ee98b8e4ec781529ffc60e28fe094efc4c3692c5161d2998",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.282368,
+            0.478282,
+            0.369551,
+            0.636408
+          ],
+          "bbox_normalized": [
+            0.1601,
+            0.0976,
+            0.7965,
+            0.4671
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.69974,
+            0.540264,
+            0.355888,
+            0.685212
+          ],
+          "bbox_normalized": [
+            0.1977,
+            0.5218,
+            0.8829,
+            0.8777
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.728042,
+            0.244265,
+            0.192583,
+            0.093216
+          ],
+          "bbox_normalized": [
+            0.1977,
+            0.6318,
+            0.2909,
+            0.8243
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000060",
+      "filename": "waste_val_000060.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000060.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000060.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "54d54e0576ee24fa989331b0cb2edf23d25ad70ecfb47d2fbdf586640eb9fd82",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.618738,
+            0.477062,
+            0.261548,
+            0.715959
+          ],
+          "bbox_normalized": [
+            0.1191,
+            0.488,
+            0.835,
+            0.7495
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.891997,
+            0.629575,
+            0.216005,
+            0.293802
+          ],
+          "bbox_normalized": [
+            0.4827,
+            0.784,
+            0.7765,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000011",
+      "filename": "waste_val_000011.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000011.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000011.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "41e0f54633f44d864165f81aa8d2e4e02a8849f2be68f153c84f0630093472de",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.417697,
+            0.599805,
+            0.156148,
+            0.059541
+          ],
+          "bbox_normalized": [
+            0.57,
+            0.3396,
+            0.6296,
+            0.4958
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000032",
+      "filename": "waste_val_000032.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000032.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000032.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a391c80eeff09a49bcd758ec27a2e7f900222de857b9922bf5cd06ae09d7eedc",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.472023,
+            0.481454,
+            0.289525,
+            0.174231
+          ],
+          "bbox_normalized": [
+            0.3943,
+            0.3273,
+            0.5686,
+            0.6168
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.357189,
+            0.47999,
+            0.050748,
+            0.029771
+          ],
+          "bbox_normalized": [
+            0.4651,
+            0.3318,
+            0.4949,
+            0.3826
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000040",
+      "filename": "waste_val_000040.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000040.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000040.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "6ce84901a2005b8b9f9d0ce8b4eef8915a7ab3c6a54da70e10fe245fb4c66ed1",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.25427,
+            0.464541,
+            0.230356,
+            0.405986
+          ],
+          "bbox_normalized": [
+            0.2615,
+            0.1391,
+            0.6675,
+            0.3694
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.833089,
+            0.445673,
+            0.250854,
+            0.398178
+          ],
+          "bbox_normalized": [
+            0.2466,
+            0.7077,
+            0.6448,
+            0.9585
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.287945,
+            0.324658,
+            0.083943,
+            0.062459
+          ],
+          "bbox_normalized": [
+            0.2934,
+            0.246,
+            0.3559,
+            0.3299
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.900927,
+            0.338972,
+            0.0898,
+            0.054652
+          ],
+          "bbox_normalized": [
+            0.3116,
+            0.856,
+            0.3663,
+            0.9458
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000043",
+      "filename": "waste_val_000043.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000043.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000043.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "6730acbcffdf08260439a62d3fb2727cbb668ec6ca4d4e66fdd5af417d0dde03",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.50488,
+            0.533182,
+            0.422157,
+            0.689005
+          ],
+          "bbox_normalized": [
+            0.1887,
+            0.2938,
+            0.8777,
+            0.716
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.505857,
+            0.309369,
+            0.110786,
+            0.180221
+          ],
+          "bbox_normalized": [
+            0.2193,
+            0.4505,
+            0.3995,
+            0.5612
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000049",
+      "filename": "waste_val_000049.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000049.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000049.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "9723f0c0387c873427c4b918085c172a9cc1d249fa7229c51b44d6f7a6534f06",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.416721,
+            0.425817,
+            0.314249,
+            0.36164
+          ],
+          "bbox_normalized": [
+            0.245,
+            0.2596,
+            0.6066,
+            0.5738
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.344828,
+            0.296974,
+            0.102798,
+            0.035627
+          ],
+          "bbox_normalized": [
+            0.2792,
+            0.2934,
+            0.3148,
+            0.3962
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000054",
+      "filename": "waste_val_000054.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000054.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000054.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "28c5c32765be4c8d67ced648e44995352c4aa7f17bd7b3dad85e6cbea59011dc",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2,
+        3,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.280416,
+            0.646657,
+            0.321405,
+            0.416789
+          ],
+          "bbox_normalized": [
+            0.4383,
+            0.1197,
+            0.8551,
+            0.4411
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.516916,
+            0.418253,
+            0.246584,
+            0.583699
+          ],
+          "bbox_normalized": [
+            0.1264,
+            0.3936,
+            0.7101,
+            0.6402
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.8419,
+            0.36164,
+            0.3162,
+            0.52611
+          ],
+          "bbox_normalized": [
+            0.0986,
+            0.6838,
+            0.6247,
+            1.0
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.91054,
+            0.172279,
+            0.177619,
+            0.147389
+          ],
+          "bbox_normalized": [
+            0.0986,
+            0.8217,
+            0.246,
+            0.9993
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000061",
+      "filename": "waste_val_000061.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000061.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000061.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "e90500a70f7fc2cdd9cd38da3f370965adf10d03d8528861e291c9f9648780fb",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.393949,
+            0.559297,
+            0.43136,
+            0.412884
+          ],
+          "bbox_normalized": [
+            0.3529,
+            0.1783,
+            0.7657,
+            0.6096
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000021",
+      "filename": "waste_val_000021.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000021.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000021.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "8db2c2e14195c4fe270e1c52ed898e7a90dc47953ec5621124954804d62c83fd",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.583455,
+            0.509759,
+            0.335286,
+            0.18933
+          ],
+          "bbox_normalized": [
+            0.4151,
+            0.4158,
+            0.6044,
+            0.7511
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.290386,
+            0.59434,
+            0.330893,
+            0.271308
+          ],
+          "bbox_normalized": [
+            0.4587,
+            0.1249,
+            0.73,
+            0.4558
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000022",
+      "filename": "waste_val_000022.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000022.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000022.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "982503ad40c5f2a2423aeb22bca7cfe1f4b2034465f677002f6557da6f27de91",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.515861,
+            0.794405,
+            0.400195,
+            0.244632
+          ],
+          "bbox_normalized": [
+            0.6721,
+            0.3158,
+            0.9167,
+            0.716
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.253782,
+            0.954782,
+            0.20205,
+            0.087833
+          ],
+          "bbox_normalized": [
+            0.9109,
+            0.1528,
+            0.9987,
+            0.3548
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000023",
+      "filename": "waste_val_000023.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000023.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000023.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "20658b8f5214de89f679c4b934910a84e1be519c2492b895f6e62c5befea154a",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        2,
+        3,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.337345,
+            0.757199,
+            0.190631,
+            0.107857
+          ],
+          "bbox_normalized": [
+            0.7033,
+            0.242,
+            0.8111,
+            0.4327
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.722186,
+            0.530015,
+            0.123617,
+            0.104441
+          ],
+          "bbox_normalized": [
+            0.4778,
+            0.6604,
+            0.5822,
+            0.784
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.642811,
+            0.769156,
+            0.109304,
+            0.081015
+          ],
+          "bbox_normalized": [
+            0.7286,
+            0.5882,
+            0.8097,
+            0.6975
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.516265,
+            0.781601,
+            0.143787,
+            0.050268
+          ],
+          "bbox_normalized": [
+            0.7565,
+            0.4444,
+            0.8067,
+            0.5882
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.725439,
+            0.42655,
+            0.093689,
+            0.080039
+          ],
+          "bbox_normalized": [
+            0.3865,
+            0.6786,
+            0.4666,
+            0.7723
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.761874,
+            0.575647,
+            0.011711,
+            0.013177
+          ],
+          "bbox_normalized": [
+            0.5691,
+            0.756,
+            0.5822,
+            0.7677
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.251464,
+            0.713275,
+            0.020169,
+            0.023914
+          ],
+          "bbox_normalized": [
+            0.7013,
+            0.2414,
+            0.7252,
+            0.2615
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000024",
+      "filename": "waste_val_000024.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000024.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000024.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "869c8c2996167dcc3f7d1ee4f7c29902f961a1caa5134cea0a9a674e9fe82c71",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.230644,
+            0.777696,
+            0.177619,
+            0.133236
+          ],
+          "bbox_normalized": [
+            0.7111,
+            0.1418,
+            0.8443,
+            0.3195
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.486337,
+            0.47633,
+            0.14769,
+            0.113226
+          ],
+          "bbox_normalized": [
+            0.4197,
+            0.4125,
+            0.5329,
+            0.5602
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.342225,
+            0.582235,
+            0.081978,
+            0.079063
+          ],
+          "bbox_normalized": [
+            0.5427,
+            0.3012,
+            0.6218,
+            0.3832
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000027",
+      "filename": "waste_val_000027.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000027.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000027.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5bb6972d621241da72e0789c16ef92f7ca4efc18453f65d8795c87c314c859dd",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.582628,
+            0.509761,
+            0.296031,
+            0.319668
+          ],
+          "bbox_normalized": [
+            0.3499,
+            0.4346,
+            0.6696,
+            0.7306
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000028",
+      "filename": "waste_val_000028.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000028.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000028.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "1c6da2b9d81b1d5a011e96e88dd6c51988e30bfa89fa96f4f345013fd913bd4c",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.524398,
+            0.391166,
+            0.592062,
+            0.333333
+          ],
+          "bbox_normalized": [
+            0.2245,
+            0.2284,
+            0.5578,
+            0.8204
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.307092,
+            0.726208,
+            0.023422,
+            0.04978
+          ],
+          "bbox_normalized": [
+            0.7013,
+            0.2954,
+            0.7511,
+            0.3188
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000030",
+      "filename": "waste_val_000030.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000030.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000030.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "7dddf22de2add62b4da7ba907858edd03c8fcea8577d143d5650ff12e1526c89",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.453806,
+            0.591508,
+            0.121666,
+            0.156174
+          ],
+          "bbox_normalized": [
+            0.5134,
+            0.393,
+            0.6696,
+            0.5146
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000031",
+      "filename": "waste_val_000031.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000031.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000031.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "edcc8636821fa49cf830d3e56f4d57c8e767cd429a7770440a5e2aac1b469ce6",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.440143,
+            0.585896,
+            0.268705,
+            0.156662
+          ],
+          "bbox_normalized": [
+            0.5076,
+            0.3058,
+            0.6642,
+            0.5745
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000042",
+      "filename": "waste_val_000042.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000042.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000042.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "7e64d7837388a447fe7a2d40a71e33acd004fc87b7b2192fceab452882777c22",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.382382,
+            0.490566,
+            0.116642,
+            0.175667
+          ],
+          "bbox_normalized": [
+            0.4027,
+            0.3241,
+            0.5784,
+            0.4407
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.645193,
+            0.516916,
+            0.13958,
+            0.172414
+          ],
+          "bbox_normalized": [
+            0.4307,
+            0.5754,
+            0.6031,
+            0.715
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.387262,
+            0.506506,
+            0.039531,
+            0.07352
+          ],
+          "bbox_normalized": [
+            0.4697,
+            0.3675,
+            0.5433,
+            0.407
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.659102,
+            0.472349,
+            0.031723,
+            0.063761
+          ],
+          "bbox_normalized": [
+            0.4405,
+            0.6432,
+            0.5042,
+            0.675
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000050",
+      "filename": "waste_val_000050.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000050.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000050.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "e82ee42adc31876a4ebfe185e3ae9382e2aea80f3b09b053afc8c40c5fe0ea1e",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        0,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.688679,
+            0.612982,
+            0.541965,
+            0.392387
+          ],
+          "bbox_normalized": [
+            0.4168,
+            0.4177,
+            0.8092,
+            0.9597
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.208198,
+            0.492923,
+            0.255042,
+            0.268424
+          ],
+          "bbox_normalized": [
+            0.3587,
+            0.0807,
+            0.6271,
+            0.3357
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000059",
+      "filename": "waste_val_000059.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000059.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000059.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5a721fe29a290a273b47f245b43298c2f4a7a7f54192c63953afd8f977d337cc",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.530579,
+            0.549292,
+            0.207547,
+            0.410444
+          ],
+          "bbox_normalized": [
+            0.3441,
+            0.4268,
+            0.7545,
+            0.6344
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.741705,
+            0.458516,
+            0.51529,
+            0.379209
+          ],
+          "bbox_normalized": [
+            0.2689,
+            0.4841,
+            0.6481,
+            0.9993
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.816851,
+            0.187408,
+            0.364997,
+            0.159102
+          ],
+          "bbox_normalized": [
+            0.1079,
+            0.6344,
+            0.267,
+            0.9993
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.680547,
+            0.172767,
+            0.018217,
+            0.071254
+          ],
+          "bbox_normalized": [
+            0.1371,
+            0.6714,
+            0.2084,
+            0.6897
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000000",
+      "filename": "waste_val_000000.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000000.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000000.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "22dee784f3ad350ea3c9d1ff4c5e724f976586a7d992de03ca410295a80978a7",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.511711,
+            0.646169,
+            0.099545,
+            0.096633
+          ],
+          "bbox_normalized": [
+            0.5979,
+            0.4619,
+            0.6945,
+            0.5615
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000013",
+      "filename": "waste_val_000013.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000013.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000013.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "121314b2e6f1017a0efa1006e3cfd14b8ca5a73aa160bd183b9ab39aab7f62d3",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.592388,
+            0.63348,
+            0.129473,
+            0.170815
+          ],
+          "bbox_normalized": [
+            0.5481,
+            0.5277,
+            0.7189,
+            0.6571
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000015",
+      "filename": "waste_val_000015.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000015.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000015.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "02f709b30bcf11bfdbdaced3b733ef8556e8d325aa9ebdde94cc4622302084b5",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.937866,
+            0.738409,
+            0.124268,
+            0.142509
+          ],
+          "bbox_normalized": [
+            0.6672,
+            0.8757,
+            0.8097,
+            1.0
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.601496,
+            0.561981,
+            0.125569,
+            0.091264
+          ],
+          "bbox_normalized": [
+            0.5163,
+            0.5387,
+            0.6076,
+            0.6643
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000016",
+      "filename": "waste_val_000016.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000016.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000016.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "8da29b6507979a6ac36b77163c89c866dc138de9bb9932b0448643303d52fd4b",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.52635,
+            0.513909,
+            0.281067,
+            0.116154
+          ],
+          "bbox_normalized": [
+            0.4558,
+            0.3858,
+            0.572,
+            0.6669
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000017",
+      "filename": "waste_val_000017.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000017.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000017.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "f180a77de634e1614d7b6a64151acbb2e436ab2547cd305905e8562e717427e3",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.526025,
+            0.349683,
+            0.124268,
+            0.18204
+          ],
+          "bbox_normalized": [
+            0.2587,
+            0.4639,
+            0.4407,
+            0.5882
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000025",
+      "filename": "waste_val_000025.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000025.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000025.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "2e7fa026486ecb01ab6ea488ca11e64cdbe26629d814970c479e463b6ca4ff24",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.368575,
+            0.600781,
+            0.316851,
+            0.171791
+          ],
+          "bbox_normalized": [
+            0.5149,
+            0.2101,
+            0.6867,
+            0.527
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.495446,
+            0.650073,
+            0.016265,
+            0.041972
+          ],
+          "bbox_normalized": [
+            0.6291,
+            0.4873,
+            0.6711,
+            0.5036
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.963565,
+            0.698145,
+            0.071568,
+            0.133236
+          ],
+          "bbox_normalized": [
+            0.6315,
+            0.9278,
+            0.7648,
+            0.9993
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000029",
+      "filename": "waste_val_000029.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000029.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000029.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5528108e641f93a074135b62d33d5ab60bd072773cca384391227a5334abe860",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.562459,
+            0.59468,
+            0.276513,
+            0.336262
+          ],
+          "bbox_normalized": [
+            0.4265,
+            0.4242,
+            0.7628,
+            0.7007
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000035",
+      "filename": "waste_val_000035.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000035.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000035.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "c9baa2733e82219f3753014ec1f637f8a52356341648f36c1b1ab76d62f4f628",
+      "width": 1537,
+      "height": 2049,
+      "waste_classes": [
+        2,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.217306,
+            0.433382,
+            0.391672,
+            0.642265
+          ],
+          "bbox_normalized": [
+            0.1122,
+            0.0215,
+            0.7545,
+            0.4131
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.756018,
+            0.443875,
+            0.461939,
+            0.787213
+          ],
+          "bbox_normalized": [
+            0.0503,
+            0.525,
+            0.8375,
+            0.987
+          ]
+        },
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.678595,
+            0.360176,
+            0.204294,
+            0.210835
+          ],
+          "bbox_normalized": [
+            0.2548,
+            0.5764,
+            0.4656,
+            0.7807
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000037",
+      "filename": "waste_val_000037.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000037.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000037.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "c385177fcdeb8d7965e40f1901dc477f647e263599b914e8036c4ea914fd84b3",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.545876,
+            0.525049,
+            0.184968,
+            0.325309
+          ],
+          "bbox_normalized": [
+            0.3624,
+            0.4534,
+            0.6877,
+            0.6384
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.331869,
+            0.518868,
+            0.181552,
+            0.346779
+          ],
+          "bbox_normalized": [
+            0.3455,
+            0.2411,
+            0.6923,
+            0.4226
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.418253,
+            0.333116,
+            0.144461,
+            0.313598
+          ],
+          "bbox_normalized": [
+            0.1763,
+            0.346,
+            0.4899,
+            0.4905
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.354563,
+            0.445023,
+            0.066862,
+            0.058556
+          ],
+          "bbox_normalized": [
+            0.4157,
+            0.3211,
+            0.4743,
+            0.388
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.405808,
+            0.215355,
+            0.049292,
+            0.049447
+          ],
+          "bbox_normalized": [
+            0.1906,
+            0.3812,
+            0.2401,
+            0.4305
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000045",
+      "filename": "waste_val_000045.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000045.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000045.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "904869ce69256395e6d787c71c2c2b95cfe5e19426d39895707b493c58650d25",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.402635,
+            0.923552,
+            0.254758,
+            0.151594
+          ],
+          "bbox_normalized": [
+            0.8478,
+            0.2753,
+            0.9993,
+            0.53
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.106637,
+            0.458035,
+            0.213275,
+            0.327912
+          ],
+          "bbox_normalized": [
+            0.2941,
+            0.0,
+            0.622,
+            0.2133
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.296242,
+            0.467144,
+            0.20693,
+            0.3162
+          ],
+          "bbox_normalized": [
+            0.309,
+            0.1928,
+            0.6252,
+            0.3997
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.47511,
+            0.465517,
+            0.165447,
+            0.32596
+          ],
+          "bbox_normalized": [
+            0.3025,
+            0.3924,
+            0.6285,
+            0.5578
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.671547,
+            0.423552,
+            0.242069,
+            0.421601
+          ],
+          "bbox_normalized": [
+            0.2128,
+            0.5505,
+            0.6344,
+            0.7926
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.886286,
+            0.422576,
+            0.227428,
+            0.435264
+          ],
+          "bbox_normalized": [
+            0.2049,
+            0.7726,
+            0.6402,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000038",
+      "filename": "waste_val_000038.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000038.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000038.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "fe67e0f60d5e1812244a699b7f1d6e96aa04171bd4a5a5cc5c6af125f08c8039",
+      "width": 2049,
+      "height": 1537,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.214007,
+            0.600846,
+            0.195705,
+            0.309044
+          ],
+          "bbox_normalized": [
+            0.4463,
+            0.1162,
+            0.7554,
+            0.3119
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.492191,
+            0.37866,
+            0.201562,
+            0.223813
+          ],
+          "bbox_normalized": [
+            0.2668,
+            0.3914,
+            0.4906,
+            0.593
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.829917,
+            0.568966,
+            0.197657,
+            0.310345
+          ],
+          "bbox_normalized": [
+            0.4138,
+            0.7311,
+            0.7241,
+            0.9287
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.229624,
+            0.523097,
+            0.076623,
+            0.052049
+          ],
+          "bbox_normalized": [
+            0.4971,
+            0.1913,
+            0.5491,
+            0.2679
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.569058,
+            0.397853,
+            0.031235,
+            0.054001
+          ],
+          "bbox_normalized": [
+            0.3709,
+            0.5534,
+            0.4249,
+            0.5847
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.873109,
+            0.521145,
+            0.068326,
+            0.063761
+          ],
+          "bbox_normalized": [
+            0.4893,
+            0.8389,
+            0.553,
+            0.9073
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000065",
+      "filename": "waste_val_000065.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000065.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000065.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "8930ff0683dfe141fe48f96a9375a1cf2b5d23bf11993ca3afa2a53f53ba847b",
+      "width": 3264,
+      "height": 2448,
+      "waste_classes": [
+        8,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.175705,
+            0.409926,
+            0.318934,
+            0.427696
+          ],
+          "bbox_normalized": [
+            0.1961,
+            0.0162,
+            0.6238,
+            0.3352
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.524969,
+            0.646242,
+            0.183517,
+            0.242647
+          ],
+          "bbox_normalized": [
+            0.5249,
+            0.4332,
+            0.7676,
+            0.6167
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.716299,
+            0.344158,
+            0.314951,
+            0.300245
+          ],
+          "bbox_normalized": [
+            0.194,
+            0.5588,
+            0.4943,
+            0.8738
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.516544,
+            0.237745,
+            0.308211,
+            0.430556
+          ],
+          "bbox_normalized": [
+            0.0225,
+            0.3624,
+            0.453,
+            0.6706
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000066",
+      "filename": "waste_val_000066.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000066.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000066.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "241b5b942dc72eead280324a0f43cbf832bbd028562d0f1ec0e45f7de676a08b",
+      "width": 3264,
+      "height": 2448,
+      "waste_classes": [
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.301624,
+            0.645833,
+            0.350184,
+            0.376634
+          ],
+          "bbox_normalized": [
+            0.4575,
+            0.1265,
+            0.8342,
+            0.4767
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000067",
+      "filename": "waste_val_000067.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000067.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000067.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a4ccf6c993b1ad4c5090b3cb31159d4aadab8db187731c2f25296dc775bb46c7",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.359886,
+            0.3822,
+            0.694444,
+            0.645527
+          ],
+          "bbox_normalized": [
+            0.0594,
+            0.0127,
+            0.705,
+            0.7071
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-000068",
+      "filename": "waste_val_000068.jpg",
+      "image_path": "data/datasets/waste/images/val/waste_val_000068.jpg",
+      "label_path": "data/datasets/waste/labels/val/waste_val_000068.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "6a3be60f2228a40d18395e4f2df824c56b84b583db7c8433da3e44289332ea44",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.524101,
+            0.574602,
+            0.314542,
+            0.060355
+          ],
+          "bbox_normalized": [
+            0.5444,
+            0.3668,
+            0.6048,
+            0.6814
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.08701,
+            0.4856,
+            0.035131,
+            0.047181
+          ],
+          "bbox_normalized": [
+            0.462,
+            0.0694,
+            0.5092,
+            0.1046
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.069036,
+            0.428002,
+            0.031863,
+            0.030025
+          ],
+          "bbox_normalized": [
+            0.413,
+            0.0531,
+            0.443,
+            0.085
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001499",
+      "filename": "neg_val_India_001499.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001499.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001499.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a643365b64a34c8e6f63bd6dc16a5b341fdb4a27ce63a7aa3cd0808b90ba6680",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001508",
+      "filename": "neg_val_India_001508.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001508.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001508.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "0c51a6079bab7a31ee79d2960c1294903524bcd1588bc81ef85c039a618b0591",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001511",
+      "filename": "neg_val_India_001511.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001511.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001511.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e117dd82f30b5d835ba6eb4f5c7175bac8b0ffdd8adb645d853796da5d1c1ba3",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001542",
+      "filename": "neg_val_India_001542.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001542.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001542.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "bbc8776f62b98e30dc7567f0bacf8ab76c391786f1015685c77b299803bfe2c4",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001545",
+      "filename": "neg_val_India_001545.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001545.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001545.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "ef9fc7bcc6aaf08f2507df5bb07e2362f2058ae293f85a12b38c09af48df375e",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001551",
+      "filename": "neg_val_India_001551.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001551.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001551.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a9581a543ad4acaccbf98e13a5a4aa0324276950321eec6de64010d9dfb01450",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001587",
+      "filename": "neg_val_India_001587.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001587.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001587.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "0d0bf7b4e2994c720e4644d8b6fcf74e7e9a1882613c27fb767a9678ed0e1673",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001588",
+      "filename": "neg_val_India_001588.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001588.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001588.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "61ba54d99efd4ad610298edc95cf68d831eb79709cada3a1c6aef0a238bda0a0",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001598",
+      "filename": "neg_val_India_001598.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001598.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001598.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "ea0eb57beb2a93d614a17f5470db3a928b4191e1149085d3b3ac8df544cfa7ae",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001626",
+      "filename": "neg_val_India_001626.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001626.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001626.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "727a5b260f4aa8c3b5f142c598e7e05e75ecf76c7aaad0349d3d80c791096f87",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001634",
+      "filename": "neg_val_India_001634.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001634.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001634.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "7c22282c4c5a57a1542432e2fea5b5f2211996343a8ac47632d8e858fce3317d",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001636",
+      "filename": "neg_val_India_001636.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001636.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001636.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "6d25a060970f00a5660709d3cc655c61d70a9948229cefdd0a6d4eeb4b9752ac",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001644",
+      "filename": "neg_val_India_001644.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001644.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001644.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "972ac0f12c35f385b727e28753dc3d761c6087fbfab37f69423cd9166707712b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001648",
+      "filename": "neg_val_India_001648.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001648.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001648.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "c668e17c435e1005085733a505d0c62c34f50b7593d40dd696f5016d78dc4d01",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001661",
+      "filename": "neg_val_India_001661.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001661.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001661.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "8a3e25790fe74ced5ba04e88a520d3831103ab58110ff16d3bd728443ddf8b56",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001667",
+      "filename": "neg_val_India_001667.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001667.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001667.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "119760e1f16696f00a7b3f4eba9bff99bda56353cf6eb6a69c29483e1a202f52",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001673",
+      "filename": "neg_val_India_001673.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001673.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001673.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "b989cb8a2fc49edaaea25a0e7bbe77724b81767decce394a0b8b47ba125c6f65",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001676",
+      "filename": "neg_val_India_001676.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001676.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001676.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "ced2144e60085f9e4f76f76dfdb60bfdaead510fbddc5834cfce617e4945b038",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001682",
+      "filename": "neg_val_India_001682.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001682.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001682.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "58259fbb4a97b120e76aae542ff6f4675af15d1ce579f49c332923d6b5d02674",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001687",
+      "filename": "neg_val_India_001687.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001687.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001687.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "21a30ec7b22ce579da6ce03ba05dfb4894fca707b9a06d54e363f66e75732192",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001719",
+      "filename": "neg_val_India_001719.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001719.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001719.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "64b138e2681a4c1d96d0a5785129cbf66accb4feace91e21f11af87c19a71af6",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001727",
+      "filename": "neg_val_India_001727.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001727.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001727.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e66eee8e35526f281513d7f0e450a10b5f169b3d9653137f71ec5ab5de322424",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001734",
+      "filename": "neg_val_India_001734.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001734.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001734.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "c32a3e2ea4ac44ac028e7192aa414a5886984953f89454c19ec8ec9eebfe6519",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001737",
+      "filename": "neg_val_India_001737.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001737.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001737.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "b523ff1d551b3850a0daa904a6c24cc957fff7a11a1bf3cf351635870517bcce",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001748",
+      "filename": "neg_val_India_001748.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001748.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001748.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "fbfeab5c99dc0b985b5a275e727b54db186be82de8c9895e27582a0fb883b451",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001767",
+      "filename": "neg_val_India_001767.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001767.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001767.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "2f88e982f2ec7a3177d9c946c15dfd9eb11f7afc182cad9050c1799aef1b5ffb",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001773",
+      "filename": "neg_val_India_001773.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001773.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001773.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "72c2d8f28ea8298beb7add11b89a85cd78473b885dc58d84a775be3a53faccf9",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001780",
+      "filename": "neg_val_India_001780.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001780.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001780.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "b9c16a51d5871bfc6baba124048c256abe430977f59f22100ba7c18329d6bb18",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001782",
+      "filename": "neg_val_India_001782.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001782.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001782.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "db24a03f40449febc1621d27720f830b31739fd1c7335b32d0f446dafb9a3f45",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001785",
+      "filename": "neg_val_India_001785.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001785.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001785.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "c1ef68a0488a80cbe8cf359da48f06452938d0fdfc61311555fc8b1e338ab2f8",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001798",
+      "filename": "neg_val_India_001798.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001798.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001798.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "26d598c22ab762aa69f4b3910ca80a63d978ec2d967acc5ab1153a2570c56931",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001807",
+      "filename": "neg_val_India_001807.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001807.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001807.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "cbd977818e30ef8ae3fc6e44010dbc0d21ba730c090a476c24b6057534e4e4ca",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001815",
+      "filename": "neg_val_India_001815.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001815.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001815.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e911188285b7acf1c9f434692491e6c3e1d649e45ffa66be7db9c9926fb41fed",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001817",
+      "filename": "neg_val_India_001817.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001817.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001817.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "59ab246942f46eeff5e34bc4b1bd5cc82f3435b941f5547d3ab40b85fa6fd472",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001823",
+      "filename": "neg_val_India_001823.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001823.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001823.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "2174d03dbb5bb91af6da125a339aae97159011ecafdac7e4985304f0d785f3de",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001843",
+      "filename": "neg_val_India_001843.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001843.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001843.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "318f70a87f406574ad240c748c53e2ca1db69cf1895592ed6708abe532f99b5b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001852",
+      "filename": "neg_val_India_001852.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001852.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001852.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "94106864da1adbf5d9946ed04769b18d875dc02fe4fa0e36a02a78c0431343c8",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001853",
+      "filename": "neg_val_India_001853.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001853.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001853.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "fa2d7c0b6e0eda2f9c3cd94b0bb00e150e0869b0ab0c018785f9c7323d037469",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001858",
+      "filename": "neg_val_India_001858.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001858.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001858.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "2012fc5a3f08c4ab1c6bb8f3915e5a5dbcb8f63a58703260898a9d3729304e68",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001864",
+      "filename": "neg_val_India_001864.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001864.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001864.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "21ca545d4f4222f4fdb64b9fb5fdacf1cb850fa8361f4a164b979c1def416a1c",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001872",
+      "filename": "neg_val_India_001872.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001872.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001872.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "8ef5a7243dabf117725efa9c31501e7e05777dc75c2654dbaab420e6fcdad90f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001880",
+      "filename": "neg_val_India_001880.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001880.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001880.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "8a3fe00b81c5c6f9fb41f4deb931eee770d65251251b7b089255e578f7d61f2f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001881",
+      "filename": "neg_val_India_001881.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001881.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001881.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "59f7aedba7c785361a9a0133f767d40186a735a461e9c54785e1cfb6aef55f3f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001949",
+      "filename": "neg_val_India_001949.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001949.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001949.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "11272ce9aaf2903862a5ef9c3e1efcc46b9c17435d7ee430c6dde595f2389c70",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001954",
+      "filename": "neg_val_India_001954.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001954.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001954.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "47be25714cb3273a4f43c23a8a529860906d6c0d5c8740777207e0b4266cca98",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001985",
+      "filename": "neg_val_India_001985.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001985.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001985.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "5564bd4a722aa9c077ab12de4322e71ff79264eba5af811ca6b91e3768afa5f4",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001989",
+      "filename": "neg_val_India_001989.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001989.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001989.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "688794f310df1158cab04e8628d1750d1241193b6b691ade3ce8d36529ed814b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001992",
+      "filename": "neg_val_India_001992.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001992.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001992.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "47e0a87ba5b9397204fe84cd0e05ba682d551b236b7f23e9eb5c7b361c9f01b9",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001995",
+      "filename": "neg_val_India_001995.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001995.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001995.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "c1bce800b2ab368573cd78cdf8ef483870f8573e296298d0940a505688bfecad",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-VAL-NEG-India_001996",
+      "filename": "neg_val_India_001996.jpg",
+      "image_path": "data/datasets/waste/images/val/neg_val_India_001996.jpg",
+      "label_path": "data/datasets/waste/labels/val/neg_val_India_001996.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a9c638e9133db600aceff8663327f22f6e505e390cb523dc6d4473df7a8ee61f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-000069",
+      "filename": "waste_test_000069.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000069.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000069.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "21f927275a2088b2a5bb193f85e5035c25ca963634c3b9fdacade4d6ffa70f28",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.512663,
+            0.560815,
+            0.167484,
+            0.10815
+          ],
+          "bbox_normalized": [
+            0.5067,
+            0.4289,
+            0.6149,
+            0.5964
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000070",
+      "filename": "waste_test_000070.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000070.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000070.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "14cabdf2633cd59bf256c4c3f9d639e5d5668370bd068f421cee33a0ecceae88",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.476103,
+            0.43796,
+            0.104167,
+            0.195159
+          ],
+          "bbox_normalized": [
+            0.3404,
+            0.424,
+            0.5355,
+            0.5282
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000071",
+      "filename": "waste_test_000071.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000071.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000071.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "06df3ad2e022b3fb16d4c059a7ffcf908c664bcafee96191b4a5dfc357a03a05",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.531863,
+            0.518689,
+            0.227124,
+            0.181373
+          ],
+          "bbox_normalized": [
+            0.428,
+            0.4183,
+            0.6094,
+            0.6454
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000072",
+      "filename": "waste_test_000072.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000072.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000072.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "725a72684edb2eb89448100f71692fe93e38f812b493456ef5e52e14218db265",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.427083,
+            0.489124,
+            0.279003,
+            0.181066
+          ],
+          "bbox_normalized": [
+            0.3986,
+            0.2876,
+            0.5797,
+            0.5666
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.166667,
+            0.590686,
+            0.332516,
+            0.315564
+          ],
+          "bbox_normalized": [
+            0.4329,
+            0.0004,
+            0.7485,
+            0.3329
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.423611,
+            0.782782,
+            0.056373,
+            0.038603
+          ],
+          "bbox_normalized": [
+            0.7635,
+            0.3954,
+            0.8021,
+            0.4518
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000073",
+      "filename": "waste_test_000073.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000073.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000073.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "07db90dd4c5cc1fe07ff25636de60451e0745b8394322c749b1ae34072b6db38",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.484477,
+            0.365349,
+            0.20098,
+            0.217831
+          ],
+          "bbox_normalized": [
+            0.2564,
+            0.384,
+            0.4743,
+            0.585
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000074",
+      "filename": "waste_test_000074.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000074.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000074.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b253a710ff1041aedb2abcc346255923e90e0f4c6d979fb68046f6a944c17290",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        1,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.535335,
+            0.625153,
+            0.086193,
+            0.083027
+          ],
+          "bbox_normalized": [
+            0.5836,
+            0.4922,
+            0.6667,
+            0.5784
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.733252,
+            0.375919,
+            0.015523,
+            0.003064
+          ],
+          "bbox_normalized": [
+            0.3744,
+            0.7255,
+            0.3775,
+            0.741
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000076",
+      "filename": "waste_test_000076.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000076.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000076.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "30c2bbdec72a8cef3db3664810c293436adc246650aabdeda7d63e8ac6745637",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.324346,
+            0.639553,
+            0.156046,
+            0.109988
+          ],
+          "bbox_normalized": [
+            0.5846,
+            0.2463,
+            0.6945,
+            0.4024
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.234477,
+            0.570466,
+            0.021242,
+            0.015931
+          ],
+          "bbox_normalized": [
+            0.5625,
+            0.2239,
+            0.5784,
+            0.2451
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.161765,
+            0.51685,
+            0.022876,
+            0.01777
+          ],
+          "bbox_normalized": [
+            0.508,
+            0.1503,
+            0.5257,
+            0.1732
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.138889,
+            0.512868,
+            0.031046,
+            0.02451
+          ],
+          "bbox_normalized": [
+            0.5006,
+            0.1234,
+            0.5251,
+            0.1544
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.034314,
+            0.420037,
+            0.02451,
+            0.018995
+          ],
+          "bbox_normalized": [
+            0.4105,
+            0.0221,
+            0.4295,
+            0.0466
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.497141,
+            0.279105,
+            0.030229,
+            0.021446
+          ],
+          "bbox_normalized": [
+            0.2684,
+            0.482,
+            0.2898,
+            0.5123
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.433415,
+            0.318321,
+            0.028595,
+            0.021446
+          ],
+          "bbox_normalized": [
+            0.3076,
+            0.4191,
+            0.329,
+            0.4477
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000078",
+      "filename": "waste_test_000078.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000078.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000078.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "bb9e4e6f2043dc3b032996fb1cc596b0c5e554610431d9e7244069958b7adc26",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.450163,
+            0.60723,
+            0.556373,
+            0.596201
+          ],
+          "bbox_normalized": [
+            0.3091,
+            0.172,
+            0.9053,
+            0.7283
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000079",
+      "filename": "waste_test_000079.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000079.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000079.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "13ca51553e4443bf6d4e273675340fe8c14860fbff76ff89830e35799c096f9d",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.454657,
+            0.606464,
+            0.699346,
+            0.54565
+          ],
+          "bbox_normalized": [
+            0.3336,
+            0.105,
+            0.8793,
+            0.8043
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000081",
+      "filename": "waste_test_000081.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000081.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000081.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "091f9e01aa63f4cfce345d3974c4ff9c1cfdc72c2ea07d516c696aaa45106624",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        1,
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.39665,
+            0.647672,
+            0.181373,
+            0.08701
+          ],
+          "bbox_normalized": [
+            0.6042,
+            0.306,
+            0.6912,
+            0.4873
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.475286,
+            0.618107,
+            0.023284,
+            0.02788
+          ],
+          "bbox_normalized": [
+            0.6042,
+            0.4636,
+            0.632,
+            0.4869
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.580065,
+            0.814338,
+            0.026144,
+            0.029412
+          ],
+          "bbox_normalized": [
+            0.7996,
+            0.567,
+            0.829,
+            0.5931
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000082",
+      "filename": "waste_test_000082.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000082.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000082.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "445563362087d964c54d82df8e624069e393fa05b3974eeaf38cd269814aed31",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.501838,
+            0.502911,
+            0.214461,
+            0.148591
+          ],
+          "bbox_normalized": [
+            0.4286,
+            0.3946,
+            0.5772,
+            0.6091
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000083",
+      "filename": "waste_test_000083.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000083.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000083.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "d419dc84cdc0ce90838e95cd85ba048994c7c70fdc5c74eea5e48a8c6f1f5ae4",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.485703,
+            0.36826,
+            0.201797,
+            0.154412
+          ],
+          "bbox_normalized": [
+            0.2911,
+            0.3848,
+            0.4455,
+            0.5866
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.624592,
+            0.366728,
+            0.113562,
+            0.172794
+          ],
+          "bbox_normalized": [
+            0.2803,
+            0.5678,
+            0.4531,
+            0.6814
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000084",
+      "filename": "waste_test_000084.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000084.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000084.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "850885b00a42e28f82f785d0d2f2a51606ca593608b40942bd05e5436e184db1",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        4,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.409926,
+            0.756893,
+            0.247141,
+            0.171262
+          ],
+          "bbox_normalized": [
+            0.6713,
+            0.2864,
+            0.8425,
+            0.5335
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.499592,
+            0.73315,
+            0.125,
+            0.130515
+          ],
+          "bbox_normalized": [
+            0.6679,
+            0.4371,
+            0.7984,
+            0.5621
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.479984,
+            0.148591,
+            0.069444,
+            0.045343
+          ],
+          "bbox_normalized": [
+            0.1259,
+            0.4453,
+            0.1713,
+            0.5147
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.808007,
+            0.110141,
+            0.059641,
+            0.046262
+          ],
+          "bbox_normalized": [
+            0.087,
+            0.7782,
+            0.1333,
+            0.8378
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000085",
+      "filename": "waste_test_000085.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000085.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000085.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "2e467a2004ceb3758b1ef2ca2b43083df61a4f50b0a7d1a766ba6163a53dd47e",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.527574,
+            0.433364,
+            0.343546,
+            0.095895
+          ],
+          "bbox_normalized": [
+            0.3854,
+            0.3558,
+            0.4813,
+            0.6993
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.652165,
+            0.369792,
+            0.028186,
+            0.029412
+          ],
+          "bbox_normalized": [
+            0.3551,
+            0.6381,
+            0.3845,
+            0.6663
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.977124,
+            0.443321,
+            0.030229,
+            0.01348
+          ],
+          "bbox_normalized": [
+            0.4366,
+            0.962,
+            0.4501,
+            0.9922
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.561683,
+            0.385723,
+            0.030229,
+            0.014093
+          ],
+          "bbox_normalized": [
+            0.3787,
+            0.5466,
+            0.3928,
+            0.5768
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.651552,
+            0.356005,
+            0.048203,
+            0.009804
+          ],
+          "bbox_normalized": [
+            0.3511,
+            0.6275,
+            0.3609,
+            0.6757
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.674837,
+            0.38511,
+            0.050654,
+            0.026348
+          ],
+          "bbox_normalized": [
+            0.3719,
+            0.6495,
+            0.3983,
+            0.7002
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.691585,
+            0.4519,
+            0.013889,
+            0.03125
+          ],
+          "bbox_normalized": [
+            0.4363,
+            0.6846,
+            0.4675,
+            0.6985
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.719771,
+            0.457108,
+            0.042484,
+            0.012255
+          ],
+          "bbox_normalized": [
+            0.451,
+            0.6985,
+            0.4632,
+            0.741
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.763072,
+            0.404105,
+            0.011438,
+            0.025123
+          ],
+          "bbox_normalized": [
+            0.3915,
+            0.7574,
+            0.4167,
+            0.7688
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000086",
+      "filename": "waste_test_000086.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000086.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000086.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "a724170cfe206ebe9f91227d255e6d088b097c3bde2a606b751b3d53f6f80950",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.592116,
+            0.408548,
+            0.166258,
+            0.172488
+          ],
+          "bbox_normalized": [
+            0.3223,
+            0.509,
+            0.4948,
+            0.6752
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.327206,
+            0.174939,
+            0.049837,
+            0.018995
+          ],
+          "bbox_normalized": [
+            0.1654,
+            0.3023,
+            0.1844,
+            0.3521
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.595588,
+            0.512561,
+            0.050654,
+            0.026348
+          ],
+          "bbox_normalized": [
+            0.4994,
+            0.5703,
+            0.5257,
+            0.6209
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000087",
+      "filename": "waste_test_000087.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000087.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000087.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "977a4247a4b18df831bfbc047eb72ea847a687f7832a2314f379154b7f236433",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.488971,
+            0.405484,
+            0.146242,
+            0.12163
+          ],
+          "bbox_normalized": [
+            0.3447,
+            0.4158,
+            0.4663,
+            0.5621
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.072712,
+            0.261029,
+            0.02451,
+            0.022059
+          ],
+          "bbox_normalized": [
+            0.25,
+            0.0605,
+            0.2721,
+            0.085
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000088",
+      "filename": "waste_test_000088.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000088.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000088.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "7a687eb80e3d873d6a2d806111fb2b68516a418cefffd9c975bf85964a1aaf58",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.303717,
+            0.63557,
+            0.35335,
+            0.261336
+          ],
+          "bbox_normalized": [
+            0.5049,
+            0.127,
+            0.7662,
+            0.4804
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.814951,
+            0.506434,
+            0.295752,
+            0.366422
+          ],
+          "bbox_normalized": [
+            0.3232,
+            0.6671,
+            0.6896,
+            0.9628
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.854779,
+            0.379136,
+            0.21201,
+            0.111826
+          ],
+          "bbox_normalized": [
+            0.3232,
+            0.7488,
+            0.435,
+            0.9608
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.582925,
+            0.1947,
+            0.488562,
+            0.388174
+          ],
+          "bbox_normalized": [
+            0.0006,
+            0.3386,
+            0.3888,
+            0.8272
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000090",
+      "filename": "waste_test_000090.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000090.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000090.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "452fb7df74efddca2228edafeef592672903f8ec501492aa21b6baacdbda2454",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.438521,
+            0.317096,
+            0.38031,
+            0.365196
+          ],
+          "bbox_normalized": [
+            0.1345,
+            0.2484,
+            0.4997,
+            0.6287
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.535539,
+            0.367034,
+            0.15768,
+            0.116422
+          ],
+          "bbox_normalized": [
+            0.3088,
+            0.4567,
+            0.4252,
+            0.6144
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000091",
+      "filename": "waste_test_000091.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000091.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000091.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "16bfa8adc7f8ae19a4b3db4135ff1dedaf9526b564721a4e078295c2bc5bd5dc",
+      "width": 3264,
+      "height": 2448,
+      "waste_classes": [
+        8,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.335478,
+            0.496119,
+            0.670956,
+            0.654003
+          ],
+          "bbox_normalized": [
+            0.1691,
+            0.0,
+            0.8231,
+            0.671
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.883578,
+            0.46344,
+            0.178309,
+            0.180147
+          ],
+          "bbox_normalized": [
+            0.3734,
+            0.7944,
+            0.5535,
+            0.9727
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000092",
+      "filename": "waste_test_000092.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000092.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000092.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "d7764b6e4d7c8be0ac7db21a7d6488b5aee841d52c953c975c4a011fca603738",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        0,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.344567,
+            0.393689,
+            0.462827,
+            0.367034
+          ],
+          "bbox_normalized": [
+            0.2102,
+            0.1132,
+            0.5772,
+            0.576
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.752451,
+            0.384191,
+            0.252451,
+            0.20098
+          ],
+          "bbox_normalized": [
+            0.2837,
+            0.6262,
+            0.4847,
+            0.8787
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.752451,
+            0.364124,
+            0.250817,
+            0.160846
+          ],
+          "bbox_normalized": [
+            0.2837,
+            0.627,
+            0.4445,
+            0.8779
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000093",
+      "filename": "waste_test_000093.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000093.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000093.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "407d964a3d5d11df2d9a490c46ace3bd8d090838a9efb58ccdba39a4e90a0a87",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.645016,
+            0.664216,
+            0.245915,
+            0.200368
+          ],
+          "bbox_normalized": [
+            0.564,
+            0.5221,
+            0.7644,
+            0.768
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000094",
+      "filename": "waste_test_000094.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000094.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000094.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "c629a64acb6425ffa2cea9d2f05e3d4e39aa8b2ba6d189910c0b8a459cbcf492",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.434845,
+            0.489737,
+            0.615605,
+            0.532782
+          ],
+          "bbox_normalized": [
+            0.2233,
+            0.127,
+            0.7561,
+            0.7426
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.487541,
+            0.443474,
+            0.431781,
+            0.313419
+          ],
+          "bbox_normalized": [
+            0.2868,
+            0.2717,
+            0.6002,
+            0.7034
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000095",
+      "filename": "waste_test_000095.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000095.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000095.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "3634173e060b189722c784e22390d0419ae7ea53879ebbb539d77efea39d8882",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.610498,
+            0.647518,
+            0.714461,
+            0.662071
+          ],
+          "bbox_normalized": [
+            0.3165,
+            0.2533,
+            0.9786,
+            0.9677
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.466503,
+            0.258425,
+            0.14951,
+            0.15962
+          ],
+          "bbox_normalized": [
+            0.1786,
+            0.3917,
+            0.3382,
+            0.5413
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.29473,
+            0.27788,
+            0.197304,
+            0.224265
+          ],
+          "bbox_normalized": [
+            0.1657,
+            0.1961,
+            0.39,
+            0.3934
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000096",
+      "filename": "waste_test_000096.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000096.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000096.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "cca0918748b3ed55a742aac458a9e7be5eae753782f6fdfc9aa786d57bec2cad",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.492647,
+            0.481311,
+            0.497549,
+            0.344975
+          ],
+          "bbox_normalized": [
+            0.3088,
+            0.2439,
+            0.6538,
+            0.7414
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000062",
+      "filename": "waste_test_000062.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000062.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000062.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "3decef31e9d92fb8229f0b122b8a573bcd8bf43503c7ab123a4269e5ed9b23ff",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        2,
+        3,
+        4,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.482026,
+            0.265319,
+            0.253268,
+            0.11826
+          ],
+          "bbox_normalized": [
+            0.2062,
+            0.3554,
+            0.3244,
+            0.6087
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.714257,
+            0.355239,
+            0.246324,
+            0.202512
+          ],
+          "bbox_normalized": [
+            0.254,
+            0.5911,
+            0.4565,
+            0.8374
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.43893,
+            0.372702,
+            0.341095,
+            0.1106
+          ],
+          "bbox_normalized": [
+            0.3174,
+            0.2684,
+            0.428,
+            0.6095
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.62357,
+            0.43076,
+            0.044526,
+            0.01348
+          ],
+          "bbox_normalized": [
+            0.424,
+            0.6013,
+            0.4375,
+            0.6458
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.089869,
+            0.768229,
+            0.179739,
+            0.228248
+          ],
+          "bbox_normalized": [
+            0.6541,
+            0.0,
+            0.8824,
+            0.1797
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.818423,
+            0.131281,
+            0.033088,
+            0.0144
+          ],
+          "bbox_normalized": [
+            0.1241,
+            0.8019,
+            0.1385,
+            0.835
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.393382,
+            0.674173,
+            0.35866,
+            0.437194
+          ],
+          "bbox_normalized": [
+            0.4556,
+            0.2141,
+            0.8928,
+            0.5727
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.337623,
+            0.754749,
+            0.164624,
+            0.141238
+          ],
+          "bbox_normalized": [
+            0.6841,
+            0.2553,
+            0.8254,
+            0.4199
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.814542,
+            0.037684,
+            0.073529,
+            0.045343
+          ],
+          "bbox_normalized": [
+            0.015,
+            0.7778,
+            0.0604,
+            0.8513
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.847426,
+            0.559589,
+            0.047794,
+            0.026654
+          ],
+          "bbox_normalized": [
+            0.5463,
+            0.8235,
+            0.5729,
+            0.8713
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.446895,
+            0.839308,
+            0.023693,
+            0.035846
+          ],
+          "bbox_normalized": [
+            0.8214,
+            0.435,
+            0.8572,
+            0.4587
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.476103,
+            0.153493,
+            0.042892,
+            0.055147
+          ],
+          "bbox_normalized": [
+            0.1259,
+            0.4547,
+            0.1811,
+            0.4975
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.284722,
+            0.397365,
+            0.03268,
+            0.04902
+          ],
+          "bbox_normalized": [
+            0.3729,
+            0.2684,
+            0.4219,
+            0.3011
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000098",
+      "filename": "waste_test_000098.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000098.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000098.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "d75afc4878751ad544e97a9646d234cc70e168a16f902711ab0d841546bf50b3",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8,
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.324551,
+            0.426471,
+            0.182598,
+            0.249387
+          ],
+          "bbox_normalized": [
+            0.3018,
+            0.2333,
+            0.5512,
+            0.4158
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.750817,
+            0.731311,
+            0.071078,
+            0.027574
+          ],
+          "bbox_normalized": [
+            0.7175,
+            0.7153,
+            0.7451,
+            0.7864
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.833538,
+            0.540288,
+            0.034722,
+            0.020527
+          ],
+          "bbox_normalized": [
+            0.53,
+            0.8162,
+            0.5506,
+            0.8509
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.34518,
+            0.309896,
+            0.039216,
+            0.016238
+          ],
+          "bbox_normalized": [
+            0.3018,
+            0.3256,
+            0.318,
+            0.3648
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.806985,
+            0.78845,
+            0.051062,
+            0.029105
+          ],
+          "bbox_normalized": [
+            0.7739,
+            0.7815,
+            0.803,
+            0.8325
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000099",
+      "filename": "waste_test_000099.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000099.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000099.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "0b68510877e9e32a3bc3cca824a753c3375f05e02c66e53a9689305179cc12b9",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.381332,
+            0.093903,
+            0.225899,
+            0.178615
+          ],
+          "bbox_normalized": [
+            0.0046,
+            0.2684,
+            0.1832,
+            0.4943
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.433824,
+            0.606924,
+            0.173203,
+            0.128064
+          ],
+          "bbox_normalized": [
+            0.5429,
+            0.3472,
+            0.671,
+            0.5204
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000064",
+      "filename": "waste_test_000064.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000064.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000064.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "e39263214667c8256c90065cb4e80ffffcab103298667c917eb6f885d78d0967",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.496732,
+            0.420496,
+            0.247549,
+            0.181066
+          ],
+          "bbox_normalized": [
+            0.33,
+            0.373,
+            0.511,
+            0.6205
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000100",
+      "filename": "waste_test_000100.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000100.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000100.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "58160f825a1cf9326b29a489680438c8eab9545ff92bb56d17bd21e14f22b278",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.524101,
+            0.297028,
+            0.288399,
+            0.217218
+          ],
+          "bbox_normalized": [
+            0.1884,
+            0.3799,
+            0.4056,
+            0.6683
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000101",
+      "filename": "waste_test_000101.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000101.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000101.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "9495aaaa4c392dd8926a3d5eb82720c3c533a96c861ebe21579b7884690ad5b8",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.610703,
+            0.363051,
+            0.371732,
+            0.689951
+          ],
+          "bbox_normalized": [
+            0.0181,
+            0.4248,
+            0.708,
+            0.7966
+          ]
+        },
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.474469,
+            0.533548,
+            0.590278,
+            0.42065
+          ],
+          "bbox_normalized": [
+            0.3232,
+            0.1793,
+            0.7439,
+            0.7696
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000102",
+      "filename": "waste_test_000102.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000102.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000102.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "1cd2a8048cda1ff2d6bed9dbc5a356ceb048c7be31096e80f2d1d599646d6d16",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.577614,
+            0.485141,
+            0.49183,
+            0.252757
+          ],
+          "bbox_normalized": [
+            0.3588,
+            0.3317,
+            0.6115,
+            0.8235
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.602533,
+            0.238664,
+            0.424837,
+            0.268995
+          ],
+          "bbox_normalized": [
+            0.1042,
+            0.3901,
+            0.3732,
+            0.815
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.86969,
+            0.345895,
+            0.249183,
+            0.250613
+          ],
+          "bbox_normalized": [
+            0.2206,
+            0.7451,
+            0.4712,
+            0.9943
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.491422,
+            0.585478,
+            0.021242,
+            0.014706
+          ],
+          "bbox_normalized": [
+            0.5781,
+            0.4808,
+            0.5928,
+            0.502
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.424428,
+            0.581495,
+            0.020425,
+            0.014093
+          ],
+          "bbox_normalized": [
+            0.5744,
+            0.4142,
+            0.5885,
+            0.4346
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.469771,
+            0.078738,
+            0.043301,
+            0.021446
+          ],
+          "bbox_normalized": [
+            0.068,
+            0.4481,
+            0.0895,
+            0.4914
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000104",
+      "filename": "waste_test_000104.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000104.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000104.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "cdf643a219135121611b42fee4101619d9299d4c7d7c3b49c0739a7b1b63241a",
+      "width": 3264,
+      "height": 2448,
+      "waste_classes": [
+        8,
+        3,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.686275,
+            0.192198,
+            0.172794,
+            0.27982
+          ],
+          "bbox_normalized": [
+            0.0523,
+            0.5999,
+            0.3321,
+            0.7727
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.452665,
+            0.217525,
+            0.095282,
+            0.087827
+          ],
+          "bbox_normalized": [
+            0.1736,
+            0.405,
+            0.2614,
+            0.5003
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.407475,
+            0.7404,
+            0.365196,
+            0.470997
+          ],
+          "bbox_normalized": [
+            0.5049,
+            0.2249,
+            0.9759,
+            0.5901
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.731311,
+            0.822304,
+            0.08701,
+            0.110294
+          ],
+          "bbox_normalized": [
+            0.7672,
+            0.6878,
+            0.8775,
+            0.7748
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.803615,
+            0.464461,
+            0.079657,
+            0.075163
+          ],
+          "bbox_normalized": [
+            0.4269,
+            0.7638,
+            0.502,
+            0.8434
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.869332,
+            0.677492,
+            0.211091,
+            0.502042
+          ],
+          "bbox_normalized": [
+            0.4265,
+            0.7638,
+            0.9285,
+            0.9749
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.53079,
+            0.505515,
+            0.11489,
+            0.185866
+          ],
+          "bbox_normalized": [
+            0.4126,
+            0.4733,
+            0.5984,
+            0.5882
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000105",
+      "filename": "waste_test_000105.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000105.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000105.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "9759405ffcfd1054b12837a8fe4b4758858470631af40c13b5afb5bd09e0d518",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.570874,
+            0.558211,
+            0.448938,
+            0.434436
+          ],
+          "bbox_normalized": [
+            0.341,
+            0.3464,
+            0.7754,
+            0.7953
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000106",
+      "filename": "waste_test_000106.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000106.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000106.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "90f8e9636718c511fac9a421481812b23d01a526bbf9dbec32f0ef065100fb51",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        2,
+        3,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.605801,
+            0.29856,
+            0.308824,
+            0.09038
+          ],
+          "bbox_normalized": [
+            0.2534,
+            0.4514,
+            0.3438,
+            0.7602
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.417279,
+            0.538756,
+            0.213644,
+            0.059743
+          ],
+          "bbox_normalized": [
+            0.5089,
+            0.3105,
+            0.5686,
+            0.5241
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.449551,
+            0.916973,
+            0.122141,
+            0.129289
+          ],
+          "bbox_normalized": [
+            0.8523,
+            0.3885,
+            0.9816,
+            0.5106
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.743056,
+            0.870404,
+            0.113562,
+            0.208946
+          ],
+          "bbox_normalized": [
+            0.7659,
+            0.6863,
+            0.9749,
+            0.7998
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.91442,
+            0.84421,
+            0.170343,
+            0.194547
+          ],
+          "bbox_normalized": [
+            0.7469,
+            0.8292,
+            0.9415,
+            0.9996
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.931373,
+            0.782322,
+            0.137255,
+            0.070159
+          ],
+          "bbox_normalized": [
+            0.7472,
+            0.8627,
+            0.8174,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000107",
+      "filename": "waste_test_000107.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000107.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000107.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "cc42a1c550a96353bcc138ebb7e338ba3e63f9543490630d967e771a3050337f",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.906454,
+            0.574142,
+            0.147059,
+            0.164216
+          ],
+          "bbox_normalized": [
+            0.492,
+            0.8329,
+            0.6562,
+            0.98
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.82067,
+            0.207721,
+            0.081699,
+            0.082108
+          ],
+          "bbox_normalized": [
+            0.1667,
+            0.7798,
+            0.2488,
+            0.8615
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.880515,
+            0.197304,
+            0.077206,
+            0.087623
+          ],
+          "bbox_normalized": [
+            0.1535,
+            0.8419,
+            0.2411,
+            0.9191
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.918709,
+            0.168964,
+            0.078431,
+            0.084865
+          ],
+          "bbox_normalized": [
+            0.1265,
+            0.8795,
+            0.2114,
+            0.9579
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.928717,
+            0.634498,
+            0.041258,
+            0.028186
+          ],
+          "bbox_normalized": [
+            0.6204,
+            0.9081,
+            0.6486,
+            0.9493
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000108",
+      "filename": "waste_test_000108.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000108.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000108.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "487e357d7c171f211c86ee270560d80cd977efe5386597f2858d8c215780e803",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.474877,
+            0.626685,
+            0.279003,
+            0.22212
+          ],
+          "bbox_normalized": [
+            0.5156,
+            0.3354,
+            0.7377,
+            0.6144
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.546569,
+            0.481005,
+            0.034314,
+            0.035539
+          ],
+          "bbox_normalized": [
+            0.4632,
+            0.5294,
+            0.4988,
+            0.5637
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000110",
+      "filename": "waste_test_000110.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000110.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000110.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "f8bcc3bdcc0d0cf99c90c5ee5d22e6dce1985bc6b334f761c09ff171726f812f",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.319444,
+            0.21201,
+            0.086601,
+            0.089461
+          ],
+          "bbox_normalized": [
+            0.1673,
+            0.2761,
+            0.2567,
+            0.3627
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.367239,
+            0.91636,
+            0.098039,
+            0.035539
+          ],
+          "bbox_normalized": [
+            0.8986,
+            0.3182,
+            0.9341,
+            0.4163
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000111",
+      "filename": "waste_test_000111.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000111.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000111.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "3d69e29d78ff9893de68b6001f5954742eb24390780dc5593748df813b7b80d5",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.397263,
+            0.759804,
+            0.104984,
+            0.090686
+          ],
+          "bbox_normalized": [
+            0.7145,
+            0.3448,
+            0.8051,
+            0.4498
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.215482,
+            0.616268,
+            0.076389,
+            0.086091
+          ],
+          "bbox_normalized": [
+            0.5732,
+            0.1773,
+            0.6593,
+            0.2537
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.391953,
+            0.622702,
+            0.098448,
+            0.11489
+          ],
+          "bbox_normalized": [
+            0.5653,
+            0.3427,
+            0.6801,
+            0.4412
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000115",
+      "filename": "waste_test_000115.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000115.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000115.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "5232986f1f53580c4c7ffe4ed4ee46ec295854af60574820cbe15d3ca74fef00",
+      "width": 3264,
+      "height": 2448,
+      "waste_classes": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.553002,
+            0.541871,
+            0.172794,
+            0.22018
+          ],
+          "bbox_normalized": [
+            0.4318,
+            0.4666,
+            0.652,
+            0.6394
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.217525,
+            0.280025,
+            0.213848,
+            0.135212
+          ],
+          "bbox_normalized": [
+            0.2124,
+            0.1106,
+            0.3476,
+            0.3244
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.314185,
+            0.23223,
+            0.019914,
+            0.039624
+          ],
+          "bbox_normalized": [
+            0.2124,
+            0.3042,
+            0.252,
+            0.3241
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.767923,
+            0.353554,
+            0.140012,
+            0.08701
+          ],
+          "bbox_normalized": [
+            0.31,
+            0.6979,
+            0.3971,
+            0.8379
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.956648,
+            0.121732,
+            0.086703,
+            0.120098
+          ],
+          "bbox_normalized": [
+            0.0617,
+            0.9133,
+            0.1818,
+            1.0
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.806832,
+            0.398693,
+            0.126532,
+            0.107026
+          ],
+          "bbox_normalized": [
+            0.3452,
+            0.7436,
+            0.4522,
+            0.8701
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.855852,
+            0.342729,
+            0.040135,
+            0.034314
+          ],
+          "bbox_normalized": [
+            0.3256,
+            0.8358,
+            0.3599,
+            0.8759
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.874387,
+            0.070466,
+            0.03125,
+            0.04616
+          ],
+          "bbox_normalized": [
+            0.0474,
+            0.8588,
+            0.0935,
+            0.89
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.159007,
+            0.211601,
+            0.027574,
+            0.017974
+          ],
+          "bbox_normalized": [
+            0.2026,
+            0.1452,
+            0.2206,
+            0.1728
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.280944,
+            0.145016,
+            0.011642,
+            0.007353
+          ],
+          "bbox_normalized": [
+            0.1413,
+            0.2751,
+            0.1487,
+            0.2868
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.085784,
+            0.040033,
+            0.019608,
+            0.011438
+          ],
+          "bbox_normalized": [
+            0.0343,
+            0.076,
+            0.0458,
+            0.0956
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.223346,
+            0.644199,
+            0.01777,
+            0.013889
+          ],
+          "bbox_normalized": [
+            0.6373,
+            0.2145,
+            0.6511,
+            0.2322
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000117",
+      "filename": "waste_test_000117.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000117.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000117.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "cbf7e67623119c70c6c55c8ce5e452b6baaff48b980def880953b9ed9681456c",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8,
+        7
+      ],
+      "annotations": [
+        {
+          "class_id": 7,
+          "bbox_yolo": [
+            0.715891,
+            0.321691,
+            0.161356,
+            0.153799
+          ],
+          "bbox_normalized": [
+            0.2448,
+            0.6352,
+            0.3986,
+            0.7966
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.722631,
+            0.293658,
+            0.145425,
+            0.097733
+          ],
+          "bbox_normalized": [
+            0.2448,
+            0.6499,
+            0.3425,
+            0.7953
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.910948,
+            0.175245,
+            0.028595,
+            0.020833
+          ],
+          "bbox_normalized": [
+            0.1648,
+            0.8967,
+            0.1857,
+            0.9252
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.915441,
+            0.360294,
+            0.045752,
+            0.082108
+          ],
+          "bbox_normalized": [
+            0.3192,
+            0.8926,
+            0.4013,
+            0.9383
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000118",
+      "filename": "waste_test_000118.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000118.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000118.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "e2fd41cc0d1d717176ca87283bdfd26276b19071d80904d7184e43e8920a8745",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.410539,
+            0.433364,
+            0.142157,
+            0.0769
+          ],
+          "bbox_normalized": [
+            0.3949,
+            0.3395,
+            0.4718,
+            0.4816
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000119",
+      "filename": "waste_test_000119.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000119.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000119.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "4ce603bb0e38c7947d4b16cb7a38fedddfe419655e78dbe4eb0016a15e157c8a",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.477124,
+            0.654259,
+            0.20098,
+            0.237439
+          ],
+          "bbox_normalized": [
+            0.5355,
+            0.3766,
+            0.773,
+            0.5776
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000120",
+      "filename": "waste_test_000120.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000120.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000120.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "6425066edf50bfced72962a4fedd721d2494d33b3edb7b4eef6fa2df99e3f94a",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.510008,
+            0.501225,
+            0.535539,
+            0.262255
+          ],
+          "bbox_normalized": [
+            0.3701,
+            0.2422,
+            0.6324,
+            0.7778
+          ]
+        },
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.751225,
+            0.321078,
+            0.013889,
+            0.01348
+          ],
+          "bbox_normalized": [
+            0.3143,
+            0.7443,
+            0.3278,
+            0.7582
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000121",
+      "filename": "waste_test_000121.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000121.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000121.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "12f7d2a54f67d6ebe2648385c950fd98b23e7cf4a9a6f81f808a66fe23894541",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.336601,
+            0.67065,
+            0.078431,
+            0.0625
+          ],
+          "bbox_normalized": [
+            0.6394,
+            0.2974,
+            0.7019,
+            0.3758
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.463031,
+            0.39905,
+            0.068219,
+            0.036458
+          ],
+          "bbox_normalized": [
+            0.3808,
+            0.4289,
+            0.4173,
+            0.4971
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000122",
+      "filename": "waste_test_000122.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000122.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000122.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "4084ac2d542c8858f30e6c4a79f895f6724e715d8e7779e4adbfe0b43997295d",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.292892,
+            0.563725,
+            0.051471,
+            0.034926
+          ],
+          "bbox_normalized": [
+            0.5463,
+            0.2672,
+            0.5812,
+            0.3186
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000004",
+      "filename": "waste_test_000004.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000004.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000004.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "2793f7f57eb8aa3709cda9f0a10344bc3b3723b150cadac40f31b5a2be5cbc87",
+      "width": 1241,
+      "height": 751,
+      "waste_classes": [
+        4
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.560435,
+            0.131824,
+            0.07494,
+            0.117177
+          ],
+          "bbox_normalized": [
+            0.0732,
+            0.523,
+            0.1904,
+            0.5979
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000124",
+      "filename": "waste_test_000124.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000124.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000124.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "d93dff4888f2216d8b13bdbb361df5e152000133506421195fbad28877133c24",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.559436,
+            0.516697,
+            0.719363,
+            0.957414
+          ],
+          "bbox_normalized": [
+            0.038,
+            0.1998,
+            0.9954,
+            0.9191
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.454453,
+            0.734375,
+            0.248775,
+            0.219363
+          ],
+          "bbox_normalized": [
+            0.6247,
+            0.3301,
+            0.8441,
+            0.5788
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.614583,
+            0.717525,
+            0.152369,
+            0.14951
+          ],
+          "bbox_normalized": [
+            0.6428,
+            0.5384,
+            0.7923,
+            0.6908
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000127",
+      "filename": "waste_test_000127.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000127.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000127.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b438b69451a53e68e3ebbf7cf40c46d0d466729ae5fde6947460d149378ffd26",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        8,
+        4,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.173815,
+            0.715533,
+            0.346814,
+            0.372855
+          ],
+          "bbox_normalized": [
+            0.5291,
+            0.0004,
+            0.902,
+            0.3472
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.510212,
+            0.487592,
+            0.392974,
+            0.206801
+          ],
+          "bbox_normalized": [
+            0.3842,
+            0.3137,
+            0.591,
+            0.7067
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.179126,
+            0.429688,
+            0.358252,
+            0.429228
+          ],
+          "bbox_normalized": [
+            0.2151,
+            0.0,
+            0.6443,
+            0.3583
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.54085,
+            0.745251,
+            0.918301,
+            0.509498
+          ],
+          "bbox_normalized": [
+            0.4905,
+            0.0817,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.500204,
+            0.168045,
+            0.999592,
+            0.336091
+          ],
+          "bbox_normalized": [
+            0.0,
+            0.0004,
+            0.3361,
+            1.0
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.635008,
+            0.21538,
+            0.729984,
+            0.371324
+          ],
+          "bbox_normalized": [
+            0.0297,
+            0.27,
+            0.401,
+            1.0
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.849265,
+            0.540441,
+            0.300654,
+            0.293505
+          ],
+          "bbox_normalized": [
+            0.3937,
+            0.6989,
+            0.6872,
+            0.9996
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.312908,
+            0.22549,
+            0.625817,
+            0.354167
+          ],
+          "bbox_normalized": [
+            0.0484,
+            0.0,
+            0.4026,
+            0.6258
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.363766,
+            0.046722,
+            0.209559,
+            0.049939
+          ],
+          "bbox_normalized": [
+            0.0218,
+            0.259,
+            0.0717,
+            0.4685
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.236724,
+            0.054534,
+            0.118873,
+            0.057598
+          ],
+          "bbox_normalized": [
+            0.0257,
+            0.1773,
+            0.0833,
+            0.2962
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000128",
+      "filename": "waste_test_000128.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000128.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000128.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "3396e43b4d5fc838e2c585fd6c93311157a5c4c1e4a399c72535815ae3901e50",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        0,
+        2,
+        3,
+        4,
+        6,
+        8
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.312092,
+            0.258425,
+            0.624183,
+            0.51685
+          ],
+          "bbox_normalized": [
+            0.0,
+            0.0,
+            0.5169,
+            0.6242
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.176062,
+            0.121936,
+            0.309641,
+            0.200368
+          ],
+          "bbox_normalized": [
+            0.0218,
+            0.0212,
+            0.2221,
+            0.3309
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.395425,
+            0.60386,
+            0.79085,
+            0.53799
+          ],
+          "bbox_normalized": [
+            0.3349,
+            0.0,
+            0.8729,
+            0.7908
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.574959,
+            0.315717,
+            0.249592,
+            0.10386
+          ],
+          "bbox_normalized": [
+            0.2638,
+            0.4502,
+            0.3676,
+            0.6998
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.725694,
+            0.209712,
+            0.221814,
+            0.173713
+          ],
+          "bbox_normalized": [
+            0.1229,
+            0.6148,
+            0.2966,
+            0.8366
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.877859,
+            0.389859,
+            0.244281,
+            0.162684
+          ],
+          "bbox_normalized": [
+            0.3085,
+            0.7557,
+            0.4712,
+            1.0
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.814951,
+            0.305147,
+            0.245915,
+            0.164828
+          ],
+          "bbox_normalized": [
+            0.2227,
+            0.692,
+            0.3876,
+            0.9379
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.968546,
+            0.377604,
+            0.062908,
+            0.049326
+          ],
+          "bbox_normalized": [
+            0.3529,
+            0.9371,
+            0.4023,
+            1.0
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.694444,
+            0.682292,
+            0.609477,
+            0.395221
+          ],
+          "bbox_normalized": [
+            0.4847,
+            0.3897,
+            0.8799,
+            0.9992
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.424632,
+            0.848192,
+            0.07067,
+            0.064645
+          ],
+          "bbox_normalized": [
+            0.8159,
+            0.3893,
+            0.8805,
+            0.46
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.177288,
+            0.891391,
+            0.354575,
+            0.189032
+          ],
+          "bbox_normalized": [
+            0.7969,
+            0.0,
+            0.9859,
+            0.3546
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.44567,
+            0.849571,
+            0.287582,
+            0.174632
+          ],
+          "bbox_normalized": [
+            0.7623,
+            0.3019,
+            0.9369,
+            0.5895
+          ]
+        },
+        {
+          "class_id": 8,
+          "bbox_yolo": [
+            0.795547,
+            0.865809,
+            0.408905,
+            0.268382
+          ],
+          "bbox_normalized": [
+            0.7316,
+            0.5911,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-000129",
+      "filename": "waste_test_000129.jpg",
+      "image_path": "data/datasets/waste/images/test/waste_test_000129.jpg",
+      "label_path": "data/datasets/waste/labels/test/waste_test_000129.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "9c244eb9d80460ed41041c132ec623c2d3eb5deb3350af6b06b1f5c4c7d4c6b3",
+      "width": 2448,
+      "height": 3264,
+      "waste_classes": [
+        4,
+        6
+      ],
+      "annotations": [
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.488971,
+            0.649663,
+            0.977941,
+            0.601409
+          ],
+          "bbox_normalized": [
+            0.349,
+            0.0,
+            0.9504,
+            0.9779
+          ]
+        },
+        {
+          "class_id": 4,
+          "bbox_yolo": [
+            0.303309,
+            0.412071,
+            0.101716,
+            0.074142
+          ],
+          "bbox_normalized": [
+            0.375,
+            0.2525,
+            0.4491,
+            0.3542
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.49183,
+            0.373009,
+            0.179739,
+            0.193934
+          ],
+          "bbox_normalized": [
+            0.276,
+            0.402,
+            0.47,
+            0.5817
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.505515,
+            0.302083,
+            0.182598,
+            0.110907
+          ],
+          "bbox_normalized": [
+            0.2466,
+            0.4142,
+            0.3575,
+            0.5968
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.542075,
+            0.210478,
+            0.107026,
+            0.084559
+          ],
+          "bbox_normalized": [
+            0.1682,
+            0.4886,
+            0.2528,
+            0.5956
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.725899,
+            0.286765,
+            0.243464,
+            0.10049
+          ],
+          "bbox_normalized": [
+            0.2365,
+            0.6042,
+            0.337,
+            0.8476
+          ]
+        },
+        {
+          "class_id": 6,
+          "bbox_yolo": [
+            0.26348,
+            0.274663,
+            0.253268,
+            0.156556
+          ],
+          "bbox_normalized": [
+            0.1964,
+            0.1368,
+            0.3529,
+            0.3901
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002002",
+      "filename": "neg_test_India_002002.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002002.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002002.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "df7b7a9fd6185eb4cd05f2c783d905dfad1b87b6ae771ae2f9c6018ccc3777b8",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002008",
+      "filename": "neg_test_India_002008.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002008.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002008.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d044c70f84f6d3078f344be875dc1bfaae0b07c8bc4abc5a851db35a4570447f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002015",
+      "filename": "neg_test_India_002015.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002015.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002015.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "a62a0619d919e3be68435fea7529a6c3885a2ce926f0169087a6e84c5c3cf7bd",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002018",
+      "filename": "neg_test_India_002018.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002018.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002018.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "6b7f4d65c7966d83afe43113fd52607a385011f6d629f373245cf25fc5cbba39",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002056",
+      "filename": "neg_test_India_002056.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002056.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002056.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "5bd738946b4df6d4d7b9df62f8510b9c745547989c0ae6806acb6d964b3ddde8",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002071",
+      "filename": "neg_test_India_002071.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002071.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002071.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "e8c08e4d41fffda0ea53d80e8681b7754c2b4fec1538f6354a30979b46cb3cbb",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002075",
+      "filename": "neg_test_India_002075.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002075.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002075.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "06820134bc91899d0876a1f5e0fa4964bc52b3e0db76a3a2ec1cd8131eb44d60",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002076",
+      "filename": "neg_test_India_002076.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002076.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002076.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b05f92826a7a108538359a8ef4632cf07aac5d20e16eaccc4e6602ca2c733095",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002080",
+      "filename": "neg_test_India_002080.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002080.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002080.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "0e8fff5a30f839dd6d60cc0edc9edec9c040607fd4f95a2c59bab2a9e100f73d",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002096",
+      "filename": "neg_test_India_002096.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002096.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002096.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "03bf323493db567e82bd50ed1bb432be8d3b68d132065d62b448595da70b6c17",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002100",
+      "filename": "neg_test_India_002100.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002100.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002100.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "88bddb0c9f8c3c076347e86359e06dea815b47847a9c0f5653912551520e6af3",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002114",
+      "filename": "neg_test_India_002114.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002114.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002114.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "802ec9719e5d13b8faa401637d23bc23a0b74cc1fcbc1e77bb40c19d27dbe8da",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002115",
+      "filename": "neg_test_India_002115.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002115.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002115.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "7734c85161af06353f0396e503393fe078e530fda38c83be70360c69d9ef843f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002130",
+      "filename": "neg_test_India_002130.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002130.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002130.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "c5cc98131dccd842e5ac6f41bfcb9c8182233e9cc82c596f58f0c0964384f924",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002142",
+      "filename": "neg_test_India_002142.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002142.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002142.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "6e3ea19f83329f33f9c872d330467e5543647473668f1d74b43db1ff52b0a52d",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002148",
+      "filename": "neg_test_India_002148.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002148.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002148.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b00a78742fdf0a99d78dc8cff93d164c7b509524eb7f33cc88c8feb503f86710",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002150",
+      "filename": "neg_test_India_002150.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002150.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002150.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "8e52cff3cbed7cf499eadf121556b74eae9c3799626ed938fff20527d53cb1c8",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002164",
+      "filename": "neg_test_India_002164.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002164.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002164.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "7b4a9066a38c82b56b7d34d0f9d460ff0e3c8ca3581ede53f9c193709d473c3c",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002168",
+      "filename": "neg_test_India_002168.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002168.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002168.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "cb9b5e4c9bf9c3c277a5aea44da7a8c7b177d613475ef00e9114df80b2f96bff",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002179",
+      "filename": "neg_test_India_002179.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002179.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002179.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "fbe3491a02dadd7922b561b9ebe16f5559c94544f37bec2b56777615b5abb56d",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002182",
+      "filename": "neg_test_India_002182.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002182.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002182.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "c480ca49f5c1e47f8a22fa348bdca4eef9645a6596284e22a644d8e7503bb54f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002192",
+      "filename": "neg_test_India_002192.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002192.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002192.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "434956c25b6710e7225e6edc8233367df66a57db27d7a58cd7db40b0efdac4b0",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002197",
+      "filename": "neg_test_India_002197.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002197.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002197.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "fa82aa02b98cfecebe299ad52033a07eab0e7cad1d92e887bed0a851f0d4800f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002208",
+      "filename": "neg_test_India_002208.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002208.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002208.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d664293ae42742fb7567842f6f400f2d3502c62e4d392c4056b4d44f471850e3",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002213",
+      "filename": "neg_test_India_002213.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002213.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002213.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "172077943d73f25ae06da6d4b8ecf61110b7d7ed363fd6a93f6d3cf516869929",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002218",
+      "filename": "neg_test_India_002218.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002218.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002218.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "a12657d14e6f3f8d1a8c3287c1524358bda707be8cffc68c8b55c535a4437d94",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002225",
+      "filename": "neg_test_India_002225.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002225.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002225.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1f03ff454861b7bc5484af6c91ca2c65e815a029e6bddc2fe8a736c9c534ebde",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002247",
+      "filename": "neg_test_India_002247.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002247.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002247.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "4375a6699da14790c3b17a818eb00190c2e553a3619387ab9f276d06e311cc5b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002254",
+      "filename": "neg_test_India_002254.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002254.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002254.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "5f2cb7f83f66c3b44cd31060537928a9470e3d124903e9fd82cbd6a627c53746",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002263",
+      "filename": "neg_test_India_002263.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002263.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002263.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "f54e388df0e385caa7507ff9d48aef2b2a7e0c419a839a3e4f8bffe20e51d65a",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002268",
+      "filename": "neg_test_India_002268.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002268.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002268.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "267104404bff0099b799a421c5ed4b4996402f413678de1e6a3636b0a6567581",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002273",
+      "filename": "neg_test_India_002273.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002273.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002273.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d9cd6591fae9abd175febda02c36b7956c51e4de699bb5c6c056cbd0a54bf2eb",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002282",
+      "filename": "neg_test_India_002282.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002282.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002282.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "dc17ce3bdac973fc41640f9826471cc68020833874cf4ec6d7368b97f3c6255f",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002300",
+      "filename": "neg_test_India_002300.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002300.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002300.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d2e61b515be0da01dafca5d3a70f0227ab61a156f93c8640314ce4f1fd4c3d8d",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002310",
+      "filename": "neg_test_India_002310.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002310.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002310.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "535130f65c18f642308d98b1014bb1b943aeaff435879209701dadf254df0edf",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002311",
+      "filename": "neg_test_India_002311.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002311.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002311.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b2358d8d929dc10e20161e30d6d18f726dd24c1f5889709376ed5131e19d15f6",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002327",
+      "filename": "neg_test_India_002327.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002327.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002327.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "a3f654f6cd9a382c38317f23f79d658c0a79a7f1b085cecaa62f79b870fbd302",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002332",
+      "filename": "neg_test_India_002332.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002332.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002332.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "584229a777408a5186f26064a641ce0b7a7e723977353f376ea574bd7c6d34bc",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002333",
+      "filename": "neg_test_India_002333.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002333.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002333.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "e739cbd86181ce61d4bb6aa8c94225faef9fe1075f6ddf71f2bc804e869b4d5b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002348",
+      "filename": "neg_test_India_002348.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002348.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002348.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "656c31261b449fa8c201cfea8b34d6242e385633430e34cf59f8163c63016bcd",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002350",
+      "filename": "neg_test_India_002350.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002350.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002350.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1e63323a9bcf0be4bcc0266579864c289257fb46165197193a78dc4151d3d196",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002352",
+      "filename": "neg_test_India_002352.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002352.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002352.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "e830d252cf37ba6105c61909785ccdcd930f16264169993bcb2065e04ae7369e",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002356",
+      "filename": "neg_test_India_002356.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002356.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002356.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "dd04f9298f00d49ddb572fed901db6afe3fb0cf8c8875250b55bc936025e9fbc",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002363",
+      "filename": "neg_test_India_002363.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002363.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002363.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "7e3d5149753893e7cd30f96009d55f5a1d191516882654e5f0fc1ee9706de6de",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002379",
+      "filename": "neg_test_India_002379.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002379.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002379.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "5257e5ed5dedabf6d1d0490f38dcc5cec57dcb598167300583cae61e9b0d8242",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002380",
+      "filename": "neg_test_India_002380.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002380.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002380.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "96fbb06748947e5605c32f13a6733ba88a03003fb49e6b1c5acd543a82aecf02",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002385",
+      "filename": "neg_test_India_002385.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002385.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002385.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1ba100bab2a0ece05ded6fba21defbea786983f97064a8d7b65673953c7aeba4",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002394",
+      "filename": "neg_test_India_002394.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002394.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002394.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "a767fa66390d04bfb1bec4d1c3c8b2ccb5363b058a9693c41ec32ae8ba71840b",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002406",
+      "filename": "neg_test_India_002406.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002406.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002406.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "56c47b545d842cb3f820fedc30dd08066d679ef66be1c0f29ad35e89e2c6efba",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "WASTE-TEST-NEG-India_002426",
+      "filename": "neg_test_India_002426.jpg",
+      "image_path": "data/datasets/waste/images/test/neg_test_India_002426.jpg",
+      "label_path": "data/datasets/waste/labels/test/neg_test_India_002426.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d983f291d9d5f649d2fb5bf40ac6a94d1f4b49d2c9c82684286ac0f04cb64d2a",
+      "width": 720,
+      "height": 720,
+      "waste_classes": [],
+      "annotations": []
+    }
+  ]
+}

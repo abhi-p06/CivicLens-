@@ -233,29 +233,37 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     return () => clearAllTimers()
   }, [])
 
-  // Presets
+  // Presets aligned with Scope Freeze (Two Core Civic Use Cases)
   const loadPreset = (type: string) => {
     handleReset()
     handleClearImage()
     if (type === 'pothole' || type === 'demo') {
-      setComplaintText(DEMO_SCENARIO.complaintText)
-      setLocation(DEMO_SCENARIO.location)
-      setImageUrl(DEMO_SCENARIO.imageUrl)
-      setIsDemoScenario(true)
-    } else if (type === 'garbage') {
-      setComplaintText('Massive overflowing garbage dump on LBS Marg, rotten food waste and flies creating extreme health hazard')
-      setLocation('LBS Marg, Ghatkopar West')
-      setImageUrl('data/test_samples/litter.jpg')
+      setComplaintText(
+        'Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance.'
+      )
+      setLocation('Somaiya Vidyavihar Main Gate, Vidyavihar East')
+      setImageUrl('data/test_samples/repair_pothole_before.jpg')
       setIsDemoScenario(false)
-    } else if (type === 'water') {
-      setComplaintText('Major drinking water pipeline burst flooding 90 Feet Road Dharavi, millions of liters escaping onto road')
-      setLocation('Dharavi, 90 Feet Road')
-      setImageUrl('data/sample_water_leak.jpg')
+    } else if (type === 'garbage') {
+      setComplaintText(
+        'Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench.'
+      )
+      setLocation('Station Road, Kurla West')
+      setImageUrl('data/test_samples/bottle.jpg')
+      setIsDemoScenario(false)
+    } else if (type === 'mismatch' || type === 'water') {
+      setComplaintText(
+        'Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor.'
+      )
+      setLocation('S.V. Road, Santacruz')
+      setImageUrl('data/test_samples/bottle.jpg')
       setIsDemoScenario(false)
     } else if (type === 'patrol') {
-      setComplaintText('Deep road depression detected during autonomous visual patrol inspection near school perimeter')
+      setComplaintText(
+        'Deep road depression detected during autonomous visual patrol inspection near school perimeter.'
+      )
       setLocation('Kurla West')
-      setImageUrl('data/patrol_survey_pothole.jpg')
+      setImageUrl('data/test_samples/pothole_multibox.jpg')
       setIsDemoScenario(false)
     }
   }
@@ -750,7 +758,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
 
               {/* Quick Demo Presets */}
               <div className="flex flex-wrap items-center gap-2 shrink-0">
-                <span className="text-xs text-[#65708B] font-medium mr-1">Presets:</span>
+                <span className="text-xs text-[#65708B] font-medium mr-1">Core Focus Presets:</span>
                 <motion.button
                   id="preset-pothole-btn"
                   whileHover={{ scale: 1.02 }}
@@ -758,7 +766,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
                   onClick={() => loadPreset('pothole')}
                   className="px-3 py-1.5 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-semibold transition cursor-pointer"
                 >
-                  Pothole Demo
+                  1. Pothole / Road
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -766,15 +774,15 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
                   onClick={() => loadPreset('garbage')}
                   className="px-3 py-1.5 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-semibold transition cursor-pointer"
                 >
-                  Garbage Dump
+                  2. Garbage / Litter
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => loadPreset('water')}
-                  className="px-3 py-1.5 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-semibold transition cursor-pointer"
+                  onClick={() => loadPreset('mismatch')}
+                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-semibold transition cursor-pointer"
                 >
-                  Water Leak
+                  3. Cross-Check Mismatch
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -782,7 +790,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
                   onClick={() => loadPreset('patrol')}
                   className="px-3 py-1.5 bg-[#F0F2F9] hover:bg-slate-200 border border-[#E4E7F1] text-[#11162A] rounded-lg text-xs font-semibold transition cursor-pointer"
                 >
-                  Patrol Camera
+                  4. Patrol Road Survey
                 </motion.button>
               </div>
             </div>

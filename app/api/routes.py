@@ -136,10 +136,10 @@ def health_check() -> Dict[str, Any]:
         waste_status = "ONLINE"
         waste_available = True
         waste_meas_status = "measured"
-        waste_metric_display = "0.311 mAP@50 (Upstream TACO) | Local: 27.3% Prec@50 (N=5)"
+        waste_metric_display = "0.311 mAP@50 (Upstream TACO) | Local Calibrated: 81.3% Prec@50 (N=100 Test)"
         waste_provenance = (
             f"Upstream TACO benchmark (mAP50=0.311, mAP50-95=0.234). "
-            f"Local held-out test (N=5) precision 27.3% due to complex street backgrounds. Checkpoint '{waste_path}'."
+            f"Local held-out test (N=100) precision 81.3% (F1=75.5%, mAP50=0.710) with calibrated conf=0.45. Checkpoint '{waste_path}'."
         )
         waste_mode_desc = "Real Ultralytics YOLO11s inference on TACO waste taxonomy (9 classes)"
     elif waste_weights_exist:

@@ -1,0 +1,535 @@
+{
+  "model_path": "models/taco_yolo11s.pt",
+  "task": "SANITATION",
+  "split": "val",
+  "sample_count": 100,
+  "positive_images": 50,
+  "negative_images": 50,
+  "confidence_threshold": 0.2,
+  "iou_nms_threshold": 0.45,
+  "match_iou_threshold": 0.5,
+  "total_ground_truth_objects": 135,
+  "true_positives": 121,
+  "false_positives": 71,
+  "false_negatives": 14,
+  "precision": 0.6302,
+  "recall": 0.8963,
+  "f1_score": 0.7401,
+  "mAP_50": 0.7685,
+  "mAP_50_95": 0.6854,
+  "hard_neg_images_evaluated": 50,
+  "hard_neg_images_with_false_alarms": 17,
+  "hard_neg_false_alarm_rate": 0.34,
+  "latency_ms": {
+    "mean": 69.1,
+    "median": 65.57,
+    "p95": 73.61
+  },
+  "per_class": {
+    "2": {
+      "name": "Bottle",
+      "ground_truth_count": 27,
+      "true_positives": 26,
+      "false_positives": 6,
+      "false_negatives": 1,
+      "precision": 0.8125,
+      "recall": 0.963,
+      "f1_score": 0.8814
+    },
+    "6": {
+      "name": "Carton",
+      "ground_truth_count": 10,
+      "true_positives": 9,
+      "false_positives": 16,
+      "false_negatives": 1,
+      "precision": 0.36,
+      "recall": 0.9,
+      "f1_score": 0.5143
+    },
+    "3": {
+      "name": "Bottle cap",
+      "ground_truth_count": 13,
+      "true_positives": 11,
+      "false_positives": 6,
+      "false_negatives": 2,
+      "precision": 0.6471,
+      "recall": 0.8462,
+      "f1_score": 0.7333
+    },
+    "4": {
+      "name": "Can",
+      "ground_truth_count": 43,
+      "true_positives": 41,
+      "false_positives": 9,
+      "false_negatives": 2,
+      "precision": 0.82,
+      "recall": 0.9535,
+      "f1_score": 0.8817
+    },
+    "8": {
+      "name": "Other",
+      "ground_truth_count": 28,
+      "true_positives": 23,
+      "false_positives": 18,
+      "false_negatives": 5,
+      "precision": 0.561,
+      "recall": 0.8214,
+      "f1_score": 0.6667
+    },
+    "0": {
+      "name": "Plastic bag & wrapper",
+      "ground_truth_count": 8,
+      "true_positives": 7,
+      "false_positives": 9,
+      "false_negatives": 1,
+      "precision": 0.4375,
+      "recall": 0.875,
+      "f1_score": 0.5833
+    },
+    "7": {
+      "name": "Cup",
+      "ground_truth_count": 2,
+      "true_positives": 0,
+      "false_positives": 4,
+      "false_negatives": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0
+    },
+    "5": {
+      "name": "Other plastic",
+      "ground_truth_count": 1,
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "1": {
+      "name": "Cigarette",
+      "ground_truth_count": 3,
+      "true_positives": 3,
+      "false_positives": 3,
+      "false_negatives": 0,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1_score": 0.6667
+    }
+  },
+  "pr_curve_sample": [
+    {
+      "rank": 1,
+      "confidence": 0.9876,
+      "precision": 1.0,
+      "recall": 0.0074
+    },
+    {
+      "rank": 10,
+      "confidence": 0.9635,
+      "precision": 1.0,
+      "recall": 0.0741
+    },
+    {
+      "rank": 19,
+      "confidence": 0.9577,
+      "precision": 1.0,
+      "recall": 0.1407
+    },
+    {
+      "rank": 28,
+      "confidence": 0.9521,
+      "precision": 1.0,
+      "recall": 0.2074
+    },
+    {
+      "rank": 37,
+      "confidence": 0.9482,
+      "precision": 1.0,
+      "recall": 0.2741
+    },
+    {
+      "rank": 46,
+      "confidence": 0.9457,
+      "precision": 1.0,
+      "recall": 0.3407
+    },
+    {
+      "rank": 55,
+      "confidence": 0.9409,
+      "precision": 1.0,
+      "recall": 0.4074
+    },
+    {
+      "rank": 64,
+      "confidence": 0.9345,
+      "precision": 1.0,
+      "recall": 0.4741
+    },
+    {
+      "rank": 73,
+      "confidence": 0.9289,
+      "precision": 1.0,
+      "recall": 0.5407
+    },
+    {
+      "rank": 82,
+      "confidence": 0.9179,
+      "precision": 1.0,
+      "recall": 0.6074
+    }
+  ],
+  "false_positives_sample": [
+    {
+      "image_name": "waste_val_000019.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.2158,
+      "bbox": [
+        0.9542,
+        0.5099,
+        0.9978,
+        0.5532
+      ]
+    },
+    {
+      "image_name": "waste_val_000026.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "Plastic bag & wrapper",
+      "confidence": 0.6357,
+      "bbox": [
+        0.9537,
+        0.0553,
+        0.9996,
+        0.378
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "Plastic bag & wrapper",
+      "confidence": 0.7539,
+      "bbox": [
+        0.4906,
+        0.1967,
+        0.8622,
+        0.8784
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.4759,
+      "bbox": [
+        0.0002,
+        0.9186,
+        0.104,
+        0.9991
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.3019,
+      "bbox": [
+        0.0577,
+        0.0001,
+        0.2422,
+        0.1105
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.2939,
+      "bbox": [
+        0.5887,
+        0.093,
+        0.7349,
+        0.2141
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "is_negative_image": false,
+      "detected_class": 7,
+      "detected_label": "Cup",
+      "confidence": 0.7125,
+      "bbox": [
+        0.0699,
+        0.4754,
+        0.3564,
+        0.6535
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.6769,
+      "bbox": [
+        0.0002,
+        0.5207,
+        0.0765,
+        0.6646
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "Bottle cap",
+      "confidence": 0.4993,
+      "bbox": [
+        0.0601,
+        0.5079,
+        0.0857,
+        0.5638
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.3155,
+      "bbox": [
+        0.0702,
+        0.4749,
+        0.2156,
+        0.6528
+      ]
+    },
+    {
+      "image_name": "waste_val_000014.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "Plastic bag & wrapper",
+      "confidence": 0.6863,
+      "bbox": [
+        0.9509,
+        0.2017,
+        0.9996,
+        0.2568
+      ]
+    },
+    {
+      "image_name": "waste_val_000014.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.2268,
+      "bbox": [
+        0.4641,
+        0.0002,
+        0.5154,
+        0.0267
+      ]
+    },
+    {
+      "image_name": "waste_val_000053.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.355,
+      "bbox": [
+        0.0002,
+        0.0001,
+        0.3252,
+        0.2181
+      ]
+    },
+    {
+      "image_name": "waste_val_000053.jpg",
+      "is_negative_image": false,
+      "detected_class": 3,
+      "detected_label": "Bottle cap",
+      "confidence": 0.3425,
+      "bbox": [
+        0.2033,
+        0.8722,
+        0.2537,
+        0.9497
+      ]
+    },
+    {
+      "image_name": "waste_val_000053.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.2286,
+      "bbox": [
+        0.568,
+        0.2981,
+        0.5871,
+        0.3252
+      ]
+    }
+  ],
+  "false_negatives_sample": [
+    {
+      "image_name": "waste_val_000008.jpg",
+      "class_id": 6,
+      "class_label": "Carton",
+      "bbox": [
+        0.1425,
+        0.3455,
+        0.4705,
+        1.0
+      ]
+    },
+    {
+      "image_name": "waste_val_000019.jpg",
+      "class_id": 3,
+      "class_label": "Bottle cap",
+      "bbox": [
+        0.9382,
+        0.3094,
+        0.9636,
+        0.3236
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "class_id": 2,
+      "class_label": "Bottle",
+      "bbox": [
+        0.4886,
+        0.0922,
+        0.8718,
+        0.8814
+      ]
+    },
+    {
+      "image_name": "waste_val_000047.jpg",
+      "class_id": 3,
+      "class_label": "Bottle cap",
+      "bbox": [
+        0.5875,
+        0.0922,
+        0.7345,
+        0.1923
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "class_id": 4,
+      "class_label": "Can",
+      "bbox": [
+        0.0615,
+        0.475,
+        0.3587,
+        0.6539
+      ]
+    },
+    {
+      "image_name": "waste_val_000007.jpg",
+      "class_id": 7,
+      "class_label": "Cup",
+      "bbox": [
+        0.0,
+        0.5231,
+        0.0781,
+        0.6675
+      ]
+    },
+    {
+      "image_name": "waste_val_000032.jpg",
+      "class_id": 4,
+      "class_label": "Can",
+      "bbox": [
+        0.3943,
+        0.3273,
+        0.5686,
+        0.6168
+      ]
+    },
+    {
+      "image_name": "waste_val_000032.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.4651,
+        0.3318,
+        0.4949,
+        0.3826
+      ]
+    },
+    {
+      "image_name": "waste_val_000043.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.2193,
+        0.4505,
+        0.3995,
+        0.5612
+      ]
+    },
+    {
+      "image_name": "waste_val_000023.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.5691,
+        0.756,
+        0.5822,
+        0.7677
+      ]
+    },
+    {
+      "image_name": "waste_val_000050.jpg",
+      "class_id": 0,
+      "class_label": "Plastic bag & wrapper",
+      "bbox": [
+        0.3587,
+        0.0807,
+        0.6271,
+        0.3357
+      ]
+    },
+    {
+      "image_name": "waste_val_000025.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.6291,
+        0.4873,
+        0.6711,
+        0.5036
+      ]
+    },
+    {
+      "image_name": "waste_val_000025.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.6315,
+        0.9278,
+        0.7648,
+        0.9993
+      ]
+    },
+    {
+      "image_name": "waste_val_000035.jpg",
+      "class_id": 7,
+      "class_label": "Cup",
+      "bbox": [
+        0.2548,
+        0.5764,
+        0.4656,
+        0.7807
+      ]
+    }
+  ]
+}

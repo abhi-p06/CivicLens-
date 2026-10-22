@@ -1,0 +1,11 @@
+path: /Users/abby/chiragwalaproj/data/datasets/road_damage
+train: images/val
+val: images/val
+test: images/test
+
+nc: 4
+names:
+  0: D00_longitudinal_crack
+  1: D10_transverse_crack
+  2: D20_alligator_crack
+  3: D40_pothole

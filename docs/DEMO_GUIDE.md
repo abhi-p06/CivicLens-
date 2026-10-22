@@ -1,6 +1,13 @@
 # CIVILENS — Academic Demonstration Guide
+## Scope Freeze: Two Core Civic Use Cases
 
-This guide provides a step-by-step walkthrough for demonstrating the core capabilities of the **CIVILENS** civic issue intelligence platform during academic presentations and technical reviews.
+This guide provides the authoritative step-by-step presentation script for demonstrating **CIVILENS** during academic reviews, vivas, and faculty evaluations.
+
+Following faculty feedback, the demonstration is strictly frozen to **two well-developed core civic use cases**:
+1. **Pothole & Road-Damage Detection** (YOLOv8s RDD2022)
+2. **Garbage & Street-Litter Detection** (YOLO11s TACO)
+
+All broader civic categories (flooding, waterlogging, streetlights) are treated as **out of scope** for automated vision and deferred to a dedicated Future Work section.
 
 ---
 
@@ -8,201 +15,186 @@ This guide provides a step-by-step walkthrough for demonstrating the core capabi
 
 1. Backend running: `uvicorn app.main:app --port 8000`
 2. Frontend running: `cd frontend && npm run dev` (`http://localhost:5173`)
-3. Test sample images available in `data/test_samples/`:
+3. Primary fixture images in `data/test_samples/`:
    - `repair_pothole_before.jpg` (Pothole defect)
-   - `litter.jpg` or `bottle.jpg` (Sanitation defect)
-   - `street_flooding.jpg` (Street flooding defect)
+   - `bottle.jpg` or `litter.jpg` (Municipal street litter)
    - `repair_pothole_after_repaired.jpg` (Repaired asphalt patch)
 
-> **Demo Seed Data**: Issues `CIVIC-2026-001` through `CIVIC-2026-006` are pre-seeded in SQLite to demonstrate deduplication, spatial clustering, and historical recurrence out of the box.
+> **Pre-Seeded Data**: Seed issues `CIVIC-2026-001` through `CIVIC-2026-006` are stored in persistent SQLite to immediately demonstrate spatial clustering, near-duplicate detection, and historical recurrence.
 
 ---
 
-## STEP 1: Submit a Road Damage (Pothole) Complaint with Image
+## Primary 5-Step Demonstration Sequence
 
-### Objective
-Demonstrate genuine computer vision road-damage inference (`YOLOv8s RDD2022`), localized bounding box extraction, visual severity calculation, and multimodal consistency.
+```
+Step 1: Pothole Intake & Vision (YOLOv8s)
+    ↓
+Step 2: Garbage Intake & Vision (YOLO11s TACO)
+    ↓
+Step 3: Cross-Category Mismatch Validation (Road Text + Garbage Photo)
+    ↓
+Step 4: Pothole Before-and-After Repair Verification (SSIM + YOLO)
+    ↓
+Step 5: Prioritization, GIS Locations & Department Routing (Dual-Category Synthesis)
+```
 
-### Actions
-1. In the Web UI, click **"+ New Issue"** in the top bar.
-2. Fill out the complaint:
-   - **Complaint Text**: `"Critical deep pothole crater breaking wheel rims and causing major slowdown near bus stop."`
-   - **Location**: `"Linking Road, Bandra West"`
-   - **Attach Image**: Select `data/test_samples/repair_pothole_before.jpg`
-3. Click **"Submit Complaint"** (or use API: `POST /api/v1/issues`).
+---
 
-### Expected System Behavior
+### STEP 1: Submit a Pothole Complaint with Image
+
+#### Objective
+Demonstrate genuine computer vision road-damage inference (`YOLOv8s RDD2022`), bounding box localization, visual severity estimation, and automated dispatch routing.
+
+#### Actions
+1. In the Web UI, navigate to **"Analyze Complaint"** (or click **"+ New Issue"** in the top bar).
+2. Click the preset button **"1. Pothole / Road"** (or manually input):
+   - **Complaint Text**: `"Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance."`
+   - **Location**: `"Somaiya Vidyavihar Main Gate, Vidyavihar East"`
+   - **Attach Image**: `data/test_samples/repair_pothole_before.jpg`
+3. Click **"Run Analysis Pipeline"** (or **"Submit Complaint"**).
+
+#### Expected System Behavior
 - **Category Identified**: `Roads & Footpaths` (NLP TF-IDF confidence ~0.85+).
-- **Vision Inference**: `RoadDamageDetector` executes genuine YOLOv8s inference.
+- **Vision Model Selected**: `RoadDamageDetector` invokes genuine `YOLOv8s RDD2022` inference.
 - **Detected Object**: `Pothole (D40)` with normalized bounding box coordinates.
-- **Visual Severity**: Evaluated at ~0.35–0.60 based on bounding box area.
+- **Visual Severity**: Estimated from normalized bounding box area (~0.35–0.60).
 - **Evidence Consistency**: **CONSISTENT** (score ~0.96) — text claim matches detected asphalt crater.
-- **Department Routing**: Routed to **Road Maintenance Division** (code `RMD-01`).
-- **Priority Level & Score**:
-  - *Isolated Submission*: Freshly submitted isolated ticket without near-duplicates or corridor history scores **~45–55 pts (MEDIUM)**.
-  - *Corridor Cluster*: Pre-seeded hotspot issues in active corridors with duplicate amplification (e.g. `CIVIC-2026-001`) escalate to **~85–88 pts (CRITICAL)**.
-
-### Recovery / Troubleshooting
-If the image upload times out, check that `uploads/` directory exists with write permissions or test directly via `POST /api/v1/analyze`.
+- **Department Routing**: Routed to **Roads & Traffic Infrastructure Dept (MCGM)** (SLA: 12 Hours).
+- **Priority Score**:
+  - *Isolated Submission*: ~45–55 pts (**MEDIUM**).
+  - *Corridor Cluster* (e.g. `CIVIC-2026-001` with duplicate amplification): escalates to **~85–88 pts (CRITICAL)**.
 
 ---
 
-## STEP 2: Submit a Street Litter / Sanitation Complaint with Image
+### STEP 2: Submit a Garbage / Street-Litter Complaint with Image
 
-### Objective
-Demonstrate the task-specific municipal waste detector (`YOLO11s TACO`), multi-object litter bounding boxes, and sanitation routing.
+#### Objective
+Demonstrate the task-specific municipal waste detector (`YOLO11s TACO`), multi-object litter bounding boxes, sanitation routing, and transparent disclosure of model uncertainty.
 
-### Actions
-1. Click **"+ New Issue"**.
-2. Fill out the complaint:
-   - **Complaint Text**: `"Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk."`
+#### Actions
+1. Click **"2. Garbage / Litter"** preset:
+   - **Complaint Text**: `"Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench."`
    - **Location**: `"Station Road, Kurla West"`
-   - **Attach Image**: Select `data/test_samples/litter.jpg` (or `bottle.jpg`)
-3. Click **"Submit Complaint"**.
+   - **Attach Image**: `data/test_samples/bottle.jpg` (or `litter.jpg`)
+2. Click **"Run Analysis Pipeline"** (or **"Submit Complaint"**).
 
-### Expected System Behavior
+#### Expected System Behavior
 - **Category Identified**: `Sanitation & Garbage`.
-- **Vision Inference**: `WasteDetector` executes genuine YOLO11s inference.
-- **Detected Objects**: Multi-item detection (e.g. `Plastic Waste / Wrapper`, `Bottle / Container`, `Disposable Cup`).
-- **Visual Severity**: Modulated by detection bounding box scale (~0.50–0.75).
+- **Vision Model Selected**: `WasteDetector` invokes genuine `YOLO11s TACO` inference.
+- **Detected Objects**: Multi-item detection (e.g. `Bottle / Container`, `Bottle Cap / Small Plastic`).
 - **Evidence Consistency**: **CONSISTENT** (score ~0.94) — text hazard aligns with visible waste.
-- **Department Routing**: Routed to **Solid Waste Management** (code `SWM-02` or `MCGM-SWM`).
-- **Priority Score**: ~45–55 pts (**MEDIUM**) for an isolated new submission; escalates if recurrence accumulates.
+- **Department Routing**: Routed to **Solid Waste Management (SWM Dept)** (SLA: 24 Hours).
+- **Scientific Honesty & Uncertainty Disclosure**:
+  - Upstream published benchmark: `mAP50 = 0.311`.
+  - Local street-level precision: **27.3% Prec@50** due to complex asphalt and debris backgrounds.
+  - Transparent policy: Issues are routed for human supervisory review; detections are never overstated.
 
 ---
 
-## STEP 3: Submit a Flooding Complaint & Show Manual-Review Routing
+### STEP 3: Test Cross-Category Evidence Mismatch (Road Complaint + Garbage Image)
 
-### Objective
-Demonstrate scientific honesty: the system **refuses to fabricate synthetic bounding boxes** for unvalidated visual tasks and transparently flags issues for manual engineering inspection.
+#### Objective
+Demonstrate multimodal cross-validation detecting discrepancies between citizen narrative and attached photographic evidence. The waste detector assists in identifying the alternative defect.
 
-### Actions
-1. Click **"+ New Issue"**.
-2. Fill out the complaint:
-   - **Complaint Text**: `"Storm water drain blocked causing severe waterlogging during rain, municipal drainage backup."`
-   - **Location**: `"Hindmata Underpass, Dadar"`
-   - **Attach Image**: Select `data/test_samples/street_flooding.jpg`
-3. Click **"Submit Complaint"**.
-
-### Expected System Behavior
-- **Category Identified**: `Water Supply & Drainage` (NLP TF-IDF confidence ~0.71+).
-- **Vision Inference**: `FloodingDetector` identifies task as unsupported.
-- **Zero Fabricated Bounding Boxes**: `detectedObjects` is strictly empty (`[]`).
-- **Visual Severity**: Strictly `0.0` (zero artificial visual points generated).
-- **Evidence Consistency**: **MANUAL REVIEW** (score `0.50`) with explainable rationale:
-  > *"Inspection pending: Photographic evidence cannot confirm subsurface municipal water pipe rupture or source of leakage. Routed for field engineer pressure inspection."*
-- **Department Routing**: Routed to **Hydraulic Engineering Department (HED)**.
-- **Priority Integrity**: Text urgency (~0.55+) and text severity (~0.78) continue to calculate legitimate priority points (Score ~40–50, **MEDIUM**).
-
----
-
-## STEP 4: Demonstrate Text–Image Discrepancy & Supervisory Triage
-
-### Objective
-Demonstrate multimodal cross-validation detecting discrepancies between citizen narrative and attached photographic evidence.
-
-### Actions
-1. Click **"+ New Issue"**.
-2. Enter conflicting multimodal evidence:
-   - **Complaint Text**: `"Massive asphalt crater and structural road fissure on main highway."` (Claims road damage)
+#### Actions
+1. Click **"3. Cross-Check Mismatch"** preset:
+   - **Complaint Text**: `"Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor."` (Claims severe road damage)
    - **Location**: `"S.V. Road, Santacruz"`
-   - **Attach Image**: Select `data/test_samples/litter.jpg` (Shows garbage, NOT asphalt damage)
-3. Click **"Analyze"** or **"Submit Complaint"**.
+   - **Attach Image**: `data/test_samples/bottle.jpg` (Shows beverage container, NOT road damage)
+2. Click **"Run Analysis Pipeline"** (or **"Submit Complaint"**).
 
-### Expected System Behavior
-- **Category Identified**: `Roads & Footpaths` (based on textual complaint).
-- **Visual Detection**: `WasteDetector` detects litter items (`Bottle`, `Plastic`).
+#### Expected System Behavior
+- **Text Category Identified**: `Roads & Footpaths` (based on citizen text).
+- **Vision Detector Cross-Modal Execution**:
+  - `RoadDamageDetector` finds 0 road defects.
+  - Pipeline executes cross-modal check using `WasteDetector`.
+  - `WasteDetector` confirms `Bottle / Container` (confidence > 0.90).
 - **Cross-Modal Consistency**: **INCONSISTENT** (Consistency Score: `0.25`).
-- **Reasoning Flagged**:
+- **Explainable Triage Rationale**:
   > *"Evidence discrepancy: Attached photograph indicates sanitation / waste debris rather than road defect. Routed for manual supervisory triage."*
-- **Ethical Integrity**: The complaint is **never marked as fake**. It is routed to supervisory triage with transparency.
+- **Ethical Integrity**: The issue is **never marked as fake or fraudulent**. It is routed for human supervisory review with an explainable flag.
 
 ---
 
-## STEP 5: Spatiotemporal Prioritization, GIS Placement & Hotspot Clustering
+### STEP 4: Compare Pothole Before-and-After Repair Images
 
-### Objective
-Demonstrate the GIS tactical map, spatial clustering (`DBSCAN`), near-duplicate detection, and the explainable 6-factor composite priority score.
+#### Objective
+Demonstrate genuine computer-vision lifecycle verification using OpenCV Structural Similarity (SSIM), color histogram correlation, and dual YOLO defect clearance before ticket closure.
 
-### Actions
-1. In the Web UI, view the **Tactical Spatial GIS Map** on the left panel (Dark GIS canvas, Mumbai base coordinates).
-2. Hover over pins to inspect ward placement and hotspot polygons.
-3. Select an issue from the queue (e.g. `CIVIC-2026-001` or the newly submitted pothole).
-4. Inspect the **Priority Breakdown** card:
-   - **Urgency Points**: 0–20 pts
-   - **Text Severity Points**: 0–20 pts
-   - **Visual Severity Points**: 0–20 pts (modulated by confidence)
-   - **Related Reports Points**: 0–15 pts (duplicate amplification)
-   - **Recency Points**: 0–10 pts (decay over hours)
-   - **Location Risk Points**: 0–15 pts (hotspot corridor bonus)
-   - **Total Composite Score**: Exactly 0–100 pts.
-5. In the navigation sidebar, click **"Hotspot Analytics"** or open the API endpoint `GET /api/v1/hotspots` to show real Haversine DBSCAN clusters.
-
----
-
-## STEP 6: Authorized Computer-Vision Resolution Verification
-
-### Objective
-Demonstrate genuine computer-vision lifecycle verification using OpenCV Structural Similarity (SSIM), color histogram correlation, and dual YOLO defect clearance.
-
-### Actions
-1. Click on an existing open road-damage issue (e.g. `CIVIC-2026-001`).
-2. Click **"Verify Resolution"** button (opens Resolution Modal).
+#### Actions
+1. In the Web UI, navigate to **"Resolution Center"** (or click on issue `CIVIC-2026-001` in the queue and select **"Verify Resolution"**).
+2. Inspect the pre-repair defect image: `data/test_samples/repair_pothole_before.jpg`.
 3. Attach post-action repaired image: `data/test_samples/repair_pothole_after_repaired.jpg`.
-4. Enter notes: `"Patch repair completed by Ward N road maintenance team."`
-5. Click **"Verify & Close Issue"** (invokes `POST /api/v1/issues/{id}/verify` with Inspector credentials).
+4. Enter inspector remarks: `"Asphalt cold-mix patch completed by Ward N road maintenance team."`
+5. Click **"Verify & Close Issue"** (or via API: `POST /api/v1/issues/{id}/verify`).
 
-### Expected System Behavior
-- **Inspector Identity Recorded**: Server records authenticated inspector `INSP-MUMBAI-01`.
-- **OpenCV SSIM & HSV Correlation**: Scene comparability calculated between before and after images.
-- **YOLO Delta Inspection**: Dual YOLOv8s runs on the post-repair image.
-- **Defect Clearance**: Confirms absence of active D40 pothole bounding boxes.
-- **Resolution Status**: Updated to **LIKELY RESOLVED** (or **REQUIRES MANUAL VERIFICATION** if scene angle differs).
+#### Expected System Behavior
+- **Inspector Identity Recorded**: Server-side authenticated inspector `INSP-MUMBAI-01` recorded in audit trail.
+- **OpenCV SSIM & Color Correlation**: Scene comparability calculated between before and after images (SSIM: `0.83`, Color correlation: `0.95`, Scene comparability: `0.86`).
+- **YOLO Delta Clearance**: Dual `YOLOv8s` runs on the post-repair image, verifying 0 remaining `D40` pothole craters.
+- **Resolution Status**: Updated to **LIKELY RESOLVED** (with transparent probabilistic phrasing; never claiming absolute certainty).
 - **Audit History**: Permanent verification record added to `GET /api/v1/issues/{id}/verifications`.
 
 ---
 
-## STEP 7: Unauthorized Requests Are Strictly Rejected
+### STEP 5: Inspect Priority Scores, GIS Locations & Department Routing
 
-### Objective
-Demonstrate RBAC security release gates: unauthenticated users cannot mutate data, inspectors cannot modify admin routing rules, and dev tokens are disabled in production.
+#### Objective
+Demonstrate how both core categories are synthesized across the Tactical Spatial GIS Map, the 6-factor composite priority formula, and departmental SLA routing.
 
-### Actions (via Terminal or Postman)
-1. **Unauthenticated Mutation Attempt**:
-   ```bash
-   curl -X PATCH http://localhost:8000/api/v1/issues/CIVIC-2026-001/status \
-     -H "Content-Type: application/json" \
-     -d '{"status": "Resolved"}'
-   ```
-   **Result**: `HTTP 401 Unauthorized` (`"Authentication required"`).
+#### Actions
+1. Open the **"Tactical Spatial Map"** (or Command Center Overview):
+   - Left Column (55%): Deep Midnight GIS canvas showing Mumbai ward coordinates.
+   - Right Column (45%): Priority Incident Queue ranked by multi-factor score.
+2. Select the pothole incident (`CIVIC-2026-001`) and the garbage incident in the queue.
+3. Compare the **Priority Breakdown**:
+   - $\text{Urgency Points (0–20)}$: Text urgency keyword extraction.
+   - $\text{Text Severity Points (0–20)}$: Lexical hazard severity.
+   - $\text{Visual Severity Points (0–20)}$: Bounding box area scaled by confidence.
+   - $\text{Related Reports Points (0–15)}$: Near-duplicate cluster amplification.
+   - $\text{Recency Points (0–10)}$: Time decay over hours elapsed.
+   - $\text{Location Risk Points (0–15)}$: DBSCAN hotspot corridor amplification.
+   - **Total Composite Score**: Exactly 0–100 pts.
+4. Compare **Department Routing & SLA**:
+   - Pothole: Routed to **Roads & Traffic Infrastructure Dept (MCGM)** | SLA: 12h
+   - Garbage: Routed to **Solid Waste Management (SWM Dept)** | SLA: 24h
 
-2. **Inspector Role Escalation Attempt** (trying to perform Admin action):
-   ```bash
-   curl -X POST http://localhost:8000/api/v1/routing/config \
-     -H "Content-Type: application/json" \
-     -H "Authorization: Bearer demo-inspector-token" \
-     -d '{"category": "Roads & Footpaths", "department": "Rogue", "code": "R", "actions": {"HIGH": ["Illegal action", 1]}}'
-   ```
-   **Result**: `HTTP 403 Forbidden` (`"Operation requires ADMIN privileges. Current role: INSPECTOR."`).
+---
 
-3. **Admin Token Access**:
-   ```bash
-   curl -X POST http://localhost:8000/api/v1/routing/config \
-     -H "Content-Type: application/json" \
-     -H "Authorization: Bearer demo-admin-token" \
-     -d '{"category": "Roads & Footpaths", "department": "Roads & Traffic Infrastructure Dept (MCGM)", "code": "MCGM-ROADS", "actions": {"CRITICAL": ["Emergency crew dispatch", 2]}}'
-   ```
-   **Result**: `HTTP 200 OK` (`"status": "success"`).
+## Out of Scope & Future Work
+
+To maintain scientific integrity and project focus, the following categories are **explicitly out of scope** for the automated vision pipeline:
+
+| Category | Operational Handling in Current Release | Future Work Roadmap |
+|---|---|---|
+| **Street Flooding / Waterlogging** | Zero synthetic bounding boxes. Text NLP routes to Hydraulic Engineering Dept (HED) with **`MANUAL REVIEW`** status. | Integrate IoT ultrasonic storm drain depth sensors and municipal SCADA telemetry. |
+| **Streetlight & Electrical Failures** | Categorized and routed via text NLP to Electricity & Street Lighting Dept. | Deploy nighttime luminescent lux sensor networks and drone thermal imaging. |
+| **Traffic Signal Failures** | Text NLP triage to Traffic Police & Safety Dept. | Integrate ATCS (Adaptive Traffic Control System) camera feeds. |
+| **Unauthorized Construction** | Manual inspection flag. | Satellite multi-temporal SAR change detection. |
+
+---
+
+## Security & Role-Based Access Control (RBAC) Verification
+
+```bash
+# 1. Unauthenticated mutation rejected (401)
+curl -X PATCH http://localhost:8000/api/v1/issues/CIVIC-2026-001/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "Resolved"}'
+# Response: 401 Unauthorized
+
+# 2. Inspector privilege escalation rejected (403)
+curl -X POST http://localhost:8000/api/v1/routing/config \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer demo-inspector-token" \
+  -d '{"category": "Roads & Footpaths", "department": "Rogue", "code": "R", "actions": {"HIGH": ["Action", 1]}}'
+# Response: 403 Forbidden ("Operation requires ADMIN privileges")
+```
 
 ---
 
 ## Resetting Demonstration State
 
-If a demo session needs to be restarted from the baseline seed state:
-1. In the Web UI, open **Settings** modal and click **"Reset Demo Data"**.
-2. Or invoke via API with Admin credentials:
-   ```bash
-   curl -X POST http://localhost:8000/api/v1/demo/reset \
-     -H "Authorization: Bearer demo-admin-token"
-   ```
-3. Baseline seed issues `CIVIC-2026-001` through `CIVIC-2026-006` are restored.
+To restore the clean baseline seed dataset (`CIVIC-2026-001` through `CIVIC-2026-006`):
+- Click **"Settings"** → **"Reset Demo Data"** in the Web UI.
+- Or call API: `curl -X POST http://localhost:8000/api/v1/demo/reset -H "Authorization: Bearer demo-admin-token"`

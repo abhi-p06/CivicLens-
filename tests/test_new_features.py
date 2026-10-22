@@ -137,6 +137,7 @@ def test_feature_18_evidence_consistency():
 # ==============================================================================
 def test_feature_19_configurable_department_routing():
     try:
+        department_dispatcher.reset_to_defaults()
         # 1. Standard Dispatch
         dept, action, sla, code = department_dispatcher.route_issue(
             category=IssueCategory.ROAD_DAMAGE,

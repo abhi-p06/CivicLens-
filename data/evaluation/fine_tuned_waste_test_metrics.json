@@ -1,0 +1,536 @@
+{
+  "model_path": "runs/fine_tune_waste/candidate_taco_yolo11s/weights/best.pt",
+  "task": "SANITATION",
+  "split": "test",
+  "sample_count": 100,
+  "positive_images": 50,
+  "negative_images": 50,
+  "confidence_threshold": 0.45,
+  "iou_nms_threshold": 0.45,
+  "match_iou_threshold": 0.5,
+  "total_ground_truth_objects": 173,
+  "true_positives": 101,
+  "false_positives": 19,
+  "false_negatives": 72,
+  "precision": 0.8417,
+  "recall": 0.5838,
+  "f1_score": 0.6894,
+  "mAP_50": 0.6577,
+  "mAP_50_95": 0.602,
+  "hard_neg_images_evaluated": 50,
+  "hard_neg_images_with_false_alarms": 3,
+  "hard_neg_false_alarm_rate": 0.06,
+  "latency_ms": {
+    "mean": 78.75,
+    "median": 73.14,
+    "p95": 80.5
+  },
+  "per_class": {
+    "4": {
+      "name": "Can",
+      "ground_truth_count": 22,
+      "true_positives": 21,
+      "false_positives": 11,
+      "false_negatives": 1,
+      "precision": 0.6562,
+      "recall": 0.9545,
+      "f1_score": 0.7778
+    },
+    "6": {
+      "name": "Carton",
+      "ground_truth_count": 21,
+      "true_positives": 13,
+      "false_positives": 1,
+      "false_negatives": 8,
+      "precision": 0.9286,
+      "recall": 0.619,
+      "f1_score": 0.7429
+    },
+    "0": {
+      "name": "Plastic bag & wrapper",
+      "ground_truth_count": 24,
+      "true_positives": 10,
+      "false_positives": 1,
+      "false_negatives": 14,
+      "precision": 0.9091,
+      "recall": 0.4167,
+      "f1_score": 0.5714
+    },
+    "8": {
+      "name": "Other",
+      "ground_truth_count": 55,
+      "true_positives": 32,
+      "false_positives": 3,
+      "false_negatives": 23,
+      "precision": 0.9143,
+      "recall": 0.5818,
+      "f1_score": 0.7111
+    },
+    "1": {
+      "name": "Cigarette",
+      "ground_truth_count": 24,
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 20,
+      "precision": 1.0,
+      "recall": 0.1667,
+      "f1_score": 0.2857
+    },
+    "7": {
+      "name": "Cup",
+      "ground_truth_count": 7,
+      "true_positives": 7,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0
+    },
+    "2": {
+      "name": "Bottle",
+      "ground_truth_count": 7,
+      "true_positives": 4,
+      "false_positives": 3,
+      "false_negatives": 3,
+      "precision": 0.5714,
+      "recall": 0.5714,
+      "f1_score": 0.5714
+    },
+    "3": {
+      "name": "Bottle cap",
+      "ground_truth_count": 13,
+      "true_positives": 10,
+      "false_positives": 0,
+      "false_negatives": 3,
+      "precision": 1.0,
+      "recall": 0.7692,
+      "f1_score": 0.8696
+    }
+  },
+  "pr_curve_sample": [
+    {
+      "rank": 1,
+      "confidence": 0.975,
+      "precision": 1.0,
+      "recall": 0.0058
+    },
+    {
+      "rank": 7,
+      "confidence": 0.9593,
+      "precision": 1.0,
+      "recall": 0.0405
+    },
+    {
+      "rank": 13,
+      "confidence": 0.955,
+      "precision": 1.0,
+      "recall": 0.0751
+    },
+    {
+      "rank": 19,
+      "confidence": 0.9484,
+      "precision": 1.0,
+      "recall": 0.1098
+    },
+    {
+      "rank": 25,
+      "confidence": 0.9415,
+      "precision": 0.96,
+      "recall": 0.1387
+    },
+    {
+      "rank": 31,
+      "confidence": 0.9369,
+      "precision": 0.9677,
+      "recall": 0.1734
+    },
+    {
+      "rank": 37,
+      "confidence": 0.9314,
+      "precision": 0.9459,
+      "recall": 0.2023
+    },
+    {
+      "rank": 43,
+      "confidence": 0.9283,
+      "precision": 0.9535,
+      "recall": 0.237
+    },
+    {
+      "rank": 49,
+      "confidence": 0.918,
+      "precision": 0.9592,
+      "recall": 0.2717
+    },
+    {
+      "rank": 55,
+      "confidence": 0.9088,
+      "precision": 0.9455,
+      "recall": 0.3006
+    }
+  ],
+  "false_positives_sample": [
+    {
+      "image_name": "waste_test_000079.jpg",
+      "is_negative_image": false,
+      "detected_class": 0,
+      "detected_label": "Plastic bag & wrapper",
+      "confidence": 0.9126,
+      "bbox": [
+        0.3376,
+        0.1013,
+        0.8755,
+        0.8015
+      ]
+    },
+    {
+      "image_name": "waste_test_000092.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.5919,
+      "bbox": [
+        0.2826,
+        0.6248,
+        0.4824,
+        0.8794
+      ]
+    },
+    {
+      "image_name": "waste_test_000094.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.5665,
+      "bbox": [
+        0.2249,
+        0.1269,
+        0.7552,
+        0.7409
+      ]
+    },
+    {
+      "image_name": "waste_test_000062.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "Bottle",
+      "confidence": 0.6119,
+      "bbox": [
+        0.0004,
+        0.1727,
+        0.0605,
+        0.3832
+      ]
+    },
+    {
+      "image_name": "waste_test_000062.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.5157,
+      "bbox": [
+        0.6497,
+        0.0084,
+        0.8859,
+        0.177
+      ]
+    },
+    {
+      "image_name": "waste_test_000105.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "Bottle",
+      "confidence": 0.7795,
+      "bbox": [
+        0.3434,
+        0.3362,
+        0.7741,
+        0.7969
+      ]
+    },
+    {
+      "image_name": "waste_test_000106.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.9461,
+      "bbox": [
+        0.0036,
+        0.5564,
+        0.1399,
+        0.6752
+      ]
+    },
+    {
+      "image_name": "waste_test_000106.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.9318,
+      "bbox": [
+        0.7677,
+        0.6868,
+        0.9746,
+        0.7987
+      ]
+    },
+    {
+      "image_name": "waste_test_000106.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.9042,
+      "bbox": [
+        0.7482,
+        0.826,
+        0.9406,
+        0.9978
+      ]
+    },
+    {
+      "image_name": "waste_test_000106.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.7943,
+      "bbox": [
+        0.0938,
+        0.3693,
+        0.2817,
+        0.6136
+      ]
+    },
+    {
+      "image_name": "waste_test_000106.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.792,
+      "bbox": [
+        0.2256,
+        0.7575,
+        0.2711,
+        0.8337
+      ]
+    },
+    {
+      "image_name": "waste_test_000107.jpg",
+      "is_negative_image": false,
+      "detected_class": 2,
+      "detected_label": "Bottle",
+      "confidence": 0.5137,
+      "bbox": [
+        0.1239,
+        0.7923,
+        0.2194,
+        0.96
+      ]
+    },
+    {
+      "image_name": "waste_test_000128.jpg",
+      "is_negative_image": false,
+      "detected_class": 8,
+      "detected_label": "Other",
+      "confidence": 0.7451,
+      "bbox": [
+        0.482,
+        0.3278,
+        0.9622,
+        1.0
+      ]
+    },
+    {
+      "image_name": "waste_test_000128.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.6077,
+      "bbox": [
+        0.0064,
+        0.0069,
+        0.514,
+        0.6299
+      ]
+    },
+    {
+      "image_name": "waste_test_000128.jpg",
+      "is_negative_image": false,
+      "detected_class": 4,
+      "detected_label": "Can",
+      "confidence": 0.5893,
+      "bbox": [
+        0.8059,
+        0.0059,
+        0.9817,
+        0.354
+      ]
+    }
+  ],
+  "false_negatives_sample": [
+    {
+      "image_name": "waste_test_000074.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.3744,
+        0.7255,
+        0.3775,
+        0.741
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.5846,
+        0.2463,
+        0.6945,
+        0.4024
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.5625,
+        0.2239,
+        0.5784,
+        0.2451
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.508,
+        0.1503,
+        0.5257,
+        0.1732
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.5006,
+        0.1234,
+        0.5251,
+        0.1544
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.4105,
+        0.0221,
+        0.4295,
+        0.0466
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.2684,
+        0.482,
+        0.2898,
+        0.5123
+      ]
+    },
+    {
+      "image_name": "waste_test_000076.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.3076,
+        0.4191,
+        0.329,
+        0.4477
+      ]
+    },
+    {
+      "image_name": "waste_test_000079.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.3336,
+        0.105,
+        0.8793,
+        0.8043
+      ]
+    },
+    {
+      "image_name": "waste_test_000081.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.7996,
+        0.567,
+        0.829,
+        0.5931
+      ]
+    },
+    {
+      "image_name": "waste_test_000082.jpg",
+      "class_id": 0,
+      "class_label": "Plastic bag & wrapper",
+      "bbox": [
+        0.4286,
+        0.3946,
+        0.5772,
+        0.6091
+      ]
+    },
+    {
+      "image_name": "waste_test_000084.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.6679,
+        0.4371,
+        0.7984,
+        0.5621
+      ]
+    },
+    {
+      "image_name": "waste_test_000085.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.3551,
+        0.6381,
+        0.3845,
+        0.6663
+      ]
+    },
+    {
+      "image_name": "waste_test_000085.jpg",
+      "class_id": 8,
+      "class_label": "Other",
+      "bbox": [
+        0.4366,
+        0.962,
+        0.4501,
+        0.9922
+      ]
+    },
+    {
+      "image_name": "waste_test_000085.jpg",
+      "class_id": 1,
+      "class_label": "Cigarette",
+      "bbox": [
+        0.3511,
+        0.6275,
+        0.3609,
+        0.6757
+      ]
+    }
+  ]
+}

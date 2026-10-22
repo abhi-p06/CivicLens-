@@ -1,0 +1,5183 @@
+{
+  "dataset_name": "CIVILENS Road Damage Benchmark Dataset",
+  "provenance": "RDD2022 Multi-Country Road Damage Detection Challenge (India Partition)",
+  "license": "CC-BY-4.0",
+  "classes": {
+    "0": "D00_longitudinal_crack",
+    "1": "D10_transverse_crack",
+    "2": "D20_alligator_crack",
+    "3": "D40_pothole"
+  },
+  "summary": {
+    "total_images": 200,
+    "val_total": 100,
+    "val_pos": 50,
+    "val_neg": 50,
+    "test_total": 100,
+    "test_pos": 50,
+    "test_neg": 50,
+    "leakage_count": 0
+  },
+  "records": [
+    {
+      "sample_id": "ROAD-VAL-India_000024",
+      "filename": "India_000024.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000024.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000024.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "994827b6f2c4184960a39586333dfacbd73d9a965b8652a8b5b782635bf6f15c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.48125,
+            0.827778,
+            0.840278,
+            0.275
+          ],
+          "bbox_normalized": [
+            0.6903,
+            0.0611,
+            0.9653,
+            0.9014
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000067",
+      "filename": "India_000067.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000067.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000067.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "15e829e2468fb5cfe5cdcbc1cd8c369c0a4b9aea3a062d6211fee309d5b5a3a2",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.501389,
+            0.773611,
+            0.875,
+            0.172222
+          ],
+          "bbox_normalized": [
+            0.6875,
+            0.0639,
+            0.8597,
+            0.9389
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000092",
+      "filename": "India_000092.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000092.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000092.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "0c6c99cdd78007e8460da7a3bf0d60cc6ce94bdd925579e5a8b7c0d380d20168",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.745833,
+            0.739583,
+            0.086111,
+            0.095833
+          ],
+          "bbox_normalized": [
+            0.6917,
+            0.7028,
+            0.7875,
+            0.7889
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.813889,
+            0.848611,
+            0.102778,
+            0.1
+          ],
+          "bbox_normalized": [
+            0.7986,
+            0.7625,
+            0.8986,
+            0.8653
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.355556,
+            0.694444,
+            0.052778,
+            0.097222
+          ],
+          "bbox_normalized": [
+            0.6458,
+            0.3292,
+            0.7431,
+            0.3819
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.520833,
+            0.706944,
+            0.052778,
+            0.097222
+          ],
+          "bbox_normalized": [
+            0.6583,
+            0.4944,
+            0.7556,
+            0.5472
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000093",
+      "filename": "India_000093.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000093.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000093.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "06c4da7d830f54d71ef48bfd85ef835a4843327fa8a648b283215e17de40c36e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.572222,
+            0.686111,
+            0.05,
+            0.063889
+          ],
+          "bbox_normalized": [
+            0.6542,
+            0.5472,
+            0.7181,
+            0.5972
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000104",
+      "filename": "India_000104.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000104.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000104.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "348cfcdccf35a3bbc1eeb2a76f1f1ec01ebddb58292b3349f15b3cd106b1e95d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.557639,
+            0.690278,
+            0.120833,
+            0.244444
+          ],
+          "bbox_normalized": [
+            0.5681,
+            0.4972,
+            0.8125,
+            0.6181
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000125",
+      "filename": "India_000125.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000125.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000125.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "d44de7fcc9bc51a4e6fc80752b03caeea7fc714641c502e62dfeab5a8e8e07e6",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.779861,
+            0.731944,
+            0.126389,
+            0.136111
+          ],
+          "bbox_normalized": [
+            0.6639,
+            0.7167,
+            0.8,
+            0.8431
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.806944,
+            0.888194,
+            0.044444,
+            0.093056
+          ],
+          "bbox_normalized": [
+            0.8417,
+            0.7847,
+            0.9347,
+            0.8292
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.645833,
+            0.704861,
+            0.044444,
+            0.093056
+          ],
+          "bbox_normalized": [
+            0.6583,
+            0.6236,
+            0.7514,
+            0.6681
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.386806,
+            0.805556,
+            0.109722,
+            0.211111
+          ],
+          "bbox_normalized": [
+            0.7,
+            0.3319,
+            0.9111,
+            0.4417
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000164",
+      "filename": "India_000164.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000164.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000164.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5dbb617bdd68aada57498b55ee12de1787feaa245e4d86c3882f58c6cf07519a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.484028,
+            0.83125,
+            0.776389,
+            0.2625
+          ],
+          "bbox_normalized": [
+            0.7,
+            0.0958,
+            0.9625,
+            0.8722
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.484722,
+            0.780556,
+            0.913889,
+            0.188889
+          ],
+          "bbox_normalized": [
+            0.6861,
+            0.0278,
+            0.875,
+            0.9417
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000205",
+      "filename": "India_000205.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000205.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000205.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "b21ee53d7adb24fcc1f3a44a11ace425bc738107fd1543ca377b8f2f8363e676",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.745833,
+            0.8125,
+            0.138889,
+            0.191667
+          ],
+          "bbox_normalized": [
+            0.7167,
+            0.6764,
+            0.9083,
+            0.8153
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000230",
+      "filename": "India_000230.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000230.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000230.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "9ecaec169610e704689dafedb653bb60772d70fa45392bcc564145d1cdffd347",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.570139,
+            0.895833,
+            0.859722,
+            0.166667
+          ],
+          "bbox_normalized": [
+            0.8125,
+            0.1403,
+            0.9792,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000259",
+      "filename": "India_000259.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000259.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000259.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "2a7c2981baddd42f674a37241124e585adbd2aead01ea9d07ca620954791fefb",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.745139,
+            0.8375,
+            0.115278,
+            0.233333
+          ],
+          "bbox_normalized": [
+            0.7208,
+            0.6875,
+            0.9542,
+            0.8028
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000268",
+      "filename": "India_000268.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000268.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000268.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "57db7da9da4f65156f60e2fd3795b7514d3789eacf1988bd096be444dc4e95de",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.324306,
+            0.661111,
+            0.076389,
+            0.047222
+          ],
+          "bbox_normalized": [
+            0.6375,
+            0.2861,
+            0.6847,
+            0.3625
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000269",
+      "filename": "India_000269.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000269.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000269.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "7c2fb8532e696ac76c17ca912f5f5711213607661084647012731b029121a70f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.575,
+            0.829167,
+            0.397222,
+            0.272222
+          ],
+          "bbox_normalized": [
+            0.6931,
+            0.3764,
+            0.9653,
+            0.7736
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000270",
+      "filename": "India_000270.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000270.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000270.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "06765c6a5b61c99d092551c8dfaa5db9d7f0a697988f75f4c4af6682aad2497c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.398611,
+            0.798611,
+            0.788889,
+            0.286111
+          ],
+          "bbox_normalized": [
+            0.6556,
+            0.0042,
+            0.9417,
+            0.7931
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.329167,
+            0.726389,
+            0.336111,
+            0.180556
+          ],
+          "bbox_normalized": [
+            0.6361,
+            0.1611,
+            0.8167,
+            0.4972
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000298",
+      "filename": "India_000298.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000298.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000298.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5c7fceea6b41acd30623ed76f9447d840b2cd937b8198bdaab1a7cb19b75cb06",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.15,
+            0.897222,
+            0.288889,
+            0.202778
+          ],
+          "bbox_normalized": [
+            0.7958,
+            0.0056,
+            0.9986,
+            0.2944
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.352778,
+            0.732639,
+            0.122222,
+            0.123611
+          ],
+          "bbox_normalized": [
+            0.6708,
+            0.2917,
+            0.7944,
+            0.4139
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000302",
+      "filename": "India_000302.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000302.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000302.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "63f810b79aec3802aab2df78ec5a1f80c91aad5dbc921f67a0434d68e92aeb01",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.689583,
+            0.881944,
+            0.459722,
+            0.233333
+          ],
+          "bbox_normalized": [
+            0.7653,
+            0.4597,
+            0.9986,
+            0.9194
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000348",
+      "filename": "India_000348.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000348.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000348.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "ebce7f51711b965a52e9d9cc439bec90616b764bd7d959c5655fc8861c398bbc",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.384028,
+            0.855556,
+            0.473611,
+            0.275
+          ],
+          "bbox_normalized": [
+            0.7181,
+            0.1472,
+            0.9931,
+            0.6208
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.545139,
+            0.861806,
+            0.073611,
+            0.256944
+          ],
+          "bbox_normalized": [
+            0.7333,
+            0.5083,
+            0.9903,
+            0.5819
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000384",
+      "filename": "India_000384.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000384.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000384.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a3db0a8037cba3c1eeaba99e5434d7b4ed3dff93065a18c4fe4111b70a319c20",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.576389,
+            0.839583,
+            0.188889,
+            0.093056
+          ],
+          "bbox_normalized": [
+            0.7931,
+            0.4819,
+            0.8861,
+            0.6708
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000412",
+      "filename": "India_000412.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000412.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000412.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "08011354c6b75cc51e3eae41f69af661f76f2f4043bb94004d66da7d50228910",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.510417,
+            0.745833,
+            0.106944,
+            0.158333
+          ],
+          "bbox_normalized": [
+            0.6667,
+            0.4569,
+            0.825,
+            0.5639
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.667361,
+            0.625694,
+            0.115278,
+            0.115278
+          ],
+          "bbox_normalized": [
+            0.5681,
+            0.6097,
+            0.6833,
+            0.725
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000424",
+      "filename": "India_000424.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000424.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000424.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "69ae252aaf3a3ebf9c5bb4725baa92733d24cec18865acea455f7301ada74493",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.525694,
+            0.745833,
+            0.723611,
+            0.466667
+          ],
+          "bbox_normalized": [
+            0.5125,
+            0.1639,
+            0.9792,
+            0.8875
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000439",
+      "filename": "India_000439.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000439.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000439.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a081ecf4cc18b81e370b899ef859f0c4c9121c226f780758655524e0aa0f9a21",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.224306,
+            0.794444,
+            0.404167,
+            0.375
+          ],
+          "bbox_normalized": [
+            0.6069,
+            0.0222,
+            0.9819,
+            0.4264
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.693056,
+            0.771528,
+            0.402778,
+            0.223611
+          ],
+          "bbox_normalized": [
+            0.6597,
+            0.4917,
+            0.8833,
+            0.8944
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000482",
+      "filename": "India_000482.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000482.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000482.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "b38aebb81a47fb78dbffd85e9efd32114b414d4eb9a8e04bf337596eddded9d7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.218056,
+            0.877778,
+            0.222222,
+            0.216667
+          ],
+          "bbox_normalized": [
+            0.7694,
+            0.1069,
+            0.9861,
+            0.3292
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.347222,
+            0.919444,
+            0.058333,
+            0.113889
+          ],
+          "bbox_normalized": [
+            0.8625,
+            0.3181,
+            0.9764,
+            0.3764
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000512",
+      "filename": "India_000512.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000512.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000512.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "de5446be0d13eca3ff0ecd3771ab596d6c10c81959868c2b9633afc67ce9ca2c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.676389,
+            0.717361,
+            0.347222,
+            0.2625
+          ],
+          "bbox_normalized": [
+            0.5861,
+            0.5028,
+            0.8486,
+            0.85
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000525",
+      "filename": "India_000525.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000525.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000525.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "b0b4984658a78e59b3c6837e43c3e5f8134db79821ac89e076d5eef12c7c4576",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.403472,
+            0.834722,
+            0.798611,
+            0.186111
+          ],
+          "bbox_normalized": [
+            0.7417,
+            0.0042,
+            0.9278,
+            0.8028
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.304167,
+            0.842361,
+            0.152778,
+            0.140278
+          ],
+          "bbox_normalized": [
+            0.7722,
+            0.2278,
+            0.9125,
+            0.3806
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000534",
+      "filename": "India_000534.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000534.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000534.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "ce2e47999709dc834e80382d8509cc00be150d9a541c8c0d3e5dee9282764c72",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.71875,
+            0.941667,
+            0.093056,
+            0.111111
+          ],
+          "bbox_normalized": [
+            0.8861,
+            0.6722,
+            0.9972,
+            0.7653
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000563",
+      "filename": "India_000563.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000563.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000563.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "aadf070f1145c4104cb646d99a867d2c2f218e69e2a44b19336f93049c9842eb",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.666667,
+            0.810417,
+            0.627778,
+            0.309722
+          ],
+          "bbox_normalized": [
+            0.6556,
+            0.3528,
+            0.9653,
+            0.9806
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000576",
+      "filename": "India_000576.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000576.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000576.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "ea40cbb0d99028a468e628c1181d32d15e871efe29cb7fbf1ef58776a4f9b80a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.725,
+            0.709722,
+            0.180556,
+            0.186111
+          ],
+          "bbox_normalized": [
+            0.6167,
+            0.6347,
+            0.8028,
+            0.8153
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.263194,
+            0.818056,
+            0.518056,
+            0.363889
+          ],
+          "bbox_normalized": [
+            0.6361,
+            0.0042,
+            1.0,
+            0.5222
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000580",
+      "filename": "India_000580.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000580.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000580.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a9da953e741bca4555ea1c6aaa45f1dd9301389a6bd46388fe3d81ffb5eae760",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.445139,
+            0.834722,
+            0.448611,
+            0.25
+          ],
+          "bbox_normalized": [
+            0.7097,
+            0.2208,
+            0.9597,
+            0.6694
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.582639,
+            0.838889,
+            0.0875,
+            0.238889
+          ],
+          "bbox_normalized": [
+            0.7194,
+            0.5389,
+            0.9583,
+            0.6264
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000597",
+      "filename": "India_000597.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000597.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000597.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "c30896ef3aebcac1e3495626a91906fcbd1869c1c020b64d9bb4f24767375872",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.875,
+            0.7875,
+            0.225,
+            0.136111
+          ],
+          "bbox_normalized": [
+            0.7194,
+            0.7625,
+            0.8556,
+            0.9875
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.803472,
+            0.831944,
+            0.351389,
+            0.205556
+          ],
+          "bbox_normalized": [
+            0.7292,
+            0.6278,
+            0.9347,
+            0.9792
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000605",
+      "filename": "India_000605.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000605.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000605.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "789f52dbbfac014b5f784231e551f60e872dfc24aa62bab7664f6d9d93063a6e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.859722,
+            0.74375,
+            0.208333,
+            0.168056
+          ],
+          "bbox_normalized": [
+            0.6597,
+            0.7556,
+            0.8278,
+            0.9639
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.829861,
+            0.782639,
+            0.306944,
+            0.2875
+          ],
+          "bbox_normalized": [
+            0.6389,
+            0.6764,
+            0.9264,
+            0.9833
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.5375,
+            0.746528,
+            0.241667,
+            0.301389
+          ],
+          "bbox_normalized": [
+            0.5958,
+            0.4167,
+            0.8972,
+            0.6583
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.202778,
+            0.825,
+            0.402778,
+            0.327778
+          ],
+          "bbox_normalized": [
+            0.6611,
+            0.0014,
+            0.9889,
+            0.4042
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000611",
+      "filename": "India_000611.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000611.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000611.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "3616c4f195806a68eb37e4b5c06bbc7fd7b7c43981f73c79eb8dcaaa6d6031f9",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.464583,
+            0.820833,
+            0.3875,
+            0.325
+          ],
+          "bbox_normalized": [
+            0.6583,
+            0.2708,
+            0.9833,
+            0.6583
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000617",
+      "filename": "India_000617.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000617.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000617.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "2e4427dfdf4f79b728505a336946970d247642d7f3c436b6eda725b4e1e9792b",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.184722,
+            0.818056,
+            0.361111,
+            0.297222
+          ],
+          "bbox_normalized": [
+            0.6694,
+            0.0042,
+            0.9667,
+            0.3653
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000646",
+      "filename": "India_000646.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000646.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000646.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "fd9ff7c4fc752af79990763eba6a0f9e22af2f455d609577446ff21b03e7e7d0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.384028,
+            0.790972,
+            0.534722,
+            0.198611
+          ],
+          "bbox_normalized": [
+            0.6917,
+            0.1167,
+            0.8903,
+            0.6514
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.46875,
+            0.795833,
+            0.065278,
+            0.144444
+          ],
+          "bbox_normalized": [
+            0.7236,
+            0.4361,
+            0.8681,
+            0.5014
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000655",
+      "filename": "India_000655.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000655.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000655.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "84637cd0eec44a8650ab80f42da588bed07512815028e382d49ee642eacfab89",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.630556,
+            0.786806,
+            0.341667,
+            0.254167
+          ],
+          "bbox_normalized": [
+            0.6597,
+            0.4597,
+            0.9139,
+            0.8014
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000667",
+      "filename": "India_000667.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000667.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000667.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "66454baf38f73d3094ca6ac126692bfacb78f7295e83360d235a10c0553af80d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.541667,
+            0.81875,
+            0.386111,
+            0.251389
+          ],
+          "bbox_normalized": [
+            0.6931,
+            0.3486,
+            0.9444,
+            0.7347
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000682",
+      "filename": "India_000682.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000682.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000682.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "3677fe32d83460a7541959a0d730bd8ed219773cc6bec5fd5f1b4bb9702a8041",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.436111,
+            0.829861,
+            0.797222,
+            0.195833
+          ],
+          "bbox_normalized": [
+            0.7319,
+            0.0375,
+            0.9278,
+            0.8347
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000709",
+      "filename": "India_000709.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000709.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000709.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "434d31162db3ad42777aa41d3183b325a4abc038bf2ce9187884b9fdea0843fb",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.460417,
+            0.822917,
+            0.0875,
+            0.1375
+          ],
+          "bbox_normalized": [
+            0.7542,
+            0.4167,
+            0.8917,
+            0.5042
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000715",
+      "filename": "India_000715.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000715.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000715.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "1d5d6cf7130ee51d4911e88bb23d0d5363b414f580c9d65e86233ece4e9c6491",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.371528,
+            0.781944,
+            0.740278,
+            0.275
+          ],
+          "bbox_normalized": [
+            0.6444,
+            0.0014,
+            0.9194,
+            0.7417
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000740",
+      "filename": "India_000740.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000740.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000740.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "2843d9b62752911b52b9f7338cc3961715f58d7a0be6d497fa4c0f5fd248ccae",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.645139,
+            0.909722,
+            0.048611,
+            0.1
+          ],
+          "bbox_normalized": [
+            0.8597,
+            0.6208,
+            0.9597,
+            0.6694
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000759",
+      "filename": "India_000759.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000759.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000759.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "eace5f0c240746905617bdae7f3281e776902eb37894b04183a716602213ebc0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.23125,
+            0.864583,
+            0.234722,
+            0.201389
+          ],
+          "bbox_normalized": [
+            0.7639,
+            0.1139,
+            0.9653,
+            0.3486
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.426389,
+            0.813194,
+            0.813889,
+            0.190278
+          ],
+          "bbox_normalized": [
+            0.7181,
+            0.0194,
+            0.9083,
+            0.8333
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000765",
+      "filename": "India_000765.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000765.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000765.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "400e953fa543b433da03e114e60be473260f15f5d1082f864412a0696aa9dd8a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.510417,
+            0.690278,
+            0.054167,
+            0.283333
+          ],
+          "bbox_normalized": [
+            0.5486,
+            0.4833,
+            0.8319,
+            0.5375
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000796",
+      "filename": "India_000796.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000796.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000796.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "9b7911c4aa6a262dee3655395c220f4645f6a5de8a3a1016ee394ce223318d2e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.584722,
+            0.903472,
+            0.138889,
+            0.176389
+          ],
+          "bbox_normalized": [
+            0.8153,
+            0.5153,
+            0.9917,
+            0.6542
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000821",
+      "filename": "India_000821.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000821.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000821.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "12516bf44744a0372207fa0c002a141f126fe116a896a4a19ba360a7fac1a512",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.715278,
+            0.779167,
+            0.113889,
+            0.227778
+          ],
+          "bbox_normalized": [
+            0.6653,
+            0.6583,
+            0.8931,
+            0.7722
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000853",
+      "filename": "India_000853.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000853.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000853.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "a9a52587733bb99008f03a3bd203aaeb0bf6637077d4f989b168552c9803ff29",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.427778,
+            0.804861,
+            0.113889,
+            0.104167
+          ],
+          "bbox_normalized": [
+            0.7528,
+            0.3708,
+            0.8569,
+            0.4847
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000870",
+      "filename": "India_000870.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000870.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000870.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "8f4c67f176263c365d729ca4e5e5d6f46fe9518dc5a6e40b5a9dd6a7dadbb19a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.259028,
+            0.895139,
+            0.204167,
+            0.1875
+          ],
+          "bbox_normalized": [
+            0.8014,
+            0.1569,
+            0.9889,
+            0.3611
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000879",
+      "filename": "India_000879.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000879.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000879.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "5556cdce4ed702357787794e3d59e24bfad755772aaac84b09beae0f0be5c49b",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.456944,
+            0.770833,
+            0.047222,
+            0.141667
+          ],
+          "bbox_normalized": [
+            0.7,
+            0.4333,
+            0.8417,
+            0.4806
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.738194,
+            0.800694,
+            0.523611,
+            0.220833
+          ],
+          "bbox_normalized": [
+            0.6903,
+            0.4764,
+            0.9111,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000895",
+      "filename": "India_000895.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000895.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000895.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "c65027fd10a72cd00e87f04e088eecf44bcfa1acb13cea9698711f3effdc6128",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.619444,
+            0.836111,
+            0.133333,
+            0.172222
+          ],
+          "bbox_normalized": [
+            0.75,
+            0.5528,
+            0.9222,
+            0.6861
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000914",
+      "filename": "India_000914.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000914.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000914.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "eedee6372569ec75cb13458e4c1fd54876b519be79b350d7098202b0dbe8a55a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.534722,
+            0.798611,
+            0.930556,
+            0.291667
+          ],
+          "bbox_normalized": [
+            0.6528,
+            0.0694,
+            0.9444,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000917",
+      "filename": "India_000917.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000917.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000917.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "67b6398c98195c062a5b5e12b225456d3e2e322380b31df78e227c166b92454a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.097222,
+            0.756944,
+            0.191667,
+            0.069444
+          ],
+          "bbox_normalized": [
+            0.7222,
+            0.0014,
+            0.7917,
+            0.1931
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.160417,
+            0.853472,
+            0.3125,
+            0.279167
+          ],
+          "bbox_normalized": [
+            0.7139,
+            0.0042,
+            0.9931,
+            0.3167
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.654861,
+            0.856944,
+            0.470833,
+            0.255556
+          ],
+          "bbox_normalized": [
+            0.7292,
+            0.4194,
+            0.9847,
+            0.8903
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000919",
+      "filename": "India_000919.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000919.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000919.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "b073aa79da6c16f7a6186bf395669a4b3b6c50523a24845910bb83f909561ee7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.41875,
+            0.893056,
+            0.195833,
+            0.208333
+          ],
+          "bbox_normalized": [
+            0.7889,
+            0.3208,
+            0.9972,
+            0.5167
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.752083,
+            0.845139,
+            0.2375,
+            0.190278
+          ],
+          "bbox_normalized": [
+            0.75,
+            0.6333,
+            0.9403,
+            0.8708
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.261111,
+            0.878472,
+            0.177778,
+            0.209722
+          ],
+          "bbox_normalized": [
+            0.7736,
+            0.1722,
+            0.9833,
+            0.35
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000928",
+      "filename": "India_000928.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000928.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000928.txt",
+      "split": "val",
+      "is_positive": true,
+      "sha256": "612599c6ed4e5d838d3f2dc0790eb424688b939d7f64c30ace65c5559640dc07",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.609722,
+            0.972917,
+            0.102778,
+            0.051389
+          ],
+          "bbox_normalized": [
+            0.9472,
+            0.5583,
+            0.9986,
+            0.6611
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000002",
+      "filename": "India_000002.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000002.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000002.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "7d72d5e5922fa0245d9ad5afeda61123f09ecfdc1cdea8caa1d37bcac1f405d6",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000064",
+      "filename": "India_000064.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000064.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000064.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a43163857a58cca4138d92883dab10562ed64ce6e496b91bdf9dfefa229f6405",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000069",
+      "filename": "India_000069.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000069.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000069.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "24e8972da124ee4b90e21fae8bcd06ba5c9e0d63a3017f5de1b440c1bd11dfd4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000071",
+      "filename": "India_000071.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000071.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000071.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "415bb0d2612ace255bad64af1a052397fdfba95a9bd225ddc6a6d2a069d93e9d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000106",
+      "filename": "India_000106.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000106.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000106.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "ff68b916997342c5dabe8eeb4b744cebe3f85835b9e25eec199784c18473b819",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000113",
+      "filename": "India_000113.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000113.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000113.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "83e77b6dc163be6beb928d5d5724813e84b8ce48d358d331434b54686fc7e890",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000124",
+      "filename": "India_000124.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000124.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000124.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "fa0926c6e9d42704abe0049da8952bd3023b47ab89cf215348149a6714b44013",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000132",
+      "filename": "India_000132.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000132.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000132.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "0b81458be6998ba7c5eb23ffb87a597b7c3d47ee87eedfeaa91e3f5de9672cab",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000136",
+      "filename": "India_000136.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000136.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000136.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "fcf985e56dc8afcb0da82b4d7c11f6e460ef6b4b750703343c00e6a81242d192",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000138",
+      "filename": "India_000138.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000138.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000138.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "d388ed0384ca52f051e8748883d48d8d91563d40473a91028ae3b0e90373f69c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000162",
+      "filename": "India_000162.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000162.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000162.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "684c37a684b74cd7152d34d1144d8a240f9105043b4dab5741ae5419e2f3f9d1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000168",
+      "filename": "India_000168.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000168.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000168.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e676d5e59776ce04a9a910ee5101e36662b7a46bbbde808746648a113fb0c264",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000169",
+      "filename": "India_000169.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000169.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000169.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "6d91c09ea0430d2e20755498238b3cf6242f760f1e128b682fa6712e0b736fbf",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000170",
+      "filename": "India_000170.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000170.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000170.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "3a48ccec839c33b267ba6d4cfbafbaf0e2fc911bb6098f83678f6848e89a6c9d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000173",
+      "filename": "India_000173.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000173.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000173.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "34872459786deb4cd841a77860828fdfeaca0fecf7ddb9cdcdc487f3e462f885",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000179",
+      "filename": "India_000179.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000179.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000179.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "059e16f054c4f1220b2290e95bbf53b7ea8d41f47e218754f13b7e6f5f8bea2d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000180",
+      "filename": "India_000180.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000180.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000180.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "6a7cc762c96d8cbd1bab173dc0d05be43b0a3d9fe1804878f55e303dda0d5de1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000186",
+      "filename": "India_000186.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000186.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000186.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "bb37c7c123b16273a19189e8f84af9cc292054da139c186d4ab6954f37e0fe25",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000188",
+      "filename": "India_000188.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000188.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000188.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "bdb242ee0e0beeded176f12a52c147a5a732d19bd22c8fbde8ab2917c3bd6bd4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000194",
+      "filename": "India_000194.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000194.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000194.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "5ac9773b9908c56da6b29b17e1a387653b4ba900c13a30e1a31b5ee1a7ccd05d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000196",
+      "filename": "India_000196.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000196.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000196.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "b152d315b94dda343511387cb0c5bb270146619a3f7d68e388bd7e71180a05ea",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000208",
+      "filename": "India_000208.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000208.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000208.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "fd57d56e12b627865455488c19f37744a33477d79cca1e676d414ebdcba4f5d5",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000217",
+      "filename": "India_000217.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000217.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000217.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "043986db41edd19d9b7bd976f6dce2163127103d0f8496f0dd60286ea36fa884",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000252",
+      "filename": "India_000252.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000252.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000252.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "d55d2772e5303c5e0f6d63f183003e9b179d13beb1ff114e9bd4c88e49a54e8e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000261",
+      "filename": "India_000261.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000261.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000261.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "5263253b3c5b55a2f2d29f48ce0f2b3232049591dcd0a2c2e68a7a598fcd9d28",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000279",
+      "filename": "India_000279.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000279.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000279.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "2a26650070216cf91463260c0643356e84a200e4ac7f894ebd92d752a60bd38a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000347",
+      "filename": "India_000347.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000347.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000347.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "bb22d7fc8a8b65475004a49f4961e1720556ecdc6dac30619b32624ac9767c5a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000354",
+      "filename": "India_000354.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000354.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000354.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e61acb33d166cea6a3407dbd7741bae8792c3e7ac3be280dbe383465f94d8e5e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000356",
+      "filename": "India_000356.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000356.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000356.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a5cc38f50905d015c3986b355dad42daa82f2a5832d82d653b94635588ed605d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000365",
+      "filename": "India_000365.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000365.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000365.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "5135dd5331b9f6cb348f9e34b23f128030a8d578810cd53a6754eb3f72850fcc",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000372",
+      "filename": "India_000372.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000372.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000372.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "972f74c6484b08b2e97d76492001907a500cafb0a8443edf6e28eec49349cd87",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000399",
+      "filename": "India_000399.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000399.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000399.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "9887bad137d8ad3e1db22b35b9698489824feea6d81b7a2e56f076507e020ca6",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000406",
+      "filename": "India_000406.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000406.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000406.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "82dd441eb8292cd07a0774e46ff716a42197164a7a431573ba4df65bb2f67d0d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000423",
+      "filename": "India_000423.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000423.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000423.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "affb492ee2c25ad19cc1c4ab8193f76b5479301630e7668a52b8209bc9587805",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000429",
+      "filename": "India_000429.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000429.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000429.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "cb4ca3e1dd7f11f3694b7bb00cab66aa6053e8d9730146a580b595745f8646f0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000437",
+      "filename": "India_000437.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000437.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000437.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "dd70ecc401936da43e889fa2a379187730854ac91e174a96cf6ecfe466dfb8e7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000457",
+      "filename": "India_000457.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000457.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000457.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "8d61a186f634298c9ff7dcaf7828813a60c70bf03d636947260743c86cce54e6",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000473",
+      "filename": "India_000473.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000473.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000473.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e3ed0c40b2554beb45ef09c94d4ed88202f044110792345029ced623c749b2de",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000487",
+      "filename": "India_000487.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000487.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000487.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "be5007c20f36681e337c504629a20c45854f7e9aedfe7c8a72dccb5475a15a17",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000489",
+      "filename": "India_000489.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000489.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000489.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "4ee047f779f83bafbc65bd9b133db0c8e15bc36be6e809f2ecc550f0f265a01c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000497",
+      "filename": "India_000497.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000497.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000497.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "a061159e363025cd1b80eb6633dc5164f886a474b3863d167d1c585f265728c1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000507",
+      "filename": "India_000507.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000507.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000507.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e560d2a811140dfe59c30ecf357c5c614d6ab772cb9d5e98481a6318789f4a60",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000513",
+      "filename": "India_000513.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000513.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000513.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "b50a595f9d23c8c86fe09b47cd770bdeda2884607afb5039eaafe56e01499f48",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000516",
+      "filename": "India_000516.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000516.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000516.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "c258f933f12945e1c0fe0a8441393e482289aa436424a2ef8d3aefcb7680da20",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000538",
+      "filename": "India_000538.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000538.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000538.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "e4046621689968daac45c62f95846366941c1e3a8c5d8beddc2b8e9e570880db",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000545",
+      "filename": "India_000545.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000545.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000545.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "8a2f4bdc9c59d78b7604687bee615c6ea6141c6e1084f4c2e212177db27162db",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000549",
+      "filename": "India_000549.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000549.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000549.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "19f815b5ae1e657cc23113b41840def4821f2223d123228d9cc10f538a684ab2",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000569",
+      "filename": "India_000569.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000569.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000569.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "525909818c82f04503e81185baaf23c60e07a61c5e7f688d86b0351aa5fa2992",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000574",
+      "filename": "India_000574.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000574.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000574.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "d741b40435a988a567e8acd36abe5c3fb34bac66e9f464ad4d90e812ea0f9316",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-VAL-India_000575",
+      "filename": "India_000575.jpg",
+      "image_path": "data/datasets/road_damage/images/val/India_000575.jpg",
+      "label_path": "data/datasets/road_damage/labels/val/India_000575.txt",
+      "split": "val",
+      "is_positive": false,
+      "sha256": "6757b37317007b64c37201955c54cecc253913a6ef7d63ed6cbc31b751184015",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000993",
+      "filename": "India_000993.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000993.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000993.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "f5b424f795b577496ebc8eaf5cf6c430a86ec9b401f08ebc200d47a147711f9f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.154167,
+            0.913889,
+            0.252778,
+            0.155556
+          ],
+          "bbox_normalized": [
+            0.8361,
+            0.0278,
+            0.9917,
+            0.2806
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001000",
+      "filename": "India_001000.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001000.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001000.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "e3b7bd756c16a6d0437013f2b3edfe9e59f04990a194f2944d5a08fe10bfa728",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.51875,
+            0.829861,
+            0.073611,
+            0.120833
+          ],
+          "bbox_normalized": [
+            0.7694,
+            0.4819,
+            0.8903,
+            0.5556
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.550694,
+            0.900694,
+            0.298611,
+            0.190278
+          ],
+          "bbox_normalized": [
+            0.8056,
+            0.4014,
+            0.9958,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001003",
+      "filename": "India_001003.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001003.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001003.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "e4d90c64b9b6d3e7465d554800ce2b4cb31b94d0508ed89bdbcab9c44d236da0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.875,
+            0.928472,
+            0.233333,
+            0.131944
+          ],
+          "bbox_normalized": [
+            0.8625,
+            0.7583,
+            0.9944,
+            0.9917
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001012",
+      "filename": "India_001012.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001012.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001012.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "c1a893c84d7429c6334814aea9c422e5526c379ad59bf51e1d8997e5f5c59548",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.23125,
+            0.845833,
+            0.459722,
+            0.302778
+          ],
+          "bbox_normalized": [
+            0.6944,
+            0.0014,
+            0.9972,
+            0.4611
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001017",
+      "filename": "India_001017.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001017.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001017.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "9323174d36534610b719f146c49b11319854d1ce1183f5a40c6cc8a1199efd24",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.384028,
+            0.86875,
+            0.3625,
+            0.181944
+          ],
+          "bbox_normalized": [
+            0.7778,
+            0.2028,
+            0.9597,
+            0.5653
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.81875,
+            0.825,
+            0.3625,
+            0.272222
+          ],
+          "bbox_normalized": [
+            0.6889,
+            0.6375,
+            0.9611,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001050",
+      "filename": "India_001050.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001050.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001050.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "70f834be3f44a28a9ba61aa77953cb7864bd055f4ca15b2a0eadcb802f909b8c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.542361,
+            0.897222,
+            0.915278,
+            0.205556
+          ],
+          "bbox_normalized": [
+            0.7944,
+            0.0847,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001076",
+      "filename": "India_001076.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001076.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001076.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "2c1f9d341b7a81c3e79efd8ae9a5f5dfdc0a88bae7c6a2f2dd78a5303d65557e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.590278,
+            0.747917,
+            0.152778,
+            0.220833
+          ],
+          "bbox_normalized": [
+            0.6375,
+            0.5139,
+            0.8583,
+            0.6667
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.932639,
+            0.840972,
+            0.134722,
+            0.106944
+          ],
+          "bbox_normalized": [
+            0.7875,
+            0.8653,
+            0.8944,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001085",
+      "filename": "India_001085.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001085.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001085.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b7912e6708b46018e6d1196577f6e5c80533aa072842e9d8b1d8587cab465432",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.661806,
+            0.700694,
+            0.293056,
+            0.584722
+          ],
+          "bbox_normalized": [
+            0.4083,
+            0.5153,
+            0.9931,
+            0.8083
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.454861,
+            0.746528,
+            0.765278,
+            0.418056
+          ],
+          "bbox_normalized": [
+            0.5375,
+            0.0722,
+            0.9556,
+            0.8375
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001090",
+      "filename": "India_001090.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001090.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001090.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "d8ef79e81cb8773d0a5ccf8c56491938aca76796d5289f9644bc40d7ed2dbe48",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.251389,
+            0.949306,
+            0.066667,
+            0.0625
+          ],
+          "bbox_normalized": [
+            0.9181,
+            0.2181,
+            0.9806,
+            0.2847
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001126",
+      "filename": "India_001126.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001126.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001126.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "454fc220b2dfe357bc2614beaa0d384a1fe276dd92715a597c4b82a5b9934309",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.199306,
+            0.704861,
+            0.373611,
+            0.223611
+          ],
+          "bbox_normalized": [
+            0.5931,
+            0.0125,
+            0.8167,
+            0.3861
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001142",
+      "filename": "India_001142.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001142.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001142.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "639c2f9ed3702d729e94cfe511dc78082c13d4a7779e8e5067ea6f3b1b917456",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.798611,
+            0.886111,
+            0.397222,
+            0.138889
+          ],
+          "bbox_normalized": [
+            0.8167,
+            0.6,
+            0.9556,
+            0.9972
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.718056,
+            0.741667,
+            0.213889,
+            0.133333
+          ],
+          "bbox_normalized": [
+            0.675,
+            0.6111,
+            0.8083,
+            0.825
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001160",
+      "filename": "India_001160.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001160.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001160.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "866653157a392f265d0fdb7e5a0016a03dad6b423362a2175e0002dba9eb9bff",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.204167,
+            0.870833,
+            0.208333,
+            0.169444
+          ],
+          "bbox_normalized": [
+            0.7861,
+            0.1,
+            0.9556,
+            0.3083
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.354167,
+            0.748611,
+            0.05,
+            0.044444
+          ],
+          "bbox_normalized": [
+            0.7264,
+            0.3292,
+            0.7708,
+            0.3792
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.416667,
+            0.694444,
+            0.05,
+            0.044444
+          ],
+          "bbox_normalized": [
+            0.6722,
+            0.3917,
+            0.7167,
+            0.4417
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.355556,
+            0.818056,
+            0.652778,
+            0.252778
+          ],
+          "bbox_normalized": [
+            0.6917,
+            0.0292,
+            0.9444,
+            0.6819
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001175",
+      "filename": "India_001175.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001175.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001175.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "a96459ac3c44e3d607b55ff73cf3cdcfaf1dd7b97970f167d98ba96e9eebe33a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.496528,
+            0.86875,
+            0.984722,
+            0.220833
+          ],
+          "bbox_normalized": [
+            0.7583,
+            0.0042,
+            0.9792,
+            0.9889
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.401389,
+            0.851389,
+            0.091667,
+            0.180556
+          ],
+          "bbox_normalized": [
+            0.7611,
+            0.3556,
+            0.9417,
+            0.4472
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001191",
+      "filename": "India_001191.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001191.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001191.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "91a3c05e061443dfd623d7d8dc8757a620bb953e60d1350a9066bbf8c73fa671",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.701389,
+            0.725694,
+            0.136111,
+            0.159722
+          ],
+          "bbox_normalized": [
+            0.6458,
+            0.6333,
+            0.8056,
+            0.7694
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001192",
+      "filename": "India_001192.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001192.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001192.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "639bc0bc7e2730c401fc700b2235561b50284478c06a6c0f533c90f30acde3d8",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.4125,
+            0.802778,
+            0.244444,
+            0.322222
+          ],
+          "bbox_normalized": [
+            0.6417,
+            0.2903,
+            0.9639,
+            0.5347
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.399306,
+            0.840278,
+            0.795833,
+            0.25
+          ],
+          "bbox_normalized": [
+            0.7153,
+            0.0014,
+            0.9653,
+            0.7972
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001201",
+      "filename": "India_001201.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001201.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001201.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b5de0fc5bd6863d96d8973850c9dabbcd985d8bb38dbe461fb2ee9a20776686b",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        1,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.515972,
+            0.757639,
+            0.1375,
+            0.0375
+          ],
+          "bbox_normalized": [
+            0.7389,
+            0.4472,
+            0.7764,
+            0.5847
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.653472,
+            0.765278,
+            0.070833,
+            0.208333
+          ],
+          "bbox_normalized": [
+            0.6611,
+            0.6181,
+            0.8694,
+            0.6889
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001236",
+      "filename": "India_001236.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001236.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001236.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "404f37ff31f9776ca4bcb05bf5e22d71b7145007dce8aee2ed522688745a2721",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.188194,
+            0.698611,
+            0.348611,
+            0.108333
+          ],
+          "bbox_normalized": [
+            0.6444,
+            0.0139,
+            0.7528,
+            0.3625
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.400694,
+            0.807639,
+            0.723611,
+            0.295833
+          ],
+          "bbox_normalized": [
+            0.6597,
+            0.0389,
+            0.9556,
+            0.7625
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001238",
+      "filename": "India_001238.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001238.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001238.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "9a32cbd0a7464e66c88017caa4d84a86cb9bcfb12ed36c79ae9c4a7a02e6d2f1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.458333,
+            0.822917,
+            0.105556,
+            0.115278
+          ],
+          "bbox_normalized": [
+            0.7653,
+            0.4056,
+            0.8806,
+            0.5111
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001241",
+      "filename": "India_001241.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001241.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001241.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "408761f32a11dadf7c686914600532294a6953bb7ee0d8ce6f687b21456cb219",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.699306,
+            0.854167,
+            0.193056,
+            0.180556
+          ],
+          "bbox_normalized": [
+            0.7639,
+            0.6028,
+            0.9444,
+            0.7958
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001253",
+      "filename": "India_001253.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001253.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001253.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "86037f81e0af38e68675b4131f8597b61c1bb4c26c5daf14079301f8464c7d43",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.482639,
+            0.809722,
+            0.673611,
+            0.308333
+          ],
+          "bbox_normalized": [
+            0.6556,
+            0.1458,
+            0.9639,
+            0.8194
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001279",
+      "filename": "India_001279.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001279.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001279.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "5068e9b843650d5364da3031c250c6e58bd18996938ebfd6c6ef12168d19ff5e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.336111,
+            0.89375,
+            0.305556,
+            0.118056
+          ],
+          "bbox_normalized": [
+            0.8347,
+            0.1833,
+            0.9528,
+            0.4889
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001310",
+      "filename": "India_001310.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001310.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001310.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "36d12f37a7ce3f5817f0ec92962841c8d4471db64a61a948b26ada74bbbda740",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.206944,
+            0.831944,
+            0.213889,
+            0.302778
+          ],
+          "bbox_normalized": [
+            0.6806,
+            0.1,
+            0.9833,
+            0.3139
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001314",
+      "filename": "India_001314.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001314.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001314.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "20edb853504b404402371c50dbabab289f0163225c5379fd9e25f5e83398cad6",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.50625,
+            0.747222,
+            0.926389,
+            0.497222
+          ],
+          "bbox_normalized": [
+            0.4986,
+            0.0431,
+            0.9958,
+            0.9694
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001322",
+      "filename": "India_001322.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001322.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001322.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "38a530472c8998a4fab754010826c18dd5366d8ebdf7c3945f1e427c2cb1e1c5",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.496528,
+            0.820833,
+            0.990278,
+            0.269444
+          ],
+          "bbox_normalized": [
+            0.6861,
+            0.0014,
+            0.9556,
+            0.9917
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001409",
+      "filename": "India_001409.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001409.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001409.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "919aac2a353a9d5e9d4d0779aa45e41f0f34eae16dca2b60d5caac0cf60ab9b4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.711806,
+            0.827083,
+            0.265278,
+            0.315278
+          ],
+          "bbox_normalized": [
+            0.6694,
+            0.5792,
+            0.9847,
+            0.8444
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001420",
+      "filename": "India_001420.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001420.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001420.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "74ba63daac49182a815c2202958e8a9f841ace65b8346ba701e79d133b7a049e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.447917,
+            0.88125,
+            0.695833,
+            0.2125
+          ],
+          "bbox_normalized": [
+            0.775,
+            0.1,
+            0.9875,
+            0.7958
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001421",
+      "filename": "India_001421.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001421.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001421.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "ef4e07c84aa74fa840ba4efa3d1342404560ce2f8e82f0ecc06cd74c0a6242e7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.3,
+            0.625,
+            0.380556,
+            0.5
+          ],
+          "bbox_normalized": [
+            0.375,
+            0.1097,
+            0.875,
+            0.4903
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001454",
+      "filename": "India_001454.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001454.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001454.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "f1bb108306db856c0c2282615bf5a950743c22fc5336fd86356ffd78093b248a",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.724306,
+            0.850694,
+            0.1125,
+            0.143056
+          ],
+          "bbox_normalized": [
+            0.7792,
+            0.6681,
+            0.9222,
+            0.7806
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001456",
+      "filename": "India_001456.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001456.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001456.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "98c6674ed03c64fd6aaecc1573b03267f39bd4ad1e19fe053088355f92a5325e",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.435417,
+            0.879861,
+            0.520833,
+            0.209722
+          ],
+          "bbox_normalized": [
+            0.775,
+            0.175,
+            0.9847,
+            0.6958
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001475",
+      "filename": "India_001475.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001475.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001475.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "f97e1f56ac215b7a2526b46725908f3fa242f0d7e87ebd9db5ded521855d2b3f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.157639,
+            0.890972,
+            0.251389,
+            0.193056
+          ],
+          "bbox_normalized": [
+            0.7944,
+            0.0319,
+            0.9875,
+            0.2833
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.474306,
+            0.644444,
+            0.076389,
+            0.080556
+          ],
+          "bbox_normalized": [
+            0.6042,
+            0.4361,
+            0.6847,
+            0.5125
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.846528,
+            0.702083,
+            0.190278,
+            0.193056
+          ],
+          "bbox_normalized": [
+            0.6056,
+            0.7514,
+            0.7986,
+            0.9417
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001485",
+      "filename": "India_001485.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001485.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001485.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "bd670f17dc39334da692c0244a063369bac94f896614e13785459c751975cbec",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.444444,
+            0.79375,
+            0.258333,
+            0.145833
+          ],
+          "bbox_normalized": [
+            0.7208,
+            0.3153,
+            0.8667,
+            0.5736
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001494",
+      "filename": "India_001494.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001494.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001494.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "462927208291401a9bd58921f0fd5f9391bda905ef88005cdf17c841e177188d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.827083,
+            0.794444,
+            0.181944,
+            0.183333
+          ],
+          "bbox_normalized": [
+            0.7028,
+            0.7361,
+            0.8861,
+            0.9181
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.143056,
+            0.869444,
+            0.258333,
+            0.197222
+          ],
+          "bbox_normalized": [
+            0.7708,
+            0.0139,
+            0.9681,
+            0.2722
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.615278,
+            0.793056,
+            0.361111,
+            0.222222
+          ],
+          "bbox_normalized": [
+            0.6819,
+            0.4347,
+            0.9042,
+            0.7958
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001542",
+      "filename": "India_001542.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001542.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001542.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "bbc8776f62b98e30dc7567f0bacf8ab76c391786f1015685c77b299803bfe2c4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.091667,
+            0.917361,
+            0.177778,
+            0.123611
+          ],
+          "bbox_normalized": [
+            0.8556,
+            0.0028,
+            0.9792,
+            0.1806
+          ]
+        },
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.232639,
+            0.821528,
+            0.109722,
+            0.065278
+          ],
+          "bbox_normalized": [
+            0.7889,
+            0.1778,
+            0.8542,
+            0.2875
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001551",
+      "filename": "India_001551.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001551.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001551.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "a9581a543ad4acaccbf98e13a5a4aa0324276950321eec6de64010d9dfb01450",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.400694,
+            0.763194,
+            0.659722,
+            0.229167
+          ],
+          "bbox_normalized": [
+            0.6486,
+            0.0708,
+            0.8778,
+            0.7306
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001588",
+      "filename": "India_001588.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001588.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001588.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "61ba54d99efd4ad610298edc95cf68d831eb79709cada3a1c6aef0a238bda0a0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.427778,
+            0.652778,
+            0.361111,
+            0.225
+          ],
+          "bbox_normalized": [
+            0.5403,
+            0.2472,
+            0.7653,
+            0.6083
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001626",
+      "filename": "India_001626.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001626.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001626.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "727a5b260f4aa8c3b5f142c598e7e05e75ecf76c7aaad0349d3d80c791096f87",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.40625,
+            0.8875,
+            0.806944,
+            0.225
+          ],
+          "bbox_normalized": [
+            0.775,
+            0.0028,
+            1.0,
+            0.8097
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001636",
+      "filename": "India_001636.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001636.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001636.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "6d25a060970f00a5660709d3cc655c61d70a9948229cefdd0a6d4eeb4b9752ac",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.577083,
+            0.754861,
+            0.0625,
+            0.256944
+          ],
+          "bbox_normalized": [
+            0.6264,
+            0.5458,
+            0.8833,
+            0.6083
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001644",
+      "filename": "India_001644.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001644.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001644.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "972ac0f12c35f385b727e28753dc3d761c6087fbfab37f69423cd9166707712b",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.36875,
+            0.702778,
+            0.081944,
+            0.125
+          ],
+          "bbox_normalized": [
+            0.6403,
+            0.3278,
+            0.7653,
+            0.4097
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001648",
+      "filename": "India_001648.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001648.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001648.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "c668e17c435e1005085733a505d0c62c34f50b7593d40dd696f5016d78dc4d01",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.606944,
+            0.725,
+            0.75,
+            0.527778
+          ],
+          "bbox_normalized": [
+            0.4611,
+            0.2319,
+            0.9889,
+            0.9819
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001673",
+      "filename": "India_001673.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001673.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001673.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b989cb8a2fc49edaaea25a0e7bbe77724b81767decce394a0b8b47ba125c6f65",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.340278,
+            0.760417,
+            0.308333,
+            0.145833
+          ],
+          "bbox_normalized": [
+            0.6875,
+            0.1861,
+            0.8333,
+            0.4944
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001682",
+      "filename": "India_001682.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001682.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001682.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "58259fbb4a97b120e76aae542ff6f4675af15d1ce579f49c332923d6b5d02674",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.597222,
+            0.769444,
+            0.408333,
+            0.261111
+          ],
+          "bbox_normalized": [
+            0.6389,
+            0.3931,
+            0.9,
+            0.8014
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001687",
+      "filename": "India_001687.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001687.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001687.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "21a30ec7b22ce579da6ce03ba05dfb4894fca707b9a06d54e363f66e75732192",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.291667,
+            0.8375,
+            0.580556,
+            0.3
+          ],
+          "bbox_normalized": [
+            0.6875,
+            0.0014,
+            0.9875,
+            0.5819
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.768056,
+            0.757639,
+            0.191667,
+            0.140278
+          ],
+          "bbox_normalized": [
+            0.6875,
+            0.6722,
+            0.8278,
+            0.8639
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001734",
+      "filename": "India_001734.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001734.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001734.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "c32a3e2ea4ac44ac028e7192aa414a5886984953f89454c19ec8ec9eebfe6519",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.413194,
+            0.841667,
+            0.718056,
+            0.272222
+          ],
+          "bbox_normalized": [
+            0.7056,
+            0.0542,
+            0.9778,
+            0.7722
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001737",
+      "filename": "India_001737.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001737.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001737.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "b523ff1d551b3850a0daa904a6c24cc957fff7a11a1bf3cf351635870517bcce",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.384028,
+            0.489583,
+            0.0375,
+            0.184722
+          ],
+          "bbox_normalized": [
+            0.3972,
+            0.3653,
+            0.5819,
+            0.4028
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001748",
+      "filename": "India_001748.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001748.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001748.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "fbfeab5c99dc0b985b5a275e727b54db186be82de8c9895e27582a0fb883b451",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.495833,
+            0.784028,
+            0.988889,
+            0.1625
+          ],
+          "bbox_normalized": [
+            0.7028,
+            0.0014,
+            0.8653,
+            0.9903
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001773",
+      "filename": "India_001773.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001773.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001773.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "72c2d8f28ea8298beb7add11b89a85cd78473b885dc58d84a775be3a53faccf9",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.678472,
+            0.767361,
+            0.1125,
+            0.184722
+          ],
+          "bbox_normalized": [
+            0.675,
+            0.6222,
+            0.8597,
+            0.7347
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.545139,
+            0.7875,
+            0.909722,
+            0.252778
+          ],
+          "bbox_normalized": [
+            0.6611,
+            0.0903,
+            0.9139,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001782",
+      "filename": "India_001782.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001782.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001782.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "db24a03f40449febc1621d27720f830b31739fd1c7335b32d0f446dafb9a3f45",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        1
+      ],
+      "annotations": [
+        {
+          "class_id": 1,
+          "bbox_yolo": [
+            0.175694,
+            0.73125,
+            0.2375,
+            0.079167
+          ],
+          "bbox_normalized": [
+            0.6917,
+            0.0569,
+            0.7708,
+            0.2944
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001853",
+      "filename": "India_001853.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001853.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001853.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "fa2d7c0b6e0eda2f9c3cd94b0bb00e150e0869b0ab0c018785f9c7323d037469",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.590278,
+            0.675694,
+            0.061111,
+            0.120833
+          ],
+          "bbox_normalized": [
+            0.6153,
+            0.5597,
+            0.7361,
+            0.6208
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001881",
+      "filename": "India_001881.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001881.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001881.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "59f7aedba7c785361a9a0133f767d40186a735a461e9c54785e1cfb6aef55f3f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        2,
+        3
+      ],
+      "annotations": [
+        {
+          "class_id": 3,
+          "bbox_yolo": [
+            0.241667,
+            0.9,
+            0.155556,
+            0.163889
+          ],
+          "bbox_normalized": [
+            0.8181,
+            0.1639,
+            0.9819,
+            0.3194
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.407639,
+            0.85,
+            0.806944,
+            0.213889
+          ],
+          "bbox_normalized": [
+            0.7431,
+            0.0042,
+            0.9569,
+            0.8111
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001949",
+      "filename": "India_001949.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001949.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001949.txt",
+      "split": "test",
+      "is_positive": true,
+      "sha256": "11272ce9aaf2903862a5ef9c3e1efcc46b9c17435d7ee430c6dde595f2389c70",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [
+        0,
+        2
+      ],
+      "annotations": [
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.547222,
+            0.785417,
+            0.061111,
+            0.195833
+          ],
+          "bbox_normalized": [
+            0.6875,
+            0.5167,
+            0.8833,
+            0.5778
+          ]
+        },
+        {
+          "class_id": 0,
+          "bbox_yolo": [
+            0.365972,
+            0.846528,
+            0.209722,
+            0.2875
+          ],
+          "bbox_normalized": [
+            0.7028,
+            0.2611,
+            0.9903,
+            0.4708
+          ]
+        },
+        {
+          "class_id": 2,
+          "bbox_yolo": [
+            0.573611,
+            0.651389,
+            0.155556,
+            0.086111
+          ],
+          "bbox_normalized": [
+            0.6083,
+            0.4958,
+            0.6944,
+            0.6514
+          ]
+        }
+      ]
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000593",
+      "filename": "India_000593.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000593.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000593.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1f06f0fea2f0267ecada574535d3fd97170673a0b37236e4aaa589d2ac088185",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000636",
+      "filename": "India_000636.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000636.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000636.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "8d82a2ad7171df3c7d0aec95d1d19beaf387eb522d426a2c850321649485724d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000637",
+      "filename": "India_000637.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000637.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000637.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "d463dea29afcefdf172b33418c3f93d61f8eb91a5bc91bb1d71d3944f2176c10",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000661",
+      "filename": "India_000661.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000661.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000661.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "dbee28d92f684453eaf604f83a577323fe32f7829e1532e30cb4301b2897a2c5",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000679",
+      "filename": "India_000679.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000679.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000679.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "8730e537368174ed2816c11db5e5efded2a3fd068e591c0aaf8d34d4815216e1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000691",
+      "filename": "India_000691.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000691.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000691.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "04a75cd882e1a2f51488dce5d67c764da4366ea0c9e51f4a1776abe8a47573a8",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000697",
+      "filename": "India_000697.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000697.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000697.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "2e53be93693035f82cbf9f7ff013a548937c6f45de897ead0ff78c1084848427",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000699",
+      "filename": "India_000699.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000699.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000699.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "26dfd5e11fe87ca39e793679e51dc244e6aa3bb035d060cc31a7739dd6fd44a7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000722",
+      "filename": "India_000722.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000722.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000722.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "f3111d5120969af7fb62a9ab1c647f5f8896a85de5959063ab072641f1c77edd",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000729",
+      "filename": "India_000729.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000729.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000729.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "9058ed3a96326dbea4d2b01235aa7f9863605f8d1f48a17f06cc73900136f214",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000736",
+      "filename": "India_000736.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000736.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000736.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "ada8944c3311885fafa4f7f0299f59665903db8217e40ccb182e3647214b306f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000741",
+      "filename": "India_000741.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000741.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000741.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "9fff4822d07164c0b707aa18a62d11b7259a4d6dbce7c495e790bf190d9042b9",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000757",
+      "filename": "India_000757.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000757.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000757.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "edc184bad54e0d23b5561ffcbf805d269f882b9cc388c653c959a1d9b94c5732",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000766",
+      "filename": "India_000766.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000766.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000766.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "66f0c9fc024ca7cd11226c634adac9a01ea3396f99ff7f2f61c0a0c4172f70d0",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000779",
+      "filename": "India_000779.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000779.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000779.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "41ddfab813e361fd42adadd2c14e619c0ea834dedbf2361bb4da36b588a183f5",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000801",
+      "filename": "India_000801.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000801.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000801.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "369a8a2bd10a1d33b4a1a5ff05e5305cea8665a5774e1db3b8b7c2e3f6930018",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000804",
+      "filename": "India_000804.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000804.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000804.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "4fbe76a1d6f51e020c46c5fad20086cb99073b4a19d5fe07031f17b2293f86a1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000826",
+      "filename": "India_000826.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000826.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000826.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "0f7b319dc98ad20cc6c1355bbb73b9f18d0fe65afa1243bcefdf18919078cac4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000847",
+      "filename": "India_000847.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000847.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000847.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "c55ce9d3efca263f7866d28838ae09399a1d97b3376e6886a57380cfe08fecd3",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000864",
+      "filename": "India_000864.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000864.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000864.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "e4fd894ee3700fa80f706083035e060677ab105bf539dde62f3df8b3c937ba13",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000885",
+      "filename": "India_000885.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000885.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000885.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "188a572877deb2b77841edd5cdb28d827570ccf966cf026133fb4aa01cac879c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000912",
+      "filename": "India_000912.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000912.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000912.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "9e98827c2758d3c0f7f31cb55b6e4142a18ea55a248ee20d2e48d7cd840fcc18",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000923",
+      "filename": "India_000923.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000923.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000923.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "61b54579108c2742e481a9c1d7077efe70c5474bcfd7bea6fefdd8563825bcb7",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000925",
+      "filename": "India_000925.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000925.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000925.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "64f7b1ed3fd744dfb30ed8d10f08b88ed6a13fde41c765efa20111725cc886af",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000926",
+      "filename": "India_000926.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000926.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000926.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "86876b83b1881b2a7e2be954b60a03ff5fcbf8af97b20831070cde14c6bf28a1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000942",
+      "filename": "India_000942.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000942.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000942.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "70e781758df330f9efea7ce9335a9d8300ed992e2450168dff39c4ec6157fd38",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000958",
+      "filename": "India_000958.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000958.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000958.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1f9cc8080065170e1f10cfe9321bc1908d8162d75dec43d506c373393ab13bab",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000966",
+      "filename": "India_000966.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000966.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000966.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "e3c7dcbce4550eb748bd419ad3eb876e5b0fef4400feb24ac124894e87d11313",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000979",
+      "filename": "India_000979.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000979.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000979.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "5673285a00a690229be54ce2bc0b51b9152f0010a78ab427b5d80e4bc6e1d154",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_000999",
+      "filename": "India_000999.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_000999.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_000999.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1ecca92409664fcf9af94675178e2d23a3c41cc404d2fc7e0f7cf5489bbaae82",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001008",
+      "filename": "India_001008.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001008.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001008.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "bf2bab862f234f6546fd7effc7cfb0dfb6a22bc56a5554b6ce24dbc1d33d10bc",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001019",
+      "filename": "India_001019.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001019.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001019.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "323d5a5e264199a072745ce449e5c17d2d01d9f329f4855a3b6cd098e829eec9",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001047",
+      "filename": "India_001047.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001047.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001047.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "1c06097019273a85c911878ad152e265017d71160888a3a6adcfba0b6ab52f34",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001048",
+      "filename": "India_001048.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001048.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001048.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "88ebd1ba6d813743eab8b8c728485e500421a0b98621ec768d7495b49fc2b92f",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001049",
+      "filename": "India_001049.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001049.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001049.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "65d9a44b47bbabca1778c6e5e979ee425c36a503dcdc88e66a22d834715fe99c",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001051",
+      "filename": "India_001051.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001051.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001051.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "5ea023b7c9da4fcb52287285e7a1468aa94bed4cad6f7f1453f59b4100fe2593",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001057",
+      "filename": "India_001057.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001057.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001057.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "7114a1c986f26f42f41cf345dd40eabd694c5226b7a1cdb972e53f8aaac303b9",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001063",
+      "filename": "India_001063.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001063.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001063.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "2bd734e3fc380689c7f82fab2ead3da491814726bc9da99a758a3d2aa58eecc2",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001064",
+      "filename": "India_001064.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001064.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001064.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "8ca6d8741539f6719a4cd79ca4030c962b425d88ea214049ce1d1d97a7285379",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001070",
+      "filename": "India_001070.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001070.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001070.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "412d30bd5b7816a3d28e066eaf828d240753f17789d68645bb94411a923c96a1",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001078",
+      "filename": "India_001078.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001078.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001078.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "fdb3f86b020de2a481143758c285bfd127691e119240f9533ceb1f24bec3c613",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001088",
+      "filename": "India_001088.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001088.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001088.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b92136b5326b262c572df151965fe4d972f624b7b62ffce195a167f59028df33",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001124",
+      "filename": "India_001124.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001124.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001124.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "71b7ca6e7688383935401aab6543c33cedeb2ebe2a7f8337a7dcbe22a7d6e8c4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001183",
+      "filename": "India_001183.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001183.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001183.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "4e5c9a66b0a7b4f7730a9083f58c0ba0cf91e554dbd27525fdbe508a46a5b3fc",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001189",
+      "filename": "India_001189.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001189.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001189.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "f06e80aef6af34a7b9267dceaa372d26e9020891849994e1c3d5e0844e3c456d",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001208",
+      "filename": "India_001208.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001208.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001208.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "812eed784bd273267b47ca30f8654f78ee81dfb5eb2d443d477b0dc85b36ab67",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001218",
+      "filename": "India_001218.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001218.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001218.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "7d32d3b92cb24ab27233dd34881896fda03eff01cc4774c31cabe3221b201530",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001230",
+      "filename": "India_001230.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001230.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001230.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b7a0bba820833cb149002521c9d8117cbe7a0aae75080a35c04348fc98fe60e2",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001242",
+      "filename": "India_001242.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001242.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001242.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "b9230677dc9b39f38d4b4ac94d79192647b75a57fb5cf43cc235d38a32a79ce4",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    },
+    {
+      "sample_id": "ROAD-TEST-India_001260",
+      "filename": "India_001260.jpg",
+      "image_path": "data/datasets/road_damage/images/test/India_001260.jpg",
+      "label_path": "data/datasets/road_damage/labels/test/India_001260.txt",
+      "split": "test",
+      "is_positive": false,
+      "sha256": "bfcdfab9c999fa357eb809b3206e089452b87bdc35919747d048fc4cc50f4de3",
+      "width": 720,
+      "height": 720,
+      "damage_classes": [],
+      "annotations": []
+    }
+  ]
+}
