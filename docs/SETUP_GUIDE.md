@@ -147,7 +147,7 @@ npm run dev
 
 ### Backend Test Suite
 ```bash
-# Run complete test suite (168 tests)
+# Run complete test suite (187 tests)
 pytest -v
 
 # Run with concise summary
@@ -184,3 +184,35 @@ npm run build
 | `HTTP 401 Unauthorized` on status update | Missing or invalid auth token | Pass header `Authorization: Bearer demo-inspector-token` (in dev) |
 | `HTTP 403 Forbidden` on routing update | Inspector token used on admin route | Pass header `Authorization: Bearer demo-admin-token` |
 | `Unreadable image file` (HTTP 400/422) | Invalid image format or corrupted bytes | Upload valid JPEG, PNG, or WebP under 10 MB |
+
+---
+
+## 11. Role-Based Login & Authentication (Phase 11)
+
+CIVILENS features cryptographically signed, expiring token authentication with salted PBKDF2-HMAC-SHA256 password hashing and server-side role enforcement across three distinct user roles:
+
+| Role | Default Demo Identifier | Default Demo Password | Server Route & Scope | Public Self-Registration |
+|---|---|---|---|---|
+| **Citizen** | `citizen@civilens.org` | `Citizen@123` | `/login/citizen` -> Citizen Portal | Enabled (`/api/v1/auth/register`) |
+| **Municipal Inspector** | `inspector@civilens.org` | `Inspector@123` | `/login/municipal` -> Queue / Triage | Strictly Disabled (403 Forbidden) |
+| **Administrator** | `admin@civilens.org` | `Admin@123` | `/login/admin` -> Admin Governance | Strictly Disabled (403 Forbidden) |
+
+### Local Demonstration Provisioning
+In non-production environments (`CIVILENS_ENV=development`), the backend automatically provisions these three demo accounts upon first startup into `data/civic_issues.db`. Demo credentials can be configured locally via environment variables:
+```bash
+CIVILENS_DEV_CITIZEN_PASSWORD="MyCustomCitizenPwd123"
+CIVILENS_DEV_INSPECTOR_PASSWORD="MyCustomInspectorPwd123"
+CIVILENS_DEV_ADMIN_PASSWORD="MyCustomAdminPwd123"
+```
+
+### Production Security Architecture
+1. **Disabled Demo Seeding**: In production (`CIVILENS_ENV=production`), automatic account seeding and development tokens (`demo-admin-token`, `demo-inspector-token`) are strictly rejected.
+2. **Cryptographic Signing**: Set `CIVILENS_AUTH_SECRET_KEY` to a high-entropy secret string (e.g., `openssl rand -hex 32`).
+3. **Provisioning Administrators**: Administrators in production are provisioned directly via backend database migrations or dedicated internal deployment CLI tools, preventing public self-elevation.
+4. **Zero Production Credential Leaks**: Frontend production builds (`frontend/dist/`) contain zero hardcoded passwords, tokens, or private secrets.
+
+### Authentication Automated Test Suite
+To verify all 13 Phase 11 authentication and security gates:
+```bash
+pytest -v tests/test_phase11_authentication.py
+```

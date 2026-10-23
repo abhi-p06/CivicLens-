@@ -1,16 +1,28 @@
-import { Issue, HotspotInfo, RecurrenceInfo, EvaluationMetrics, SystemHealth, ResolutionEvidence } from '../types'
+import {
+  Issue,
+  HotspotInfo,
+  RecurrenceInfo,
+  EvaluationMetrics,
+  SystemHealth,
+  ResolutionEvidence,
+  AuthResponse,
+  AuthUser,
+  UserRole
+} from '../types'
 
 const BASE_URL = '/api/v1'
 
 /**
- * Resolves authorization headers for role-restricted operations.
+ * Resolves authorization headers for authenticated operations.
+ * - In genuine sessions: checks civilens_auth_token.
  * - In local demo/development mode: falls back to documented demo tokens if enabled.
- * - In production mode: strictly requires an authenticated session/token from storage
- *   and NEVER ships functional static privileged credentials.
+ * - In production mode: strictly requires an authenticated session/token from storage.
  */
-function getAuthHeader(role: 'inspector' | 'admin'): string | undefined {
+function getAuthHeader(role?: UserRole): string | undefined {
   if (typeof window !== 'undefined') {
-    const sessionToken = localStorage.getItem(`civilens_${role}_token`) || localStorage.getItem('civilens_auth_token')
+    const sessionToken =
+      localStorage.getItem('civilens_auth_token') ||
+      (role ? localStorage.getItem(`civilens_${role}_token`) : null)
     if (sessionToken) {
       return sessionToken.startsWith('Bearer ') ? sessionToken : `Bearer ${sessionToken}`
     }
@@ -20,8 +32,10 @@ function getAuthHeader(role: 'inspector' | 'admin'): string | undefined {
   const isDev = import.meta.env.DEV
   const demoAuthAllowed = isDev || import.meta.env.VITE_CIVILENS_DEMO_AUTH === 'true'
 
-  if (demoAuthAllowed) {
-    return role === 'admin' ? 'Bearer demo-admin-token' : 'Bearer demo-inspector-token'
+  if (demoAuthAllowed && role) {
+    if (role === 'admin') return 'Bearer demo-admin-token'
+    if (role === 'inspector') return 'Bearer demo-inspector-token'
+    if (role === 'citizen') return 'Bearer demo-citizen-token'
   }
 
   return undefined
@@ -79,12 +93,26 @@ export const api = {
     uploadId?: string
     source?: string
   }): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader()
+    if (auth) headers['Authorization'] = auth
+
     const res = await fetch(`${BASE_URL}/issues`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     })
     if (!res.ok) throw new Error('Failed to submit issue')
+    return res.json()
+  },
+
+  async getMyIssues(): Promise<Issue[]> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader('citizen')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/my`, { headers })
+    if (!res.ok) throw new Error('Failed to fetch your submitted complaints')
     return res.json()
   },
 
@@ -209,5 +237,65 @@ export const api = {
       throw new Error(err.detail || 'Failed to reset demo')
     }
     return res.json()
+  },
+
+  async getAdminUsers(): Promise<Array<{ id: string; username: string; email: string; name: string; role: string; is_active: boolean; created_at: string }>> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader('admin')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/admin/users`, { headers })
+    if (!res.ok) throw new Error('Failed to fetch user accounts')
+    return res.json()
+  },
+
+  auth: {
+    async login(payload: { usernameOrEmail: string; password: string; expectedRole?: string }): Promise<AuthResponse> {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Login failed. Please check your credentials.')
+      }
+      return res.json()
+    },
+
+    async register(payload: { username: string; email: string; password: string; name: string }): Promise<AuthResponse> {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...payload, role: 'citizen' }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Registration failed. Please try again.')
+      }
+      return res.json()
+    },
+
+    async me(): Promise<AuthUser> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/auth/me`, { headers })
+      if (!res.ok) throw new Error('Unauthorized session')
+      return res.json()
+    },
+
+    async logout(): Promise<void> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', headers }).catch(() => {})
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('civilens_auth_token')
+        localStorage.removeItem('civilens_user_profile')
+      }
+    },
   },
 }

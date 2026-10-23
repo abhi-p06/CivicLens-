@@ -47,13 +47,15 @@ class DemoDataStore:
         category: Optional[IssueCategory] = None,
         priority: Optional[PriorityLevel] = None,
         status_filter: Optional[IssueStatus] = None,
-        hotspot_only: bool = False
+        hotspot_only: bool = False,
+        citizen_id: Optional[str] = None
     ) -> List[Issue]:
         return self.repository.list_issues(
             category=category,
             priority=priority,
             status_filter=status_filter,
-            hotspot_only=hotspot_only
+            hotspot_only=hotspot_only,
+            citizen_id=citizen_id
         )
 
     def get_issue(self, issue_id: str) -> Optional[Issue]:
@@ -79,6 +81,22 @@ class DemoDataStore:
 
     def get_verification_history(self, issue_id: str) -> List[Any]:
         return self.repository.get_verification_history(issue_id)
+
+    # Forward user management methods
+    def get_user_by_identifier(self, identifier: str) -> Optional[Dict[str, Any]]:
+        return self.repository.get_user_by_identifier(identifier)
+
+    def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
+        return self.repository.get_user_by_id(user_id)
+
+    def create_user(self, username: str, email: str, name: str, password_hash: str, salt: str, role: str, user_id: Optional[str] = None) -> Dict[str, Any]:
+        return self.repository.create_user(username, email, name, password_hash, salt, role, user_id=user_id)
+
+    def list_users(self) -> List[Dict[str, Any]]:
+        return self.repository.list_users()
+
+    def seed_default_users_if_empty(self) -> int:
+        return self.repository.seed_default_users_if_empty()
 
 # Global singleton instance
 demo_store = DemoDataStore()

@@ -18,6 +18,12 @@ import { GuidedDemoController } from './components/demo/GuidedDemoController'
 import { DEMO_SCENARIO } from './services/demoScenario'
 import { TargetCursor } from './components/reactbits/TargetCursor'
 
+import { Shield, Loader2 } from 'lucide-react'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { LoginPage } from './components/auth/LoginPage'
+import { RoleLoginForm } from './components/auth/RoleLoginForm'
+import { CitizenPortalView } from './components/portal/CitizenPortalView'
+
 // Views
 import { OverviewView } from './components/views/OverviewView'
 import { LiveIntelligenceView } from './components/views/LiveIntelligenceView'
@@ -32,8 +38,10 @@ import { AnalyticsView } from './components/views/AnalyticsView'
 import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
 function AppContent() {
+  const { user } = useAuth()
   const { success, info } = useToast()
   const { isReduced } = useCivicMotion()
+
   const getInitialView = () => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace('#', '')
@@ -42,9 +50,24 @@ function AppContent() {
       const v = params.get('view')
       if (v) return v
     }
-    return 'overview'
+    return user?.role === 'citizen' ? 'citizen_portal' : 'overview'
   }
   const [activeView, setActiveView] = useState<string>(getInitialView)
+
+  // Enforce role boundaries on views
+  useEffect(() => {
+    if (user?.role === 'citizen') {
+      const citizenAllowed = ['citizen_portal', 'map', 'analyze']
+      if (!citizenAllowed.includes(activeView)) {
+        setActiveView('citizen_portal')
+      }
+    } else if (user?.role === 'inspector') {
+      const officerAllowed = ['overview', 'explorer', 'map', 'intelligence', 'live', 'resolution', 'analytics']
+      if (!officerAllowed.includes(activeView)) {
+        setActiveView('overview')
+      }
+    }
+  }, [user?.role, activeView])
 
   const handleSelectView = (view: string) => {
     setActiveView(view)
@@ -210,7 +233,7 @@ function AppContent() {
 
   return (
     <MotionConfig reducedMotion={isReduced ? 'always' : 'never'}>
-      <div className="flex h-screen w-screen bg-[#F6F7FC] text-slate-900 overflow-hidden font-sans select-none">
+      <div className="flex h-screen w-full max-w-full bg-[#F6F7FC] text-slate-900 overflow-hidden font-sans select-none">
         {/* Precision Animated Target Cursor Reticle */}
         <TargetCursor />
 
@@ -226,7 +249,7 @@ function AppContent() {
       />
 
       {/* Main Operational Stage */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#F6F7FC] relative">
+      <div className="flex-1 min-w-0 flex flex-col h-full bg-[#F6F7FC] relative">
         {/* Top Command Bar */}
         <TopBar
           activeView={activeView}
@@ -333,6 +356,10 @@ function AppContent() {
                 />
               )}
 
+              {activeView === 'citizen_portal' && (
+                <CitizenPortalView />
+              )}
+
               {activeView === 'analytics' && (
                 <AnalyticsView
                   issues={displayedIssues}
@@ -413,16 +440,120 @@ function AppContent() {
   )
 }
 
+function AppRouter() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname
+    }
+    return '/'
+  })
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname)
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const navigateTo = (path: string) => {
+    if (typeof window !== 'undefined') {
+      window.history.pushState({}, '', path)
+      setCurrentPath(path)
+    }
+  }
+
+  // If already authenticated and on a login route, redirect to workspace
+  useEffect(() => {
+    if (isAuthenticated && (currentPath === '/login' || currentPath.startsWith('/login/'))) {
+      navigateTo('/')
+    }
+  }, [isAuthenticated, currentPath])
+
+  // If unauthenticated and accessing a protected route, redirect URL to /login
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated && currentPath !== '/login' && !currentPath.startsWith('/login/')) {
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, '', '/login')
+        setCurrentPath('/login')
+      }
+    }
+  }, [authLoading, isAuthenticated, currentPath])
+
+  // Loading state: display sleek Aurora Indigo security splash (never reveal privileged content!)
+  if (authLoading) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#F6F7FC] font-sans">
+        <div className="w-12 h-12 rounded-2xl bg-[#13152E] flex items-center justify-center text-white mb-4 shadow-sm border border-white/10">
+          <Shield className="w-6 h-6 text-[#8B5CF6]" />
+        </div>
+        <div className="flex items-center gap-2 text-xs font-semibold text-[#11162A]">
+          <Loader2 className="w-4 h-4 animate-spin text-[#6457E8]" />
+          <span>CIVILENS Security Verification...</span>
+        </div>
+        <p className="text-[11px] text-[#65708B] mt-1">Verifying cryptographic session token</p>
+      </div>
+    )
+  }
+
+  // Explicit Login Routes
+  if (currentPath === '/login') {
+    return <LoginPage onSelectRole={(role) => navigateTo(`/login/${role}`)} />
+  }
+
+  if (currentPath === '/login/citizen') {
+    return (
+      <RoleLoginForm
+        role="citizen"
+        onBack={() => navigateTo('/login')}
+        onSuccess={() => navigateTo('/')}
+      />
+    )
+  }
+
+  if (currentPath === '/login/municipal') {
+    return (
+      <RoleLoginForm
+        role="municipal"
+        onBack={() => navigateTo('/login')}
+        onSuccess={() => navigateTo('/')}
+      />
+    )
+  }
+
+  if (currentPath === '/login/admin') {
+    return (
+      <RoleLoginForm
+        role="admin"
+        onBack={() => navigateTo('/login')}
+        onSuccess={() => navigateTo('/')}
+      />
+    )
+  }
+
+  // Protected route boundary: unauthenticated users redirected to /login
+  if (!isAuthenticated) {
+    return <LoginPage onSelectRole={(role) => navigateTo(`/login/${role}`)} />
+  }
+
+  return (
+    <SidebarProvider defaultOpen={true} className="h-screen w-full max-w-full overflow-hidden bg-[#F5F7FA]">
+      <AppContent />
+    </SidebarProvider>
+  )
+}
+
 export function App() {
   return (
     <ErrorBoundary fallbackTitle="CiviLens Command Center Initialization Notice">
-      <MotionProvider>
-        <ToastProvider>
-          <SidebarProvider defaultOpen={true} className="h-screen w-screen overflow-hidden bg-[#F5F7FA]">
-            <AppContent />
-          </SidebarProvider>
-        </ToastProvider>
-      </MotionProvider>
+      <AuthProvider>
+        <MotionProvider>
+          <ToastProvider>
+            <AppRouter />
+          </ToastProvider>
+        </MotionProvider>
+      </AuthProvider>
     </ErrorBoundary>
   )
 }

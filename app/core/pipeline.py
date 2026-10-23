@@ -313,6 +313,7 @@ class CivicIssueIntelligencePipeline:
             ward=analysis.get("ward", "N-Ward"),
             imageUrl=resolved_img,
             uploadId=resolved_upload,
+            citizen_id=payload.citizen_id,
             status=status,
             metadata={
                 "source": payload.source,

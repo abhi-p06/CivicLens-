@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from pathlib import Path
@@ -18,7 +19,13 @@ from app.models.issue import (
     ResolutionEvidence
 )
 from app.db.database import SessionLocal, get_db_session, init_db
-from app.db.models import IssueRecord, RoutingConfigRecord, UploadRecord, VerificationHistoryRecord
+from app.db.models import (
+    IssueRecord,
+    RoutingConfigRecord,
+    UploadRecord,
+    VerificationHistoryRecord,
+    UserRecord
+)
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +102,8 @@ class SqliteIssueRepository:
                 inserted += 1
 
             logger.info(f"Successfully seeded {inserted} issues into persistent database.")
-            return inserted
+        self.seed_default_users_if_empty()
+        return inserted
 
     def reset_demo(self, seed_file_path: Optional[str] = None) -> int:
         """
@@ -121,14 +129,16 @@ class SqliteIssueRepository:
                 inserted += 1
 
             logger.info(f"Demo reset: restored {inserted} seed issues in single transaction.")
-            return inserted
+        self.seed_default_users_if_empty()
+        return inserted
 
     def list_issues(
         self,
         category: Optional[IssueCategory] = None,
         priority: Optional[PriorityLevel] = None,
         status_filter: Optional[IssueStatus] = None,
-        hotspot_only: bool = False
+        hotspot_only: bool = False,
+        citizen_id: Optional[str] = None
     ) -> List[Issue]:
         """
         Queries issues with optional relational filtering.
@@ -152,9 +162,18 @@ class SqliteIssueRepository:
             if hotspot_only:
                 stmt = stmt.where(IssueRecord.is_hotspot.is_(True))
 
+            if citizen_id is not None:
+                stmt = stmt.where(IssueRecord.citizen_id == citizen_id)
+
             stmt = stmt.order_by(IssueRecord.priority_score.desc())
             records = session.scalars(stmt).all()
-            return [Issue.model_validate_json(r.data_json) for r in records]
+            results = []
+            for r in records:
+                issue = Issue.model_validate_json(r.data_json)
+                if r.citizen_id and not issue.citizen_id:
+                    issue.citizen_id = r.citizen_id
+                results.append(issue)
+            return results
 
     def get_issue(self, issue_id: str) -> Optional[Issue]:
         """Retrieves an issue by ID, reconstructing the full Pydantic model."""
@@ -163,7 +182,10 @@ class SqliteIssueRepository:
             record = session.scalar(stmt)
             if record is None:
                 return None
-            return Issue.model_validate_json(record.data_json)
+            issue = Issue.model_validate_json(record.data_json)
+            if record.citizen_id and not issue.citizen_id:
+                issue.citizen_id = record.citizen_id
+            return issue
 
     def add_issue(self, issue: Issue) -> Issue:
         """
@@ -368,6 +390,7 @@ class SqliteIssueRepository:
             department=issue.department,
             recommended_action=issue.recommendedAction,
             sla_hours=int(issue.slaHours),
+            citizen_id=getattr(issue, "citizen_id", None),
             status=stat_val,
             data_json=issue.model_dump_json()
         )
@@ -404,6 +427,7 @@ class SqliteIssueRepository:
         record.department = issue.department
         record.recommended_action = issue.recommendedAction
         record.sla_hours = int(issue.slaHours)
+        record.citizen_id = getattr(issue, "citizen_id", None)
         record.status = stat_val
         record.data_json = issue.model_dump_json()
 
@@ -491,3 +515,144 @@ class SqliteIssueRepository:
                 elif iss.resolutionEvidence:
                     return [iss.resolutionEvidence]
             return []
+
+    # --------------------------------------------------------------------------
+    # User Account Management
+    # --------------------------------------------------------------------------
+
+    def get_user_by_identifier(self, identifier: str) -> Optional[Dict[str, Any]]:
+        """Finds user by username OR email (case-insensitive)."""
+        clean = identifier.strip().lower()
+        with self._get_session() as session:
+            stmt = select(UserRecord).where(
+                (func.lower(UserRecord.username) == clean) | (func.lower(UserRecord.email) == clean)
+            )
+            rec = session.scalar(stmt)
+            if not rec:
+                return None
+            return {
+                "id": rec.id,
+                "username": rec.username,
+                "email": rec.email,
+                "name": rec.name,
+                "password_hash": rec.password_hash,
+                "salt": rec.salt,
+                "role": rec.role,
+                "is_active": rec.is_active,
+                "created_at": rec.created_at.isoformat() if rec.created_at else ""
+            }
+
+    def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
+        with self._get_session() as session:
+            stmt = select(UserRecord).where(UserRecord.id == user_id)
+            rec = session.scalar(stmt)
+            if not rec:
+                return None
+            return {
+                "id": rec.id,
+                "username": rec.username,
+                "email": rec.email,
+                "name": rec.name,
+                "password_hash": rec.password_hash,
+                "salt": rec.salt,
+                "role": rec.role,
+                "is_active": rec.is_active,
+                "created_at": rec.created_at.isoformat() if rec.created_at else ""
+            }
+
+    def create_user(
+        self,
+        username: str,
+        email: str,
+        name: str,
+        password_hash: str,
+        salt: str,
+        role: str,
+        user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        import uuid
+        uid = user_id or f"USER-{str(uuid.uuid4())[:8].upper()}"
+        with self._get_session() as session:
+            user_rec = UserRecord(
+                id=uid,
+                username=username.strip().lower(),
+                email=email.strip().lower(),
+                name=name.strip(),
+                password_hash=password_hash,
+                salt=salt,
+                role=role.strip().lower(),
+                is_active=True
+            )
+            session.add(user_rec)
+            return {
+                "id": user_rec.id,
+                "username": user_rec.username,
+                "email": user_rec.email,
+                "name": user_rec.name,
+                "role": user_rec.role,
+                "is_active": user_rec.is_active
+            }
+
+    def list_users(self) -> List[Dict[str, Any]]:
+        with self._get_session() as session:
+            stmt = select(UserRecord).order_by(UserRecord.created_at.asc())
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "username": r.username,
+                    "email": r.email,
+                    "name": r.name,
+                    "role": r.role,
+                    "is_active": r.is_active,
+                    "created_at": r.created_at.isoformat() if r.created_at else ""
+                }
+                for r in records
+            ]
+
+    def seed_default_users_if_empty(self) -> int:
+        """
+        Initializes default demo accounts in development environments:
+        - Citizen: citizen@civilens.org / Citizen@123
+        - Inspector: inspector@civilens.org / Inspector@123
+        - Administrator: admin@civilens.org / Admin@123
+        """
+        from app.core.security import hash_password
+        from app.config import settings
+        is_production = settings.env.lower() in ("production", "prod")
+        if is_production:
+            logger.info("Production environment active: Default development demo user seeding is disabled.")
+            return 0
+
+        with self._get_session() as session:
+            count = session.scalar(select(func.count()).select_from(UserRecord)) or 0
+            if count > 0:
+                return 0
+
+            citizen_pwd = os.getenv("CIVILENS_DEV_CITIZEN_PASSWORD", "Citizen@123")
+            inspector_pwd = os.getenv("CIVILENS_DEV_INSPECTOR_PASSWORD", "Inspector@123")
+            admin_pwd = os.getenv("CIVILENS_DEV_ADMIN_PASSWORD", "Admin@123")
+
+            defaults = [
+                ("CITIZEN-001", "citizen", "citizen@civilens.org", "Suresh Patil (Citizen)", citizen_pwd, "citizen"),
+                ("INSP-MUMBAI-01", "inspector", "inspector@civilens.org", "Ward Field Inspector", inspector_pwd, "inspector"),
+                ("ADMIN-SYS-01", "admin", "admin@civilens.org", "Municipal Operations Administrator", admin_pwd, "admin"),
+            ]
+            inserted = 0
+            for uid, uname, uemail, uname_full, pwd, urole in defaults:
+                pw_hash, salt = hash_password(pwd)
+                rec = UserRecord(
+                    id=uid,
+                    username=uname,
+                    email=uemail,
+                    name=uname_full,
+                    password_hash=pw_hash,
+                    salt=salt,
+                    role=urole,
+                    is_active=True
+                )
+                session.add(rec)
+                inserted += 1
+            logger.info(f"Seeded {inserted} default authentication accounts.")
+            return inserted
+

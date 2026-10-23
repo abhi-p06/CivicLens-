@@ -61,7 +61,8 @@ class IssueRecord(Base):
     recommended_action: Mapped[str] = mapped_column(Text, nullable=False, default="Inspect and triage")
     sla_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=72)
     
-    # Status
+    # Ownership & Status
+    citizen_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     
     # Complete, loss-free Pydantic payload serialization
@@ -148,4 +149,30 @@ class VerificationHistoryRecord(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc)
     )
+
+
+class UserRecord(Base):
+    """
+    Persistent storage for authenticated CIVILENS accounts:
+    - Citizen
+    - Municipal Officer / Field Inspector
+    - Administrator
+    Stores per-user salt and PBKDF2-HMAC-SHA256 password hash.
+    """
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(128), unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
+    salt: Mapped[str] = mapped_column(String(64), nullable=False)
+    role: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
 

@@ -67,9 +67,22 @@ def init_db(target_engine: Optional[Engine] = None) -> None:
     """
     Creates all database tables if they do not already exist.
     Safe to execute multiple times (idempotent).
+    Applies backward-compatible schema migrations for SQLite.
     """
+    from sqlalchemy import text
     eng = target_engine or engine
     Base.metadata.create_all(bind=eng)
+
+    with eng.connect() as conn:
+        try:
+            cursor = conn.execute(text("PRAGMA table_info(issues)"))
+            columns = [row[1] for row in cursor.fetchall()]
+            if columns and "citizen_id" not in columns:
+                conn.execute(text("ALTER TABLE issues ADD COLUMN citizen_id VARCHAR(64)"))
+                conn.execute(text("CREATE INDEX IF NOT EXISTS ix_issues_citizen_id ON issues (citizen_id)"))
+                conn.commit()
+        except Exception:
+            pass
 
 def rebind_database(target_path: Path) -> Engine:
     """

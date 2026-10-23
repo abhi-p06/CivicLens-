@@ -163,7 +163,25 @@ export interface Issue {
   resolutionEvidence?: ResolutionEvidence
   resolutionHistory?: ResolutionEvidence[]
   statusHistory?: Array<{ status: IssueStatus; timestamp: string; note?: string }>
+  citizen_id?: string
+  citizenId?: string
   metadata?: Record<string, any>
+}
+
+export type UserRole = 'citizen' | 'inspector' | 'admin'
+
+export interface AuthUser {
+  userId: string
+  username: string
+  email: string
+  name: string
+  role: UserRole
+}
+
+export interface AuthResponse {
+  token: string
+  tokenType: string
+  user: AuthUser
 }
 
 export interface EvaluationMetrics {

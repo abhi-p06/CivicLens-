@@ -12,6 +12,7 @@ async def lifespan(app: FastAPI):
     # Initialize SQLite schema and seed only if empty
     init_db()
     demo_store.seed_if_empty()
+    demo_store.seed_default_users_if_empty()
     department_dispatcher.load_from_db()
     yield
 
@@ -52,6 +53,7 @@ def root(request: Request):
     return {
         "title": settings.app_name,
         "dashboard": "/dashboard",
+        "login": "/login",
         "docs": "/docs",
         "health": "/api/v1/health",
         "endpoints": {
@@ -63,6 +65,8 @@ def root(request: Request):
 
 @app.get("/dashboard")
 @app.get("/dashboard/{full_path:path}")
+@app.get("/login")
+@app.get("/login/{full_path:path}")
 def serve_dashboard():
     if os.path.exists("frontend/dist/index.html"):
         return FileResponse("frontend/dist/index.html")

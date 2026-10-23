@@ -25,5 +25,6 @@ def isolated_test_database():
 
         from app.core.demo_store import demo_store
         demo_store.reload()
+        demo_store.seed_default_users_if_empty()
 
         yield test_db_path

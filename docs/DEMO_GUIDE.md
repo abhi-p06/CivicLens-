@@ -198,3 +198,101 @@ curl -X POST http://localhost:8000/api/v1/routing/config \
 To restore the clean baseline seed dataset (`CIVIC-2026-001` through `CIVIC-2026-006`):
 - Click **"Settings"** → **"Reset Demo Data"** in the Web UI.
 - Or call API: `curl -X POST http://localhost:8000/api/v1/demo/reset -H "Authorization: Bearer demo-admin-token"`
+
+---
+
+## Phase 11: Role-Based Authentication & Multi-Portal Demonstration
+
+CIVILENS provides a dedicated, role-specific authentication architecture connecting three distinct civic personas to genuine server-side permission gates.
+
+```
+                         Central Entry: /login
+                                   |
+         +-------------------------+-------------------------+
+         |                         |                         |
+         v                         v                         v
+   /login/citizen           /login/municipal           /login/admin
+   (Citizen Portal)         (Inspector Triage)         (Admin Governance)
+```
+
+### Demonstration Accounts & Credentials
+
+| Persona | Role | Email / Identifier | Password | Destination Route | Permitted Capabilities |
+|---|---|---|---|---|---|
+| **Suresh Patil** | `CITIZEN` | `citizen@civilens.org` | `Citizen@123` | Citizen Portal (`/` as citizen) | File pothole/garbage reports, upload photos, AI intake preview, track owned complaints (`/api/v1/issues/my`) |
+| **Field Inspector** | `INSPECTOR` | `inspector@civilens.org` | `Inspector@123` | Command Center (`/` as inspector) | Priority queue triage, YOLOv8/YOLO11 visual inspection, status progression, SSIM before-and-after verification |
+| **Operations Admin** | `ADMIN` | `admin@civilens.org` | `Admin@123` | Full Governance (`/` as admin) | Complete operational dashboard, GIS map, model health telemetry, routing dispatch rules, demo data reset, user administration |
+
+---
+
+### STEP A: Central Role Entry & Authentication Flow
+
+1. Open browser to `http://localhost:5173/login`.
+2. Inspect the **three Aurora Indigo role cards**:
+   - **Citizen**: Emerald active accents, public grievance portal icon.
+   - **Municipal Officer / Inspector**: Violet accent, field triage badge.
+   - **Administrator**: Midnight-indigo header, governance lock badge.
+3. Click **"Access Citizen Portal"** (routes to `/login/citizen`).
+4. Test Show/Hide password toggle and client validation.
+5. Log in with `citizen@civilens.org` / `Citizen@123`.
+6. Notice verified server session token issued, header user badge displaying **`Suresh Patil (Citizen)`** with role pill `CITIZEN`.
+
+---
+
+### STEP B: Citizen Portal & Data Isolation
+
+1. In the Citizen Portal, view the two primary intake forms:
+   - **Pothole & Road Damage Intake**
+   - **Street Litter & Garbage Intake**
+2. Upload `data/test_samples/repair_pothole_before.jpg` and submit a grievance.
+3. Observe real-time computer vision inference and priority calculation.
+4. Scroll to **"My Submitted Grievances"**:
+   - The grievance appears immediately with status `OPEN`.
+   - Data is strictly isolated via `/api/v1/issues/my` (citizens only view complaints where `citizen_id` matches their verified server identity).
+   - Citizens cannot access `/api/v1/admin/users`, change ticket status, or reset demo state.
+5. Click **"Log Out"** in the top navigation bar. Verify application state clears, token is deleted from storage, and browser returns to `/login`.
+
+---
+
+### STEP C: Municipal Inspector Operations View
+
+1. Navigate to `/login/municipal` and authenticate with `inspector@civilens.org` / `Inspector@123`.
+2. Observe navigation automatically configured for municipal operations:
+   - **Priority Incident Queue**: 45% column displaying active road and sanitation work orders.
+   - **Detail Drawer**: Click on `CIVIC-2026-001` to view YOLO bounding boxes, confidence scores, and 6-factor additive priority breakdown.
+   - **Status Lifecycle Progression**: Change status from `OPEN` -> `ACTION IN PROGRESS` -> `VERIFICATION`.
+   - **Resolution Verification**: Attach `data/test_samples/repair_pothole_after_repaired.jpg` and execute SSIM + dual YOLO verification.
+3. Security Gate Check: Verify that the Inspector cannot open Admin Routing Rules or trigger Demo Reset (buttons hidden and API returns HTTP 403 Forbidden).
+
+---
+
+### STEP D: Administrator Governance & System Control
+
+1. Log out and navigate to `/login/admin`.
+2. Authenticate with `admin@civilens.org` / `Admin@123`.
+3. Observe full administrative command capabilities:
+   - **GIS Spatial Hotspot Map**: Haversine DBSCAN cluster visualization.
+   - **Model Health Telemetry**: Online status and benchmark metrics for YOLOv8s RDD2022 and YOLO11s TACO.
+   - **Department Routing Rules**: Configure SLA hours and primary department dispatch matrices.
+   - **User Administration**: Inspect registered municipal accounts via `/api/v1/admin/users`.
+   - **Authorized Demo Reset**: Reset database to baseline seed state (`POST /api/v1/demo/reset`).
+
+---
+
+### STEP E: Public Registration & Privilege Escalation Prevention
+
+1. Navigate to `/login/citizen`.
+2. Click **"Don't have an account? Register here"**.
+3. Register a new citizen account (e.g. `anita@civilens.org`).
+4. Note that registration succeeds and immediately signs in as `CITIZEN`.
+5. Public registration on `/login/municipal` or `/login/admin` is strictly blocked; submitting an `admin` or `inspector` role to `/api/v1/auth/register` returns HTTP 403 Forbidden.
+
+---
+
+### STEP F: Session Persistence & Logout
+
+1. Refresh the browser page (`Cmd+R` / `F5`).
+2. Verify that the session is restored instantly from the cryptographically signed token via `/api/v1/auth/me` without requiring re-login.
+3. Click **"Log Out"** button in the top right header.
+4. Verify token and user context are completely wiped, and user is redirected to `/login`.
+5. Attempting to directly type `http://localhost:5173/` in the URL bar while unauthenticated automatically redirects back to `/login`.

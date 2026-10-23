@@ -116,6 +116,7 @@ class IssueCreate(BaseModel):
     imageUrl: Optional[str] = None
     uploadId: Optional[str] = None
     source: str = "citizen_portal"
+    citizen_id: Optional[str] = None
 
 class ResolutionEvidence(BaseModel):
     verified_at: Optional[str] = None
@@ -179,6 +180,7 @@ class Issue(BaseModel):
     timestamp: str
     imageUrl: Optional[str] = None
     uploadId: Optional[str] = None
+    citizen_id: Optional[str] = None
     
     # Deduplication & Grouping (Features 5, 6)
     duplicateGroup: Optional[str] = None

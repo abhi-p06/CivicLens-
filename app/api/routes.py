@@ -7,7 +7,17 @@ from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel, model_validator
 
 from app.config import settings
-from app.core.security import require_inspector, require_admin, AuthenticatedUser
+from app.core.security import (
+    require_citizen,
+    require_inspector,
+    require_admin,
+    get_current_user,
+    AuthenticatedUser,
+    UserRole,
+    verify_password,
+    hash_password,
+    create_access_token
+)
 from app.services.upload_service import upload_service
 from app.models.issue import (
     Issue,
@@ -33,6 +43,18 @@ from app.modules.vision.manager import vision_manager
 from app.modules.nlp.classifier import nlp_classifier
 
 router = APIRouter(prefix="/api/v1", tags=["Civic Issue Intelligence"])
+
+class LoginRequest(BaseModel):
+    usernameOrEmail: str
+    password: str
+    expectedRole: Optional[str] = None
+
+class RegisterRequest(BaseModel):
+    username: str
+    email: str
+    password: str
+    name: str
+    role: Optional[str] = "citizen"
 
 class StatusUpdateRequest(BaseModel):
     status: str
@@ -314,23 +336,185 @@ def analyze_complaint_endpoint(payload: IssueCreate) -> Dict[str, Any]:
             detail=f"Analysis pipeline error: {str(e)}"
         )
 
+# -----------------------------------------------------------------------------
+# Authentication & Role Administration Endpoints
+# -----------------------------------------------------------------------------
+
+@router.post("/auth/login")
+def login_endpoint(payload: LoginRequest) -> Dict[str, Any]:
+    identifier = payload.usernameOrEmail.strip()
+    if not identifier:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username or email is required.")
+    if not payload.password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password is required.")
+
+    user = demo_store.get_user_by_identifier(identifier)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password.")
+
+    if not verify_password(payload.password, user["salt"], user["password_hash"]):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username/email or password.")
+
+    if payload.expectedRole:
+        expected = payload.expectedRole.strip().lower()
+        if user["role"] != expected:
+            role_labels = {
+                "citizen": "Citizen",
+                "inspector": "Municipal Officer",
+                "admin": "Administrator"
+            }
+            exp_label = role_labels.get(expected, expected.capitalize())
+            act_label = role_labels.get(user["role"], user["role"].capitalize())
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied: This account has the '{act_label}' role and cannot log in via the {exp_label} portal. Please select the correct role."
+            )
+
+    token = create_access_token(
+        user_id=user["id"],
+        role=UserRole(user["role"]),
+        name=user["name"],
+        email=user["email"],
+        username=user["username"]
+    )
+
+    return {
+        "token": token,
+        "tokenType": "Bearer",
+        "user": {
+            "userId": user["id"],
+            "username": user["username"],
+            "email": user["email"],
+            "name": user["name"],
+            "role": user["role"]
+        }
+    }
+
+@router.post("/auth/register")
+def register_endpoint(payload: RegisterRequest) -> Dict[str, Any]:
+    # Restrict public registration to Citizen role only
+    if payload.role and payload.role.strip().lower() != "citizen":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Public registration is restricted to citizen accounts. Municipal officer and administrator accounts cannot be self-registered."
+        )
+
+    uname = payload.username.strip().lower()
+    email = payload.email.strip().lower()
+    name = payload.name.strip()
+    pwd = payload.password
+
+    if len(uname) < 3:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username must be at least 3 characters.")
+    if "@" not in email or "." not in email:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Please provide a valid email address.")
+    if len(pwd) < 6:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password must be at least 6 characters.")
+    if len(name) < 2:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name must be at least 2 characters.")
+
+    existing_u = demo_store.get_user_by_identifier(uname)
+    if existing_u:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Username '{uname}' is already registered.")
+
+    existing_e = demo_store.get_user_by_identifier(email)
+    if existing_e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Email '{email}' is already registered.")
+
+    pw_hash, salt = hash_password(pwd)
+    created = demo_store.create_user(
+        username=uname,
+        email=email,
+        name=name,
+        password_hash=pw_hash,
+        salt=salt,
+        role="citizen"
+    )
+
+    token = create_access_token(
+        user_id=created["id"],
+        role=UserRole.CITIZEN,
+        name=created["name"],
+        email=created["email"],
+        username=created["username"]
+    )
+
+    return {
+        "token": token,
+        "tokenType": "Bearer",
+        "user": {
+            "userId": created["id"],
+            "username": created["username"],
+            "email": created["email"],
+            "name": created["name"],
+            "role": created["role"]
+        }
+    }
+
+@router.get("/auth/me")
+def get_current_user_profile(
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
+) -> Dict[str, Any]:
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required: No valid session token provided.",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    return {
+        "userId": current_user.user_id,
+        "username": current_user.username or current_user.user_id,
+        "email": current_user.email or "",
+        "name": current_user.name,
+        "role": current_user.role.value
+    }
+
+@router.post("/auth/logout")
+def logout_endpoint() -> Dict[str, Any]:
+    return {"status": "success", "message": "Logged out successfully"}
+
+@router.get("/admin/users")
+def list_admin_users(
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> List[Dict[str, Any]]:
+    return demo_store.list_users()
+
+# -----------------------------------------------------------------------------
+# Civic Issues Endpoints
+# -----------------------------------------------------------------------------
+
 @router.get("/issues", response_model=List[Issue])
 def get_issues(
     category: Optional[IssueCategory] = None,
     priority: Optional[PriorityLevel] = None,
     status_filter: Optional[IssueStatus] = Query(None, alias="status"),
-    hotspot_only: bool = False
+    hotspot_only: bool = False,
+    citizen_id: Optional[str] = None
 ) -> List[Issue]:
     return demo_store.list_issues(
         category=category,
         priority=priority,
         status_filter=status_filter,
-        hotspot_only=hotspot_only
+        hotspot_only=hotspot_only,
+        citizen_id=citizen_id
     )
 
+@router.get("/issues/my", response_model=List[Issue])
+def get_my_issues(
+    current_user: AuthenticatedUser = Depends(require_citizen)
+) -> List[Issue]:
+    """Returns complaints owned by the authenticated citizen."""
+    return demo_store.list_issues(citizen_id=current_user.user_id)
+
 @router.post("/issues", response_model=Issue, status_code=status.HTTP_201_CREATED)
-def submit_complaint(payload: IssueCreate) -> Issue:
+def submit_complaint(
+    payload: IssueCreate,
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
+) -> Issue:
     try:
+        # Enforce authenticated citizen identity on created issues
+        if current_user:
+            payload.citizen_id = current_user.user_id
         return pipeline.process_complaint(payload)
     except HTTPException:
         raise

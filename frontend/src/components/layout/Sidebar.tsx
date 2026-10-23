@@ -31,6 +31,7 @@ import {
   useSidebar,
 } from '../ui/sidebar'
 import { cn } from '../../lib/utils'
+import { useAuth } from '../../context/AuthContext'
 
 interface SidebarProps {
   activeView: string
@@ -65,47 +66,86 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSettings,
 }) => {
   const { open } = useSidebar()
+  const { user } = useAuth()
+  const role = user?.role || 'citizen'
 
-  const navSections: NavSection[] = [
-    {
-      title: 'OPERATIONS',
-      items: [
-        { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
-        { id: 'analyze', label: 'Analyze Complaint', icon: ScanSearch },
-        { id: 'intelligence', label: 'Issue Intelligence', icon: Activity },
-        { id: 'map', label: 'Tactical GIS Map', icon: Map },
-        { id: 'live', label: 'Live Radar', icon: Radio },
-        { id: 'explorer', label: 'Issue Catalog', icon: FolderOpen },
-      ],
-    },
-    {
-      title: 'SPATIAL INTELLIGENCE',
-      items: [
+  const navSections: NavSection[] = React.useMemo(() => {
+    if (role === 'citizen') {
+      return [
         {
-          id: 'hotspots',
-          label: 'Hotspots',
-          icon: Flame,
-          badge: hotspotCount > 0 ? String(hotspotCount) : undefined,
-          badgeColor: 'bg-rose-500/15 text-rose-300 border-rose-500/25',
+          title: 'MY WORKSPACE',
+          items: [
+            { id: 'citizen_portal', label: 'My Grievances', icon: FolderOpen },
+            { id: 'map', label: 'Civic Map', icon: Map },
+            { id: 'analyze', label: 'Check Photo / Text', icon: ScanSearch },
+          ],
         },
-        { id: 'recurring', label: 'Recurring Issues', icon: History },
+      ]
+    }
+
+    if (role === 'inspector') {
+      return [
         {
-          id: 'unreported',
-          label: 'Unreported Issues',
-          icon: Radar,
-          badge: unreportedCount > 0 ? String(unreportedCount) : undefined,
-          badgeColor: 'bg-[#8B5CF6]/20 text-[#C4B5FD] border-[#8B5CF6]/30',
+          title: 'OPERATIONS',
+          items: [
+            { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
+            { id: 'explorer', label: 'Priority Queue', icon: FolderOpen },
+            { id: 'map', label: 'Tactical GIS Map', icon: Map },
+            { id: 'intelligence', label: 'Issue Dossier', icon: Activity },
+            { id: 'live', label: 'Live Radar', icon: Radio },
+          ],
         },
-      ],
-    },
-    {
-      title: 'VERIFICATION',
-      items: [
-        { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
-        { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
-      ],
-    },
-  ]
+        {
+          title: 'VERIFICATION',
+          items: [
+            { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
+            { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
+          ],
+        },
+      ]
+    }
+
+    return [
+      {
+        title: 'OPERATIONS',
+        items: [
+          { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
+          { id: 'analyze', label: 'Analyze Complaint', icon: ScanSearch },
+          { id: 'intelligence', label: 'Issue Intelligence', icon: Activity },
+          { id: 'map', label: 'Tactical GIS Map', icon: Map },
+          { id: 'live', label: 'Live Radar', icon: Radio },
+          { id: 'explorer', label: 'Issue Catalog', icon: FolderOpen },
+        ],
+      },
+      {
+        title: 'SPATIAL INTELLIGENCE',
+        items: [
+          {
+            id: 'hotspots',
+            label: 'Hotspots',
+            icon: Flame,
+            badge: hotspotCount > 0 ? String(hotspotCount) : undefined,
+            badgeColor: 'bg-rose-500/15 text-rose-300 border-rose-500/25',
+          },
+          { id: 'recurring', label: 'Recurring Issues', icon: History },
+          {
+            id: 'unreported',
+            label: 'Unreported Issues',
+            icon: Radar,
+            badge: unreportedCount > 0 ? String(unreportedCount) : undefined,
+            badgeColor: 'bg-[#8B5CF6]/20 text-[#C4B5FD] border-[#8B5CF6]/30',
+          },
+        ],
+      },
+      {
+        title: 'VERIFICATION',
+        items: [
+          { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
+          { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
+        ],
+      },
+    ]
+  }, [role, hotspotCount, unreportedCount])
 
   return (
     <ShadcnSidebar>
@@ -226,45 +266,51 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
-        {/* AI Models & Settings Buttons */}
-        {open ? (
-          <div className="flex items-center gap-2 pt-0.5">
-            <button
-              id="sidebar-model-status-btn"
-              onClick={onOpenModelStatus}
-              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
-            >
-              <Cpu className="w-3.5 h-3.5 text-[#8B5CF6]" />
-              <span>AI Models</span>
-            </button>
-            <button
-              id="sidebar-settings-btn"
-              onClick={onOpenSettings}
-              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
-            >
-              <Settings2 className="w-3.5 h-3.5 text-slate-400" />
-              <span>Settings</span>
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-1.5">
-            <button
-              id="sidebar-model-status-btn"
-              onClick={onOpenModelStatus}
-              className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-[#8B5CF6] border border-white/[0.08] rounded-lg transition cursor-pointer"
-              title="AI Models Status"
-            >
-              <Cpu className="w-4 h-4" />
-            </button>
-            <button
-              id="sidebar-settings-btn"
-              onClick={onOpenSettings}
-              className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/[0.08] rounded-lg transition cursor-pointer"
-              title="Platform Settings"
-            >
-              <Settings2 className="w-4 h-4" />
-            </button>
-          </div>
+        {/* Role-Restricted Utility Controls */}
+        {role !== 'citizen' && (
+          open ? (
+            <div className="flex items-center gap-2 pt-0.5">
+              <button
+                id="sidebar-model-status-btn"
+                onClick={onOpenModelStatus}
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
+              >
+                <Cpu className="w-3.5 h-3.5 text-[#8B5CF6]" />
+                <span>AI Models</span>
+              </button>
+              {role === 'admin' && (
+                <button
+                  id="sidebar-settings-btn"
+                  onClick={onOpenSettings}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] rounded-lg text-xs font-medium transition cursor-pointer"
+                >
+                  <Settings2 className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Settings</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-1.5">
+              <button
+                id="sidebar-model-status-btn"
+                onClick={onOpenModelStatus}
+                className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-[#8B5CF6] border border-white/[0.08] rounded-lg transition cursor-pointer"
+                title="AI Models Status"
+              >
+                <Cpu className="w-4 h-4" />
+              </button>
+              {role === 'admin' && (
+                <button
+                  id="sidebar-settings-btn"
+                  onClick={onOpenSettings}
+                  className="p-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 hover:text-white border border-white/[0.08] rounded-lg transition cursor-pointer"
+                  title="Platform Settings"
+                >
+                  <Settings2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )
         )}
       </SidebarFooter>
     </ShadcnSidebar>

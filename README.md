@@ -5,7 +5,7 @@
 [![React](https://img.shields.io/badge/React-19.0-61DAFB.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF.svg)](https://vitejs.dev/)
-[![Tests](https://img.shields.io/badge/Tests-169%20passing-brightgreen.svg)](./tests)
+[![Tests](https://img.shields.io/badge/Tests-187%20passing-brightgreen.svg)](./tests)
 [![Design](https://img.shields.io/badge/Design%20System-Aurora%20Indigo-6457E8.svg)](./DESIGN_SYSTEM.md)
 [![Scope](https://img.shields.io/badge/Scope%20Freeze-Two%20Core%20Civic%20Issues-6457E8.svg)](./docs/DEMO_GUIDE.md)
 
@@ -82,7 +82,7 @@ Open **`http://localhost:5173`** in your browser.
 ## Running Verification & Smoke Tests
 
 ```bash
-# 1. Run complete pytest suite (168 tests)
+# 1. Run complete pytest suite (187 tests)
 pytest -v
 
 # 2. Run end-to-end API smoke test (10 checkpoints)
@@ -125,7 +125,7 @@ chiragwalaproj/
 ├── frontend/                      # React 19 + Vite + TypeScript application
 ├── models/                        # Checkpoints: yolov8s_rdd2022.pt, taco_yolo11s.pt
 ├── scripts/                       # Model downloaders, smoke test, evaluation scripts
-├── tests/                         # Pytest automated test suites (168 passing tests)
+├── tests/                         # Pytest automated test suites (187 passing tests)
 ├── requirements.txt               # Backend dependencies
 └── DESIGN_SYSTEM.md               # Aurora Indigo UI specification
 ```
