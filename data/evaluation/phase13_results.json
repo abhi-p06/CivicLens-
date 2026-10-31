@@ -1,0 +1,3043 @@
+{
+  "task1_baseline_hash": "2cf3f60395de6591d8378294fc26b8d7c4ca8f227e455987b3713ce6eeeea119",
+  "task2_threshold_experiments": [
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 54,
+      "fn": 36,
+      "precision": 0.4316,
+      "recall": 0.5325,
+      "f1_score": 0.4767,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Baseline Uniform (0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.1,
+        "1": 0.1,
+        "2": 0.1,
+        "3": 0.1
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 47,
+      "fp": 73,
+      "fn": 30,
+      "precision": 0.3917,
+      "recall": 0.6104,
+      "f1_score": 0.4772,
+      "mAP50": 0.4663,
+      "hard_neg_alarms": 11,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.22,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 13,
+          "fp": 7,
+          "fn": 6,
+          "precision": 0.65,
+          "recall": 0.6842,
+          "f1_score": 0.6667,
+          "ap50": 0.6347
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 34,
+          "fp": 15,
+          "fn": 5,
+          "precision": 0.6939,
+          "recall": 0.8718,
+          "f1_score": 0.7727,
+          "ap50": 0.7641
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 50,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Uniform 0.10"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.2,
+        "1": 0.2,
+        "2": 0.2,
+        "3": 0.2
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 42,
+      "fn": 37,
+      "precision": 0.4878,
+      "recall": 0.5195,
+      "f1_score": 0.5031,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 7,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.14,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 1,
+          "fn": 10,
+          "precision": 0.9,
+          "recall": 0.4737,
+          "f1_score": 0.6207,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 34,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Uniform 0.20"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.25,
+        "1": 0.25,
+        "2": 0.25,
+        "3": 0.25
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 36,
+      "fp": 34,
+      "fn": 41,
+      "precision": 0.5143,
+      "recall": 0.4675,
+      "f1_score": 0.4898,
+      "mAP50": 0.356,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 8,
+          "fp": 0,
+          "fn": 11,
+          "precision": 1.0,
+          "recall": 0.4211,
+          "f1_score": 0.5926,
+          "ap50": 0.4257
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 28,
+          "fp": 6,
+          "fn": 11,
+          "precision": 0.8235,
+          "recall": 0.7179,
+          "f1_score": 0.7671,
+          "ap50": 0.6423
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 28,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Uniform 0.25"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.3,
+        "1": 0.3,
+        "2": 0.3,
+        "3": 0.3
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 34,
+      "fp": 30,
+      "fn": 43,
+      "precision": 0.5312,
+      "recall": 0.4416,
+      "f1_score": 0.4823,
+      "mAP50": 0.3304,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 7,
+          "fp": 0,
+          "fn": 12,
+          "precision": 1.0,
+          "recall": 0.3684,
+          "f1_score": 0.5385,
+          "ap50": 0.3663
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 27,
+          "fp": 5,
+          "fn": 12,
+          "precision": 0.8438,
+          "recall": 0.6923,
+          "f1_score": 0.7606,
+          "ap50": 0.625
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 25,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Uniform 0.30"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.22,
+        "1": 0.22,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 31,
+      "fn": 37,
+      "precision": 0.5634,
+      "recall": 0.5195,
+      "f1_score": 0.5405,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 0,
+          "fn": 10,
+          "precision": 1.0,
+          "recall": 0.4737,
+          "f1_score": 0.6429,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 24,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Roadmap Candidate (D00=0.22, D10=0.22, D20=0.20, D40=0.35)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.2,
+        "1": 0.2,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 32,
+      "fn": 37,
+      "precision": 0.5556,
+      "recall": 0.5195,
+      "f1_score": 0.5369,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 1,
+          "fn": 10,
+          "precision": 0.9,
+          "recall": 0.4737,
+          "f1_score": 0.6207,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 24,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Roadmap Alt A (D00=0.20, D10=0.20, D20=0.20, D40=0.35)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.25,
+        "1": 0.25,
+        "2": 0.2,
+        "3": 0.4
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 39,
+      "fp": 26,
+      "fn": 38,
+      "precision": 0.6,
+      "recall": 0.5065,
+      "f1_score": 0.5493,
+      "mAP50": 0.3777,
+      "hard_neg_alarms": 5,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.1,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 8,
+          "fp": 0,
+          "fn": 11,
+          "precision": 1.0,
+          "recall": 0.4211,
+          "f1_score": 0.5926,
+          "ap50": 0.4257
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 19,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Roadmap Alt B (D00=0.25, D10=0.25, D20=0.20, D40=0.40)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.18,
+        "1": 0.18,
+        "2": 0.18,
+        "3": 0.3
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 35,
+      "fn": 36,
+      "precision": 0.5395,
+      "recall": 0.5325,
+      "f1_score": 0.5359,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 7,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.14,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 1,
+          "fn": 9,
+          "precision": 0.9091,
+          "recall": 0.5263,
+          "f1_score": 0.6667,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 9,
+          "fn": 8,
+          "precision": 0.775,
+          "recall": 0.7949,
+          "f1_score": 0.7848,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 25,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Roadmap Alt C (D00=0.18, D10=0.18, D20=0.18, D40=0.30)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.25,
+        "1": 0.25,
+        "2": 0.25,
+        "3": 0.45
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 36,
+      "fp": 22,
+      "fn": 41,
+      "precision": 0.6207,
+      "recall": 0.4675,
+      "f1_score": 0.5333,
+      "mAP50": 0.356,
+      "hard_neg_alarms": 5,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.1,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 8,
+          "fp": 0,
+          "fn": 11,
+          "precision": 1.0,
+          "recall": 0.4211,
+          "f1_score": 0.5926,
+          "ap50": 0.4257
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 28,
+          "fp": 6,
+          "fn": 11,
+          "precision": 0.8235,
+          "recall": 0.7179,
+          "f1_score": 0.7671,
+          "ap50": 0.6423
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 16,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "High Precision (D00=0.25, D10=0.25, D20=0.25, D40=0.45)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.12,
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.25
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 44,
+      "fp": 43,
+      "fn": 33,
+      "precision": 0.5057,
+      "recall": 0.5714,
+      "f1_score": 0.5366,
+      "mAP50": 0.4473,
+      "hard_neg_alarms": 7,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.14,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 13,
+          "fp": 5,
+          "fn": 6,
+          "precision": 0.7222,
+          "recall": 0.6842,
+          "f1_score": 0.7027,
+          "ap50": 0.6347
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 28,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "High Recall (D00=0.12, D10=0.12, D20=0.15, D40=0.25)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.1
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 63,
+      "fn": 36,
+      "precision": 0.3942,
+      "recall": 0.5325,
+      "f1_score": 0.453,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 50,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.10 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.2
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 47,
+      "fn": 36,
+      "precision": 0.4659,
+      "recall": 0.5325,
+      "f1_score": 0.497,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 8,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.16,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 34,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.20 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.3
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 38,
+      "fn": 36,
+      "precision": 0.519,
+      "recall": 0.5325,
+      "f1_score": 0.5256,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 7,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.14,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 25,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.30 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 37,
+      "fn": 36,
+      "precision": 0.5256,
+      "recall": 0.5325,
+      "f1_score": 0.529,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 7,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.14,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 24,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.35 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.4
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 32,
+      "fn": 36,
+      "precision": 0.5616,
+      "recall": 0.5325,
+      "f1_score": 0.5467,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 19,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.40 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.5
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 26,
+      "fn": 36,
+      "precision": 0.6119,
+      "recall": 0.5325,
+      "f1_score": 0.5694,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 13,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D40=0.50 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.1,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 44,
+      "fp": 59,
+      "fn": 33,
+      "precision": 0.4272,
+      "recall": 0.5714,
+      "f1_score": 0.4889,
+      "mAP50": 0.4281,
+      "hard_neg_alarms": 11,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.22,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 34,
+          "fp": 15,
+          "fn": 5,
+          "precision": 0.6939,
+          "recall": 0.8718,
+          "f1_score": 0.7727,
+          "ap50": 0.7641
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D20=0.10 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 54,
+      "fn": 36,
+      "precision": 0.4316,
+      "recall": 0.5325,
+      "f1_score": 0.4767,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D20=0.15 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.2,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 51,
+      "fn": 36,
+      "precision": 0.4457,
+      "recall": 0.5325,
+      "f1_score": 0.4852,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 9,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.18,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D20=0.20 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.25,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 38,
+      "fp": 50,
+      "fn": 39,
+      "precision": 0.4318,
+      "recall": 0.4935,
+      "f1_score": 0.4606,
+      "mAP50": 0.3875,
+      "hard_neg_alarms": 9,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.18,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 28,
+          "fp": 6,
+          "fn": 11,
+          "precision": 0.8235,
+          "recall": 0.7179,
+          "f1_score": 0.7671,
+          "ap50": 0.6423
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D20=0.25 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.3,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 37,
+      "fp": 49,
+      "fn": 40,
+      "precision": 0.4302,
+      "recall": 0.4805,
+      "f1_score": 0.454,
+      "mAP50": 0.3817,
+      "hard_neg_alarms": 9,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.18,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 27,
+          "fp": 5,
+          "fn": 12,
+          "precision": 0.8438,
+          "recall": 0.6923,
+          "f1_score": 0.7606,
+          "ap50": 0.625
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D20=0.30 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.1,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 44,
+      "fp": 58,
+      "fn": 33,
+      "precision": 0.4314,
+      "recall": 0.5714,
+      "f1_score": 0.4916,
+      "mAP50": 0.4473,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 13,
+          "fp": 7,
+          "fn": 6,
+          "precision": 0.65,
+          "recall": 0.6842,
+          "f1_score": 0.6667,
+          "ap50": 0.6347
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D00=0.10 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 54,
+      "fn": 36,
+      "precision": 0.4316,
+      "recall": 0.5325,
+      "f1_score": 0.4767,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D00=0.15 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.2,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 52,
+      "fn": 37,
+      "precision": 0.4348,
+      "recall": 0.5195,
+      "f1_score": 0.4734,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 1,
+          "fn": 10,
+          "precision": 0.9,
+          "recall": 0.4737,
+          "f1_score": 0.6207,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D00=0.20 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.25,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 39,
+      "fp": 51,
+      "fn": 38,
+      "precision": 0.4333,
+      "recall": 0.5065,
+      "f1_score": 0.4671,
+      "mAP50": 0.3777,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 8,
+          "fp": 0,
+          "fn": 11,
+          "precision": 1.0,
+          "recall": 0.4211,
+          "f1_score": 0.5926,
+          "ap50": 0.4257
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D00=0.25 (others=0.15)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.3,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 38,
+      "fp": 51,
+      "fn": 39,
+      "precision": 0.427,
+      "recall": 0.4935,
+      "f1_score": 0.4578,
+      "mAP50": 0.3579,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 7,
+          "fp": 0,
+          "fn": 12,
+          "precision": 1.0,
+          "recall": 0.3684,
+          "f1_score": 0.5385,
+          "ap50": 0.3663
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "config_name": "Sweep D00=0.30 (others=0.15)"
+    }
+  ],
+  "task3_geometric_ablations": [
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 54,
+      "fn": 36,
+      "precision": 0.4316,
+      "recall": 0.5325,
+      "f1_score": 0.4767,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 1: No Geometric Filter"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 38,
+      "fp": 53,
+      "fn": 39,
+      "precision": 0.4176,
+      "recall": 0.4935,
+      "f1_score": 0.4524,
+      "mAP50": 0.3558,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 7,
+          "fp": 2,
+          "fn": 12,
+          "precision": 0.7778,
+          "recall": 0.3684,
+          "f1_score": 0.5,
+          "ap50": 0.3601
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 2: Crack Aspect Ratio (AR >= 1.5, D00/D10)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.2,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 53,
+      "fn": 36,
+      "precision": 0.4362,
+      "recall": 0.5325,
+      "f1_score": 0.4795,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 2,
+          "fn": 9,
+          "precision": 0.8333,
+          "recall": 0.5263,
+          "f1_score": 0.6452,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 2b: Crack Aspect Ratio (AR >= 1.2, D00/D10)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.8,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 35,
+      "fp": 53,
+      "fn": 42,
+      "precision": 0.3977,
+      "recall": 0.4545,
+      "f1_score": 0.4242,
+      "mAP50": 0.3044,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 4,
+          "fp": 2,
+          "fn": 15,
+          "precision": 0.6667,
+          "recall": 0.2105,
+          "f1_score": 0.32,
+          "ap50": 0.2059
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 2c: Crack Aspect Ratio (AR >= 1.8, D00/D10)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": true,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 47,
+      "fn": 36,
+      "precision": 0.4659,
+      "recall": 0.5325,
+      "f1_score": 0.497,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 9,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.18,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 34,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 3: Min Box Area (Area >= 0.3% / 0.003)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": true,
+        "min_area_ratio": 0.001
+      },
+      "total_gt": 77,
+      "tp": 41,
+      "fp": 54,
+      "fn": 36,
+      "precision": 0.4316,
+      "recall": 0.5325,
+      "f1_score": 0.4767,
+      "mAP50": 0.4092,
+      "hard_neg_alarms": 10,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.2,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 10,
+          "fp": 3,
+          "fn": 9,
+          "precision": 0.7692,
+          "recall": 0.5263,
+          "f1_score": 0.625,
+          "ap50": 0.5203
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 41,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 3b: Min Box Area (Area >= 0.1% / 0.001)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.15,
+        "1": 0.15,
+        "2": 0.15,
+        "3": 0.15
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.5,
+        "min_area_filter": true,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 38,
+      "fp": 46,
+      "fn": 39,
+      "precision": 0.4524,
+      "recall": 0.4935,
+      "f1_score": 0.472,
+      "mAP50": 0.3558,
+      "hard_neg_alarms": 9,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.18,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 7,
+          "fp": 2,
+          "fn": 12,
+          "precision": 0.7778,
+          "recall": 0.3684,
+          "f1_score": 0.5,
+          "ap50": 0.3601
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 10,
+          "fn": 8,
+          "precision": 0.7561,
+          "recall": 0.7949,
+          "f1_score": 0.775,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 34,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Uniform 0.15 - Condition 4: Both Filters (AR >= 1.5 & Area >= 0.003)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.22,
+        "1": 0.22,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 31,
+      "fn": 37,
+      "precision": 0.5634,
+      "recall": 0.5195,
+      "f1_score": 0.5405,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 0,
+          "fn": 10,
+          "precision": 1.0,
+          "recall": 0.4737,
+          "f1_score": 0.6429,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 24,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Roadmap Candidate - Condition 1: No Geometric Filter"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.22,
+        "1": 0.22,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.5,
+        "min_area_filter": false,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 37,
+      "fp": 31,
+      "fn": 40,
+      "precision": 0.5441,
+      "recall": 0.4805,
+      "f1_score": 0.5103,
+      "mAP50": 0.3414,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 6,
+          "fp": 0,
+          "fn": 13,
+          "precision": 1.0,
+          "recall": 0.3158,
+          "f1_score": 0.48,
+          "ap50": 0.3168
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 24,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Roadmap Candidate - Condition 2: Crack Aspect Ratio (AR >= 1.5)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.22,
+        "1": 0.22,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": false,
+        "min_ar_crack": 1.5,
+        "min_area_filter": true,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 40,
+      "fp": 25,
+      "fn": 37,
+      "precision": 0.6154,
+      "recall": 0.5195,
+      "f1_score": 0.5634,
+      "mAP50": 0.3942,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 9,
+          "fp": 0,
+          "fn": 10,
+          "precision": 1.0,
+          "recall": 0.4737,
+          "f1_score": 0.6429,
+          "ap50": 0.4752
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 18,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Roadmap Candidate - Condition 3: Min Box Area (Area >= 0.003)"
+    },
+    {
+      "class_thresholds": {
+        "0": 0.22,
+        "1": 0.22,
+        "2": 0.2,
+        "3": 0.35
+      },
+      "filters": {
+        "aspect_ratio_filter": true,
+        "min_ar_crack": 1.5,
+        "min_area_filter": true,
+        "min_area_ratio": 0.003
+      },
+      "total_gt": 77,
+      "tp": 37,
+      "fp": 25,
+      "fn": 40,
+      "precision": 0.5968,
+      "recall": 0.4805,
+      "f1_score": 0.5324,
+      "mAP50": 0.3414,
+      "hard_neg_alarms": 6,
+      "hard_neg_total": 50,
+      "hard_neg_alarm_rate": 0.12,
+      "per_class": {
+        "0": {
+          "name": "D00",
+          "gt": 19,
+          "tp": 6,
+          "fp": 0,
+          "fn": 13,
+          "precision": 1.0,
+          "recall": 0.3158,
+          "f1_score": 0.48,
+          "ap50": 0.3168
+        },
+        "1": {
+          "name": "D10",
+          "gt": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        },
+        "2": {
+          "name": "D20",
+          "gt": 39,
+          "tp": 31,
+          "fp": 7,
+          "fn": 8,
+          "precision": 0.8158,
+          "recall": 0.7949,
+          "f1_score": 0.8052,
+          "ap50": 0.7073
+        },
+        "3": {
+          "name": "D40",
+          "gt": 19,
+          "tp": 0,
+          "fp": 18,
+          "fn": 19,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "ap50": 0.0
+        }
+      },
+      "condition_desc": "Roadmap Candidate - Condition 4: Both Filters (AR >= 1.5 & Area >= 0.003)"
+    }
+  ],
+  "task5_resolution_experiments": {
+    "640": {
+      "baseline": {
+        "class_thresholds": {
+          "0": 0.15,
+          "1": 0.15,
+          "2": 0.15,
+          "3": 0.15
+        },
+        "filters": {
+          "aspect_ratio_filter": false,
+          "min_ar_crack": 1.5,
+          "min_area_filter": false,
+          "min_area_ratio": 0.003
+        },
+        "total_gt": 77,
+        "tp": 41,
+        "fp": 54,
+        "fn": 36,
+        "precision": 0.4316,
+        "recall": 0.5325,
+        "f1_score": 0.4767,
+        "mAP50": 0.4092,
+        "hard_neg_alarms": 10,
+        "hard_neg_total": 50,
+        "hard_neg_alarm_rate": 0.2,
+        "per_class": {
+          "0": {
+            "name": "D00",
+            "gt": 19,
+            "tp": 10,
+            "fp": 3,
+            "fn": 9,
+            "precision": 0.7692,
+            "recall": 0.5263,
+            "f1_score": 0.625,
+            "ap50": 0.5203
+          },
+          "1": {
+            "name": "D10",
+            "gt": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          },
+          "2": {
+            "name": "D20",
+            "gt": 39,
+            "tp": 31,
+            "fp": 10,
+            "fn": 8,
+            "precision": 0.7561,
+            "recall": 0.7949,
+            "f1_score": 0.775,
+            "ap50": 0.7073
+          },
+          "3": {
+            "name": "D40",
+            "gt": 19,
+            "tp": 0,
+            "fp": 41,
+            "fn": 19,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          }
+        }
+      },
+      "roadmap": {
+        "class_thresholds": {
+          "0": 0.22,
+          "1": 0.22,
+          "2": 0.2,
+          "3": 0.35
+        },
+        "filters": {
+          "aspect_ratio_filter": false,
+          "min_ar_crack": 1.5,
+          "min_area_filter": false,
+          "min_area_ratio": 0.003
+        },
+        "total_gt": 77,
+        "tp": 40,
+        "fp": 31,
+        "fn": 37,
+        "precision": 0.5634,
+        "recall": 0.5195,
+        "f1_score": 0.5405,
+        "mAP50": 0.3942,
+        "hard_neg_alarms": 6,
+        "hard_neg_total": 50,
+        "hard_neg_alarm_rate": 0.12,
+        "per_class": {
+          "0": {
+            "name": "D00",
+            "gt": 19,
+            "tp": 9,
+            "fp": 0,
+            "fn": 10,
+            "precision": 1.0,
+            "recall": 0.4737,
+            "f1_score": 0.6429,
+            "ap50": 0.4752
+          },
+          "1": {
+            "name": "D10",
+            "gt": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          },
+          "2": {
+            "name": "D20",
+            "gt": 39,
+            "tp": 31,
+            "fp": 7,
+            "fn": 8,
+            "precision": 0.8158,
+            "recall": 0.7949,
+            "f1_score": 0.8052,
+            "ap50": 0.7073
+          },
+          "3": {
+            "name": "D40",
+            "gt": 19,
+            "tp": 0,
+            "fp": 24,
+            "fn": 19,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          }
+        }
+      },
+      "latency": {
+        "mean_ms": 102.08,
+        "median_ms": 72.54,
+        "p95_ms": 76.34
+      }
+    },
+    "960": {
+      "baseline": {
+        "class_thresholds": {
+          "0": 0.15,
+          "1": 0.15,
+          "2": 0.15,
+          "3": 0.15
+        },
+        "filters": {
+          "aspect_ratio_filter": false,
+          "min_ar_crack": 1.5,
+          "min_area_filter": false,
+          "min_area_ratio": 0.003
+        },
+        "total_gt": 77,
+        "tp": 33,
+        "fp": 52,
+        "fn": 44,
+        "precision": 0.3882,
+        "recall": 0.4286,
+        "f1_score": 0.4074,
+        "mAP50": 0.3175,
+        "hard_neg_alarms": 8,
+        "hard_neg_total": 50,
+        "hard_neg_alarm_rate": 0.16,
+        "per_class": {
+          "0": {
+            "name": "D00",
+            "gt": 19,
+            "tp": 7,
+            "fp": 4,
+            "fn": 12,
+            "precision": 0.6364,
+            "recall": 0.3684,
+            "f1_score": 0.4667,
+            "ap50": 0.3601
+          },
+          "1": {
+            "name": "D10",
+            "gt": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          },
+          "2": {
+            "name": "D20",
+            "gt": 39,
+            "tp": 26,
+            "fp": 10,
+            "fn": 13,
+            "precision": 0.7222,
+            "recall": 0.6667,
+            "f1_score": 0.6933,
+            "ap50": 0.5923
+          },
+          "3": {
+            "name": "D40",
+            "gt": 19,
+            "tp": 0,
+            "fp": 38,
+            "fn": 19,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          }
+        }
+      },
+      "roadmap": {
+        "class_thresholds": {
+          "0": 0.22,
+          "1": 0.22,
+          "2": 0.2,
+          "3": 0.35
+        },
+        "filters": {
+          "aspect_ratio_filter": false,
+          "min_ar_crack": 1.5,
+          "min_area_filter": false,
+          "min_area_ratio": 0.003
+        },
+        "total_gt": 77,
+        "tp": 32,
+        "fp": 23,
+        "fn": 45,
+        "precision": 0.5818,
+        "recall": 0.4156,
+        "f1_score": 0.4848,
+        "mAP50": 0.3126,
+        "hard_neg_alarms": 4,
+        "hard_neg_total": 50,
+        "hard_neg_alarm_rate": 0.08,
+        "per_class": {
+          "0": {
+            "name": "D00",
+            "gt": 19,
+            "tp": 7,
+            "fp": 1,
+            "fn": 12,
+            "precision": 0.875,
+            "recall": 0.3684,
+            "f1_score": 0.5185,
+            "ap50": 0.3601
+          },
+          "1": {
+            "name": "D10",
+            "gt": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          },
+          "2": {
+            "name": "D20",
+            "gt": 39,
+            "tp": 25,
+            "fp": 7,
+            "fn": 14,
+            "precision": 0.7812,
+            "recall": 0.641,
+            "f1_score": 0.7042,
+            "ap50": 0.5776
+          },
+          "3": {
+            "name": "D40",
+            "gt": 19,
+            "tp": 0,
+            "fp": 15,
+            "fn": 19,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "ap50": 0.0
+          }
+        }
+      },
+      "latency": {
+        "mean_ms": 162.72,
+        "median_ms": 159.35,
+        "p95_ms": 175.87
+      }
+    }
+  }
+}

@@ -1,0 +1,1809 @@
+{
+  "dataset": "RDD2022_India_Train_Split",
+  "provenance": "RDD2022 India (Arya et al., CC-BY-4.0)",
+  "total_images": 200,
+  "positive_count": 100,
+  "negative_count": 100,
+  "records": [
+    {
+      "filename": "India_000011.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000011.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000011.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "34ff50fa69782f9cfccec373d307ac70619562b8e81c76ded86aa25537d14ca4",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000052.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000052.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000052.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "178de5fc777d2ce8227bc3ed7ca541b9062930a52db143aaee4165587ec02bf5",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000054.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000054.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000054.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "a6767d7740afed655932b18c1aeb97698f7ed536f602800e80e78bce6ae16dc7",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000057.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000057.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000057.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "26d2015938ce14045de2eb6cd9615fcab6db9b73ab8382890797843188f7fefe",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000078.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000078.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000078.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6cb2e264c387dbb0705c807179628dd0fadb7d64c301e090e7d22429396cc751",
+      "box_count": 4
+    },
+    {
+      "filename": "India_000086.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000086.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000086.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "f071c48bf58f9f17027ab52127e46bd19219b23654aeaebde69f9b401f43b6db",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000102.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000102.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000102.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "b509515ee71385eda90239bd65282dd3c62eee8410734236d2e4b91052752334",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000131.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000131.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000131.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7a38fb50961b888b41170bfd83ef3c5ad106a446f13f94109bb1d3dabab28095",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000147.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000147.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000147.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "d97e7b396469ecb9615e7357374dbd66a837abbb0230af472951cd4d6cadaa89",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000155.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000155.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000155.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "1814da1286aeb88bca038a7e61ab65568ed07e6954d2f0680571ee9e9fe62527",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000157.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000157.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000157.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "834c74864e757f55eece3439fe0f9d1f2af9dd3fc106cb341dd8e96ab28d00d4",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000197.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000197.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000197.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "a390111279136c793803d5b1aa9dd95f4aeba215aae0d42396eeda5cbce2b8dd",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000199.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000199.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000199.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "726415d0adb43681483b3cf0917f7d5aad77b8f3aadc1ed8a0990b2f129733d0",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000210.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000210.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000210.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "ff10b5e5b485a5cdfa7d86ca82cf81bc4f39ff4610f7a317aedc45b78a44b229",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000223.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000223.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000223.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "d0fd7b98af28627aeaaef880b70f95e522e9751021b66c700c4f9e2bfcf121a6",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000224.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000224.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000224.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6fa9a43a265beb553591ed6d8a0cfef55f3ec393d96c2b61812575ecabe89833",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000232.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000232.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000232.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7d398be13d9f8e9c4a70d755b5ae7fd538724b52cf23a81aff838cc21bf250c9",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000256.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000256.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000256.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "37f67723d9559f46d7474d3d120edfa1504cdbc6498a44d24b9a782c075f7ad8",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000267.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000267.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000267.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "ec9d321501b2e277131a33ec1013ac7dc0e57dfcb10f3b2cca5be7e9aa16c37d",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000275.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000275.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000275.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "90a72bdf7cc7cbdd5715217f778abf142810462fe48cd40f0afd3f15eff3e647",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000292.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000292.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000292.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "0b103bc87f74bd12ed9a1429e8653839ba9afc9b7629aa67b0fd2ac1d3f26809",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000293.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000293.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000293.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "47ef86cf991341ecfb1cec4bdc144767d37241789d3ecf57f3ac8e02c8196900",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000299.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000299.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000299.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "66bc9365ad0dfbf4911fa3d9e15d8e5f34dab30ebb6ff4686c8c932f4f8a896c",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000312.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000312.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000312.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "e5efe6f7e7f77d5007fa224eafe4c82ce5cede9f7ed5e8b72bfab248a089c423",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000316.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000316.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000316.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "b976354c17e00ca2d4bd013316bf17e2e9ab3b878d72c94def8a18a0031b6b7e",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000115.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000115.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000115.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "e5779074d2eb88d84c668444db5291cfb68eac2a4c7d6c68c2f639defe2ce670",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000193.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000193.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000193.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "240770b2831a0d6525057743c8203f0aa6a781fa9e9c4844a467f9ef08b5b620",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000528.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000528.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000528.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "c70bdd47c319473375973bb1136066efa91db4bc676917cbb0fb12e35332025a",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000589.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000589.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000589.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "492c19b2f87b1dd4e2a03c4386f98e8c6ba1174fc845ade320c4cf15981900ab",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000862.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000862.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000862.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "adb7f9cc83a4f91f7ae21c0426e102d12d755ff98401e0d4c2a68e192785cecf",
+      "box_count": 3
+    },
+    {
+      "filename": "India_001094.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001094.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001094.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6b6b1980a7bcf37275188044b5d5c50a13509a7ec7197dc239399522af9082bf",
+      "box_count": 2
+    },
+    {
+      "filename": "India_001133.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001133.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001133.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "8bfbe507d11cf30259f8ffaf4252dfd59328321c7a82b207cc5c901476fa6f15",
+      "box_count": 1
+    },
+    {
+      "filename": "India_001207.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001207.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001207.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "c11303f63bd5e0953e3c255b46ed32390c89a17c6c6cb9870a1d0e2284fcb4c7",
+      "box_count": 3
+    },
+    {
+      "filename": "India_001266.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001266.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001266.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "13f6facd8fe736d9a96003125a605d19922b5dbee6881e969ba284cec0229d7d",
+      "box_count": 2
+    },
+    {
+      "filename": "India_001495.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001495.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001495.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6f4fc586b9953231c051a8bcdfa00574b64a28ada8a60f2a4f17cdbf5c698127",
+      "box_count": 3
+    },
+    {
+      "filename": "India_001566.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001566.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001566.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "9d5af49c5dea0cd47295c4f209f6e41570ec9fcc2c2ade0c5e119bcb465bd498",
+      "box_count": 3
+    },
+    {
+      "filename": "India_001935.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_001935.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_001935.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "91de3267da3c5b20a9518ce052dd5755d72a32aab1ea16829ad0292946b2dbcc",
+      "box_count": 2
+    },
+    {
+      "filename": "India_002279.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_002279.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_002279.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "cbaa7c4c10a50f262ecd145948faf17aa7bb18d44542eaaaca635600fae2760b",
+      "box_count": 1
+    },
+    {
+      "filename": "India_002404.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_002404.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_002404.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "35333c38c37eb0d37aa3ace319d1a82126b2f4eebabacb71a5a4036e12d41575",
+      "box_count": 3
+    },
+    {
+      "filename": "India_002503.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_002503.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_002503.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "5b1c2cdf16a8332967949145bb302e785489212624aeafeda280ea195d2f53ee",
+      "box_count": 4
+    },
+    {
+      "filename": "India_000014.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000014.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000014.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "b9fa5b7f55788088e335d346a58052adc14acfddb221544529c00a8f3e197487",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000027.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000027.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000027.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "b5ba3a4313bf577a6c019e7d2279bb3b3e16c110bffed340caa161d7592c35c8",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000028.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000028.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000028.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "8bc5098313e447f30f53c00810036ec96cb70ab1b2f83d61e15a61e9e9610460",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000043.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000043.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000043.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "366f7a652c058c922a588df0cba6ba3aef1b7b0af6d1af0071a7759c14768733",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000099.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000099.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000099.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "00a78e573fbff85c1b190997ca6fe18d10c3be5eb9749b19f412b4f874faef94",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000109.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000109.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000109.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "960206787cb07655a8877f1d07da65b9b15d27872fa478b630f9195a17586cc7",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000114.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000114.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000114.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6d874c84420e491daf3e8969a626aa67351a36fafd46f158adda9a9cbb44acec",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000126.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000126.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000126.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "32997900b1102810662971ca21662fc740c9dedb12e945720c48ae2cd23c5a7d",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000127.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000127.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000127.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7824ee6647e3785218814a710f3c32ffb91ae55a3f4ca9680bb4ae3aa6ea4dba",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000130.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000130.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000130.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "f341d67355fdefa8bec848a35acdb6f7670af8c8fcf9078ae0373fb52721278f",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000142.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000142.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000142.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "5a14f27f83beb827ae5781ef1712b150a10ddf8d6cffb1bea9e4ff3092a82fdd",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000158.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000158.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000158.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "e9190d2ce51a2fa273cb3e4cc92e06ae5107a78002d39f209eb482af698745c1",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000184.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000184.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000184.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "010a03f7f57de0f2b73f72615a8ebabc176dbc405cabc8d2eb61d2a02b0cb5db",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000191.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000191.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000191.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "462073a6f2bc9ee6c71c6a5d8124a6a7d0ce4f5a3ba4180f854c003bd68b3224",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000200.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000200.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000200.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "2b9d733abc42e0cd0eb3012a1638fc9cb6c6b4ed8cb00c67743626a281497d1d",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000209.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000209.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000209.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "0a42e255eb9fccb4bc30356bada738172cfd0300e7e65dd1ef9990cc1fe76b3c",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000222.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000222.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000222.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "c71df693c23c3d2b8d0d1903b1173da4d0201479b808f68873a56500053042ce",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000241.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000241.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000241.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "2b8ca2238f56c0331aba352bd2d05bece113b4fa18fe714641fb18ceff3e37ca",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000271.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000271.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000271.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "5139f018b2c3a613d88623a6e3efd808221eea8c01b4bf3046fad0ce2902adf4",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000272.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000272.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000272.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "d106601908b020898d1127cd8753dde0dcd966145f3821562b859c9f0ba5dc26",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000274.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000274.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000274.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "8d58e8ed39f818ea891d8bb7f21ab9ceb4774c419b51533ed768faf15dbca523",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000283.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000283.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000283.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7fa12056f63bfef8d11fac4978e6c8d544eb8a44ab51afcc9764d3ba306fbaf6",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000309.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000309.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000309.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "4be92bc5ece74e6beacfe2c343bbd24dd0c88825408900fc4b0b4c934162872d",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000317.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000317.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000317.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "ebdf201f25b1c207b0131110f4fe93c665d37c4865bb4f6fb10b2914bfe0ca33",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000343.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000343.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000343.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "46f4cbd06677060379bfa90a279448293822538f20d596604e8b17c749085131",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000350.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000350.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000350.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "3007c922012123a22cd079961af2ac98cea71dd559eaede3a4fcd83df9ba2495",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000353.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000353.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000353.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "93175e04492573d2ccf2cf9025648b4e81276f79c8ffa64bddce54f78be76778",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000010.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000010.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000010.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "0c638540e67270c526e31ebb0f60cb2b7a3163ceb69a3edecfbaf634cf8651b5",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000017.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000017.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000017.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "1cbcfb1417189c12958d6999b27d15e63b1b20258082a198fe675f49a1a6206f",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000032.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000032.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000032.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "9577b927cd57bc889e1e7f2cc6232c70cfaf25f09be33949fd016494ce23c1a0",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000055.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000055.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000055.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "4bf426d0b7efd80e8c2f27f5aba72da91d6582fbde0b578ce494a95c030bfb0c",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000076.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000076.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000076.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "d17273108cbeb18bda82029eaaa8a300f91bfc1df93e85a271903c6e8f7d6aa2",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000088.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000088.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000088.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "530ddca88cfca25095844dc09551976adcd9e1aff9dce8b98f946024f9efa576",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000128.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000128.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000128.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "5bdcf97eac748c47d99ae51db2038ae397516df8dd84558ff20816df09f55fc2",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000145.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000145.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000145.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "819b1461ab88c7932852fc445c3d03d8cc4ba4fd41efbc10fca69334538751a0",
+      "box_count": 3
+    },
+    {
+      "filename": "India_000146.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000146.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000146.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "2aec0b31a7e077ed99b72e9d6ecbc02fc99b036c5a29849ed44bd5846eb4f214",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000163.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000163.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000163.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "0783618b30281e9e287b4ae45ca854a3887961ad6637e627c0bd9548dd8e30e0",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000182.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000182.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000182.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "5f28b6ac6c07b483ff434801f5b0e4311811529a2c15d8a81e4b248baa69f7f3",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000189.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000189.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000189.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7eda04160bce282c8c8d393893a5d470dc4bfadc38c41e24b41615c4f134bb09",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000201.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000201.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000201.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "8413b696b659c341502e6ce35b2d2ed5c79912c426ee283c2879acb92aeaae11",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000203.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000203.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000203.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "eb5006f11306ce01dc2db585789380e411bccc364dff7bcb6781336b668988f2",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000214.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000214.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000214.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "96023c98b4291974dde439d5905e37881ab10b44e9dbefc755b8aa2a79674c3a",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000245.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000245.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000245.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7cd489a073797098fb4e14204c503d576f517b4357f033f818d228a9f9bd0c7b",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000260.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000260.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000260.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "8db6a2041991fdcd06579b07441bf071998077061dcac8b923697ff432a42bcf",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000319.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000319.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000319.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6c63c9e2f90b53966766687add0fa2fc54911d6d007865ab97b4096a065837e3",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000320.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000320.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000320.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "32584d6fd04b33e84b463639e90a3b2c64a48d9d6fc7cc2137e86788251209f3",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000329.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000329.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000329.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "10a2d14443467995030f4f350f2b99d2aec7664b91ee85b629878004a072b1c7",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000330.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000330.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000330.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "42fae595e7dd53686b1e3e46aefd4069f2c0e2c701fda3a03788d0e0547bc8b4",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000335.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000335.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000335.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "30d6ff806adfca3b825c42bc8eab57d59cbfda8dd68129068c1c688380e9a7ea",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000358.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000358.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000358.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "1ba7f949c3da37db812ede8d2186ca76354940ce4dfc8164c84409af69af5315",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000362.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000362.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000362.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "f9594d6a530345b7fedd60c059f5afb2f92b2c327b10a3ddfe0e06d8a8162be1",
+      "box_count": 5
+    },
+    {
+      "filename": "India_000367.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000367.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000367.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "6088d145777e4bf197250f0668a465aeb3a9ef890d15e1dc0c87c8e7a0fdd942",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000369.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000369.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000369.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "48b4677cd65bff67dc95e346df1266e72a289018eb41e7f7f4f7220187b14264",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000373.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000373.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000373.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "b92af3cdd566285e6b5131ba65b585d81b586a8c15a28938ecaccee8d82e2ff1",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000379.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000379.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000379.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "bce70c29c71f0e01bea6ba787e787b4bd3cb533e70ad0db498a5a914d30a3245",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000382.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000382.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000382.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "87053502e9c079ce5c6b393ca48bdc625b3da80a9985e06300b56491e38e388a",
+      "box_count": 5
+    },
+    {
+      "filename": "India_000383.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000383.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000383.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "ad00c9e0845a8c2608f6d2fa02723a105352aae572dba483dc7abf1c3883a227",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000391.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000391.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000391.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "297bd6e993d00c75758eb3efcdd45e5278f75a059df6b22e87f8c30d3fec96a8",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000403.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000403.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000403.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "bc7934cc8d20f8ee475b816ea46c5b55788acea2677756821edc433c954ba42d",
+      "box_count": 1
+    },
+    {
+      "filename": "India_000407.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000407.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000407.txt",
+      "split": "train",
+      "is_positive": true,
+      "sha256": "7a60a907c086771a02b8dc1d9b698f1b0dfe47c7c7564c943bff2447ddd00e1e",
+      "box_count": 2
+    },
+    {
+      "filename": "India_000000.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000000.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000000.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "4232dd339dc2ea8332f757456525dc29cea44ca609162e7c31855b4a82144b00",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000001.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000001.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000001.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "87c9ac34cf60d926432fdb50005265972aecfde49dc9509f1ddd9b12f35ee0c4",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000003.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000003.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000003.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d8112fb5d3a95a8ff1fda9f5b2556c010b2a4943da43950e9db6907b680c0aa6",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000005.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000005.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000005.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "62ff7f07c338159336591b981b36262a0fb9f2ec1614ca8c119cfef93e828c7f",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000012.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000012.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000012.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "21ba072134a82e6cc941689c25d57fc5eac167b1b542d1df600980f742f79271",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000016.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000016.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000016.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "78c6936d7697333cdcf3cca16444157bfaf1ab9412b98562a70f20f83c9b4f83",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000018.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000018.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000018.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "1e193454b017be5beb234bc1cb139a4f7fcb8d4fb545c9e1d97b8a432a2777c4",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000023.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000023.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000023.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "f39860d2e4dd9bcb51cc16e098f2b6370d0f10cbe8bbb74bd9bdab62aa16f8b9",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000026.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000026.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000026.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "02304b376ce4b2a7f638469b619a86171466df2586e365f1caaf83d355163e03",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000035.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000035.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000035.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "25aa4073a8a511eaa8350dff19607d3f2d499577ca15147ed4ed07a57e5e47a0",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000036.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000036.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000036.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "db04090127457c743878c2b19399a86f52cad9d38eb5d94cc284cbc1856bc21f",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000037.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000037.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000037.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d288b6d77b6692e5dd196babc69dcfd88a740057f8108d07a4ec34a962af4197",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000039.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000039.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000039.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "504bdec06b6c300e6cb5dc357d17377993e91bff407a58f7b218a95ea9d9c568",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000040.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000040.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000040.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "68982bf0fda0bb49927a991e14b6b98d6643c707c23030758903f071ad54cb45",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000041.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000041.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000041.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "c1d27b59fcbaaa185dfa786ab4c1d18d89a5d1dee1293f614a832682d3bdb8f4",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000042.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000042.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000042.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "6f8b701b1878319621e9713b7e36238632d6f459cf7a82eb9dc153f855dcbc77",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000047.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000047.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000047.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "6fbd4de7c14263defeb4e8cc305b0819df92ae20a035e9a053b8282a19ba58a1",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000049.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000049.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000049.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "935e2bad0d2b2b990574b002d55bb5e41f5340e0a9380e95ad70e175c982df26",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000059.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000059.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000059.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "4d7803dfc8bbd878696c640955a6f176ad99f0bfb2750d0d4ed313a3ca224bb1",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000061.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000061.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000061.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "5bf3266871b1fd0bec2446a791d35a8e100d892f1ceae876c761906dffe7415f",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000066.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000066.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000066.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "12a3a08ba202eee88169f4fd5d9afa31bf9f5740855e39fd0dd2f9b11050237b",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000072.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000072.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000072.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "ca0dfc2de5a52d5d2f713793129437869aff929a31c0e3a1e14f352e0cfb906c",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000073.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000073.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000073.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "ef426b5b8c348944d0f6cd4a15cc961a26fe3ce30c3d39a27118795a61ef6cda",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000074.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000074.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000074.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "1c1bc839a6b8d8ec8731c69e06a753e076e0cb8d979aa848d143a551b54903e6",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000075.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000075.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000075.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "e85014939a7d32e874dbf85738cc1e31c1bfc86810c242527121847e3c4f061e",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000079.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000079.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000079.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "3c0347ac6a0b3213d66aba4b181d50d8b727c89f5bece3231fd7e0a7cca4b4ce",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000080.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000080.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000080.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "0ae6e64f0fa5c5d89f3778c79eea95aa84f41ea440826b9468057b82e31904a9",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000081.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000081.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000081.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "f1df30933de11d18471d0c9c0cf434e222523f6b486b72fa61e218d70804a174",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000085.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000085.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000085.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "fe345e6008e9659f588ee38db2c294432cc48196a3f154906ce93dac47f94c5b",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000089.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000089.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000089.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "666b85f9ec10fddcaca9ff5c4768c5514c128972004caf84c2449f51b8b1226c",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000095.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000095.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000095.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "7a3421101e07417089a2a85c7dbc745a37dd9f3c212fe42af368bc92adf61ef9",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000101.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000101.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000101.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "58b5839df01b39378e405519c9acad201de9ef8c7a9e7937676f7bfb95317822",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000103.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000103.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000103.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "02cfee47e17991fcb3b2657da2c8ebfe4ab6151a68148a8b2b8e116b6095688c",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000105.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000105.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000105.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "30019e2f78e545f1432a923170f9e9e1bc1b72a70c18aff9d09602b3da7a1936",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000107.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000107.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000107.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "65bd3c2b18c0e1097076d80d2e3e75bbf9e32b7a154f754ecfb4892f4bc8ae42",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000108.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000108.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000108.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "289bc2149aa9c9790b586655aa90bf2f2bd2da24d7427dfad53b2255c08510df",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000110.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000110.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000110.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "1b292023e7edce37e16434e9d5017903a921f6eb54468ae804510bdd996f3215",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000111.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000111.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000111.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "a3dcce82d3b8acc54f0d8e6aa9de899f61ea37f1eedf190ce23e344d8e810bbb",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000112.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000112.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000112.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "6094fa472ff1fdad7658174188b077194ee267303e090371b087aa650a7ec283",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000116.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000116.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000116.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "5628cb2f7c36cb795ba7d09fe5cf7fceb570633d12fde1f0c07730d00ef7888a",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000117.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000117.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000117.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "1f82015d6249c4860f18ec74164fa33c9c8434884c0c0eb3d9dde8040a234c9c",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000119.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000119.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000119.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d5e06713cb547dce0c336572559f1e22de998c070a32ce8294085d5c91464e68",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000121.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000121.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000121.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "8d55ab8a733bd9c5dc8017900715e9af412d51458bbc0249a255645a9b4a1e25",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000123.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000123.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000123.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "40eb2ff031a0434056f23764bb9e70fafaec45c15ebc5d2bc08e8ec31ed1ce30",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000129.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000129.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000129.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "67c3df314a03c3c6a97e0973b5c71023a1efde26164c2df1d4dc1332aea45aa0",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000135.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000135.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000135.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "3a80c1ac9a9ca99fae82eb40538a0a309eec7ee2c7c61581866e8348c69996a4",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000140.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000140.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000140.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "c025420dd64893777ee3187683703a65f855a21251de43374128e8e485c5a2b7",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000144.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000144.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000144.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "9d28b1cc57fb21cbe44f3c587588883eecae6a21486b85aa99d099969372feb3",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000148.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000148.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000148.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "c15d3df9558e05bf285ba8794975f45939d5c5e3acbdb485a800893284af3cbc",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000150.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000150.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000150.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "b3db5bd821c9fc3b00e8f28a7acfe92a4b6ca05f9484598e8f0af33972323cef",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000160.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000160.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000160.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "a05bb1fa8953476e6b9e887fef8bc798e12715c2750be2189964c41779337df8",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000171.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000171.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000171.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "33c381b28c937ac8cfdcca6ec3dcadd8aa8ce0a29a5b8e277cf28d3963505ed5",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000174.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000174.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000174.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "267c7dfe812e258bb4c4d563b96635b3c07db6d08f81b1487bcfcdf2f514afe3",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000175.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000175.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000175.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "912e669b6f62fe6c82e7518ce5ccc6b27a8b5c8721aefde934fb3403be4e83cb",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000177.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000177.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000177.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "b26796cfc4420432b36f7a3ff65b7df06f061ed57cdda49bba5a4d49ff4bb546",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000178.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000178.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000178.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "4addffc02a7be7662b9f0c885f042d1137b95511c69ed54254566bf9871f1826",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000187.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000187.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000187.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "bb3666c1fdb9ed304f8ca23d271765340c502519afd3317d891c661db18952c8",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000190.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000190.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000190.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "6fc1defb71362f36e355c4bcb44ae8a07b65b44a6d142e0ac5bbdc0ef3622e83",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000195.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000195.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000195.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "5fd626161ff736615406dca3c98be5f5ea85dfa5275b8364f92a5a3385b21eca",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000198.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000198.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000198.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "0aace624b639d7e62251a85ead5020170e3c75358a881a9ccf9432600d86fbcc",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000206.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000206.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000206.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "14cea2f3939ecfbe9418d71c90485cbb34fbc64613fbc2bd3d05f4782fe7831e",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000207.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000207.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000207.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "9e940fdec7c77510aae4e111a7a209d58ef270d821cd4fb07c8ec9f1b8b9c75d",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000213.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000213.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000213.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "ee42882256b0599d5398aafd31d51782aef92436efb75db17c0fca52511d2a58",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000218.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000218.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000218.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "e9ef4ecae2815b8f54e93879ccbce6833d69dfa6f8224ad44179354e7d68992c",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000219.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000219.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000219.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "083c2db14acdb574c70a932b7d4388129164275f1c9fde20e0b6c895e0713065",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000225.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000225.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000225.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "bf59f8aa88799600dc99315b379dc7bf1a5ae63fb673e6555fe173d447e58890",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000226.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000226.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000226.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "0645887da9653526395f02629fac6bd5cb90fff1ba35355de69b3481b6a43c67",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000227.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000227.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000227.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "7475adeebed945ef683965d2340e0ba2cf4ccd876ed8316ed251ca0eb8954b08",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000228.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000228.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000228.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "76becf0dee9c37972f127558c22765ed2a054c91f346956db84715903a7907b0",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000229.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000229.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000229.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "0e5c163c3a0bb202ce8cb953b4575b09e6a574145c00af6d447a3eab71ee863e",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000233.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000233.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000233.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "3c02b0e5862e6be6c4cd4890309826f8760947894c719f2a12426783c4030647",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000235.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000235.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000235.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "3dc9656f1fe2cf46fcbd685c8f92554b47f2c5efaaec0d30c43c135569dfed15",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000236.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000236.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000236.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "2a380e0bf54198bfc6500329b56a1d2dd0b19fbbc5c30265b394b3567dae5851",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000238.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000238.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000238.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "dfc65de19137f543a197783fd7aba40fe084e850c45caa28acf8e9f174c17d33",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000242.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000242.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000242.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d1705d814f7de20e3495b8a973e1426d5f3836a81f9b19b9f4ff5fa3d41f1af0",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000243.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000243.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000243.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "f13bc2603ea476dcbc1b32a277abf46e6c5499ec0f1410495d4efd8fde025665",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000244.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000244.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000244.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "1df3ed1415ded30efded2f364eab72490129790bd207e722b5949810da9e0b11",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000249.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000249.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000249.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "e8bfdf4a2efafc67e84b1f1993bc25a5823b5cb2ce85baf020908329e05d32a8",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000253.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000253.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000253.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "ac8379b8c81ce3a02751b2dfacf362c68435acd36372638b8f6ba961b093e63a",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000254.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000254.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000254.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "c713db6da6445ee3fef9d1bfbfcec11cad03fff8fede736a48222ab2c993e4c0",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000255.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000255.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000255.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "ecf93ff1902d25dc7d60684e1b2fab0debf8f87ff72c192d37a1a4e8f1325491",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000257.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000257.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000257.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "5e24aadf7fb30861ffc011f897b3cd12ab994b84246614dcd488c2faae85b344",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000258.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000258.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000258.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "783f8f02de5750b02ee44b7e6cdc4d7521db59cf625ffe8e3f0cee7ed8b888da",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000262.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000262.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000262.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d0510992b61760b309120d0f89a647da783947b516aa41fec4cbba6f608fdbdc",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000263.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000263.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000263.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "38fe30a9a42c762665903e7bd8d505dc583088fd330d2e2d61edb581f18a7320",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000273.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000273.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000273.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "3003e85689f7a64c34093cb53685120aab9583e28439996b57fb32aa830f423a",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000278.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000278.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000278.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "96206ead14b6ab74dc0dab2fcf60686b2cce7a319644427b75c7c5ee2d995aa5",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000280.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000280.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000280.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d340a1ac7f21ad9562c62d2131b2cc9f4f35d0a9ca853d791ede0ed0c8b400c9",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000281.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000281.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000281.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "01061a99019f7d855b6dd7e5bec44b914e6c322597e755852509417b2a52cc8b",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000286.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000286.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000286.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "22b6d49813ac84e1ff806d554fd46c945303eec91bedb325fe96b8238bacb12e",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000288.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000288.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000288.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "97ee6200f33f2ed54cec9861f9911b87979a26793a22ccda0fc48672e4213b04",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000289.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000289.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000289.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d001807d4506019f9668b29b33abe0b48bf7cdb4625e572dd00783d7b0eb8d07",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000291.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000291.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000291.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "59bf07c878f46bf5b9dbbe4465fa190fd54bd10d725035005bfc5de600e9d6ac",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000294.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000294.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000294.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "12e4b9da6a02e2ce115464f360fee506269d089161a405703dde782db35115b5",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000295.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000295.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000295.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "9e9a572e4fca336a268c3b8aa54be15428917590a1d6df63f7aa82b3ee5dedf9",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000297.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000297.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000297.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "80b409fe07352a813fdec7671c5e6a9cf936089a05f184fccca0f3acbd892216",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000301.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000301.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000301.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "d54409b7578481e1d41719abc4fa0bb04bee40d7ce44ea9072e457e43df16bbd",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000303.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000303.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000303.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "85d0e43ef6e0d3b79a9aa98f510c27d355ae6db725006bf89f893b6613db44a1",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000304.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000304.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000304.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "fb27968b840e820a7e2fdf14e13da6ea0576683fb68d2af9a45c0203d8abe7ca",
+      "box_count": 0
+    },
+    {
+      "filename": "India_000305.jpg",
+      "image_path": "data/datasets/road_damage/images/train/India_000305.jpg",
+      "label_path": "data/datasets/road_damage/labels/train/India_000305.txt",
+      "split": "train",
+      "is_positive": false,
+      "sha256": "c7b5cd64f15a2eec73652dd69e8fb1c73bf6df2ec2401d7179c7660985062f92",
+      "box_count": 0
+    }
+  ]
+}
