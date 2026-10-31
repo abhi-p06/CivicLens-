@@ -1,0 +1,440 @@
+[
+  {
+    "class_thresholds": {
+      "0": 0.15,
+      "1": 0.15,
+      "2": 0.15,
+      "3": 0.15
+    },
+    "filters": {
+      "aspect_ratio_filter": false,
+      "min_ar_crack": 1.5,
+      "min_area_filter": false,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 41,
+    "fp": 70,
+    "fn": 31,
+    "precision": 0.3694,
+    "recall": 0.5694,
+    "f1_score": 0.4481,
+    "mAP50": 0.5703,
+    "hard_neg_alarms": 12,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.24,
+    "per_class": {
+      "0": {
+        "name": "D00",
+        "gt": 16,
+        "tp": 11,
+        "fp": 9,
+        "fn": 5,
+        "precision": 0.55,
+        "recall": 0.6875,
+        "f1_score": 0.6111,
+        "ap50": 0.537
+      },
+      "1": {
+        "name": "D10",
+        "gt": 2,
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "ap50": 1.0
+      },
+      "2": {
+        "name": "D20",
+        "gt": 37,
+        "tp": 28,
+        "fp": 3,
+        "fn": 9,
+        "precision": 0.9032,
+        "recall": 0.7568,
+        "f1_score": 0.8235,
+        "ap50": 0.744
+      },
+      "3": {
+        "name": "D40",
+        "gt": 17,
+        "tp": 0,
+        "fp": 58,
+        "fn": 17,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      }
+    },
+    "candidate_id": "1_baseline_yolov8s",
+    "candidate_name": "Baseline YOLOv8s (Uniform conf=0.15)"
+  },
+  {
+    "class_thresholds": {
+      "0": 0.22,
+      "1": 0.22,
+      "2": 0.2,
+      "3": 0.35
+    },
+    "filters": {
+      "aspect_ratio_filter": false,
+      "min_ar_crack": 1.5,
+      "min_area_filter": false,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 36,
+    "fp": 43,
+    "fn": 36,
+    "precision": 0.4557,
+    "recall": 0.5,
+    "f1_score": 0.4768,
+    "mAP50": 0.296,
+    "hard_neg_alarms": 10,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.2,
+    "per_class": {
+      "0": {
+        "name": "D00",
+        "gt": 16,
+        "tp": 9,
+        "fp": 7,
+        "fn": 7,
+        "precision": 0.5625,
+        "recall": 0.5625,
+        "f1_score": 0.5625,
+        "ap50": 0.4677
+      },
+      "1": {
+        "name": "D10",
+        "gt": 2,
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "2": {
+        "name": "D20",
+        "gt": 37,
+        "tp": 27,
+        "fp": 2,
+        "fn": 10,
+        "precision": 0.931,
+        "recall": 0.7297,
+        "f1_score": 0.8182,
+        "ap50": 0.7163
+      },
+      "3": {
+        "name": "D40",
+        "gt": 17,
+        "tp": 0,
+        "fp": 34,
+        "fn": 17,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      }
+    },
+    "candidate_id": "2_perclass_thresholds",
+    "candidate_name": "Per-Class Thresholds (D00=0.22, D10=0.22, D20=0.20, D40=0.35)"
+  },
+  {
+    "class_thresholds": {
+      "0": 0.22,
+      "1": 0.22,
+      "2": 0.2,
+      "3": 0.35
+    },
+    "filters": {
+      "aspect_ratio_filter": false,
+      "min_ar_crack": 1.5,
+      "min_area_filter": true,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 35,
+    "fp": 37,
+    "fn": 37,
+    "precision": 0.4861,
+    "recall": 0.4861,
+    "f1_score": 0.4861,
+    "mAP50": 0.2812,
+    "hard_neg_alarms": 10,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.2,
+    "per_class": {
+      "0": {
+        "name": "D00",
+        "gt": 16,
+        "tp": 8,
+        "fp": 7,
+        "fn": 8,
+        "precision": 0.5333,
+        "recall": 0.5,
+        "f1_score": 0.5161,
+        "ap50": 0.4086
+      },
+      "1": {
+        "name": "D10",
+        "gt": 2,
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "2": {
+        "name": "D20",
+        "gt": 37,
+        "tp": 27,
+        "fp": 2,
+        "fn": 10,
+        "precision": 0.931,
+        "recall": 0.7297,
+        "f1_score": 0.8182,
+        "ap50": 0.7163
+      },
+      "3": {
+        "name": "D40",
+        "gt": 17,
+        "tp": 0,
+        "fp": 28,
+        "fn": 17,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      }
+    },
+    "candidate_id": "3_geometric_min_area",
+    "candidate_name": "Per-Class Thresholds + Min Area Filter (Area >= 0.003)"
+  },
+  {
+    "class_thresholds": {
+      "0": 0.22,
+      "1": 0.22,
+      "2": 0.2,
+      "3": 0.35
+    },
+    "filters": {
+      "aspect_ratio_filter": true,
+      "min_ar_crack": 1.5,
+      "min_area_filter": false,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 31,
+    "fp": 40,
+    "fn": 41,
+    "precision": 0.4366,
+    "recall": 0.4306,
+    "f1_score": 0.4336,
+    "mAP50": 0.2302,
+    "hard_neg_alarms": 9,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.18,
+    "per_class": {
+      "0": {
+        "name": "D00",
+        "gt": 16,
+        "tp": 4,
+        "fp": 4,
+        "fn": 12,
+        "precision": 0.5,
+        "recall": 0.25,
+        "f1_score": 0.3333,
+        "ap50": 0.2046
+      },
+      "1": {
+        "name": "D10",
+        "gt": 2,
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "2": {
+        "name": "D20",
+        "gt": 37,
+        "tp": 27,
+        "fp": 2,
+        "fn": 10,
+        "precision": 0.931,
+        "recall": 0.7297,
+        "f1_score": 0.8182,
+        "ap50": 0.7163
+      },
+      "3": {
+        "name": "D40",
+        "gt": 17,
+        "tp": 0,
+        "fp": 34,
+        "fn": 17,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      }
+    },
+    "candidate_id": "3b_geometric_aspect_ratio",
+    "candidate_name": "Per-Class Thresholds + Crack Aspect Ratio Filter (AR >= 1.5)"
+  },
+  {
+    "class_thresholds": {
+      "0": 0.15,
+      "1": 0.15,
+      "2": 0.15,
+      "3": 0.15
+    },
+    "filters": {
+      "aspect_ratio_filter": false,
+      "min_ar_crack": 1.5,
+      "min_area_filter": false,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 35,
+    "fp": 15,
+    "fn": 37,
+    "precision": 0.7,
+    "recall": 0.4861,
+    "f1_score": 0.5738,
+    "mAP50": 0.3205,
+    "hard_neg_alarms": 3,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.06,
+    "per_class": {
+      "0": {
+        "name": "D00_longitudinal_crack",
+        "gt": 16,
+        "tp": 10,
+        "fp": 4,
+        "fn": 6,
+        "precision": 0.7143,
+        "recall": 0.625,
+        "f1_score": 0.6667,
+        "ap50": 0.6139
+      },
+      "1": {
+        "name": "D10_transverse_crack",
+        "gt": 2,
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "2": {
+        "name": "D20_alligator_crack",
+        "gt": 37,
+        "tp": 23,
+        "fp": 7,
+        "fn": 14,
+        "precision": 0.7667,
+        "recall": 0.6216,
+        "f1_score": 0.6866,
+        "ap50": 0.5891
+      },
+      "3": {
+        "name": "D40_pothole",
+        "gt": 17,
+        "tp": 2,
+        "fp": 2,
+        "fn": 15,
+        "precision": 0.5,
+        "recall": 0.1176,
+        "f1_score": 0.1905,
+        "ap50": 0.0792
+      }
+    },
+    "candidate_id": "4_finetuned_yolov8s_hardneg",
+    "candidate_name": "Fine-Tuned YOLOv8s (Hard Negatives, conf=0.15)"
+  },
+  {
+    "class_thresholds": {
+      "0": 0.15,
+      "1": 0.15,
+      "2": 0.15,
+      "3": 0.15
+    },
+    "filters": {
+      "aspect_ratio_filter": false,
+      "min_ar_crack": 1.5,
+      "min_area_filter": false,
+      "min_area_ratio": 0.003
+    },
+    "total_gt": 72,
+    "tp": 1,
+    "fp": 11,
+    "fn": 71,
+    "precision": 0.0833,
+    "recall": 0.0139,
+    "f1_score": 0.0238,
+    "mAP50": 0.005,
+    "hard_neg_alarms": 2,
+    "hard_neg_total": 50,
+    "hard_neg_alarm_rate": 0.04,
+    "per_class": {
+      "0": {
+        "name": "D00_longitudinal_crack",
+        "gt": 16,
+        "tp": 0,
+        "fp": 0,
+        "fn": 16,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "1": {
+        "name": "D10_transverse_crack",
+        "gt": 2,
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "2": {
+        "name": "D20_alligator_crack",
+        "gt": 37,
+        "tp": 0,
+        "fp": 0,
+        "fn": 37,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "ap50": 0.0
+      },
+      "3": {
+        "name": "D40_pothole",
+        "gt": 17,
+        "tp": 1,
+        "fp": 11,
+        "fn": 16,
+        "precision": 0.0833,
+        "recall": 0.0588,
+        "f1_score": 0.069,
+        "ap50": 0.0198
+      }
+    },
+    "candidate_id": "5_yolo11s_candidate",
+    "candidate_name": "YOLO11s Architecture Candidate (conf=0.15)"
+  }
+]
