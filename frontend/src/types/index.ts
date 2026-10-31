@@ -143,7 +143,9 @@ export interface Issue {
   slaHours: number
   source: string
   isDuplicate: boolean
+  duplicateGroup?: string
   duplicateGroupId?: string
+  nearDuplicateCount?: number
   imageUrl?: string
   uploadId?: string
   visualDetection?: string

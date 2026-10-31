@@ -180,6 +180,13 @@ def test_server_side_inspector_identity_prevents_client_spoofing():
         "notes": "Quality audit by field staff"
     }
 
+    # Advance CIVIC-2026-001 to ACTION_IN_PROGRESS to satisfy lifecycle state machine
+    client.patch(
+        "/api/v1/issues/CIVIC-2026-001/status",
+        headers=INSPECTOR_HEADERS,
+        json={"status": "Action in Progress"}
+    )
+
     res = client.post(
         "/api/v1/issues/CIVIC-2026-001/verify",
         headers=INSPECTOR_HEADERS,  # maps to INSP-MUMBAI-01

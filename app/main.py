@@ -9,9 +9,11 @@ from app.api.routes import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize SQLite schema and seed only if empty
+    # Initialize SQLite schema
     init_db()
-    demo_store.seed_if_empty()
+    # In presentation mode, never seed demonstration complaints automatically
+    if not settings.is_presentation_database and settings.seed_complaints_on_startup:
+        demo_store.seed_if_empty()
     demo_store.seed_default_users_if_empty()
     department_dispatcher.load_from_db()
     yield

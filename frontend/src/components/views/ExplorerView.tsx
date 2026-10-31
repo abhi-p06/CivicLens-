@@ -162,6 +162,13 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E4E7F1]/70 text-xs">
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-[#65708B] font-sans">
+                    No complaints match current filters or have been submitted yet.
+                  </td>
+                </tr>
+              )}
               {filtered.map((issue) => (
                 <tr
                   key={issue.issueId}

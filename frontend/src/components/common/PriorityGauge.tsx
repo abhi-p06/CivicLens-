@@ -27,16 +27,16 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
   const { isReduced } = useCivicMotion()
   const normLevel = (level || 'LOW').toUpperCase()
 
-  // Color mapping per Aurora Indigo standards
-  let barColor = 'bg-[#10B981]'
-  let textColor = 'text-[#10B981]'
-  let badgeBg = 'bg-emerald-50 text-emerald-800 border-emerald-200'
+  // Color mapping per Aurora Indigo standards & backend priority thresholds (85/70/40)
+  let barColor = 'bg-[#3B82F6]'
+  let textColor = 'text-[#3B82F6]'
+  let badgeBg = 'bg-blue-50 text-blue-800 border-blue-200'
 
-  if (normLevel === 'CRITICAL' || score >= 80) {
+  if (normLevel === 'CRITICAL' || score >= 85) {
     barColor = 'bg-[#EF4444]'
     textColor = 'text-[#EF4444]'
     badgeBg = 'bg-rose-50 text-rose-800 border-rose-200'
-  } else if (normLevel === 'HIGH' || score >= 65) {
+  } else if (normLevel === 'HIGH' || score >= 70) {
     barColor = 'bg-[#F97316]'
     textColor = 'text-[#F97316]'
     badgeBg = 'bg-orange-50 text-orange-800 border-orange-200'
@@ -65,6 +65,13 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
       </div>
     )
   }
+
+  const urgencyVal = typeof breakdown?.urgency === 'number' ? breakdown.urgency : Number((breakdown as any)?.urgency_points ?? 0)
+  const textSevVal = typeof breakdown?.textSeverity === 'number' ? breakdown.textSeverity : Number((breakdown as any)?.text_severity_points ?? 0)
+  const visSevVal = typeof breakdown?.visualSeverity === 'number' ? breakdown.visualSeverity : Number((breakdown as any)?.visual_severity_points ?? 0)
+  const relRepVal = typeof breakdown?.relatedReports === 'number' ? breakdown.relatedReports : Number((breakdown as any)?.related_reports_points ?? 0)
+  const recencyVal = typeof breakdown?.recency === 'number' ? breakdown.recency : Number((breakdown as any)?.recency_points ?? 0)
+  const locRiskVal = typeof breakdown?.locationRisk === 'number' ? breakdown.locationRisk : Number((breakdown as any)?.location_risk_points ?? 0)
 
   return (
     <div className="relative font-sans text-xs">
@@ -99,7 +106,7 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
         <motion.div
           initial={{ width: isReduced ? `${safeScore}%` : 0 }}
           animate={{ width: `${safeScore}%` }}
-          transition={{ duration: isReduced ? 0.05 : 0.85, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: isReduced ? 0.05 : 0.8, ease: [0.16, 1, 0.3, 1] }}
           className={cn('h-full rounded-full', barColor)}
         />
       </div>
@@ -114,8 +121,8 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
             transition={{ duration: 0.22, ease: 'easeOut' }}
             className="overflow-hidden p-3.5 bg-white border border-[#E4E7F1] rounded-xl text-xs space-y-2.5 shadow-sm z-20"
           >
-            <div className="text-xs text-slate-800 border-b border-slate-100 pb-2 font-semibold flex justify-between">
-              <span>Explainable Scoring Vectors</span>
+            <div className="text-xs text-slate-800 border-b border-slate-100 pb-2 font-semibold flex justify-between items-center">
+              <span>Authoritative 6-Factor Risk Breakdown</span>
               <span className="text-[#6457E8] font-bold font-mono">Total: {score.toFixed(1)}/100</span>
             </div>
             <motion.div
@@ -131,12 +138,17 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
               className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-slate-700"
             >
               {[
-                { label: 'Urgency:', val: typeof breakdown.urgency === 'number' ? breakdown.urgency.toFixed(1) : (breakdown as any).urgencyScore ?? (breakdown as any).urgency_points ?? 0, max: 20 },
-                { label: 'Text Severity:', val: typeof breakdown.textSeverity === 'number' ? breakdown.textSeverity.toFixed(1) : (breakdown as any).textSeverityScore ?? (breakdown as any).text_severity_points ?? 0, max: 20 },
-                { label: 'Visual Severity:', val: typeof breakdown.visualSeverity === 'number' ? breakdown.visualSeverity.toFixed(1) : (breakdown as any).visualSeverityScore ?? (breakdown as any).visual_severity_points ?? 0, max: 20 },
-                { label: 'Related Reports:', val: typeof breakdown.relatedReports === 'number' ? breakdown.relatedReports.toFixed(1) : (breakdown as any).relatedReportsScore ?? (breakdown as any).related_reports_points ?? 0, max: 15 },
-                { label: 'Recency:', val: typeof breakdown.recency === 'number' ? breakdown.recency.toFixed(1) : (breakdown as any).recencyScore ?? (breakdown as any).recency_points ?? 0, max: 10 },
-                { label: 'Location Risk:', val: typeof breakdown.locationRisk === 'number' ? breakdown.locationRisk.toFixed(1) : (breakdown as any).locationRiskScore ?? (breakdown as any).location_risk_points ?? 0, max: 15 },
+                { label: 'Urgency:', val: urgencyVal.toFixed(1), max: 20, note: null },
+                { label: 'Text Severity:', val: textSevVal.toFixed(1), max: 20, note: null },
+                { 
+                  label: 'Visual Severity:', 
+                  val: visSevVal.toFixed(1), 
+                  max: 20, 
+                  note: visSevVal === 0 ? 'No visual defect detected' : null 
+                },
+                { label: 'Related Reports:', val: relRepVal.toFixed(1), max: 15, note: null },
+                { label: 'Recency:', val: recencyVal.toFixed(1), max: 10, note: null },
+                { label: 'Location Risk:', val: locRiskVal.toFixed(1), max: 15, note: null },
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -144,12 +156,19 @@ export const PriorityGauge: React.FC<PriorityGaugeProps> = ({
                     hidden: { opacity: 0, y: 4 },
                     visible: { opacity: 1, y: 0 },
                   }}
-                  className="flex justify-between p-1.5 bg-slate-50 rounded-lg border border-slate-100"
+                  className="flex flex-col justify-between p-2 bg-slate-50 rounded-lg border border-slate-100"
                 >
-                  <span className="text-slate-500">{item.label}</span>
-                  <span className="font-semibold text-slate-800">
-                    {item.val}/{item.max}
-                  </span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500">{item.label}</span>
+                    <span className="font-semibold text-slate-800 font-mono">
+                      {item.val}/{item.max}
+                    </span>
+                  </div>
+                  {item.note && (
+                    <span className="text-[10px] text-amber-600 font-sans mt-0.5">
+                      {item.note}
+                    </span>
+                  )}
                 </motion.div>
               ))}
             </motion.div>

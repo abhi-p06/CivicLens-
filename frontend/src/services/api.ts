@@ -91,6 +91,8 @@ export const api = {
     location?: string
     imageUrl?: string
     uploadId?: string
+    category?: string
+    ward?: string
     source?: string
   }): Promise<Issue> {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }
@@ -121,6 +123,8 @@ export const api = {
     location?: string
     imageUrl?: string
     uploadId?: string
+    category?: string
+    ward?: string
   }): Promise<any> {
     const res = await fetch(`${BASE_URL}/analyze`, {
       method: 'POST',

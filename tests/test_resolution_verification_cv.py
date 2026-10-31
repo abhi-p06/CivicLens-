@@ -182,6 +182,7 @@ def test_7_comparison_with_sample_fixtures_evaluates_content_not_filenames():
 
 def test_8_missing_upload_id_or_empty_reference_rejected(client):
     """Scenario 8: API rejects arbitrary non-allowlisted image references."""
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.ACTION_IN_PROGRESS)
     res = client.post(
         "/api/v1/issues/CIVIC-2026-001/verify",
         json={
@@ -196,6 +197,7 @@ def test_8_missing_upload_id_or_empty_reference_rejected(client):
 
 def test_9_failed_inference_never_falsely_marks_issue_resolved(client):
     """Scenario 9: Corrupt upload submitted via API transitions to VERIFICATION, never RESOLVED."""
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.ACTION_IN_PROGRESS)
     with open("data/test_samples/corrupt_file.jpg", "rb") as f:
         corrupt_bytes = f.read()
 
@@ -249,6 +251,7 @@ def test_11_repeated_verification_attempts_preserve_history(client):
     assert issue is not None
     issue.imageUrl = "data/test_samples/repair_pothole_before.jpg"
     demo_store.update_issue(issue)
+    demo_store.update_status(target_id, IssueStatus.ACTION_IN_PROGRESS)
 
     # Attempt 1: Defect still present
     res1 = client.post(
@@ -310,3 +313,129 @@ def test_13_no_filename_based_heuristics_honesty_check():
     )
     assert evidence.resolutionStatus == ResolutionStatus.STILL_PRESENT
     assert evidence.post_repair_cv_cleared is False
+
+
+def test_14_premature_verification_rejected_when_open_or_assigned(client):
+    """Scenario 14: Verification endpoint rejects premature verification when issue is OPEN or ASSIGNED."""
+    # Reset status to OPEN
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.OPEN)
+    res_open = client.post(
+        "/api/v1/issues/CIVIC-2026-001/verify",
+        json={
+            "inspectorId": "INSP-QA",
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg"
+        }
+    )
+    assert res_open.status_code == 400
+    assert "current lifecycle status is 'OPEN'" in res_open.json()["detail"]
+
+    # Transition to ASSIGNED
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.ASSIGNED)
+    res_assigned = client.post(
+        "/api/v1/issues/CIVIC-2026-001/verify",
+        json={
+            "inspectorId": "INSP-QA",
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg"
+        }
+    )
+    assert res_assigned.status_code == 400
+    assert "current lifecycle status is 'ASSIGNED'" in res_assigned.json()["detail"]
+
+
+def test_15_verification_requires_evidence_payload(client):
+    """Scenario 15: Verification endpoint rejects submission lacking post-action photographic evidence."""
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.ACTION_IN_PROGRESS)
+    res = client.post(
+        "/api/v1/issues/CIVIC-2026-001/verify",
+        json={
+            "inspectorId": "INSP-QA",
+            "notes": "No image attached"
+        }
+    )
+    assert res.status_code == 400
+    assert "requires valid post-action photographic evidence" in res.json()["detail"]
+
+
+def test_16_verification_allowed_when_action_in_progress(client):
+    """Scenario 16: Verification succeeds when issue is in ACTION IN PROGRESS."""
+    demo_store.update_status("CIVIC-2026-001", IssueStatus.ACTION_IN_PROGRESS)
+    res = client.post(
+        "/api/v1/issues/CIVIC-2026-001/verify",
+        json={
+            "inspectorId": "INSP-QA",
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg",
+            "notes": "Legitimate repair verification in eligible stage."
+        }
+    )
+    assert res.status_code == 200
+    assert res.json()["status"] in ["RESOLVED", "VERIFICATION"]
+
+
+def test_17_explicit_matrix_all_8_lifecycle_states(client):
+    """
+    Scenario 17: Explicit validation across all 8 documented lifecycle states:
+    - Ineligible / Pre-fieldwork states (OPEN, ANALYZED, PRIORITIZED, ASSIGNED): REJECTED (HTTP 400)
+    - Eligible field repair states (ACTION IN PROGRESS, VERIFICATION): PERMITTED (HTTP 200)
+    - Terminal / Closed states (RESOLVED, VERIFIED CLOSED): REJECTED (HTTP 400)
+    """
+    target_id = "CIVIC-2026-001"
+    valid_payload = {
+        "inspectorId": "INSP-QA",
+        "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg",
+        "notes": "Field resolution inspection attempt."
+    }
+
+    state_expectations = [
+        # (status_enum, expected_status_code, expected_reason)
+        (IssueStatus.OPEN, 400, "Resolution verification is only permitted once field repair is under way"),
+        (IssueStatus.ANALYZED, 400, "Resolution verification is only permitted once field repair is under way"),
+        (IssueStatus.PRIORITIZED, 400, "Resolution verification is only permitted once field repair is under way"),
+        (IssueStatus.ASSIGNED, 400, "Resolution verification is only permitted once field repair is under way"),
+        (IssueStatus.ACTION_IN_PROGRESS, 200, None),
+        (IssueStatus.VERIFICATION, 200, None),
+        (IssueStatus.RESOLVED, 400, "issue is already closed"),
+        (IssueStatus.VERIFIED_CLOSED, 400, "issue is already closed"),
+    ]
+
+    for status_enum, expected_code, expected_snippet in state_expectations:
+        demo_store.update_status(target_id, status_enum)
+        res = client.post(f"/api/v1/issues/{target_id}/verify", json=valid_payload)
+        assert res.status_code == expected_code, (
+            f"State {status_enum.value}: expected HTTP {expected_code}, got {res.status_code}: {res.text}"
+        )
+        if expected_snippet:
+            assert expected_snippet in res.json().get("detail", ""), (
+                f"State {status_enum.value}: expected '{expected_snippet}' in detail, got '{res.json().get('detail')}'"
+            )
+
+
+def test_18_closed_issues_cannot_be_reverified_without_reopening(client):
+    """
+    Scenario 18: Verify that closed issues cannot be reverified unless deliberately reopened.
+    """
+    target_id = "CIVIC-2026-001"
+    # Transition to RESOLVED
+    demo_store.update_status(target_id, IssueStatus.RESOLVED)
+    res_resolved = client.post(
+        f"/api/v1/issues/{target_id}/verify",
+        json={
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg",
+            "notes": "Attempting to reverify an already closed issue."
+        }
+    )
+    assert res_resolved.status_code == 400
+    assert "issue is already closed ('RESOLVED')" in res_resolved.json()["detail"]
+    assert "Closed issues cannot be reverified unless reopened" in res_resolved.json()["detail"]
+
+    # Transition to VERIFIED CLOSED
+    demo_store.update_status(target_id, IssueStatus.VERIFIED_CLOSED)
+    res_closed = client.post(
+        f"/api/v1/issues/{target_id}/verify",
+        json={
+            "resolutionImageUrl": "data/test_samples/repair_pothole_after_repaired.jpg",
+            "notes": "Attempting to reverify VERIFIED CLOSED issue."
+        }
+    )
+    assert res_closed.status_code == 400
+    assert "issue is already closed ('Verified Closed')" in res_closed.json()["detail"]
+

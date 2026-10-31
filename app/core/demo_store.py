@@ -39,8 +39,12 @@ class DemoDataStore:
         return self.repository.reset_demo(self.seed_file_path)
 
     def reset_demo(self) -> int:
-        """Transactionally wipes and restores seed baseline."""
+        """Transactionally wipes and restores seed baseline (or wipes in presentation mode)."""
         return self.repository.reset_demo(self.seed_file_path)
+
+    def clear_issues(self) -> int:
+        """Clears all issue records."""
+        return self.repository.clear_issues()
 
     def list_issues(
         self,

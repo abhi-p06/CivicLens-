@@ -477,6 +477,10 @@ def test_api_endpoint_06_patch_status():
 
 def test_api_endpoint_07_verify_resolution():
     """7. POST /api/v1/issues/{issue_id}/verify"""
+    client.patch(
+        "/api/v1/issues/CIVIC-2026-001/status",
+        json={"status": "Action in Progress"}
+    )
     res = client.post(
         "/api/v1/issues/CIVIC-2026-001/verify",
         json={

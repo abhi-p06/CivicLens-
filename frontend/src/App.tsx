@@ -218,10 +218,10 @@ function AppContent() {
       setActiveView('analyze')
     } else if (bounded === 4) {
       setActiveView('map')
-      setInspectingIssue(DEMO_SCENARIO.issueRecord)
+      setInspectingIssue(displayedIssues.length > 0 ? displayedIssues[0] : null)
     } else if (bounded === 5) {
       setActiveView('resolution')
-      setInspectingIssue(DEMO_SCENARIO.issueRecord)
+      setInspectingIssue(displayedIssues.length > 0 ? displayedIssues[0] : null)
     }
   }
 
@@ -267,7 +267,7 @@ function AppContent() {
         />
 
         {/* View Surface with Subtle Fast Page Transition */}
-        <main className="flex-1 overflow-hidden relative bg-[#F6F7FC]">
+        <main className="flex-1 min-h-0 overflow-hidden relative bg-[#F6F7FC]">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}
@@ -285,6 +285,7 @@ function AppContent() {
                   onSelectIssue={setInspectingIssue}
                   onNavigate={setActiveView}
                   onStartDemo={handleStartDemo}
+                  onCreateComplaint={() => setNewComplaintOpen(true)}
                 />
               )}
 
@@ -302,7 +303,7 @@ function AppContent() {
               {activeView === 'intelligence' && (
                 <IssueIntelligenceView
                   issues={displayedIssues}
-                  selectedIssue={inspectingIssue || DEMO_SCENARIO.issueRecord}
+                  selectedIssue={inspectingIssue || (displayedIssues.length > 0 ? displayedIssues[0] : null)}
                   onSelectIssue={setInspectingIssue}
                   onUpdateIssue={handleIssueUpdated}
                   onOpenResolutionModal={handleOpenResolution}

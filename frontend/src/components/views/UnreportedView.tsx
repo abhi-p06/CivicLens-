@@ -25,8 +25,7 @@ export const UnreportedView: React.FC<UnreportedViewProps> = ({ issues, onSelect
     (i) =>
       i.metadata?.isAutoDrafted ||
       i.source === 'patrol_camera' ||
-      i.source === 'camera_survey' ||
-      i.issueId === 'CIVIC-2026-006'
+      i.source === 'camera_survey'
   )
 
   return (

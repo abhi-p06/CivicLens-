@@ -115,6 +115,8 @@ class IssueCreate(BaseModel):
     longitude: Optional[float] = None
     imageUrl: Optional[str] = None
     uploadId: Optional[str] = None
+    category: Optional[str] = Field(None, description="User-selected category (Roads & Footpaths, Sanitation & Garbage) or None for auto-prediction")
+    ward: Optional[str] = Field(None, description="Optional municipal ward")
     source: str = "citizen_portal"
     citizen_id: Optional[str] = None
 

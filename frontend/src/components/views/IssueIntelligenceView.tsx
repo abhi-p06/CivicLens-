@@ -41,8 +41,16 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
 
   if (!current) {
     return (
-      <div className="h-full flex items-center justify-center p-8 font-mono text-xs text-slate-500">
-        No issues available for intelligence inspection.
+      <div className="h-full flex flex-col items-center justify-center p-8 font-sans bg-[#F6F7FC]">
+        <div className="p-8 bg-white border border-[#E4E7F1] rounded-2xl max-w-md w-full text-center space-y-3 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-[#6457E8]/10 border border-[#6457E8]/20 flex items-center justify-center text-[#6457E8] mx-auto">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div className="text-base font-bold text-[#11162A]">No Issues Ingested Yet</div>
+          <p className="text-xs text-[#65708B] leading-relaxed">
+            No complaints have been submitted yet. Ingest an incident via the AI Pipeline or citizen portal to view its full multimodal intelligence dossier.
+          </p>
+        </div>
       </div>
     )
   }
@@ -81,10 +89,37 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
             <div className="text-xs text-[#65708B] font-semibold">
               Issue Intelligence Dossier
             </div>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center flex-wrap gap-2 mt-1">
               <span className="text-lg font-bold text-[#11162A] font-mono">{current.issueId}</span>
               <StatusBadge status={current.status} />
               <ConsistencyBadge level={current.consistencyFlag || 'CONSISTENT'} />
+              {(() => {
+                const group = current.duplicateGroup || current.duplicateGroupId
+                const count = current.nearDuplicateCount ?? 0
+                if (current.isDuplicate) {
+                  return (
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-amber-500/10 border border-amber-500/25 text-amber-700 font-medium inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      <span>Confirmed Duplicate {group ? `(${group})` : ''}</span>
+                      {count > 0 && <span className="text-amber-600/80">&bull; {count} related {count === 1 ? 'report' : 'reports'}</span>}
+                    </span>
+                  )
+                }
+                if (count > 0) {
+                  return (
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-indigo-50 border border-indigo-200 text-indigo-700 font-medium inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#6457E8]" />
+                      <span>{count} related {count === 1 ? 'report' : 'reports'}</span>
+                    </span>
+                  )
+                }
+                return (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs bg-slate-100 border border-slate-200 text-slate-500 font-medium inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span>No duplicates found</span>
+                  </span>
+                )
+              })()}
             </div>
           </div>
         </div>
@@ -209,10 +244,10 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
             <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5 text-[#6457E8]" />
-                <span>YOLOv8 Computer Vision Detection</span>
+                <span>{current.visionModel || (current.category === 'Sanitation & Garbage' ? 'YOLOv8s TACO Waste' : 'YOLOv8s RDD2022')}</span>
               </span>
               <span className="text-[#6457E8] font-mono text-xs font-semibold">
-                {((current.visualConfidence || 0.9) * 100).toFixed(0)}% Confidence
+                {current.visualConfidence ? `${(current.visualConfidence * 100).toFixed(1)}% Confidence` : (current.imageUrl ? 'No defect detected' : 'No image uploaded')}
               </span>
             </div>
 
@@ -262,18 +297,20 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
               ) : (
                 <div className="relative z-10 p-3 bg-black/60 border border-slate-700/80 rounded-lg text-center backdrop-blur-xs">
                   <span className="text-xs text-slate-300 font-semibold block">
-                    No Road Damage Detected
+                    {current.category === 'Sanitation & Garbage' ? 'No Waste / Litter Detected' : 'No Road Damage Detected'}
                   </span>
                   <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
-                    YOLOv8s RDD2022 Inspected &bull; Clean Surface
+                    {current.visionModel || 'YOLOv8'} Inspected &bull; Clean Surface / Below 0.15 threshold
                   </span>
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between text-xs text-[#65708B] pt-1">
-              <span>Image Evidence URI: {current.imageUrl || 'Patrol Survey Imagery'}</span>
-              <span className="text-emerald-700 font-medium">YOLOv8s Ingested</span>
+              <span className="truncate max-w-[60%]">URI: {current.imageUrl || 'Patrol Survey Imagery'}</span>
+              <span className="font-mono text-[11px] text-[#6457E8]">
+                Mode: {current.visionMode || (current.detectedObjects?.length ? 'real_yolo_inference' : (current.imageUrl ? 'analyzed_no_detections' : 'no_imagery'))}
+              </span>
             </div>
           </div>
 
@@ -299,16 +336,42 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
 
           {/* Timeline & Lifecycle Action Bar */}
           <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-3 shadow-xs">
-            <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
-              <span>Work Order Lifecycle Timeline</span>
-              <button
-                onClick={() => onOpenResolutionModal(current)}
-                className="px-3 py-1.5 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center gap-1 cursor-pointer"
-              >
-                <Camera className="w-3.5 h-3.5" />
-                <span>Verify Resolution</span>
-              </button>
-            </div>
+            {(() => {
+              const isEligibleForVerification = [
+                'ACTION IN PROGRESS',
+                'VERIFICATION',
+                'RESOLVED',
+                'In Progress',
+                'Verified Closed'
+              ].includes(current.status)
+
+              return (
+                <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
+                  <div>
+                    <span>Work Order Lifecycle Timeline</span>
+                    {!isEligibleForVerification && (
+                      <span className="block text-[11px] text-amber-600 font-normal mt-0.5">
+                        Verification locked: Issue must reach &apos;ACTION IN PROGRESS&apos; or &apos;VERIFICATION&apos;.
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    disabled={!isEligibleForVerification}
+                    onClick={() => isEligibleForVerification && onOpenResolutionModal(current)}
+                    title={!isEligibleForVerification ? "Verification locked until work advances to ACTION IN PROGRESS or VERIFICATION" : "Verify Resolution"}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition flex items-center gap-1",
+                      isEligibleForVerification
+                        ? "bg-[#10B981] hover:bg-[#059669] text-white cursor-pointer"
+                        : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
+                    )}
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>Verify Resolution</span>
+                  </button>
+                </div>
+              )
+            })()}
 
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               {lifecycleStages.map((st) => {

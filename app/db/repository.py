@@ -18,6 +18,7 @@ from app.models.issue import (
     ResolutionStatus,
     ResolutionEvidence
 )
+from app.config import settings
 from app.db.database import SessionLocal, get_db_session, init_db
 from app.db.models import (
     IssueRecord,
@@ -105,12 +106,26 @@ class SqliteIssueRepository:
         self.seed_default_users_if_empty()
         return inserted
 
+    def clear_issues(self) -> int:
+        """
+        Transactionally wipes all issue records without touching users or routing configs.
+        Maintains an empty presentation database environment.
+        """
+        with self._get_session() as session:
+            count = session.scalar(select(func.count()).select_from(IssueRecord)) or 0
+            session.execute(delete(IssueRecord))
+            logger.info(f"Cleaned {count} issues from persistent store.")
+            return count
+
     def reset_demo(self, seed_file_path: Optional[str] = None) -> int:
         """
         Explicit demo reset operation.
-        Wipes current issues and reloads seed baseline within a single transaction.
-        Must only be invoked when CIVILENS_DEMO_MODE is active.
+        In presentation mode: wipes current issues to return to a clean zero-record baseline.
+        In development/demo mode: reloads seed baseline within a single transaction.
         """
+        if settings.is_presentation_database:
+            return self.clear_issues()
+
         path = seed_file_path or self.seed_file_path
         p = Path(path)
         if not p.exists():

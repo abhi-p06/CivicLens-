@@ -19,9 +19,20 @@ class Settings(BaseModel):
     yolo_device: str = os.getenv("YOLO_DEVICE", "cpu")
     default_lat: float = float(os.getenv("DEFAULT_LATITUDE", "19.0760"))
     default_lng: float = float(os.getenv("DEFAULT_LONGITUDE", "72.8777"))
-    db_path: str = os.getenv("CIVILENS_DB_PATH", "data/civic_issues.db")
-    civilens_demo_mode: bool = os.getenv("CIVILENS_DEMO_MODE", "true").lower() in ("true", "1", "yes")
-    upload_dir: str = os.getenv("CIVILENS_UPLOAD_DIR", "uploads")
+    civilens_presentation_mode: bool = os.getenv("CIVILENS_PRESENTATION_MODE", "false").lower() in ("true", "1", "yes")
+    seed_complaints_on_startup: bool = os.getenv("CIVILENS_SEED_COMPLAINTS", "true").lower() in ("true", "1", "yes")
+    db_path: str = os.getenv(
+        "CIVILENS_DB_PATH",
+        "data/civilens_presentation.db" if os.getenv("CIVILENS_PRESENTATION_MODE", "false").lower() in ("true", "1", "yes") else "data/civic_issues.db"
+    )
+    civilens_demo_mode: bool = (
+        False if os.getenv("CIVILENS_PRESENTATION_MODE", "false").lower() in ("true", "1", "yes")
+        else (os.getenv("CIVILENS_DEMO_MODE", "true").lower() in ("true", "1", "yes"))
+    )
+    upload_dir: str = os.getenv(
+        "CIVILENS_UPLOAD_DIR",
+        "uploads_presentation" if os.getenv("CIVILENS_PRESENTATION_MODE", "false").lower() in ("true", "1", "yes") else "uploads"
+    )
     max_upload_size_mb: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
     cors_allowed_origins: str = os.getenv(
         "CIVILENS_ALLOWED_ORIGINS",
@@ -31,6 +42,10 @@ class Settings(BaseModel):
     inspector_api_key: str = os.getenv("CIVILENS_INSPECTOR_API_KEY", "")
     admin_api_key: str = os.getenv("CIVILENS_ADMIN_API_KEY", "")
     allow_dev_tokens: bool = os.getenv("CIVILENS_ALLOW_DEV_TOKENS", "true").lower() in ("true", "1", "yes")
+
+    @property
+    def is_presentation_database(self) -> bool:
+        return self.civilens_presentation_mode or self.resolved_db_path.name == "civilens_presentation.db"
 
     @property
     def resolved_db_path(self) -> Path:

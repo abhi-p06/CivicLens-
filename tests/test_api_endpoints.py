@@ -54,6 +54,10 @@ def test_api_status_update():
     assert res.json()["status"] in ["RESOLVED", "Resolved"]
 
 def test_api_verify_resolution():
+    client.patch(
+        "/api/v1/issues/CIVIC-2026-001/status",
+        json={"status": "Action in Progress"}
+    )
     res = client.post(
         "/api/v1/issues/CIVIC-2026-001/verify",
         json={

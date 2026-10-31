@@ -160,6 +160,7 @@ interface OverviewViewProps {
   onSelectIssue: (issue: Issue) => void
   onNavigate: (viewId: string) => void
   onStartDemo?: () => void
+  onCreateComplaint?: () => void
   loading?: boolean
   error?: string | null
 }
@@ -171,6 +172,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   onSelectIssue,
   onNavigate,
   onStartDemo,
+  onCreateComplaint,
   loading = false,
   error = null,
 }) => {
@@ -241,7 +243,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
     (i) => (i.consistencyDetail?.consistencyScore || i.evidenceConsistency || 0) >= 0.7
   ).length
   const cvAlignmentPercent =
-    totalWithCV > 0 ? ((highConsistencyCount / totalWithCV) * 100).toFixed(1) : '94.8'
+    totalWithCV > 0 ? ((highConsistencyCount / totalWithCV) * 100).toFixed(1) : '—'
 
   const chronicList = recurringIssues.filter((r) => r.recurringIssue)
   const topChronic =
@@ -627,9 +629,24 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             className="flex-1 overflow-y-auto space-y-2.5 pr-1"
           >
             {issues.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-[#65708B] space-y-2">
-                <Activity className="w-8 h-8 opacity-40 text-[#65708B]" />
-                <span className="text-sm font-medium">No priority incidents currently in intake queue.</span>
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-[#65708B] space-y-3">
+                <div className="w-10 h-10 rounded-full bg-[#6457E8]/10 border border-[#6457E8]/20 flex items-center justify-center text-[#6457E8]">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-[#11162A]">No complaints have been submitted yet.</div>
+                  <p className="text-xs text-[#65708B] mt-1 max-w-xs leading-relaxed">
+                    Upload an image and description to test genuine neural vision and NLP cognitive pipeline inference.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => (onCreateComplaint ? onCreateComplaint() : onNavigate('analyze'))}
+                  className="px-4 py-2 bg-[#6457E8] hover:bg-[#5145CF] text-white rounded-xl text-xs font-semibold shadow-xs transition flex items-center gap-1.5 cursor-pointer mt-1"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Create First Complaint</span>
+                </button>
               </div>
             ) : (
               issues.map((issue, idx) => {
@@ -739,15 +756,17 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             )}
 
             {/* Catalog navigation footer */}
-            <div className="pt-2 pb-1 text-center">
-              <button
-                onClick={() => onNavigate('explorer')}
-                className="inline-flex items-center gap-1.5 text-xs text-[#6457E8] hover:text-[#5145CF] font-semibold transition cursor-pointer py-1.5 px-3 rounded-lg hover:bg-[#6457E8]/10"
-              >
-                <span>View all {issues.length} incidents in catalog</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            {issues.length > 0 && (
+              <div className="pt-2 pb-1 text-center">
+                <button
+                  onClick={() => onNavigate('explorer')}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#6457E8] hover:text-[#5145CF] font-semibold transition cursor-pointer py-1.5 px-3 rounded-lg hover:bg-[#6457E8]/10"
+                >
+                  <span>View all {issues.length} incidents in catalog</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       </motion.div>
@@ -831,10 +850,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
                 </div>
                 <h3 className="text-sm font-bold text-[#11162A]">
-                  {cvAlignmentPercent}% YOLOv8 Verification
+                  {totalWithCV > 0 ? `${cvAlignmentPercent}% Optical Verification` : 'Awaiting Optical Intake'}
                 </h3>
                 <p className="text-xs text-[#65708B] mt-1.5 leading-relaxed font-sans">
-                  {highConsistencyCount} of {totalWithCV || totalIssues} inspected complaints exhibit high cosine alignment between citizen text description and optical defect bounding boxes.
+                  {totalWithCV > 0
+                    ? `${highConsistencyCount} of ${totalWithCV} inspected complaints exhibit high cosine alignment between citizen text description and optical defect bounding boxes.`
+                    : 'Submit citizen complaints with photo evidence to initiate genuine YOLOv8/YOLO11s optical defect detection and multimodal alignment.'}
                 </p>
               </div>
               <div className="mt-3 pt-2.5 border-t border-[#E4E7F1] flex items-center justify-between text-[11px] text-emerald-700 font-semibold">

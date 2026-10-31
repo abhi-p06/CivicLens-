@@ -13,6 +13,7 @@ import {
   Flame,
   RotateCcw,
   ExternalLink,
+  Eye,
 } from 'lucide-react'
 import { Issue, IssueStatus } from '../../types'
 import { StatusBadge } from '../common/StatusBadge'
@@ -88,11 +89,33 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             <div className="flex items-center gap-2.5">
               <span className="text-base font-bold text-[#11162A] font-mono">{issue.issueId}</span>
               <StatusBadge status={issue.status} />
-              {issue.isDuplicate && (
-                <span className="px-2 py-0.5 rounded-full text-xs bg-amber-500/10 border border-amber-500/20 text-amber-600 font-medium">
-                  Duplicate ({issue.duplicateGroupId})
-                </span>
-              )}
+              {(() => {
+                const group = issue.duplicateGroup || issue.duplicateGroupId
+                const count = issue.nearDuplicateCount ?? 0
+                if (issue.isDuplicate) {
+                  return (
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-amber-500/10 border border-amber-500/25 text-amber-700 font-medium inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      <span>Confirmed Duplicate {group ? `(${group})` : ''}</span>
+                      {count > 0 && <span className="text-amber-600/80">&bull; {count} related {count === 1 ? 'report' : 'reports'}</span>}
+                    </span>
+                  )
+                }
+                if (count > 0) {
+                  return (
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-indigo-50 border border-indigo-200 text-indigo-700 font-medium inline-flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#6457E8]" />
+                      <span>{count} related {count === 1 ? 'report' : 'reports'}</span>
+                    </span>
+                  )
+                }
+                return (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs bg-slate-100 border border-slate-200 text-slate-500 font-medium inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span>No duplicates found</span>
+                  </span>
+                )
+              })()}
             </div>
             <div className="text-xs text-[#65708B] mt-1.5 flex items-center gap-3">
               <span className="flex items-center gap-1.5">
@@ -161,22 +184,102 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             </div>
           </div>
 
-          {/* Citizen Description */}
-          <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs space-y-2">
+          {/* Citizen Description & Visual Evidence */}
+          <div className="p-4 bg-white border border-[#E4E7F1] rounded-xl shadow-xs space-y-3">
             <div className="text-xs font-semibold text-[#11162A]">
               Citizen Complaint Statement
             </div>
             <p className="text-[#11162A] text-sm font-sans leading-relaxed">
               {issue.complaintText || '(Patrol Automated Ingestion - No citizen narrative provided)'}
             </p>
-            {issue.imageUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden border border-[#E4E7F1] bg-[#F0F2F9] flex items-center justify-center relative">
-                <img
-                  src={issue.imageUrl.startsWith('/') || issue.imageUrl.startsWith('http') || issue.imageUrl.startsWith('blob:') ? issue.imageUrl : `/${issue.imageUrl}`}
-                  alt="Incident Field Photo"
-                  className="w-full max-h-56 object-cover"
-                  onError={(e) => { (e.target as HTMLElement).style.display = 'none' }}
-                />
+            {issue.imageUrl ? (
+              <div className="mt-3 space-y-2.5">
+                <div className="flex items-center justify-between text-xs text-[#65708B]">
+                  <span className="font-semibold flex items-center gap-1.5 text-[#11162A]">
+                    <Eye className="w-3.5 h-3.5 text-[#6457E8]" />
+                    <span>Visual Evidence & Bounding Box Localization</span>
+                  </span>
+                  <span className="text-[11px] font-mono text-[#6457E8] bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                    {issue.visionModel || (issue.category === 'Sanitation & Garbage' ? 'YOLOv8s TACO Waste' : 'YOLOv8s RDD2022')}
+                  </span>
+                </div>
+
+                <div className="relative rounded-xl overflow-hidden border border-[#212348] bg-[#10162A] flex items-center justify-center min-h-[220px]">
+                  <img
+                    src={issue.imageUrl.startsWith('/') || issue.imageUrl.startsWith('http') || issue.imageUrl.startsWith('blob:') ? issue.imageUrl : `/${issue.imageUrl}`}
+                    alt="Incident Field Photo"
+                    className="w-full max-h-72 object-contain"
+                    onError={(e) => { (e.target as HTMLElement).style.display = 'none' }}
+                  />
+
+                  {/* Dynamic Bounding Box Overlays */}
+                  {issue.detectedObjects && issue.detectedObjects.length > 0 ? (
+                    issue.detectedObjects.map((obj, idx) => {
+                      const [ymin, xmin, ymax, xmax] = obj.bbox || [0.25, 0.25, 0.75, 0.75]
+                      const top = `${ymin * 100}%`
+                      const left = `${xmin * 100}%`
+                      const width = `${Math.max(6, (xmax - xmin) * 100)}%`
+                      const height = `${Math.max(6, (ymax - ymin) * 100)}%`
+                      return (
+                        <div
+                          key={idx}
+                          style={{ top, left, width, height }}
+                          className="absolute z-10 border-2 border-[#8B5CF6] bg-[#6457E8]/20 backdrop-blur-xs rounded-md shadow-lg pointer-events-none flex flex-col justify-between p-1"
+                        >
+                          <span className="text-[10px] bg-[#6457E8] text-white px-1.5 py-0.5 rounded font-semibold uppercase tracking-tight self-start truncate max-w-full">
+                            {obj.label}
+                          </span>
+                          <span className="text-[9px] bg-black/75 text-indigo-200 font-mono px-1 rounded self-end">
+                            {(obj.confidence * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
+                      <div className="p-3 bg-black/70 border border-slate-700 rounded-lg text-center backdrop-blur-xs max-w-xs">
+                        <span className="text-xs text-slate-200 font-semibold block">
+                          No Civic Defect Detected
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+                          {issue.visionModel || 'YOLOv8'} Analyzed &bull; Clean surface or below threshold (0.15)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Optical Evidence Summary Strip */}
+                <div className="p-3 bg-[#F0F2F9] rounded-lg border border-[#E4E7F1] space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#65708B] font-medium">Model Runtime Status:</span>
+                    <span className="font-mono text-[#11162A] font-semibold">
+                      {issue.visionMode || (issue.detectedObjects?.length ? 'real_yolo_inference' : 'analyzed_no_detections')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#65708B] font-medium">Visual Severity Component:</span>
+                    <span className="font-mono font-semibold text-[#11162A]">
+                      {issue.priorityBreakdown?.visualSeverity !== undefined 
+                        ? `${Number(issue.priorityBreakdown.visualSeverity).toFixed(1)} / 20 pts`
+                        : (issue.visualSeverity ? `${(issue.visualSeverity * 20).toFixed(1)} / 20 pts` : '0.0 / 20 pts (No defect detected)')}
+                    </span>
+                  </div>
+                  {issue.detectedObjects && issue.detectedObjects.length > 0 && (
+                    <div className="pt-1.5 border-t border-[#E4E7F1] flex flex-wrap gap-1.5 items-center">
+                      <span className="text-[#65708B] text-[11px]">Detections:</span>
+                      {issue.detectedObjects.map((d, i) => (
+                        <span key={i} className="px-2 py-0.5 rounded bg-white border border-[#E4E7F1] text-[11px] font-mono text-[#11162A]">
+                          {d.label} &bull; {(d.confidence * 100).toFixed(1)}%
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500 italic">
+                No photographic evidence provided with this citizen report.
               </div>
             )}
           </div>
@@ -219,8 +322,8 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                 <div className="text-[#65708B] text-xs font-medium">Computer Vision (YOLO)</div>
                 <div className="text-[#11162A] mt-1 font-sans text-xs">
                   {issue.visualDetection
-                    ? `${issue.visualDetection} (${((issue.visualConfidence || 0.9) * 100).toFixed(0)}% conf)`
-                    : 'No imagery uploaded'}
+                    ? `${issue.visualDetection}${issue.visualConfidence && !issue.visualDetection.includes('Confidence') && !issue.visualDetection.includes('conf') ? ` (${(issue.visualConfidence * 100).toFixed(1)}% conf)` : ''}`
+                    : (issue.imageUrl ? 'No defect detected in image' : 'No imagery uploaded')}
                 </div>
               </div>
             </div>
@@ -327,18 +430,43 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex items-center justify-between shrink-0">
-          <div className="text-xs text-[#65708B]">
-            Coordinates: {issue.latitude.toFixed(4)}, {issue.longitude.toFixed(4)}
-          </div>
-          <button
-            onClick={() => onOpenResolutionModal(issue)}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg text-xs font-semibold transition shadow-xs cursor-pointer"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Verify Field Resolution</span>
-          </button>
-        </div>
+        {(() => {
+          const isEligibleForVerification = [
+            'ACTION IN PROGRESS',
+            'VERIFICATION',
+            'RESOLVED',
+            'In Progress',
+            'Verified Closed'
+          ].includes(issue.status)
+
+          return (
+            <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+              <div className="text-xs text-[#65708B] space-y-0.5">
+                <div>Coordinates: {issue.latitude.toFixed(4)}, {issue.longitude.toFixed(4)}</div>
+                {!isEligibleForVerification && (
+                  <div className="text-[11px] text-amber-600 font-medium flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <span>Verification locked: Issue must advance to &apos;ACTION IN PROGRESS&apos; or &apos;VERIFICATION&apos;.</span>
+                  </div>
+                )}
+              </div>
+              <button
+                disabled={!isEligibleForVerification}
+                onClick={() => isEligibleForVerification && onOpenResolutionModal(issue)}
+                title={!isEligibleForVerification ? "Verification locked until work advances to ACTION IN PROGRESS or VERIFICATION" : "Verify Field Resolution"}
+                className={cn(
+                  "flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition shadow-xs",
+                  isEligibleForVerification
+                    ? "bg-[#10B981] hover:bg-[#059669] text-white cursor-pointer"
+                    : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
+                )}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Verify Field Resolution</span>
+              </button>
+            </div>
+          )
+        })()}
             </motion.div>
         </motion.div>
       )}

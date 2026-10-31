@@ -78,6 +78,7 @@ export const CitizenPortalView: React.FC = () => {
         const preview = await api.analyzeComplaint({
           complaintText: complaintText.trim(),
           location: locationName.trim() || 'Mumbai Locality',
+          category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
           uploadId: uploadRes.uploadId,
         })
         setAnalysisPreview(preview)
@@ -95,6 +96,7 @@ export const CitizenPortalView: React.FC = () => {
       const preview = await api.analyzeComplaint({
         complaintText: complaintText.trim(),
         location: locationName.trim() || 'Mumbai Locality',
+        category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
         uploadId: uploadedId || undefined,
       })
       setAnalysisPreview(preview)
@@ -115,6 +117,7 @@ export const CitizenPortalView: React.FC = () => {
       const payload = {
         complaintText: complaintText.trim(),
         location: locationName.trim() || 'Municipal Ward Area',
+        category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
         uploadId: uploadedId || undefined,
         imageUrl: previewUrl || undefined,
         source: 'citizen_portal',
@@ -151,9 +154,9 @@ export const CitizenPortalView: React.FC = () => {
   ).length
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8 space-y-6 font-sans select-none bg-[#F6F7FC] pb-16">
       {/* 1. Welcoming Hero Strip */}
-      <div className="bg-white rounded-2xl border border-[#E4E7F1] p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl border border-[#E4E7F1] p-5 sm:p-6 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono">
@@ -170,7 +173,7 @@ export const CitizenPortalView: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           <button
             onClick={() => setActiveTab('my_complaints')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer border ${
@@ -250,7 +253,7 @@ export const CitizenPortalView: React.FC = () => {
                 <label className="block text-xs font-semibold text-[#11162A] mb-2">
                   Select Civic Category
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => {

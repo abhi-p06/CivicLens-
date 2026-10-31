@@ -419,8 +419,8 @@ export const MapView: React.FC<MapViewProps> = ({
                   </span>
                 </div>
                 <div className="text-[10px] text-slate-400 font-mono">
-                  {inspectingIssue.duplicateGroupId
-                    ? `Cluster ID: ${inspectingIssue.duplicateGroupId}`
+                  {(inspectingIssue.duplicateGroup || inspectingIssue.duplicateGroupId)
+                    ? `Cluster ID: ${inspectingIssue.duplicateGroup || inspectingIssue.duplicateGroupId}${inspectingIssue.nearDuplicateCount ? ` (${inspectingIssue.nearDuplicateCount} related)` : ''}`
                     : 'No adjacent duplicate reports registered.'}
                 </div>
               </div>

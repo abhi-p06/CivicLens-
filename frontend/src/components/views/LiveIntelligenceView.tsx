@@ -97,6 +97,15 @@ export const LiveIntelligenceView: React.FC<LiveIntelligenceViewProps> = ({
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[600px]">
+            {issues.length === 0 && (
+              <div className="p-8 text-center bg-[#F0F2F9]/50 rounded-xl border border-[#E4E7F1] text-[#65708B] space-y-2">
+                <Activity className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
+                <div className="text-sm font-semibold text-[#11162A]">No Live Incidents Ingested</div>
+                <p className="text-xs text-[#65708B] max-w-sm mx-auto">
+                  Incoming citizen complaints and sensor feeds will stream here with real-time inference telemetry.
+                </p>
+              </div>
+            )}
             {issues.map((issue) => (
               <motion.div
                 key={issue.issueId}
@@ -152,6 +161,11 @@ export const LiveIntelligenceView: React.FC<LiveIntelligenceViewProps> = ({
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 max-h-[600px] bg-[#10162A] p-3.5 rounded-xl border border-[#212348] font-mono text-[11px]">
+            {telemetryLogs.length === 0 && (
+              <div className="py-12 text-center text-slate-500">
+                Telemetry channel standby &bull; Awaiting incident intake
+              </div>
+            )}
             {telemetryLogs.map((log) => (
               <div
                 key={log.id}

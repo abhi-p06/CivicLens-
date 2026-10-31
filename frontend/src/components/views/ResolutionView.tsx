@@ -50,11 +50,11 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
 }) => {
   const { success, info } = useToast()
   const { isReduced } = useCivicMotion()
-  // Default to first issue with evidence or first road issue
+  // Default to first issue with evidence or first issue
   const defaultIssue =
     issues.find((i) => i.resolutionEvidence) ||
-    issues.find((i) => i.issueId === 'CIVIC-2026-001') ||
-    issues[0]
+    issues[0] ||
+    null
 
   const [activeIssueId, setActiveIssueId] = useState<string>(defaultIssue?.issueId || '')
   const [isVerifying, setIsVerifying] = useState(false)
@@ -72,11 +72,16 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
 
   const handleRunVerification = async () => {
     if (!selectedIssue) return
+    const postImage = selectedIssue.resolutionEvidence?.resolution_image_url
+    if (!postImage) {
+      onOpenResolutionModal(selectedIssue)
+      info('Please upload post-repair field verification evidence in the inspection modal.')
+      return
+    }
     setIsVerifying(true)
     info('Initiating computer vision delta inspection on post-action evidence...')
 
     try {
-      const postImage = 'data/test_samples/repair_pothole_after_repaired.jpg'
       const updated = await api.verifyResolution(selectedIssue.issueId, postImage)
       setIsVerifying(false)
       if (updated) {
@@ -136,7 +141,17 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
       </div>
 
       {/* 2. Interactive Verification Station (Active Work Order) */}
-      {selectedIssue && (
+      {!selectedIssue ? (
+        <div className="p-12 bg-white border border-[#E4E7F1] rounded-2xl flex flex-col items-center justify-center text-center space-y-3 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-[#6457E8]/10 border border-[#6457E8]/20 flex items-center justify-center text-[#6457E8]">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <div className="text-base font-bold text-[#11162A]">No Work Orders for Verification</div>
+          <p className="text-xs text-[#65708B] max-w-md">
+            No complaints have been submitted yet. Once issues are submitted and addressed by field crews, before/after resolution verification can be executed here.
+          </p>
+        </div>
+      ) : (
         <motion.div
           key={selectedIssue.issueId}
           initial={{ opacity: 0, y: 8 }}
@@ -332,7 +347,12 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
           viewport={{ once: true }}
           className="divide-y divide-[#E4E7F1]/70 overflow-hidden"
         >
-          {localIssues.map((issue) => {
+          {localIssues.length === 0 ? (
+            <div className="py-8 text-center text-xs text-[#65708B]">
+              No complaints in resolution queue. Submit an issue to test verification.
+            </div>
+          ) : (
+            localIssues.map((issue) => {
             const isSelected = issue.issueId === activeIssueId
             const isResolved = issue.status === 'RESOLVED' || Boolean(issue.resolutionEvidence)
             return (
@@ -389,7 +409,8 @@ export const ResolutionView: React.FC<ResolutionViewProps> = ({
                 </div>
               </motion.div>
             )
-          })}
+          })
+        )}
         </motion.div>
       </motion.div>
     </div>

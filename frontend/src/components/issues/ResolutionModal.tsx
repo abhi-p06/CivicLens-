@@ -19,7 +19,7 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
   issue,
   onVerified,
 }) => {
-  const [postActionImage, setPostActionImage] = useState('data/sample_repaired_pothole.jpg')
+  const [postActionImage, setPostActionImage] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -79,8 +79,24 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
     }
   }
 
+  const isEligibleForVerification = Boolean(
+    issue && [
+      'ACTION IN PROGRESS',
+      'VERIFICATION',
+      'RESOLVED',
+      'In Progress',
+      'Verified Closed'
+    ].includes(issue.status)
+  )
+
   const handleVerify = async () => {
     if (!issue) return
+    if (!isEligibleForVerification) {
+      setError(
+        `Premature verification rejected: Issue is currently in '${issue.status}' status. Work order must advance to 'ACTION IN PROGRESS' or 'VERIFICATION' before photographic verification can be submitted.`
+      )
+      return
+    }
     if (isUploading) {
       setError('Please wait for the image upload to complete.')
       return
@@ -148,6 +164,18 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
                 <div className="font-bold text-[#11162A] text-sm">{issue.issueId} &bull; {issue.category}</div>
                 <div className="text-[#65708B] text-xs truncate">{issue.complaintText}</div>
               </div>
+
+              {!isEligibleForVerification && (
+                <div className="p-3.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="font-semibold text-xs text-amber-900">Premature Verification Locked</div>
+                    <div className="text-[11px] text-amber-700 leading-relaxed">
+                      This issue is currently in <strong>{issue.status}</strong> status. Civic workflow requires field work to advance to <strong>ACTION IN PROGRESS</strong> or <strong>VERIFICATION</strong> before photographic verification can be submitted.
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Sample Photo Selectors */}
               <div className="space-y-1.5">
@@ -343,8 +371,14 @@ export const ResolutionModal: React.FC<ResolutionModalProps> = ({
               <button
                 type="button"
                 onClick={handleVerify}
-                disabled={loading}
-                className="flex items-center gap-1.5 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg font-semibold text-xs transition disabled:opacity-50 shadow-xs cursor-pointer"
+                disabled={loading || !isEligibleForVerification}
+                title={!isEligibleForVerification ? "Verification locked until work reaches ACTION IN PROGRESS or VERIFICATION" : "Run Vision Verification"}
+                className={cn(
+                  "flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs transition shadow-xs",
+                  isEligibleForVerification && !loading
+                    ? "bg-[#10B981] hover:bg-[#059669] text-white cursor-pointer"
+                    : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
+                )}
               >
                 <CheckCircle className="w-3.5 h-3.5" />
                 <span>{loading ? 'Evaluating Imagery...' : 'Run Vision Verification'}</span>

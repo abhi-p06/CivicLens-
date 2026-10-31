@@ -69,7 +69,16 @@ export const HotspotsView: React.FC<HotspotsViewProps> = ({ hotspots, issues, on
           </div>
 
           <div className="space-y-3.5 overflow-y-auto flex-1 pr-1 max-h-[580px]">
-            {rankedHotspots.map((h, index) => {
+            {rankedHotspots.length === 0 ? (
+              <div className="p-8 text-center bg-[#F0F2F9]/50 rounded-xl border border-[#E4E7F1] text-[#65708B] space-y-2">
+                <Flame className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
+                <div className="text-sm font-semibold text-[#11162A]">No Active Spatial Hotspots</div>
+                <p className="text-xs text-[#65708B] max-w-sm mx-auto">
+                  DBSCAN spatial clustering will detect defect density corridors when multiple complaints are reported within geographic proximity.
+                </p>
+              </div>
+            ) : (
+              rankedHotspots.map((h, index) => {
               const isSelected = selectedHotspot?.hotspotId === h.hotspotId
               const densityVal = (h as any).densityPerKm2 || (h.issueCount / (Math.PI * 0.25)).toFixed(1)
 
@@ -134,7 +143,8 @@ export const HotspotsView: React.FC<HotspotsViewProps> = ({ hotspots, issues, on
                   </div>
                 </div>
               )
-            })}
+            })
+          )}
           </div>
         </div>
 

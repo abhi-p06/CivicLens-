@@ -68,9 +68,25 @@ class CivicIssueIntelligencePipeline:
         # Features 1, 2, 3: Text NLP (Category, Urgency, Severity)
         # -------------------------------------------------------------
         nlp_out = nlp_classifier.analyze(text)
-        category = nlp_out["category"]
-        category_conf = nlp_out["categoryConfidence"]
-        nlp_mode = nlp_out["classificationMode"]
+        
+        # Category resolution: Support explicit user category selection or NLP auto-prediction
+        user_cat = (getattr(payload, "category", None) or "").strip()
+        matched_cat: Optional[IssueCategory] = None
+        if user_cat:
+            for c in IssueCategory:
+                if user_cat.lower() == c.value.lower() or user_cat.lower() in c.value.lower():
+                    matched_cat = c
+                    break
+
+        if matched_cat is not None:
+            category = matched_cat
+            category_conf = 1.0
+            nlp_mode = "user_selected_category"
+        else:
+            category = nlp_out["category"]
+            category_conf = nlp_out["categoryConfidence"]
+            nlp_mode = nlp_out["classificationMode"]
+
         urgency = nlp_out["urgency"]
         urgency_cues = nlp_out["urgencyCues"]
         text_severity = nlp_out["severity"]
@@ -82,7 +98,7 @@ class CivicIssueIntelligencePipeline:
             resolved_location = payload.location or "Reported GPS Coordinates"
             lat, lng = payload.latitude, payload.longitude
             loc_mode = "user_gps_coordinates"
-            ward = "User GPS"
+            ward = payload.ward or "User GPS"
         else:
             loc_out = location_extractor.extract_and_geocode(
                 text=text,
@@ -92,7 +108,7 @@ class CivicIssueIntelligencePipeline:
             lat = loc_out["latitude"]
             lng = loc_out["longitude"]
             loc_mode = loc_out["extractionMode"]
-            ward = loc_out["ward"]
+            ward = payload.ward or loc_out["ward"]
 
         # -------------------------------------------------------------
         # Features 5, 6: Duplicate & Near-Duplicate Detection
@@ -114,10 +130,11 @@ class CivicIssueIntelligencePipeline:
         # Features 8, 9: YOLO Road Damage Detection & Visual Severity
         # -------------------------------------------------------------
         is_demo_scenario = False
-        if hasattr(payload, "metadata") and payload.metadata:
-            is_demo_scenario = bool(payload.metadata.get("isDemoPreserved", False))
-        if not is_demo_scenario and "sample_" in str(server_image_path or payload.imageUrl or ""):
-            is_demo_scenario = settings.civilens_demo_mode
+        if not settings.civilens_presentation_mode:
+            if hasattr(payload, "metadata") and payload.metadata:
+                is_demo_scenario = bool(payload.metadata.get("isDemoPreserved", False))
+            if not is_demo_scenario and "sample_" in str(server_image_path or payload.imageUrl or ""):
+                is_demo_scenario = settings.civilens_demo_mode
 
         vision_out = vision_manager.detect(
             image_path_or_url=server_image_path or payload.imageUrl,

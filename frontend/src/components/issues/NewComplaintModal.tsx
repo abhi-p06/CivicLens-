@@ -23,6 +23,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
   const [complaintText, setComplaintText] = useState('')
   const [location, setLocation] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  const [category, setCategory] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [previewAnalysis, setPreviewAnalysis] = useState<any | null>(null)
@@ -94,29 +95,33 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
     setPreviewAnalysis(null)
     setError(null)
     if (num === 1) {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance.'
       )
       setLocation('Somaiya Vidyavihar Main Gate, Vidyavihar East')
-      setImageUrl('data/test_samples/repair_pothole_before.jpg')
+      setImageUrl('')
     } else if (num === 2) {
+      setCategory('Sanitation & Garbage')
       setComplaintText(
         'Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench.'
       )
       setLocation('Station Road, Kurla West')
-      setImageUrl('data/test_samples/bottle.jpg')
+      setImageUrl('')
     } else if (num === 3) {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor.'
       )
       setLocation('S.V. Road, Santacruz')
-      setImageUrl('data/test_samples/bottle.jpg')
+      setImageUrl('')
     } else if (num === 4) {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Deep road depression detected during autonomous visual patrol inspection near school perimeter.'
       )
       setLocation('Kurla West')
-      setImageUrl('data/test_samples/pothole_multibox.jpg')
+      setImageUrl('')
     }
   }
 
@@ -137,6 +142,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         location: location || undefined,
         imageUrl: imageUrl || undefined,
         uploadId: uploadId || undefined,
+        category: category || undefined,
       })
       setPreviewAnalysis(res)
     } catch (err: any) {
@@ -163,6 +169,7 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         location: location || undefined,
         imageUrl: imageUrl || undefined,
         uploadId: uploadId || undefined,
+        category: category || undefined,
       })
       onIssueCreated(res)
       onClose()
@@ -243,6 +250,23 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 4. Patrol Road Survey
               </button>
             </div>
+          </div>
+
+          {/* Target Issue Category */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-[#11162A] flex justify-between">
+              <span>Civic Issue Domain / Model Targeting</span>
+              <span className="text-[#65708B] font-normal">Academic Evaluation Focus</span>
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-white border border-[#E4E7F1] text-[#11162A] rounded-xl p-2.5 text-xs font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs cursor-pointer"
+            >
+              <option value="">Auto-Predict Category (NLP Classification)</option>
+              <option value="Roads & Footpaths">Roads & Footpaths (RDD2022 YOLOv8s Road Damage)</option>
+              <option value="Sanitation & Garbage">Sanitation & Garbage (TACO YOLO11s Waste Detection)</option>
+            </select>
           </div>
 
           {/* Complaint Text */}

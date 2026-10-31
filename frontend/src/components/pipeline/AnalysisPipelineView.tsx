@@ -142,6 +142,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
   const [complaintText, setComplaintText] = useState('')
   const [location, setLocation] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  const [category, setCategory] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const [isDemoScenario, setIsDemoScenario] = useState(false)
 
@@ -238,32 +239,36 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     handleReset()
     handleClearImage()
     if (type === 'pothole' || type === 'demo') {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance.'
       )
       setLocation('Somaiya Vidyavihar Main Gate, Vidyavihar East')
-      setImageUrl('data/test_samples/repair_pothole_before.jpg')
+      setImageUrl('')
       setIsDemoScenario(false)
     } else if (type === 'garbage') {
+      setCategory('Sanitation & Garbage')
       setComplaintText(
         'Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench.'
       )
       setLocation('Station Road, Kurla West')
-      setImageUrl('data/test_samples/bottle.jpg')
+      setImageUrl('')
       setIsDemoScenario(false)
     } else if (type === 'mismatch' || type === 'water') {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor.'
       )
       setLocation('S.V. Road, Santacruz')
-      setImageUrl('data/test_samples/bottle.jpg')
+      setImageUrl('')
       setIsDemoScenario(false)
     } else if (type === 'patrol') {
+      setCategory('Roads & Footpaths')
       setComplaintText(
         'Deep road depression detected during autonomous visual patrol inspection near school perimeter.'
       )
       setLocation('Kurla West')
-      setImageUrl('data/test_samples/pothole_multibox.jpg')
+      setImageUrl('')
       setIsDemoScenario(false)
     }
   }
@@ -419,47 +424,6 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
     setCommittedIssue(null)
     skipRequestedRef.current = false
 
-    // Check if deterministic Demo Scenario matches
-    const isPotholeDemo =
-      complaintText.toLowerCase().includes('pothole') &&
-      complaintText.toLowerCase().includes('vidyavihar')
-
-    if (isPotholeDemo || isDemoScenario) {
-      setIsDemoScenario(true)
-      const deterministicResult = {
-        category: 'Pothole',
-        urgency: 92,
-        severity: 88,
-        location: 'Vidyavihar Station Road, Ghatkopar West',
-        confidence: 0.94,
-        suggestedDepartment: 'Roads & Traffic Department',
-        department: 'Roads & Traffic Department',
-        priorityScore: 91,
-        priorityLevel: 'CRITICAL',
-        evidenceConsistency: 'CONSISTENT',
-        consistencyScore: 94,
-        visualDetection: 'Pothole (Confidence: 89.2%)',
-        recommendedAction: 'Deploy cold-mix asphalt patch team & erect emergency barricades.',
-        priorityReasoning: 'Critical high-speed road defect near pedestrian interchange during monsoon surge.',
-        priorityBreakdown: {
-          urgencyScore: 20,
-          textSeverityScore: 16,
-          visualSeverityScore: 17,
-          relatedReportsScore: 12,
-          recencyScore: 9,
-          locationRiskScore: 9,
-        },
-      }
-      setResult(deterministicResult)
-
-      if (isReduced) {
-        handleSkipAnimationDirect(deterministicResult)
-      } else {
-        runAnimationSequence(deterministicResult)
-      }
-      return
-    }
-
     // Set initial pipeline state to Stage 1 (Complaint received) while waiting for backend
     setActiveStage(1)
     setStageStatuses({
@@ -481,6 +445,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         location,
         imageUrl: imageUrl.trim() ? imageUrl : undefined,
         uploadId: uploadId || undefined,
+        category: category || undefined,
       })
 
       const synthesizedResult = {
@@ -497,6 +462,7 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         visualConfidence: analysisRes.visualConfidence ? Math.round(analysisRes.visualConfidence * 100) : 0,
         detectedObjects: analysisRes.detectedObjects || [],
         visionMode: analysisRes.visionMode || analysisRes.visionExecutionMode,
+        visionModel: analysisRes.visionModel,
         recommendedAction: analysisRes.recommendedAction || 'Dispatch municipal survey team for immediate on-site inspection.',
         priorityReasoning: analysisRes.priorityReasoning || 'Multi-factor risk assessment generated from verified municipal report.',
         slaHours: analysisRes.slaHours || 12,
@@ -506,7 +472,10 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
         isDuplicate: analysisRes.isDuplicate,
         dedupSimilarityScore: analysisRes.dedupSimilarityScore,
         isHotspot: analysisRes.isHotspot,
+        hotspotClusterId: analysisRes.hotspotClusterId,
         recurrence: analysisRes.recurrence,
+        evidenceConsistency: analysisRes.consistencyLevel || 'CONSISTENT',
+        consistencyScore: Math.round((analysisRes.evidenceConsistency ?? 0.94) * 100),
         priorityBreakdown: analysisRes.priorityBreakdown ? {
           urgencyScore: analysisRes.priorityBreakdown.urgencyScore ?? analysisRes.priorityBreakdown.urgency_points ?? 18,
           textSeverityScore: analysisRes.priorityBreakdown.textSeverityScore ?? analysisRes.priorityBreakdown.text_severity_points ?? 15,
@@ -533,37 +502,9 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
       }
     } catch (err: any) {
       console.error('API Error in cognitive pipeline:', err)
-      const fallbackResult = {
-        category: 'Pothole',
-        urgency: 85,
-        severity: 80,
-        location: location || 'Mumbai Central',
-        confidence: 0.9,
-        suggestedDepartment: 'Roads & Traffic Department',
-        department: 'Roads & Traffic Department',
-        priorityScore: 84,
-        priorityLevel: 'CRITICAL',
-        evidenceConsistency: 'CONSISTENT',
-        consistencyScore: 90,
-        visualDetection: 'Pothole detected',
-        visualConfidence: 85,
-        recommendedAction: 'Dispatch emergency repair crew.',
-        priorityReasoning: 'Emergency road surface triage required.',
-        priorityBreakdown: {
-          urgencyScore: 18,
-          textSeverityScore: 15,
-          visualSeverityScore: 15,
-          relatedReportsScore: 10,
-          recencyScore: 8,
-          locationRiskScore: 8,
-        },
-      }
-      setResult(fallbackResult)
-      if (isReduced || skipRequestedRef.current) {
-        handleSkipAnimationDirect(fallbackResult)
-      } else {
-        runAnimationSequence(fallbackResult)
-      }
+      clearAllTimers()
+      setIsAnalyzing(false)
+      setError(err.message || 'Cognitive pipeline analysis error. Please verify backend inference availability.')
     }
   }
 
@@ -649,19 +590,19 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
   const handleCommitIssue = async () => {
     if (!result) return
     setCommitLoading(true)
+    setError(null)
     try {
       const payload = {
-        complaintText: complaintText || DEMO_SCENARIO.complaintText,
+        complaintText: complaintText || 'Citizen reported civic infrastructure defect',
         location: targetLocation,
-        ward: 'N-Ward',
-        imageUrl: imageUrl || DEMO_SCENARIO.imageUrl,
+        ward: result?.ward || 'N-Ward',
+        imageUrl: imageUrl || undefined,
         uploadId: uploadId || undefined,
         category: targetCategory,
         department: department,
         priorityLevel: priorityLevel,
         priorityScore: priorityScore,
         metadata: {
-          isDemoPreserved: isDemoScenario,
           pipelineVerified: true,
           evidenceConsistency: consistencyLevel,
           consistencyScore: consistencyScore,
@@ -671,18 +612,9 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
       const created = await api.submitIssue(payload as any)
       setCommittedIssue(created)
       onIssueCreated?.(created)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to commit issue:', err)
-      const fallbackCommitted = {
-        issueId: 'CIVIC-EXP-' + Math.floor(100 + Math.random() * 900),
-        complaintText,
-        location: targetLocation,
-        department,
-        priorityScore,
-        status: 'DISPATCHED',
-      }
-      setCommittedIssue(fallbackCommitted)
-      onIssueCreated?.(fallbackCommitted)
+      setError(err.message || 'Failed to persist issue to presentation database.')
     } finally {
       setCommitLoading(false)
     }
@@ -797,6 +729,23 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
 
             {/* Clean Input Interface */}
             <div className="bg-white border border-[#E4E7F1] rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+              {/* Category Domain Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
+                  <span>Civic Issue Domain & Model Targeting</span>
+                  <span className="text-[#65708B] font-normal text-[11px]">Core Academic Focus: Road Damage & Waste</span>
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full bg-[#F0F2F9]/50 border border-[#E4E7F1] focus:border-[#6457E8] focus:bg-white rounded-xl p-3 text-sm text-[#11162A] outline-none transition font-sans cursor-pointer"
+                >
+                  <option value="">Auto-Predict Category (TF-IDF NLP Classifier)</option>
+                  <option value="Roads & Footpaths">Roads & Footpaths (RDD2022 YOLOv8s Road Damage Detection)</option>
+                  <option value="Sanitation & Garbage">Sanitation & Garbage (TACO YOLO11s Waste & Litter Detection)</option>
+                </select>
+              </div>
+
               {/* Description Textarea */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
@@ -1304,11 +1253,15 @@ export const AnalysisPipelineView: React.FC<AnalysisPipelineViewProps> = ({ onIs
                           <div className="p-2.5 bg-[#F0F2F9]/70 rounded-lg border border-[#E4E7F1] space-y-1 font-sans">
                             <div className="flex items-center justify-between">
                               <span className="text-[#65708B] text-[11px]">Spatiotemporal Cluster:</span>
-                              <span className="text-amber-700 font-bold text-xs">LBS Marg East Corridor</span>
+                              <span className="text-amber-700 font-bold text-xs">
+                                {result?.isHotspot ? (result?.hotspotClusterId || 'Cluster Detected') : 'No Cluster Detected (Isolated)'}
+                              </span>
                             </div>
                             <div className="flex items-center justify-between text-[11px]">
                               <span className="text-[#65708B]">Chronic Recurrence Index:</span>
-                              <span className="text-rose-700 font-bold">62 / 100 (4 reports in 90d)</span>
+                              <span className="text-rose-700 font-bold">
+                                {result?.recurrence ? `${result.recurrence.recurrenceScore || 0} / 100` : '0 / 100 (First Report)'}
+                              </span>
                             </div>
                           </div>
                         )}

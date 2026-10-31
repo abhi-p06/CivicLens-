@@ -571,12 +571,45 @@ def verify_issue_resolution(
     Executes OpenCV scene comparability and dual YOLO road-damage delta analysis.
     Updates issue state and atomically records verification audit history.
     Enforces server-authenticated inspector identity (ignores unverified client inspectorId).
+    Enforces lifecycle state machine: rejects premature verification for issues not yet in field action.
+    Requires valid post-action photographic evidence.
     """
     issue = demo_store.get_issue(issue_id)
     if not issue:
         raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
     
+    # Lifecycle state machine gating: prevent premature verification or reverification of closed issues
+    allowed_statuses = {
+        IssueStatus.ACTION_IN_PROGRESS.value,
+        IssueStatus.VERIFICATION.value,
+        IssueStatus.IN_PROGRESS.value,
+    }
+    curr_status = issue.status.value if hasattr(issue.status, "value") else str(issue.status)
+    if curr_status in {IssueStatus.RESOLVED.value, IssueStatus.VERIFIED_CLOSED.value}:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Cannot verify resolution for issue {issue_id}: issue is already closed ('{curr_status}'). "
+                f"Closed issues cannot be reverified unless reopened."
+            )
+        )
+    if curr_status not in allowed_statuses:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Cannot verify resolution for issue {issue_id}: current lifecycle status is '{curr_status}'. "
+                f"Resolution verification is only permitted once field repair is under way or pending verification "
+                f"(ACTION IN PROGRESS or VERIFICATION)."
+            )
+        )
+
     raw_img = payload.resolutionImageUrl or payload.postActionImageUrl
+    if not raw_img and not payload.uploadId:
+        raise HTTPException(
+            status_code=400,
+            detail="Resolution verification requires valid post-action photographic evidence (uploadId or resolutionImageUrl)."
+        )
+
     # Server-side identity enforcement: use authenticated inspector ID
     evidence = lifecycle_tracker.verify_resolution(
         issue=issue,
@@ -701,9 +734,58 @@ def get_evaluation_metrics() -> Dict[str, Any]:
     """
     EVALUATION SUPPORT:
     Calculates actual empirical metrics from test data and historical issues.
-    Never fabricates metrics.
+    Never fabricates metrics. Handles empty complaint database cleanly.
     """
     issues = demo_store.list_issues()
+    if len(issues) == 0:
+        return {
+            "classification": {
+                "accuracy": 0.0,
+                "macro_precision": 0.0,
+                "macro_recall": 0.0,
+                "macro_f1": 0.0,
+                "weighted_f1": 0.0,
+                "sample_count": 0
+            },
+            "priority": {
+                "mae": 0.0,
+                "top_k": 0,
+                "top_k_precision": 0.0,
+                "top_k_recall": 0.0,
+                "sample_count": 0
+            },
+            "priority_mae": {
+                "mae": 0.0,
+                "top_k": 0,
+                "top_k_precision": 0.0,
+                "top_k_recall": 0.0,
+                "sample_count": 0
+            },
+            "department_routing": {
+                "accuracy": 0.0,
+                "macro_f1": 0.0,
+                "sample_count": 0
+            },
+            "hotspot_clustering": {
+                "silhouette_score": None,
+                "clusters_found": 0,
+                "total_points": 0,
+                "status": "No issues submitted yet to calculate spatial clustering."
+            },
+            "text_image_consistency": {
+                "accuracy": 0.0,
+                "sample_count": 0,
+                "missing_evidence_count": 0,
+                "manual_review_count": 0
+            },
+            "resolution_verification": {
+                "accuracy": 0.0,
+                "sample_count": 0
+            },
+            "evaluated_sample_count": 0,
+            "status": "No complaints submitted yet."
+        }
+
     y_true_cats = [i.category.value for i in issues]
     y_pred_cats = [pipeline.analyze(IssueCreate(complaintText=i.complaintText))["category"].value for i in issues]
 
@@ -781,6 +863,11 @@ def get_evaluation_metrics() -> Dict[str, Any]:
 def reset_demo_data(
     current_user: AuthenticatedUser = Depends(require_admin)
 ) -> Dict[str, str]:
+    if settings.is_presentation_database:
+        demo_store.reset_demo()
+        department_dispatcher.reset_to_defaults()
+        return {"message": "Presentation environment reset: All live complaints cleared to clean empty state."}
+
     if not settings.civilens_demo_mode:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
