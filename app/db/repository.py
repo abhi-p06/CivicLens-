@@ -628,8 +628,8 @@ class SqliteIssueRepository:
     def seed_default_users_if_empty(self) -> int:
         """
         Initializes default demo accounts in development environments:
-        - Citizen: citizen@civilens.org / Citizen@123
-        - Inspector: inspector@civilens.org / Inspector@123
+        - Citizen: citizen@civilens.org / Citizen@123 (Abhinay)
+        - Inspector: inspector@civilens.org / Inspector@123 (Abhinay)
         - Administrator: admin@civilens.org / Admin@123
         """
         from app.core.security import hash_password
@@ -649,8 +649,8 @@ class SqliteIssueRepository:
             admin_pwd = os.getenv("CIVILENS_DEV_ADMIN_PASSWORD", "Admin@123")
 
             defaults = [
-                ("CITIZEN-001", "citizen", "citizen@civilens.org", "Suresh Patil (Citizen)", citizen_pwd, "citizen"),
-                ("INSP-MUMBAI-01", "inspector", "inspector@civilens.org", "Ward Field Inspector", inspector_pwd, "inspector"),
+                ("CITIZEN-001", "citizen", "citizen@civilens.org", "Abhinay", citizen_pwd, "citizen"),
+                ("INSP-MUMBAI-01", "inspector", "inspector@civilens.org", "Abhinay", inspector_pwd, "inspector"),
                 ("ADMIN-SYS-01", "admin", "admin@civilens.org", "Municipal Operations Administrator", admin_pwd, "admin"),
             ]
             inserted = 0

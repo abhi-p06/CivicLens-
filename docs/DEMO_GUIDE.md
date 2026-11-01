@@ -219,8 +219,8 @@ CIVILENS provides a dedicated, role-specific authentication architecture connect
 
 | Persona | Role | Email / Identifier | Password | Destination Route | Permitted Capabilities |
 |---|---|---|---|---|---|
-| **Suresh Patil** | `CITIZEN` | `citizen@civilens.org` | `Citizen@123` | Citizen Portal (`/` as citizen) | File pothole/garbage reports, upload photos, AI intake preview, track owned complaints (`/api/v1/issues/my`) |
-| **Field Inspector** | `INSPECTOR` | `inspector@civilens.org` | `Inspector@123` | Command Center (`/` as inspector) | Priority queue triage, YOLOv8/YOLO11 visual inspection, status progression, SSIM before-and-after verification |
+| **Abhinay** | `CITIZEN` | `citizen@civilens.org` | `Citizen@123` | Citizen Portal (`/` as citizen) | File pothole/garbage reports, upload photos, AI intake preview, track owned complaints (`/api/v1/issues/my`) |
+| **Abhinay** | `INSPECTOR` | `inspector@civilens.org` | `Inspector@123` | Command Center (`/` as inspector) | Priority queue triage, YOLOv8/YOLO11 visual inspection, status progression, SSIM before-and-after verification |
 | **Operations Admin** | `ADMIN` | `admin@civilens.org` | `Admin@123` | Full Governance (`/` as admin) | Complete operational dashboard, GIS map, model health telemetry, routing dispatch rules, demo data reset, user administration |
 
 ---
@@ -235,7 +235,7 @@ CIVILENS provides a dedicated, role-specific authentication architecture connect
 3. Click **"Access Citizen Portal"** (routes to `/login/citizen`).
 4. Test Show/Hide password toggle and client validation.
 5. Log in with `citizen@civilens.org` / `Citizen@123`.
-6. Notice verified server session token issued, header user badge displaying **`Suresh Patil (Citizen)`** with role pill `CITIZEN`.
+6. Notice verified server session token issued, header user badge displaying **`Abhinay`** with role pill `CITIZEN`.
 
 ---
 

@@ -32,7 +32,7 @@ class AuthenticatedUser(BaseModel):
 DEV_TOKENS = {
     "demo-inspector-token": AuthenticatedUser(
         user_id="INSP-MUMBAI-01",
-        name="Ward Field Inspector",
+        name="Abhinay",
         role=UserRole.INSPECTOR,
         email="inspector@civilens.org",
         username="inspector"
@@ -46,7 +46,7 @@ DEV_TOKENS = {
     ),
     "demo-citizen-token": AuthenticatedUser(
         user_id="CITIZEN-DEMO-01",
-        name="Demo Citizen",
+        name="Abhinay",
         role=UserRole.CITIZEN,
         email="citizen@civilens.org",
         username="citizen"
@@ -204,7 +204,7 @@ def authenticate_credentials(raw_token: Optional[str]) -> Optional[Authenticated
     if settings.inspector_api_key and cleaned_token == settings.inspector_api_key:
         return AuthenticatedUser(
             user_id="INSP-ENV-01",
-            name="Configured Field Inspector",
+            name="Abhinay",
             role=UserRole.INSPECTOR,
             email="inspector.env@civilens.org",
             username="inspector_env"
