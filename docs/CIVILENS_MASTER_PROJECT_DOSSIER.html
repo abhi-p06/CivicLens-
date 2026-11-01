@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CIVILENS_MASTER_PROJECT_DOSSIER</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown.min.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#civilens-master-project-documentation-ai-handover-dossier"
+id="toc-civilens-master-project-documentation-ai-handover-dossier">CIVILENS
+— Master Project Documentation &amp; AI Handover Dossier</a>
+<ul>
+<li><a
+href="#multimodal-civic-issue-detection-priority-advisory-engine-nlp-yolo-gis"
+id="toc-multimodal-civic-issue-detection-priority-advisory-engine-nlp-yolo-gis">Multimodal
+Civic Issue Detection &amp; Priority Advisory Engine (NLP + YOLO +
+GIS)</a></li>
+</ul></li>
+<li><a href="#table-of-contents" id="toc-table-of-contents">TABLE OF
+CONTENTS</a></li>
+<li><a href="#part-1-project-audit-empirical-verification-status"
+id="toc-part-1-project-audit-empirical-verification-status">PART 1 —
+PROJECT AUDIT &amp; EMPIRICAL VERIFICATION STATUS</a>
+<ul>
+<li><a href="#audit-summary" id="toc-audit-summary">Audit
+Summary:</a></li>
+</ul></li>
+<li><a href="#part-2-project-overview-problem-statement"
+id="toc-part-2-project-overview-problem-statement">PART 2 — PROJECT
+OVERVIEW &amp; PROBLEM STATEMENT</a>
+<ul>
+<li><a href="#full-project-name-and-meaning"
+id="toc-full-project-name-and-meaning">1. Full Project Name and
+Meaning</a></li>
+<li><a href="#introduction" id="toc-introduction">2.
+Introduction</a></li>
+<li><a href="#the-problem" id="toc-the-problem">3. The Problem</a></li>
+<li><a href="#project-motivation" id="toc-project-motivation">4. Project
+Motivation</a></li>
+<li><a href="#main-objectives" id="toc-main-objectives">5. Main
+Objectives</a></li>
+<li><a href="#target-users" id="toc-target-users">6. Target
+Users</a></li>
+<li><a href="#geographic-scope" id="toc-geographic-scope">7. Geographic
+Scope</a></li>
+<li><a href="#the-two-primary-supported-categories-scope-freeze"
+id="toc-the-two-primary-supported-categories-scope-freeze">8. The Two
+Primary Supported Categories (Scope Freeze)</a></li>
+</ul></li>
+<li><a href="#part-3-problem-statement-and-solution-mapping"
+id="toc-part-3-problem-statement-and-solution-mapping">PART 3 — PROBLEM
+STATEMENT AND SOLUTION MAPPING</a></li>
+<li><a href="#part-4-complete-system-architecture-data-flow"
+id="toc-part-4-complete-system-architecture-data-flow">PART 4 — COMPLETE
+SYSTEM ARCHITECTURE &amp; DATA FLOW</a>
+<ul>
+<li><a href="#system-architecture-diagram-mermaid"
+id="toc-system-architecture-diagram-mermaid">4.1 System Architecture
+Diagram (Mermaid)</a></li>
+<li><a href="#complaint-submission-sequence-diagram-mermaid"
+id="toc-complaint-submission-sequence-diagram-mermaid">4.2 Complaint
+Submission Sequence Diagram (Mermaid)</a></li>
+<li><a href="#ai-inference-model-comparison-flow-mermaid"
+id="toc-ai-inference-model-comparison-flow-mermaid">4.3 AI Inference
+&amp; Model Comparison Flow (Mermaid)</a></li>
+<li><a href="#gis-synchronization-sequence-diagram-mermaid"
+id="toc-gis-synchronization-sequence-diagram-mermaid">4.4 GIS
+Synchronization Sequence Diagram (Mermaid)</a></li>
+<li><a href="#role-based-access-control-rbac-architecture-mermaid"
+id="toc-role-based-access-control-rbac-architecture-mermaid">4.5
+Role-Based Access Control (RBAC) Architecture (Mermaid)</a></li>
+</ul></li>
+<li><a href="#part-5-user-roles-and-functional-workflows"
+id="toc-part-5-user-roles-and-functional-workflows">PART 5 — USER ROLES
+AND FUNCTIONAL WORKFLOWS</a>
+<ul>
+<li><a href="#citizen-experience" id="toc-citizen-experience">5.1
+Citizen Experience</a></li>
+<li><a href="#municipal-officer-ward-inspector-experience"
+id="toc-municipal-officer-ward-inspector-experience">5.2 Municipal
+Officer / Ward Inspector Experience</a></li>
+<li><a href="#administrator-experience"
+id="toc-administrator-experience">5.3 Administrator Experience</a></li>
+</ul></li>
+<li><a href="#part-6-artificial-intelligence-computer-vision-pipeline"
+id="toc-part-6-artificial-intelligence-computer-vision-pipeline">PART 6
+— ARTIFICIAL INTELLIGENCE &amp; COMPUTER VISION PIPELINE</a>
+<ul>
+<li><a href="#conceptual-overview-how-yolo-works"
+id="toc-conceptual-overview-how-yolo-works">6.1 Conceptual Overview: How
+YOLO Works</a></li>
+<li><a href="#key-machine-learning-terminology-explained"
+id="toc-key-machine-learning-terminology-explained">6.2 Key Machine
+Learning Terminology Explained</a></li>
+<li><a href="#local-model-1-road-damage-detector-yolov8s-rdd2022"
+id="toc-local-model-1-road-damage-detector-yolov8s-rdd2022">6.3 Local
+Model 1: Road Damage Detector (<code>YOLOv8s RDD2022</code>)</a></li>
+<li><a
+href="#local-model-2-municipal-waste-street-litter-detector-yolo11s-taco"
+id="toc-local-model-2-municipal-waste-street-litter-detector-yolo11s-taco">6.4
+Local Model 2: Municipal Waste &amp; Street Litter Detector
+(<code>YOLO11s TACO</code>)</a></li>
+<li><a href="#roboflow-serverless-hosted-models-experimental-candidates"
+id="toc-roboflow-serverless-hosted-models-experimental-candidates">6.5
+Roboflow Serverless Hosted Models (Experimental Candidates)</a></li>
+</ul></li>
+<li><a
+href="#part-7-explainable-severity-6-factor-dynamic-prioritization"
+id="toc-part-7-explainable-severity-6-factor-dynamic-prioritization">PART
+7 — EXPLAINABLE SEVERITY &amp; 6-FACTOR DYNAMIC PRIORITIZATION</a>
+<ul>
+<li><a href="#authoritative-6-factor-mathematical-formula"
+id="toc-authoritative-6-factor-mathematical-formula">7.1 Authoritative
+6-Factor Mathematical Formula</a></li>
+<li><a href="#priority-categorization-thresholds"
+id="toc-priority-categorization-thresholds">7.2 Priority Categorization
+Thresholds</a></li>
+<li><a href="#verified-worked-example-incident-civic-2026-23363092"
+id="toc-verified-worked-example-incident-civic-2026-23363092">7.3
+Verified Worked Example (Incident
+<code>CIVIC-2026-23363092</code>)</a></li>
+</ul></li>
+<li><a href="#part-8-tactical-gis-geolocation-geographic-boundaries"
+id="toc-part-8-tactical-gis-geolocation-geographic-boundaries">PART 8 —
+TACTICAL GIS, GEOLOCATION &amp; GEOGRAPHIC BOUNDARIES</a>
+<ul>
+<li><a href="#geographic-bounding-box"
+id="toc-geographic-bounding-box">8.1 Geographic Bounding Box</a></li>
+<li><a href="#geolocation-capture-reverse-geocoding"
+id="toc-geolocation-capture-reverse-geocoding">8.2 Geolocation Capture
+&amp; Reverse Geocoding</a></li>
+<li><a href="#tactical-gis-map-architecture"
+id="toc-tactical-gis-map-architecture">8.3 Tactical GIS Map
+Architecture</a></li>
+</ul></li>
+<li><a href="#part-9-municipal-ward-operations-grievance-lifecycle"
+id="toc-part-9-municipal-ward-operations-grievance-lifecycle">PART 9 —
+MUNICIPAL WARD OPERATIONS &amp; GRIEVANCE LIFECYCLE</a></li>
+<li><a
+href="#part-10-ai-field-guidance-statutory-standards-knowledge-base"
+id="toc-part-10-ai-field-guidance-statutory-standards-knowledge-base">PART
+10 — AI FIELD GUIDANCE &amp; STATUTORY STANDARDS KNOWLEDGE BASE</a>
+<ul>
+<li><a href="#indexed-statutory-knowledge-base"
+id="toc-indexed-statutory-knowledge-base">10.1 Indexed Statutory
+Knowledge Base</a></li>
+<li><a href="#officer-decision-support"
+id="toc-officer-decision-support">10.2 Officer Decision Support</a></li>
+</ul></li>
+<li><a
+href="#part-11-datasets-training-provenance-empirical-experiments"
+id="toc-part-11-datasets-training-provenance-empirical-experiments">PART
+11 — DATASETS, TRAINING PROVENANCE &amp; EMPIRICAL EXPERIMENTS</a>
+<ul>
+<li><a href="#dataset-inventory" id="toc-dataset-inventory">11.1 Dataset
+Inventory</a></li>
+<li><a href="#the-phase-10-calibration-experiment"
+id="toc-the-phase-10-calibration-experiment">11.2 The Phase 10
+Calibration Experiment</a></li>
+</ul></li>
+<li><a href="#part-12-comprehensive-technology-stack-justifications"
+id="toc-part-12-comprehensive-technology-stack-justifications">PART 12 —
+COMPREHENSIVE TECHNOLOGY STACK &amp; JUSTIFICATIONS</a></li>
+<li><a href="#part-13-complete-rest-api-relational-database-reference"
+id="toc-part-13-complete-rest-api-relational-database-reference">PART 13
+— COMPLETE REST API &amp; RELATIONAL DATABASE REFERENCE</a></li>
+<li><a href="#part-14-project-security-cryptography-privacy-boundaries"
+id="toc-part-14-project-security-cryptography-privacy-boundaries">PART
+14 — PROJECT SECURITY, CRYPTOGRAPHY &amp; PRIVACY BOUNDARIES</a></li>
+<li><a href="#part-15-testing-verification-regression-test-suite"
+id="toc-part-15-testing-verification-regression-test-suite">PART 15 —
+TESTING, VERIFICATION &amp; REGRESSION TEST SUITE</a></li>
+<li><a href="#part-16-repository-structure-file-organization-map"
+id="toc-part-16-repository-structure-file-organization-map">PART 16 —
+REPOSITORY STRUCTURE &amp; FILE ORGANIZATION MAP</a></li>
+<li><a href="#part-17-reproducible-setup-installation-execution-guide"
+id="toc-part-17-reproducible-setup-installation-execution-guide">PART 17
+— REPRODUCIBLE SETUP, INSTALLATION &amp; EXECUTION GUIDE</a></li>
+<li><a href="#part-18-live-academic-demonstration-walkthrough"
+id="toc-part-18-live-academic-demonstration-walkthrough">PART 18 — LIVE
+ACADEMIC DEMONSTRATION WALKTHROUGH</a></li>
+<li><a href="#part-19-architectural-history-key-engineering-decisions"
+id="toc-part-19-architectural-history-key-engineering-decisions">PART 19
+— ARCHITECTURAL HISTORY &amp; KEY ENGINEERING DECISIONS</a></li>
+<li><a href="#part-20-known-limitations-future-scope"
+id="toc-part-20-known-limitations-future-scope">PART 20 — KNOWN
+LIMITATIONS &amp; FUTURE SCOPE</a>
+<ul>
+<li><a href="#current-verified-limitations"
+id="toc-current-verified-limitations">20.1 Current Verified
+Limitations</a></li>
+<li><a href="#realistic-future-scope"
+id="toc-realistic-future-scope">20.2 Realistic Future Scope</a></li>
+</ul></li>
+<li><a href="#part-21-student-friendly-technical-glossary"
+id="toc-part-21-student-friendly-technical-glossary">PART 21 —
+STUDENT-FRIENDLY TECHNICAL GLOSSARY</a></li>
+<li><a href="#part-22-questions-another-ai-must-be-able-to-answer"
+id="toc-part-22-questions-another-ai-must-be-able-to-answer">PART 22 —
+QUESTIONS ANOTHER AI MUST BE ABLE TO ANSWER</a></li>
+<li><a href="#part-23-presentation-preparation-reference"
+id="toc-part-23-presentation-preparation-reference">PART 23 —
+PRESENTATION PREPARATION REFERENCE</a>
+<ul>
+<li><a href="#second-elevator-pitch"
+id="toc-second-elevator-pitch">30-Second Elevator Pitch:</a></li>
+<li><a href="#minute-technical-overview"
+id="toc-minute-technical-overview">1-Minute Technical Overview:</a></li>
+<li><a href="#minute-comprehensive-viva-overview"
+id="toc-minute-comprehensive-viva-overview">3-Minute Comprehensive Viva
+Overview:</a></li>
+</ul></li>
+<li><a href="#part-24-quality-signoff-auditor-attestation"
+id="toc-part-24-quality-signoff-auditor-attestation">PART 24 — QUALITY
+SIGNOFF &amp; AUDITOR ATTESTATION</a></li>
+</ul>
+</nav>
+<h1
+id="civilens-master-project-documentation-ai-handover-dossier">CIVILENS
+— Master Project Documentation &amp; AI Handover Dossier</h1>
+<h2
+id="multimodal-civic-issue-detection-priority-advisory-engine-nlp-yolo-gis">Multimodal
+Civic Issue Detection &amp; Priority Advisory Engine (NLP + YOLO +
+GIS)</h2>
+<p><strong>Repository</strong>: <code>chiragwalaproj</code><br />
+<strong>Document Version</strong>: 2.4 (Comprehensive Master Handover
+Edition)<br />
+<strong>Publication Date</strong>: November 2026<br />
+<strong>Target Audience</strong>: Academic Evaluators, University
+Faculty, Technical Auditors, AI Systems (ChatGPT, Claude) for Viva &amp;
+Presentation Preparation<br />
+<strong>Lead Developer / Maintainer</strong>: Abhinay</p>
+<hr />
+<h1 id="table-of-contents">TABLE OF CONTENTS</h1>
+<ol type="1">
+<li><strong>Part 1 — Project Audit &amp; Empirical Verification
+Status</strong></li>
+<li><strong>Part 2 — Project Overview &amp; Problem
+Statement</strong></li>
+<li><strong>Part 3 — Problem Statement and Solution
+Mapping</strong></li>
+<li><strong>Part 4 — Complete System Architecture &amp; Data
+Flow</strong></li>
+<li><strong>Part 5 — User Roles and Functional Workflows</strong></li>
+<li><strong>Part 6 — Artificial Intelligence &amp; Computer Vision
+Pipeline</strong></li>
+<li><strong>Part 7 — Explainable Severity &amp; 6-Factor Dynamic
+Prioritization</strong></li>
+<li><strong>Part 8 — Tactical GIS, Geolocation &amp; Geographic
+Boundaries</strong></li>
+<li><strong>Part 9 — Municipal Ward Operations &amp; Grievance
+Lifecycle</strong></li>
+<li><strong>Part 10 — AI Field Guidance &amp; Statutory Standards
+Knowledge Base</strong></li>
+<li><strong>Part 11 — Datasets, Training Provenance &amp; Empirical
+Experiments</strong></li>
+<li><strong>Part 12 — Comprehensive Technology Stack &amp;
+Justifications</strong></li>
+<li><strong>Part 13 — Complete REST API &amp; Relational Database
+Reference</strong></li>
+<li><strong>Part 14 — Project Security, Cryptography &amp; Privacy
+Boundaries</strong></li>
+<li><strong>Part 15 — Testing, Verification &amp; Regression Test
+Suite</strong></li>
+<li><strong>Part 16 — Repository Structure &amp; File Organization
+Map</strong></li>
+<li><strong>Part 17 — Reproducible Setup, Installation &amp; Execution
+Guide</strong></li>
+<li><strong>Part 18 — Live Academic Demonstration
+Walkthrough</strong></li>
+<li><strong>Part 19 — Architectural History &amp; Key Engineering
+Decisions</strong></li>
+<li><strong>Part 20 — Known Limitations &amp; Future Scope</strong></li>
+<li><strong>Part 21 — Student-Friendly Technical Glossary</strong></li>
+<li><strong>Part 22 — Questions Another AI Must Be Able to
+Answer</strong></li>
+<li><strong>Part 23 — Presentation Preparation Reference (30s, 1m, 3m
+Overviews)</strong></li>
+<li><strong>Part 24 — Quality Signoff &amp; Auditor
+Attestation</strong></li>
+</ol>
+<hr />
+<h1 id="part-1-project-audit-empirical-verification-status">PART 1 —
+PROJECT AUDIT &amp; EMPIRICAL VERIFICATION STATUS</h1>
+<p>Before preparing this master dossier, a comprehensive source-code and
+empirical audit of the CIVILENS repository was conducted. Every
+technical claim in this document is confirmed by active Python modules,
+React components, SQLAlchemy ORM models, or verified automated
+tests.</p>
+<h3 id="audit-summary">Audit Summary:</h3>
+<ul>
+<li><strong>Backend Test Suite</strong>: Exactly <strong>244 passing
+tests</strong> across 26 test files (<code>tests/</code>), including 16
+Roboflow integration tests
+(<code>tests/test_roboflow_integration.py</code>).</li>
+<li><strong>Frontend Production Build</strong>: Compiled cleanly via
+<code>tsc -b &amp;&amp; vite build</code> in <strong>327ms</strong> with
+<strong>0 TypeScript errors and 0 Vite warnings</strong>.</li>
+<li><strong>Real-Browser Automation</strong>: Verified end-to-end via
+headless Chrome automation
+(<code>scripts/verify_comparison_ui.py</code>) covering all 6 test
+scenarios across Citizen, Inspector, and Admin roles.</li>
+<li><strong>Relational Persistence</strong>: Exactly <strong>9
+SQLAlchemy ORM tables</strong> mapped and verified in SQLite WAL
+mode.</li>
+<li><strong>Active Deep Learning Checkpoints</strong>:
+<ul>
+<li><code>models/yolov8s_rdd2022.pt</code>: 11.14M parameters (SHA-256:
+<code>2cf3f6...</code>).</li>
+<li><code>models/taco_yolo11s.pt</code>: 9.43M parameters (SHA-256:
+<code>1b9c83...</code>).</li>
+</ul></li>
+<li><strong>External API Integrations</strong>: Roboflow Serverless API
+(<code>https://serverless.roboflow.com</code>) with persistent SHA-256
+caching (<code>data/cache/roboflow_predictions_cache.json</code>).</li>
+<li><strong>Geographic Boundary</strong>: Hard-coded boundary checks
+(<code>app/modules/gis/bounds.py</code>,
+<code>frontend/src/config/geo.ts</code>) restricting complaints to
+Greater Mumbai and Navi Mumbai (<code>18.85</code> to <code>19.33</code>
+N, <code>72.75</code> to <code>73.18</code> E).</li>
+</ul>
+<hr />
+<h1 id="part-2-project-overview-problem-statement">PART 2 — PROJECT
+OVERVIEW &amp; PROBLEM STATEMENT</h1>
+<h3 id="full-project-name-and-meaning">1. Full Project Name and
+Meaning</h3>
+<p><strong>CIVILENS</strong> is an acronym and portmanteau for
+<strong>Civic Infrastructure Intelligence and Spatial Operations
+Lens</strong>. It represents an intelligent, multimodal “lens” through
+which municipal operations centers can objectively observe, quantify,
+prioritize, and track civic infrastructure defects.</p>
+<h3 id="introduction">2. Introduction</h3>
+<p>CIVILENS is an explainable multimodal civic intelligence platform
+designed for municipal operations command centers. It converts
+unstructured citizen grievances (text and smartphone photos) into
+structured, mathematically prioritized, and auditable municipal
+interventions.</p>
+<h3 id="the-problem">3. The Problem</h3>
+<p>Municipal public works and sanitation departments in developing urban
+centers operate under acute operational friction: - <strong>Textual
+Ambiguity</strong>: Citizens file subjective complaints such as
+<em>“huge pothole near my house”</em> or <em>“smelly trash
+everywhere”</em>. Municipal staff have no objective way to determine
+whether a pothole is a minor 2-inch depression or a 10-inch
+axle-breaking crater. - <strong>Duplicate Ticket Flooding</strong>: A
+single visible pothole on a major arterial corridor like the Western
+Express Highway generates dozens of repetitive complaints from
+commuters. Traditional portals treat each as an independent ticket,
+creating false workload spikes, dispatch redundancy, and administrative
+backlog. - <strong>Unverified Claims &amp; Misfiling</strong>:
+Traditional systems accept images as passive file attachments. They do
+not cross-check whether the attached photo matches the written
+complaint, leading to misrouted complaints and wasted field inspections.
+- <strong>Crude FIFO Triage</strong>: Tickets are traditionally handled
+First-In, First-Out (FIFO) or sorted by arbitrary check-boxes. Dangerous
+defects near high-speed flyovers or school zones frequently sit
+unattended behind minor cosmetic issues. - <strong>Lack of Standardized
+Field Guidance</strong>: Dispatched field crews lack immediate access to
+statutory engineering standards (such as MoRTH road repair
+specifications or CPCB solid waste rules), leading to sub-standard
+repairs that fail within weeks.</p>
+<h3 id="project-motivation">4. Project Motivation</h3>
+<p>The motivation behind CIVILENS is to build a scientifically rigorous,
+transparent, and ethically sound decision-support engine. Rather than
+replacing human municipal officers with an unreviewable “black box,”
+CIVILENS provides explainable recommendations, transparent uncertainty
+metrics, and human-in-the-loop governance.</p>
+<h3 id="main-objectives">5. Main Objectives</h3>
+<ol type="1">
+<li>Automatically detect, localize, and classify road damage and street
+litter from citizen photographs using deep convolutional neural
+networks.</li>
+<li>Cross-validate citizen text claims against photographic evidence to
+identify misfilings without labeling citizens fraudulent.</li>
+<li>Calculate an explainable, 6-factor additive priority score (0–100
+points) based on physical urgency, visual severity, near-duplicate
+frequency, recency, and corridor hotspot status.</li>
+<li>Cluster complaints geographically using Haversine DBSCAN to identify
+emerging infrastructure failure corridors.</li>
+<li>Provide Municipal Officers with a Ward Operations Management
+workspace featuring statutory AI Field Guidance grounded in official
+government engineering standards.</li>
+<li>Provide side-by-side benchmarking between local edge models and
+hosted cloud candidate models.</li>
+</ol>
+<h3 id="target-users">6. Target Users</h3>
+<ul>
+<li><strong>Citizens</strong>: Urban residents filing civic grievances,
+tracking remediation progress, and providing satisfaction feedback.</li>
+<li><strong>Municipal Officers / Ward Field Inspectors</strong>: Ward
+engineers and triage supervisors who review prioritized queues, assign
+tasks to operational field teams, schedule repairs, and verify
+completion.</li>
+<li><strong>Municipal Administrators</strong>: Executive officers who
+govern department routing rules, configure SLA response windows, manage
+field teams, and oversee system telemetry.</li>
+</ul>
+<h3 id="geographic-scope">7. Geographic Scope</h3>
+<p>CIVILENS is configured for the <strong>Greater Mumbai and Navi
+Mumbai</strong> metropolitan areas under the operational model of the
+<strong>Municipal Corporation of Greater Mumbai (MCGM / BMC)</strong>
+and the <strong>Navi Mumbai Municipal Corporation (NMMC)</strong>.</p>
+<h3 id="the-two-primary-supported-categories-scope-freeze">8. The Two
+Primary Supported Categories (Scope Freeze)</h3>
+<p>Following faculty feedback, the platform’s automated computer-vision
+perception is strictly frozen to <strong>two well-developed primary use
+cases</strong>: 1. <strong>Potholes / Road Surface Damage</strong>:
+Detection of potholes (<code>D40</code>), alligator fatigue cracking
+(<code>D20</code>), transverse cracks (<code>D10</code>), and
+longitudinal cracks (<code>D00</code>). 2. <strong>Garbage Accumulation
+/ Street Litter</strong>: Multi-item detection of discarded packaging,
+plastic bottles, beverage cans, cartons, and roadside refuse.</p>
+<p><em>Broader civic categories (such as street flooding, water pipe
+bursts, and streetlight electrical faults) are handled via textual NLP
+and routed for human engineering inspection with zero synthetic bounding
+boxes.</em></p>
+<hr />
+<h1 id="part-3-problem-statement-and-solution-mapping">PART 3 — PROBLEM
+STATEMENT AND SOLUTION MAPPING</h1>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Existing Civic Grievance Problem</th>
+<th>Why It Is Difficult to Manage</th>
+<th>CIVILENS Feature Addressing It</th>
+<th>Technology Involved</th>
+<th>Expected Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Subjective Pothole Reporting</strong></td>
+<td>Citizens describe defects vaguely without standard dimensions.</td>
+<td>Deep Object Detection &amp; Visual Severity Estimation</td>
+<td>Ultralytics YOLOv8s fine-tuned on RDD2022
+(<code>models/yolov8s_rdd2022.pt</code>)</td>
+<td>Automated bounding box localization, D00–D40 classification, and
+defect area quantification.</td>
+</tr>
+<tr>
+<td><strong>Street Litter &amp; Waste Mismanagement</strong></td>
+<td>Waste accumulation blocks storm drains and causes public health
+hazards.</td>
+<td>Multi-Item Municipal Litter Detection</td>
+<td>Ultralytics YOLO11s trained on TACO
+(<code>models/taco_yolo11s.pt</code>)</td>
+<td>Multi-object segmentation across 9 waste categories with calibrated
+0.45 confidence threshold.</td>
+</tr>
+<tr>
+<td><strong>Crude Priority Triage</strong></td>
+<td>First-In, First-Out queues neglect high-risk, life-threatening
+hazards.</td>
+<td>Explainable 6-Factor Additive Priority Scoring</td>
+<td>Mathematical Priority Engine
+(<code>app/modules/priority/engine.py</code>)</td>
+<td>Authoritative 0–100 composite score escalating critical hazards to
+the top of the queue.</td>
+</tr>
+<tr>
+<td><strong>Inaccurate Complaint Locations</strong></td>
+<td>Citizens report vague landmarks or wrong postal addresses.</td>
+<td>Browser GPS Detection &amp; Interactive Map Picker</td>
+<td>Browser Geolocation API + Leaflet GIS + Reverse Geocoding</td>
+<td>Exact coordinate capture restricted to Mumbai/Navi Mumbai bounding
+box (<code>18.85–19.33</code> N, <code>72.75–73.18</code> E).</td>
+</tr>
+<tr>
+<td><strong>Duplicate Ticket Flooding</strong></td>
+<td>Multiple citizens report the same defect, creating redundant
+dispatches.</td>
+<td>Spatiotemporal Near-Duplicate Deduplication</td>
+<td>Geodesic Haversine (<span class="math inline">250m</span>) + Jaccard
+Token Overlap</td>
+<td>Groups near-duplicate reports into a single master ticket,
+amplifying friction score (+4 pts per duplicate).</td>
+</tr>
+<tr>
+<td><strong>Infrastructure Corridors Overlooked</strong></td>
+<td>Recurring failures along specific roads are treated as isolated
+events.</td>
+<td>Hotspot Detection &amp; Corridors Clustering</td>
+<td>Haversine DBSCAN (<span
+class="math inline"><em>R</em> = 400m</span>, <span
+class="math inline">min_samples = 2</span>)</td>
+<td>Clusters incidents into spatial corridors (LOW, MODERATE, HIGH,
+SEVERE) with growth rate tracking.</td>
+</tr>
+<tr>
+<td><strong>Mismatched / Erroneous Photo Evidence</strong></td>
+<td>Citizens upload wrong images (e.g. trash photo for a road
+complaint).</td>
+<td>Multimodal Text-Image Cross-Validation</td>
+<td>CrossValidationEngine
+(<code>app/modules/cross_validation/validator.py</code>)</td>
+<td>Identifies discrepancy (<code>INCONSISTENT</code>, 0.25 score) and
+routes for supervisory triage without calling citizens fraudulent.</td>
+</tr>
+<tr>
+<td><strong>Sub-Standard Field Repairs</strong></td>
+<td>Field crews use improper materials or skip essential compaction
+steps.</td>
+<td>AI Field Guidance Grounded in Statutory Standards</td>
+<td>GuidanceEngine (<code>app/services/guidance/</code>) + Knowledge
+Base</td>
+<td>Synthesizes actionable instructions citing MoRTH Section 3004 and
+MCGM Monsoon SOPs.</td>
+</tr>
+<tr>
+<td><strong>Lack of Operational Field Coordination</strong></td>
+<td>Complaints sit unassigned; supervisors cannot track crew
+progress.</td>
+<td>Ward Operations Management System</td>
+<td>Command Center KPIs, Action Queue, Task Assignment</td>
+<td>Enables officers to assign predefined teams, schedule work dates,
+log safety barricades, and review completion photos.</td>
+</tr>
+<tr>
+<td><strong>“Phantom Repairs” &amp; Closure Friction</strong></td>
+<td>Contractors claim repair without proof; citizens complain tickets
+close prematurely.</td>
+<td>Completion Proof &amp; Citizen Reopen Workflow</td>
+<td>UploadService + Citizen Portal Reopen &amp; Feedback</td>
+<td>Requires post-repair photo proof; allows citizens to rate
+satisfaction (1–5 stars) and reopen unresolved complaints.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-4-complete-system-architecture-data-flow">PART 4 — COMPLETE
+SYSTEM ARCHITECTURE &amp; DATA FLOW</h1>
+<p>CIVILENS is architected with a decoupled frontend, REST API service
+layer, modular AI inference pipelines, and persistent relational SQLite
+storage.</p>
+<h3 id="system-architecture-diagram-mermaid">4.1 System Architecture
+Diagram (Mermaid)</h3>
+<pre class="mermaid"><code>graph TD
+    subgraph Client Tier
+        CP[Citizen Portal / Responsive Web]
+        MO[Municipal Officer Command Center]
+        AD[Admin Settings &amp; Governance]
+    end
+
+    subgraph API Gateway &amp; Security
+        GW[FastAPI REST API /api/v1]
+        SEC[Security: PBKDF2 Hashing &amp; HMAC-SHA256 Tokens]
+        GEO_VAL[Geographic Boundary Validator Lat 18.85-19.33]
+        UPL[Image Upload Sanitizer Magic Bytes &amp; Max 10MB]
+    end
+
+    subgraph Multimodal AI &amp; Intelligence Pipeline
+        NLP[Text NLP Grievance Classifier TF-IDF + Logistic Regression]
+        ROAD_DET[Road Damage Detector YOLOv8s RDD2022]
+        WASTE_DET[Waste &amp; Litter Detector YOLO11s TACO]
+        XVAL[Cross-Modal Consistency Matrix Text vs Vision]
+        DEDUP[Near-Duplicate Deduplication Haversine + Jaccard]
+        DBSCAN[Spatiotemporal Hotspots Haversine DBSCAN R=400m]
+        PRIO[Explainable 6-Factor Priority Engine 0-100 pts]
+        ROBO[Roboflow Serverless Adapter YOLO26 &amp; RF-DETR]
+        ROBO_CACHE[(Deterministic SHA-256 JSON Cache)]
+    end
+
+    subgraph Ward Operations &amp; Guidance
+        DISP[Department &amp; SLA Dispatcher]
+        OPS[Ward Operations: Teams, Schedules, Actions]
+        GUIDE[AI Field Guidance Engine]
+        KB[(Statutory Knowledge Base MoRTH, MCGM, CPCB)]
+    end
+
+    subgraph Data Persistence Tier
+        DB[(Persistent SQLite Database WAL Mode)]
+        FS[(Image Upload Storage /uploads)]
+    end
+
+    CP --&gt;|Submit Grievance + Image| GW
+    MO --&gt;|Triage, Assign, Schedule, Close| GW
+    AD --&gt;|Govern Routing, Teams, Guidance| GW
+
+    GW --&gt; SEC
+    GW --&gt; GEO_VAL
+    GW --&gt; UPL
+
+    UPL --&gt; FS
+    GW --&gt; NLP
+    GW --&gt; ROAD_DET
+    GW --&gt; WASTE_DET
+    ROAD_DET &amp; WASTE_DET --&gt; XVAL
+    NLP --&gt; XVAL
+
+    ROAD_DET &amp; WASTE_DET -.-&gt;|Optional Compare| ROBO
+    ROBO &lt;--&gt; ROBO_CACHE
+
+    GW --&gt; DEDUP
+    GW --&gt; DBSCAN
+    NLP &amp; ROAD_DET &amp; DEDUP &amp; DBSCAN --&gt; PRIO
+
+    PRIO --&gt; DISP
+    DISP --&gt; OPS
+    OPS --&gt; GUIDE
+    GUIDE &lt;--&gt; KB
+
+    OPS --&gt; DB
+    PRIO --&gt; DB
+    GW --&gt; DB</code></pre>
+<hr />
+<h3 id="complaint-submission-sequence-diagram-mermaid">4.2 Complaint
+Submission Sequence Diagram (Mermaid)</h3>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor Citizen
+    participant UI as Citizen Portal (React)
+    participant API as FastAPI Backend
+    participant Geo as Geo Boundary Validator
+    participant Upload as Upload Service
+    participant AI as Pipeline Coordinator
+    participant Vision as Local YOLO Detectors
+    participant DB as SQLite Database
+
+    Citizen-&gt;&gt;UI: Clicks &quot;Detect My Location&quot; or picks point on map
+    UI-&gt;&gt;UI: Captures Lat/Lng via navigator.geolocation or Leaflet
+    UI-&gt;&gt;API: GET /api/v1/geo/reverse-geocode?lat=...&amp;lng=...
+    API--&gt;&gt;UI: Returns &quot;Somaiya Vidyavihar, Vidyavihar East (N-Ward)&quot;
+    
+    Citizen-&gt;&gt;UI: Enters grievance text and attaches photo
+    Citizen-&gt;&gt;UI: Clicks &quot;Submit Grievance&quot;
+    
+    UI-&gt;&gt;API: POST /api/v1/upload (multipart image)
+    API-&gt;&gt;Upload: Verify magic bytes, sanitize filename, write to disk
+    Upload--&gt;&gt;API: Returns upload_id &amp; file URL
+    API--&gt;&gt;UI: Upload verified
+    
+    UI-&gt;&gt;API: POST /api/v1/issues (text, location, upload_id, category)
+    API-&gt;&gt;Geo: Validate Lat/Lng within Mumbai/Navi Mumbai
+    Geo--&gt;&gt;API: Coordinates Verified
+    
+    API-&gt;&gt;AI: analyze_complaint(text, image_path, category)
+    AI-&gt;&gt;AI: Run NLP Classifier (TF-IDF + Logistic Regression)
+    AI-&gt;&gt;Vision: Run YOLOv8s (Road) or YOLO11s (Waste)
+    Vision--&gt;&gt;AI: Detected Bounding Boxes &amp; Confidence
+    AI-&gt;&gt;AI: Cross-Validate Text vs Vision Consistency
+    AI-&gt;&gt;AI: Run Haversine Deduplication &amp; Hotspot Check
+    AI-&gt;&gt;AI: Compute 6-Factor Dynamic Priority Score (0–100)
+    AI-&gt;&gt;AI: Dispatch Department &amp; SLA Hours
+    
+    AI-&gt;&gt;DB: Persist IssueRecord &amp; TimelineEvent
+    DB--&gt;&gt;API: Issue Saved (e.g. CIVIC-2026-23363092)
+    API--&gt;&gt;UI: HTTP 201 Created (Full Issue Dossier)
+    UI--&gt;&gt;Citizen: Displays Tracking ID &amp; Confirmation</code></pre>
+<hr />
+<h3 id="ai-inference-model-comparison-flow-mermaid">4.3 AI Inference
+&amp; Model Comparison Flow (Mermaid)</h3>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor Officer as Municipal Officer
+    participant Drawer as Issue Detail Drawer
+    participant API as FastAPI Backend
+    participant Manager as Vision Pipeline Manager
+    participant Local as Local PyTorch YOLO
+    participant Roboflow as Roboflow Serverless API
+    participant Cache as SHA-256 Cache
+
+    Officer-&gt;&gt;Drawer: Opens Complaint (e.g. CIVIC-2026-23363092)
+    Drawer-&gt;&gt;Drawer: Reads issue.metadata.visionComparison
+    
+    alt If Comparison already cached in Issue Metadata
+        Drawer-&gt;&gt;Drawer: Renders Vision Model Comparison UI immediately
+    else If Comparison requested on-demand via Compare API
+        Drawer-&gt;&gt;API: POST /api/v1/vision/compare (image_path, category_hint)
+        API-&gt;&gt;Manager: compare_models(image_path, category_hint)
+        
+        Manager-&gt;&gt;Local: Run Local YOLO (YOLOv8s RDD2022 or YOLO11s TACO)
+        Local--&gt;&gt;Manager: Local Detections, Boxes, Latency (~50ms)
+        
+        Manager-&gt;&gt;Cache: Check SHA-256 Image Hash
+        alt Cache Hit
+            Cache--&gt;&gt;Manager: Return Cached Hosted Predictions (0ms)
+        else Cache Miss
+            Manager-&gt;&gt;Roboflow: HTTP POST /inference (potholes-krmk8/2 or garbage)
+            Roboflow--&gt;&gt;Manager: Cloud Predictions &amp; Latency (~650ms)
+            Manager-&gt;&gt;Cache: Save Response to Disk Cache
+        end
+        
+        Manager--&gt;&gt;API: Aggregated Comparison Summary
+        API--&gt;&gt;Drawer: HTTP 200 OK
+    end
+    
+    Drawer-&gt;&gt;Officer: Displays Side-by-Side Panels &amp; Interactive Bounding Box Tabs</code></pre>
+<hr />
+<h3 id="gis-synchronization-sequence-diagram-mermaid">4.4 GIS
+Synchronization Sequence Diagram (Mermaid)</h3>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor User as Citizen / Inspector
+    participant Frontend as Leaflet Tactical GIS Map
+    participant API as FastAPI Backend
+    participant DB as SQLite Database
+
+    User-&gt;&gt;Frontend: Navigates to Map View or Submits Issue
+    Frontend-&gt;&gt;API: GET /api/v1/gis/geojson
+    API-&gt;&gt;DB: SELECT * FROM issues WHERE status != &#39;ARCHIVED&#39;
+    DB--&gt;&gt;API: Returns list of 29 Active Records
+    API-&gt;&gt;API: Format as GeoJSON FeatureCollection
+    API--&gt;&gt;Frontend: HTTP 200 OK (GeoJSON with Priority &amp; Category properties)
+    
+    Frontend-&gt;&gt;Frontend: Clear existing map layer
+    Frontend-&gt;&gt;Frontend: Plot CircleMarkers colored by Category (Indigo=Road, Emerald=Waste)
+    Frontend-&gt;&gt;Frontend: Attach Pulsing Ring to Critical Issues (Score &gt;= 85)
+    
+    User-&gt;&gt;Frontend: Clicks on Marker
+    Frontend-&gt;&gt;Frontend: Center and zoom map to coordinates
+    Frontend-&gt;&gt;Frontend: Open Issue Dossier Drawer with full record details</code></pre>
+<hr />
+<h3 id="role-based-access-control-rbac-architecture-mermaid">4.5
+Role-Based Access Control (RBAC) Architecture (Mermaid)</h3>
+<pre class="mermaid"><code>graph TD
+    subgraph Roles &amp; Hierarchy
+        C[Citizen Role Hierarchy = 1]
+        I[Municipal Inspector Role Hierarchy = 2]
+        A[Administrator Role Hierarchy = 3]
+    end
+
+    subgraph Security Layer
+        AUTH[PBKDF2 Password Hash 100,000 Rounds + Salt]
+        TOKEN[Signed HMAC-SHA256 Token 12h Expiration]
+        GATE[Role Verification Dependencies require_citizen, require_inspector, require_admin]
+    end
+
+    subgraph Accessible Endpoints
+        EP_C[Citizen Endpoints: File Grievance, View My Issues, Submit Feedback, Reopen Issue]
+        EP_I[Inspector Endpoints: Command Center KPIs, Action Queue, Assign Task, Schedule, Action, Complete, View Guidance, View Model Comparison]
+        EP_A[Admin Endpoints: User Management, CRUD Teams, Ward Configurations, Guidance Ingest &amp; Allowlist, Demo Reset]
+    end
+
+    C --&gt; AUTH
+    I --&gt; AUTH
+    A --&gt; AUTH
+    AUTH --&gt; TOKEN
+    TOKEN --&gt; GATE
+
+    GATE --&gt;|Role &gt;= 1| EP_C
+    GATE --&gt;|Role &gt;= 2| EP_I
+    GATE --&gt;|Role == 3| EP_A
+
+    EP_I -.-&gt;|Inherits| EP_C
+    EP_A -.-&gt;|Inherits| EP_I
+    EP_A -.-&gt;|Inherits| EP_C</code></pre>
+<hr />
+<h1 id="part-5-user-roles-and-functional-workflows">PART 5 — USER ROLES
+AND FUNCTIONAL WORKFLOWS</h1>
+<p>CIVILENS implements three distinct operational roles enforced via
+cryptographic access tokens.</p>
+<hr />
+<h2 id="citizen-experience">5.1 Citizen Experience</h2>
+<ul>
+<li><strong>Account Management</strong>: Self-registration and login via
+<code>POST /api/v1/auth/register</code> and
+<code>/api/v1/auth/login</code>. Default demo citizen:
+<code>citizen@civilens.org</code> (Name: Abhinay).</li>
+<li><strong>Location Capture</strong>:
+<ul>
+<li><strong>Option A (GPS Detection)</strong>: Uses the browser’s native
+<code>navigator.geolocation</code> API to retrieve coordinates, which
+are reverse-geocoded to a human-readable street address via
+<code>/api/v1/geo/reverse-geocode</code>.</li>
+<li><strong>Option B (Interactive Map Picker)</strong>: Citizens can
+click on an interactive Leaflet map to pinpoint the exact location.</li>
+<li><strong>Boundary Restriction</strong>: Coordinates outside the
+Mumbai and Navi Mumbai metropolitan region are rejected
+immediately.</li>
+</ul></li>
+<li><strong>Image Upload</strong>: Uploads photographic evidence
+securely through <code>/api/v1/upload</code>, where magic bytes are
+validated.</li>
+<li><strong>Tracking &amp; Visibility</strong>: Real-time status
+tracking (<code>Reported</code>, <code>Assigned</code>,
+<code>In Progress</code>, <code>Resolved</code>,
+<code>Reopened</code>).</li>
+<li><strong>Satisfaction Feedback &amp; Reopen</strong>: Citizens can
+submit 1–5 star ratings and comments. If a repair is unsatisfactory,
+citizens can reopen the complaint with a single click.</li>
+<li><strong>Security Boundary</strong>: Citizens <strong>never</strong>
+see internal model diagnostics, Roboflow comparison panels, technical
+raw JSON metadata, or department dispatcher configuration.</li>
+</ul>
+<hr />
+<h2 id="municipal-officer-ward-inspector-experience">5.2 Municipal
+Officer / Ward Inspector Experience</h2>
+<ul>
+<li><strong>Inspector Command Center</strong>:
+<ul>
+<li>4 Real-time KPI Cards: Unassigned complaints, High-priority
+complaints, Work in progress, Complaints resolved this month.</li>
+<li>Secondary Metrics Strip: Road vs Sanitation workload split,
+Ward-level complaint distribution.</li>
+</ul></li>
+<li><strong>My Action Queue</strong>:
+<ul>
+<li>Triage feed with filter pills: <code>ALL</code>,
+<code>UNASSIGNED</code>, <code>IN_PROGRESS</code>,
+<code>HIGH_PRIORITY</code>, <code>RESOLVED</code>.</li>
+<li>GlareHover cards displaying priority badges, category, composite
+score (0–100), complaint description, location, ward, consistency flag,
+and status.</li>
+</ul></li>
+<li><strong>Issue Detail Dossier</strong>:
+<ul>
+<li><strong>Optical Evidence</strong>: Shows bounding boxes, class
+labels, and confidence percentages.</li>
+<li><strong>Vision Model Comparison</strong>: Side-by-side inspection
+between Local YOLO and Roboflow Hosted Candidate.</li>
+<li><strong>AI Field Guidance</strong>: Statutory engineering
+recommendations (MoRTH / MCGM / CPCB).</li>
+<li><strong>Operational Task Assignment</strong>: Assigns complaint to
+predefined field teams (<code>Ward N Asphalt Patch Crew</code>,
+<code>Ward K Solid Waste Truck</code>), sets assigned officer, scheduled
+inspection date, and work instructions.</li>
+<li><strong>Field Execution Actions</strong>: Records temporary safety
+measures (hazard cones, barricades, warning tape), repeat collection
+cycles, and upload of post-repair photo proof with contractor ID.</li>
+<li><strong>Closure &amp; Reopening</strong>: Resolves complaints or
+reopens them upon audit.</li>
+</ul></li>
+<li><strong>Boundary Note</strong>: The full, separate “Resolution
+Center / Work-Order Lifecycle” page was removed from the Inspector
+sidebar navigation during refactoring; all inspection, guidance, and
+resolution workflows are housed within the <strong>Issue Detail
+Drawer</strong>.</li>
+</ul>
+<hr />
+<h2 id="administrator-experience">5.3 Administrator Experience</h2>
+<ul>
+<li><strong>User Governance</strong>: Views all registered accounts and
+roles via <code>GET /api/v1/admin/users</code>.</li>
+<li><strong>Field Team Management</strong>: Full CRUD operations on
+operational teams
+(<code>GET/POST/PATCH/DELETE /api/v1/admin/teams</code>).</li>
+<li><strong>Ward Configuration</strong>: Manages ward boundaries, lead
+executive engineers, and team rosters
+(<code>/api/v1/admin/wards</code>).</li>
+<li><strong>Department Routing &amp; SLA Engine</strong>: Customizes
+department mappings, SLA hours, and emergency action protocols via
+<code>/api/v1/routing/config</code>.</li>
+<li><strong>Statutory Guidance Management</strong>: Manages allowlisted
+research domains (<code>morth.nic.in</code>, <code>mcgm.gov.in</code>,
+<code>cpcb.nic.in</code>), approves documents, and ingests new
+specifications via <code>/api/v1/admin/guidance/*</code>.</li>
+<li><strong>Demonstration Reset</strong>: Securely restores seed
+baseline complaints (<code>CIVIC-2026-001</code> through
+<code>006</code>) via <code>/api/v1/demo/reset</code>.</li>
+</ul>
+<hr />
+<h1 id="part-6-artificial-intelligence-computer-vision-pipeline">PART 6
+— ARTIFICIAL INTELLIGENCE &amp; COMPUTER VISION PIPELINE</h1>
+<p>The computer-vision subsystem converts raw pixels into normalized,
+classified, and localized damage bounding boxes.</p>
+<h3 id="conceptual-overview-how-yolo-works">6.1 Conceptual Overview: How
+YOLO Works</h3>
+<p>YOLO (You Only Look Once) is a single-stage, anchor-free deep
+convolutional neural network. Unlike legacy two-stage detectors
+(e.g. Faster R-CNN) that first generate region proposals and then
+classify them, YOLO frames object detection as a single regression
+problem: 1. The input image is resized (e.g., <span
+class="math inline">640 × 640</span> pixels) and passed through a
+convolutional backbone (e.g., modified CSPDarknet with C2f/C3k2 feature
+extractors and spatial pyramid pooling SPPF). 2. The network
+simultaneously predicts: - <strong>Bounding Box Coordinates</strong>:
+Center coordinates (<span
+class="math inline"><em>x</em>, <em>y</em></span>), width (<span
+class="math inline"><em>w</em></span>), and height (<span
+class="math inline"><em>h</em></span>). - <strong>Objectness
+Confidence</strong>: The probability that an object exists in that
+region. - <strong>Class Probabilities</strong>: The distribution across
+target classes (e.g., Pothole, Plastic Bottle). 3. Non-Maximum
+Suppression (NMS) eliminates redundant overlapping boxes using
+Intersection over Union (IoU) thresholding.</p>
+<h3 id="key-machine-learning-terminology-explained">6.2 Key Machine
+Learning Terminology Explained</h3>
+<ul>
+<li><strong>Object Detection vs. Classification</strong>: Classification
+predicts <em>what</em> is in an image (one label for the entire image).
+Object Detection predicts <em>what</em> is in the image AND
+<em>where</em> it is located by drawing bounding boxes.</li>
+<li><strong>Bounding Box</strong>: A rectangular coordinate boundary
+enclosing a detected defect. In CIVILENS, boxes are normalized to <span
+class="math inline">[0.0, 1.0]</span> in <span
+class="math inline">[<em>y</em><sub>min</sub>, <em>x</em><sub>min</sub>, <em>y</em><sub>max</sub>, <em>x</em><sub>max</sub>]</span>
+format.</li>
+<li><strong>Confidence Score</strong>: A probability score (<span
+class="math inline">0.00</span> to <span
+class="math inline">1.00</span>) representing the model’s certainty that
+a defect exists within the bounding box.</li>
+<li><strong>Precision</strong>: <span
+class="math inline">$\frac{\text{True Positives}}{\text{True Positives}
++ \text{False Positives}}$</span>. Measures what fraction of detected
+defects are real.</li>
+<li><strong>Recall</strong>: <span class="math inline">$\frac{\text{True
+Positives}}{\text{True Positives} + \text{False Negatives}}$</span>.
+Measures what fraction of actual street defects were successfully
+caught.</li>
+<li><strong>F1 Score</strong>: The harmonic mean of precision and
+recall: <span class="math inline">$2 \times \frac{\text{Precision}
+\times \text{Recall}}{\text{Precision} + \text{Recall}}$</span>.</li>
+<li><strong>False Positive (FP)</strong>: The model flags clean asphalt
+as a pothole or gravel as trash.</li>
+<li><strong>False Negative (FN)</strong>: The model fails to detect an
+actual pothole or garbage pile.</li>
+</ul>
+<hr />
+<h3 id="local-model-1-road-damage-detector-yolov8s-rdd2022">6.3 Local
+Model 1: Road Damage Detector (<code>YOLOv8s RDD2022</code>)</h3>
+<ul>
+<li><strong>Base Architecture</strong>: Ultralytics YOLOv8 Small
+(<code>yolov8s</code>)</li>
+<li><strong>Model Checkpoint</strong>:
+<code>models/yolov8s_rdd2022.pt</code> (11,137,148 parameters,
+~11.14M)</li>
+<li><strong>Cryptographic Checksum</strong>:
+<code>2cf3f60395de6591d8378294fc26b8d7c4ca8f227e455987b3713ce6eeeea119</code>
+(SHA-256)</li>
+<li><strong>File Size</strong>: 22.53 MB</li>
+<li><strong>Dataset</strong>: Crowdsensing-based Road Damage Detection
+Challenge 2022 (RDD2022), Sekilab / Maeda et al. (CC-BY-4.0).</li>
+<li><strong>Supported Classes</strong>:
+<ul>
+<li><code>0</code>: <code>D00</code> (Longitudinal Crack)</li>
+<li><code>1</code>: <code>D10</code> (Transverse Crack)</li>
+<li><code>2</code>: <code>D20</code> (Alligator Fatigue Crack)</li>
+<li><code>3</code>: <code>D40</code> (Pothole)</li>
+</ul></li>
+<li><strong>Operating Confidence</strong>: <code>0.15</code> (calibrated
+for high sensitivity to hairline surface cracks).</li>
+<li><strong>Upstream Benchmark</strong>: <code>0.4643 mAP@50</code> on
+RDD2022 official test split.</li>
+</ul>
+<hr />
+<h3
+id="local-model-2-municipal-waste-street-litter-detector-yolo11s-taco">6.4
+Local Model 2: Municipal Waste &amp; Street Litter Detector
+(<code>YOLO11s TACO</code>)</h3>
+<ul>
+<li><strong>Base Architecture</strong>: Ultralytics <strong>YOLO11
+Small</strong> (<code>yolo11s.yaml</code> with <code>C3k2</code> and
+<code>C2PSA</code> attention layers)</li>
+<li><strong>Model Checkpoint</strong>:
+<code>models/taco_yolo11s.pt</code> (9,431,275 parameters, ~9.43M)</li>
+<li><strong>Cryptographic Checksum</strong>:
+<code>1b9c8379aca95efa75ec1f6ac803cabd3ba531b7d4b3f459101bcfd3aaae95ef</code>
+(SHA-256)</li>
+<li><strong>File Size</strong>: 19.19 MB (MIT License)</li>
+<li><strong>Dataset</strong>: TACO (Trash Annotations in Context)
+municipal litter dataset (Proença &amp; Simões, 2020).</li>
+<li><strong>Declared Classes (9 Classes)</strong>: Plastic bag &amp;
+wrapper, Cigarette, Bottle, Bottle cap, Can, Other plastic, Carton,
+Disposable cup, Other litter.</li>
+<li><strong>Operating Calibration</strong>: Following Phase 10 empirical
+sweeps, operating confidence was raised from <code>0.20</code> to
+<strong><code>0.45</code></strong>, cutting False Positives by
+<strong>54.8%</strong> and boosting precision on held-out test data from
+68.04% to <strong>81.33%</strong> while maintaining <strong>70.52%
+recall</strong>.</li>
+</ul>
+<hr />
+<h3 id="roboflow-serverless-hosted-models-experimental-candidates">6.5
+Roboflow Serverless Hosted Models (Experimental Candidates)</h3>
+<p>CIVILENS integrates the <strong>Roboflow Serverless API</strong> via
+<code>InferenceHTTPClient</code>: 1. <strong>Pothole Model</strong>: -
+Model ID: <code>potholes-krmk8/2</code> - Architecture: YOLO26 (Upstream
+Roboflow Train) - Primary Class: <code>Pothole</code> (Single class) 2.
+<strong>Garbage Model</strong>: - Model ID:
+<code>garbage_detection-wvzwv-n8vsv/1</code> - Architecture: RF-DETR
+Nano (Transformer-based object detection) - Primary Class:
+<code>garbage</code> (Single monolithic class)</p>
+<h4 id="real-browser-verification-results">Real-Browser Verification
+Results:</h4>
+<ul>
+<li>Pothole Model: HTTP 200, one detection, <strong>650.42 ms</strong>
+latency, <code>cached: false</code>.</li>
+<li>Garbage Model: HTTP 200, one detection, <strong>820.15 ms</strong>
+latency, <code>cached: false</code>.</li>
+<li>Both requests executed over authentic citizen-submitted
+photographs.</li>
+</ul>
+<h4 id="comparison-local-baseline-vs.-hosted-candidate">Comparison:
+Local Baseline vs. Hosted Candidate</h4>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Evaluation Dimension</th>
+<th>Local Production Baseline</th>
+<th>Roboflow Hosted Candidate</th>
+<th>Architectural Decision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Road Damage Models</strong></td>
+<td><code>models/yolov8s_rdd2022.pt</code></td>
+<td><code>potholes-krmk8/2</code> (YOLO26)</td>
+<td><strong>Local Retained</strong>: Local detects cracks
+(<code>D00</code>, <code>D10</code>, <code>D20</code>) and potholes
+(<code>D40</code>). Hosted detects only potholes, missing 75% of road
+defect taxonomy.</td>
+</tr>
+<tr>
+<td><strong>Waste Detection Models</strong></td>
+<td><code>models/taco_yolo11s.pt</code></td>
+<td><code>garbage_detection-wvzwv-n8vsv/1</code> (RF-DETR)</td>
+<td><strong>Local Retained</strong>: Local outputs 9 distinct waste
+material classes. Hosted outputs a single generic <code>garbage</code>
+box. Local achieves +37.5% precision on street test split.</td>
+</tr>
+<tr>
+<td><strong>Inference Latency</strong></td>
+<td><strong>52.4 ms</strong> (CPU PyTorch)</td>
+<td><strong>650.4 ms – 820.2 ms</strong> (Cloud Network)</td>
+<td><strong>Local is ~12x faster</strong>; zero cloud network
+latency.</td>
+</tr>
+<tr>
+<td><strong>Operating Cost &amp; Quota</strong></td>
+<td><strong>100% Free &amp; Unlimited</strong></td>
+<td>Consumes monthly API plan credits</td>
+<td>Local eliminates cloud billing and credit exhaustion risks.</td>
+</tr>
+<tr>
+<td><strong>Citizen Data Privacy</strong></td>
+<td><strong>100% Sovereign &amp; Local</strong></td>
+<td>Transmits images to US servers</td>
+<td>Local protects citizen location privacy and meets municipal data
+residency policies.</td>
+</tr>
+<tr>
+<td><strong>Operational Role</strong></td>
+<td><strong>Authoritative Production</strong></td>
+<td><strong>Benchmarking Candidate Only</strong></td>
+<td>Local drives severity and priority scores. Hosted is strictly for
+side-by-side engineering comparison.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1
+id="part-7-explainable-severity-6-factor-dynamic-prioritization">PART 7
+— EXPLAINABLE SEVERITY &amp; 6-FACTOR DYNAMIC PRIORITIZATION</h1>
+<p>CIVILENS avoids unreviewable “black box” priority scores. Instead, it
+computes an authoritative, additive 0–100 point score across 6 distinct
+risk components.</p>
+<h3 id="authoritative-6-factor-mathematical-formula">7.1 Authoritative
+6-Factor Mathematical Formula</h3>
+<p><span class="math display">Total Priority
+Score = min (max (0.0, <em>U</em> + <em>T</em> + <em>V</em> + <em>F</em> + <em>R</em> + <em>L</em>), 100.0)</span></p>
+<p>Where each component is bounded as follows:</p>
+<ol type="1">
+<li><strong>Urgency Points (<span
+class="math inline"><em>U</em> ∈ [0.0, 20.0]</span>)</strong>: <span
+class="math display"><em>U</em> = min (<em>u</em> × 20.0, 20.0)</span>
+Where <span class="math inline"><em>u</em> ∈ [0.0, 1.0]</span> is
+extracted by lexical hazard matching against critical keywords
+(<em>accident</em>, <em>death</em>, <em>injury</em>, <em>burst</em>,
+<em>live wire</em>, <em>open manhole</em>).</li>
+<li><strong>Textual Severity Points (<span
+class="math inline"><em>T</em> ∈ [0.0, 20.0]</span>)</strong>: <span
+class="math display"><em>T</em> = min (<em>t</em> × 20.0, 20.0)</span>
+Where <span class="math inline"><em>t</em> ∈ [0.0, 1.0]</span>
+represents physical disruption magnitude extracted from complaint
+text.</li>
+<li><strong>Visual Severity Points (<span
+class="math inline"><em>V</em> ∈ [0.0, 20.0]</span>)</strong>: If defect
+detected (<span class="math inline"><em>v</em> &gt; 0.0</span>): <span
+class="math display"><em>V</em> = min (<em>v</em> × 20.0 × max (0.70, <em>c</em>), 20.0)</span>
+Where <span class="math inline"><em>v</em></span> is normalized bounding
+box surface area and <span class="math inline"><em>c</em></span> is
+detector confidence. If no image or zero defects detected: <span
+class="math inline"><em>V</em> = 0.0</span>.</li>
+<li><strong>Related Reports Points (<span
+class="math inline"><em>F</em> ∈ [0.0, 15.0]</span>)</strong>: <span
+class="math display"><em>F</em> = min (3.0 + (<em>f</em> × 4.0), 15.0)</span>
+Where <span class="math inline"><em>f</em></span> is the count of
+near-duplicate complaints within 250m. Amplifies public friction.</li>
+<li><strong>Recency Points (<span
+class="math inline"><em>R</em> ∈ [3.0, 10.0]</span>)</strong>: Time
+elapsed since submission (<span class="math inline"><em>h</em></span>
+hours):
+<ul>
+<li><span class="math inline"><em>h</em> ≤ 6.0
+hours ⟹ <em>R</em> = 10.0</span></li>
+<li><span class="math inline">6.0 &lt; <em>h</em> ≤ 24.0
+hours ⟹ <em>R</em> = 8.0</span></li>
+<li><span class="math inline">24.0 &lt; <em>h</em> ≤ 72.0
+hours ⟹ <em>R</em> = 5.0</span></li>
+<li><span class="math inline"><em>h</em> &gt; 72.0
+hours ⟹ <em>R</em> = 3.0</span></li>
+</ul></li>
+<li><strong>Location Risk Points (<span
+class="math inline"><em>L</em> ∈ [4.0, 15.0]</span>)</strong>: <span
+class="math display"><em>L</em> = min (base + min ((<em>r</em> − 1) × 2.0, 6.0), 15.0)</span>
+Where <span class="math inline">base = 9.0</span> if the coordinates
+fall in a Haversine DBSCAN hotspot (otherwise <span
+class="math inline">4.0</span>), and <span
+class="math inline"><em>r</em></span> is historical recurrence
+count.</li>
+</ol>
+<h3 id="priority-categorization-thresholds">7.2 Priority Categorization
+Thresholds</h3>
+<ul>
+<li><strong>CRITICAL</strong>: <span
+class="math inline">85.0 ≤ Score ≤ 100.0</span></li>
+<li><strong>HIGH</strong>: <span
+class="math inline">70.0 ≤ Score &lt; 85.0</span></li>
+<li><strong>MEDIUM</strong>: <span
+class="math inline">40.0 ≤ Score &lt; 70.0</span></li>
+<li><strong>LOW</strong>: <span
+class="math inline">0.0 ≤ Score &lt; 40.0</span></li>
+</ul>
+<h3 id="verified-worked-example-incident-civic-2026-23363092">7.3
+Verified Worked Example (Incident <code>CIVIC-2026-23363092</code>)</h3>
+<ul>
+<li><strong>Complaint</strong>: <em>“Major fresh deep crater pothole
+breaking vehicle axles near Somaiya Vidyavihar arterial road.”</em></li>
+<li><strong>Urgency (<span
+class="math inline"><em>u</em> = 0.45</span>)</strong>: <span
+class="math inline">0.45 × 20.0 = <strong>9.0</strong> pts</span></li>
+<li><strong>Text Severity (<span
+class="math inline"><em>t</em> = 0.72</span>)</strong>: <span
+class="math inline">0.72 × 20.0 = <strong>14.4</strong> pts</span></li>
+<li><strong>Visual Severity (<span
+class="math inline"><em>v</em> = 0.62</span>, <span
+class="math inline"><em>c</em> = 0.9467</span>)</strong>: <span
+class="math inline">0.62 × 20.0 × 0.9467 = <strong>11.7</strong>
+pts</span></li>
+<li><strong>Related Reports (<span
+class="math inline"><em>f</em> = 3</span> near duplicates)</strong>:
+<span
+class="math inline">min (3.0 + 3 × 4.0, 15.0) = <strong>15.0</strong>
+pts</span></li>
+<li><strong>Recency (<span class="math inline"><em>h</em> = 0.1
+hours</span>)</strong>: Fresh report <span
+class="math inline"> ≤ 6h = <strong>10.0</strong> pts</span></li>
+<li><strong>Location Risk (Hotspot = True, Recurrence <span
+class="math inline"><em>r</em> = 5</span>)</strong>: <span
+class="math inline">min (9.0 + min (4 × 2.0, 6.0), 15.0) = min (9.0 + 6.0, 15.0) = <strong>15.0</strong>
+pts</span></li>
+<li><strong>Total Composite Priority Score</strong>: <span
+class="math display">Total = 9.0 + 14.4 + 11.7 + 15.0 + 10.0 + 15.0 = <strong>75.1</strong> ⟹ <strong>H</strong><strong>I</strong><strong>G</strong><strong>H</strong></span></li>
+</ul>
+<hr />
+<h1 id="part-8-tactical-gis-geolocation-geographic-boundaries">PART 8 —
+TACTICAL GIS, GEOLOCATION &amp; GEOGRAPHIC BOUNDARIES</h1>
+<h3 id="geographic-bounding-box">8.1 Geographic Bounding Box</h3>
+<p>CIVILENS strictly validates all spatial submissions against the
+<strong>Mumbai and Navi Mumbai Metropolitan Region</strong>: -
+<strong>Southern Latitude</strong>: <code>18.85° N</code> -
+<strong>Northern Latitude</strong>: <code>19.33° N</code> -
+<strong>Western Longitude</strong>: <code>72.75° E</code> -
+<strong>Eastern Longitude</strong>: <code>73.18° E</code></p>
+<p>Coordinates outside this bounding box are rejected with a clear
+operational message: &gt; <em>“CIVILENS currently supports complaints
+from Mumbai and Navi Mumbai only.”</em></p>
+<h3 id="geolocation-capture-reverse-geocoding">8.2 Geolocation Capture
+&amp; Reverse Geocoding</h3>
+<ul>
+<li><strong>Browser Geolocation API</strong>: Invoked via
+<code>navigator.geolocation.getCurrentPosition()</code>.</li>
+<li><strong>Reverse Geocoding</strong>: Converts coordinates to
+human-readable street names via Nominatim OpenStreetMap with local
+offline dictionary fallback covering popular municipal junctions
+(Somaiya Vidyavihar, Kurla Station, Linking Road Bandra, Dadar TT
+Circle, Vashi Sector 17, etc.).</li>
+<li><strong>Map Picker</strong>: Interactive Leaflet map picker allowing
+citizens to drag or click a pin to select coordinates.</li>
+</ul>
+<h3 id="tactical-gis-map-architecture">8.3 Tactical GIS Map
+Architecture</h3>
+<p>The frontend features a tactical GIS map workspace adhering to the
+<strong>Aurora Indigo</strong> design system: - <strong>GIS Canvas
+Background</strong>: <code>#10162A</code> (deep tactical midnight blue).
+- <strong>Marker Visual Hierarchy</strong>: - Roads &amp; Footpaths:
+Violet / Indigo markers (<code>#6457E8</code>). - Sanitation &amp;
+Garbage: Emerald green markers (<code>#10B981</code>). - Critical
+Severity (<span class="math inline"> ≥ 85</span> pts): Animated pulsing
+red radar halo (<code>#EF4444</code>). -
+<strong>Synchronization</strong>: Map data is fetched on-demand from
+<code>GET /api/v1/gis/geojson</code> and synchronized whenever an issue
+is submitted, triaged, or selected in the queue.</p>
+<hr />
+<h1 id="part-9-municipal-ward-operations-grievance-lifecycle">PART 9 —
+MUNICIPAL WARD OPERATIONS &amp; GRIEVANCE LIFECYCLE</h1>
+<p>CIVILENS tracks every complaint through a rigorous 14-step
+operational lifecycle:</p>
+<ol type="1">
+<li><strong>Grievance Registered</strong>: Citizen submits text,
+coordinates, and photo proof.</li>
+<li><strong>AI Multimodal Inference</strong>: NLP classifies text; YOLO
+localizes visual defects.</li>
+<li><strong>Cross-Modal Consistency</strong>: Text claim is verified
+against detected visual objects.</li>
+<li><strong>Spatiotemporal Correlation</strong>: Geodesic distance
+checks identify duplicates and corridor hotspots.</li>
+<li><strong>Priority Computed</strong>: 6-factor additive score is
+assigned with human-readable rationale.</li>
+<li><strong>Department Dispatch</strong>: Routed to relevant municipal
+agency (e.g. <code>MCGM-ROADS</code>, <code>MCGM-SWM</code>).</li>
+<li><strong>Inspector Triage</strong>: Officer reviews the complaint in
+the Command Center queue.</li>
+<li><strong>Statutory Guidance Review</strong>: Officer consults
+MoRTH/MCGM guidelines in the Issue Dossier.</li>
+<li><strong>Task Assignment</strong>: Assigned to a predefined
+operational field team
+(e.g. <code>Ward N Asphalt Patch Crew</code>).</li>
+<li><strong>Work Scheduling</strong>: Inspection and repair date
+scheduled with specific shift notes.</li>
+<li><strong>Temporary Field Action</strong>: Crew records safety
+measures (cones, barricades).</li>
+<li><strong>Work Completion</strong>: Field team submits completion
+notes, contractor ID, and post-repair photo.</li>
+<li><strong>Supervisory Closure</strong>: Officer verifies repair and
+marks ticket <code>RESOLVED</code>.</li>
+<li><strong>Citizen Feedback &amp; Reopen</strong>: Citizen rates
+resolution (1–5 stars) or reopens the ticket if defective.</li>
+</ol>
+<hr />
+<h1
+id="part-10-ai-field-guidance-statutory-standards-knowledge-base">PART
+10 — AI FIELD GUIDANCE &amp; STATUTORY STANDARDS KNOWLEDGE BASE</h1>
+<p>A critical innovation in CIVILENS is the <strong>AI Field
+Guidance</strong> engine (<code>app/services/guidance/</code>). Rather
+than producing ungrounded LLM hallucinations, recommendations are
+synthesized from indexed official statutory specifications.</p>
+<h3 id="indexed-statutory-knowledge-base">10.1 Indexed Statutory
+Knowledge Base</h3>
+<ol type="1">
+<li><strong>MoRTH Specifications for Road and Bridge Works (Section 3004
+/ IRC:82-2023)</strong>:
+<ul>
+<li>Work zone traffic control (50m/100m advance warning signs, Class-3
+retro-reflective vests).</li>
+<li>Rectangular vertical saw-cut cavity trimming into sound
+asphalt.</li>
+<li>RS-1 rapid setting cationic bitumen tack coat (<span
+class="math inline">0.25–0.30 kg/m<sup>2</sup></span>).</li>
+<li>Compaction in lifts <span class="math inline"> ≤ 75mm</span> using
+500kg vibratory plate compactor to zero deflection.</li>
+</ul></li>
+<li><strong>MCGM Standard Operating Procedure for Monsoon Pothole
+Filling</strong>:
+<ul>
+<li>Mandatory proprietary polymer-modified Cold Mix Asphalt during
+monsoon/damp conditions.</li>
+<li>Immediate escalation to Hydraulic Engineer / Storm Water Drain if
+water is bubbling from subgrade.</li>
+<li>Geo-stamped before and after photograph requirement prior to ticket
+closure.</li>
+</ul></li>
+<li><strong>CPCB Solid Waste Management Rules 2016 (Schedule
+II)</strong>:
+<ul>
+<li>Mandatory segregation of organic wet waste, dry recyclables, and
+domestic hazardous items.</li>
+<li>Personal Protective Equipment (heavy-duty nitrile gloves,
+puncture-resistant boots, N95 masks).</li>
+<li>0.5% sodium hypochlorite disinfectant spraying for biological waste
+spills.</li>
+</ul></li>
+<li><strong>MPCB Bio-Medical &amp; Hazardous Waste Protocol</strong>:
+<ul>
+<li>Immediate hazardous escalation if syringes, chemical containers, or
+toxic waste are detected.</li>
+</ul></li>
+</ol>
+<h3 id="officer-decision-support">10.2 Officer Decision Support</h3>
+<p>Officers can click: - <strong>Accept</strong>: Injects statutory
+steps directly into task assignment instructions. -
+<strong>Edit</strong>: Allows customizing instructions while logging the
+justification. - <strong>Dismiss</strong>: Clears the recommendation
+with a mandatory audit reason.</p>
+<hr />
+<h1 id="part-11-datasets-training-provenance-empirical-experiments">PART
+11 — DATASETS, TRAINING PROVENANCE &amp; EMPIRICAL EXPERIMENTS</h1>
+<p>CIVILENS maintains strict separation between training datasets,
+validation splits, held-out test sets, and demonstration fixtures.</p>
+<h3 id="dataset-inventory">11.1 Dataset Inventory</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dataset Name</th>
+<th>Source &amp; Organization</th>
+<th>License</th>
+<th>Total Samples</th>
+<th>Split Structure</th>
+<th>Purpose in CIVILENS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RDD2022 (India Partition)</strong></td>
+<td>Crowdsensing Road Damage Challenge (Sekilab / Maeda et al.)</td>
+<td>CC-BY-4.0</td>
+<td>200 balanced images</td>
+<td>100 Validation / 100 Held-Out Test</td>
+<td>Evaluates D00, D10, D20, D40 road damage detection.</td>
+</tr>
+<tr>
+<td><strong>TACO (Trash Annotations in Context)</strong></td>
+<td>Pedro F. Proença &amp; Pedro M. Simões</td>
+<td>MIT License</td>
+<td>200 balanced images</td>
+<td>100 Validation / 100 Held-Out Test</td>
+<td>Evaluates 9 municipal litter classes and hard-negative pavement
+alarms.</td>
+</tr>
+<tr>
+<td><strong>NLP Grievance Corpus</strong></td>
+<td>In-Memory Representative Municipal Corpus</td>
+<td>MIT License</td>
+<td>27 training samples</td>
+<td>27 Train / 6 Held-Out Seed Issues</td>
+<td>Trains TF-IDF + Logistic Regression category classifier (0% text
+overlap).</td>
+</tr>
+<tr>
+<td><strong>Controlled Resolution Fixtures</strong></td>
+<td>Curated Field Fixtures (<code>data/test_samples/</code>)</td>
+<td>Internal Benchmark</td>
+<td>5 image pairs</td>
+<td>5 Controlled Test Cases</td>
+<td>Evaluates before-and-after SSIM comparability and YOLO
+clearance.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-phase-10-calibration-experiment">11.2 The Phase 10
+Calibration Experiment</h3>
+<p>Prior to Phase 10, the waste detector operated at an uncalibrated
+threshold of <code>0.20</code>, producing false alarms against textured
+pavement. An extensive sweep across the validation split (<span
+class="math inline"><em>N</em> = 100</span>) established that raising
+the threshold to <strong><code>0.45</code></strong> achieved optimal
+performance: - False Positives reduced by <strong>54.8%</strong> (from
+62 down to 28). - Precision improved from <strong>68.04% to
+81.33%</strong> (+13.29 pp). - Recall remained high at
+<strong>70.52%</strong>. - Controlled fine-tuning trials on small
+candidate sets induced catastrophic forgetting (recall dropped to
+58.38%), proving that retaining the original checkpoint with calibrated
+threshold <code>0.45</code> was scientifically superior.</p>
+<hr />
+<h1 id="part-12-comprehensive-technology-stack-justifications">PART 12 —
+COMPREHENSIVE TECHNOLOGY STACK &amp; JUSTIFICATIONS</h1>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose in CIVILENS</th>
+<th>Selection Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Backend Framework</strong></td>
+<td><strong>Python</strong></td>
+<td>3.10 – 3.13</td>
+<td>Core backend runtime</td>
+<td>Broad ecosystem for machine learning, PyTorch, and geospatial
+algorithms.</td>
+</tr>
+<tr>
+<td><strong>API Engine</strong></td>
+<td><strong>FastAPI</strong></td>
+<td>1.0.0</td>
+<td>High-performance asynchronous REST API</td>
+<td>Native async ASGI, automatic OpenAPI documentation, and strict
+Pydantic v2 validation.</td>
+</tr>
+<tr>
+<td><strong>Server Engine</strong></td>
+<td><strong>Uvicorn</strong></td>
+<td>Latest</td>
+<td>Asynchronous Server Gateway Interface (ASGI)</td>
+<td>Production-grade concurrency for handling simultaneous citizen
+submissions.</td>
+</tr>
+<tr>
+<td><strong>Frontend Framework</strong></td>
+<td><strong>React</strong></td>
+<td>19.0.0</td>
+<td>Declarative Component UI</td>
+<td>Robust component lifecycle, efficient DOM rendering, and strict role
+views.</td>
+</tr>
+<tr>
+<td><strong>Type System</strong></td>
+<td><strong>TypeScript</strong></td>
+<td>5.x</td>
+<td>Strict frontend type contracts</td>
+<td>Eliminates runtime interface errors between backend JSON models and
+frontend UI.</td>
+</tr>
+<tr>
+<td><strong>Build Tool</strong></td>
+<td><strong>Vite</strong></td>
+<td>6.x</td>
+<td>Frontend build and HMR tool</td>
+<td>Sub-second cold startup and instant hot module replacement.</td>
+</tr>
+<tr>
+<td><strong>Deep Learning</strong></td>
+<td><strong>Ultralytics YOLO</strong></td>
+<td>8.x / 11.x</td>
+<td>Object detection neural networks</td>
+<td>High-throughput anchor-free inference with native PyTorch
+weights.</td>
+</tr>
+<tr>
+<td><strong>Deep Learning</strong></td>
+<td><strong>PyTorch</strong></td>
+<td>2.x</td>
+<td>Neural network compute engine</td>
+<td>Industry standard for executing convolutional backbones and tensor
+operations.</td>
+</tr>
+<tr>
+<td><strong>Machine Learning</strong></td>
+<td><strong>Scikit-Learn</strong></td>
+<td>1.x</td>
+<td>NLP classification &amp; DBSCAN clustering</td>
+<td>Lightweight, highly interpretable TF-IDF vectorization and Haversine
+spatial clustering.</td>
+</tr>
+<tr>
+<td><strong>Computer Vision</strong></td>
+<td><strong>OpenCV (<code>cv2</code>)</strong></td>
+<td>4.x</td>
+<td>Image processing, SSIM, histograms</td>
+<td>Structural similarity and 2D HSV color correlation for repair
+verification.</td>
+</tr>
+<tr>
+<td><strong>Cloud Inference</strong></td>
+<td><strong>Roboflow SDK</strong></td>
+<td>Latest</td>
+<td>Serverless hosted model candidate execution</td>
+<td>Enables rigorous side-by-side benchmarking against cloud
+models.</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td><strong>SQLite 3</strong></td>
+<td>3.35+</td>
+<td>ACID relational database persistence</td>
+<td>Zero-configuration, zero-network latency, persistent disk storage
+with WAL mode.</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td><strong>SQLAlchemy</strong></td>
+<td>2.0</td>
+<td>Type-annotated relational mapping</td>
+<td>Clean Mapped column schemas, transactional safety, and relational
+indexing.</td>
+</tr>
+<tr>
+<td><strong>GIS Mapping</strong></td>
+<td><strong>Leaflet / React-Leaflet</strong></td>
+<td>Latest</td>
+<td>Interactive tactical spatial GIS workspace</td>
+<td>Lightweight, mobile-friendly interactive mapping without expensive
+Google Maps API billing.</td>
+</tr>
+<tr>
+<td><strong>Styling</strong></td>
+<td><strong>Tailwind CSS</strong></td>
+<td>4.x</td>
+<td>Utility-first styling framework</td>
+<td>Implements the high-trust Aurora Indigo design tokens
+consistently.</td>
+</tr>
+<tr>
+<td><strong>Testing</strong></td>
+<td><strong>Pytest &amp; Selenium</strong></td>
+<td>Latest</td>
+<td>Automated unit, integration, and browser testing</td>
+<td>Validates 244 backend test cases and 6 headless Chrome browser
+workflows.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="part-13-complete-rest-api-relational-database-reference">PART 13
+— COMPLETE REST API &amp; RELATIONAL DATABASE REFERENCE</h1>
+<p><em>(Refer to <a
+href="./CIVILENS_TECHNICAL_REFERENCE.md"><code>docs/CIVILENS_TECHNICAL_REFERENCE.md</code></a>
+for full endpoint request/response payloads and database schema
+definitions).</em></p>
+<hr />
+<h1 id="part-14-project-security-cryptography-privacy-boundaries">PART
+14 — PROJECT SECURITY, CRYPTOGRAPHY &amp; PRIVACY BOUNDARIES</h1>
+<ol type="1">
+<li><strong>Password Hashing</strong>: Passwords are never stored in
+plaintext. They are protected using <strong>PBKDF2-HMAC-SHA256</strong>
+with 100,000 iterations and a 16-byte cryptographically random salt
+(<code>os.urandom(16)</code>). Verification uses constant-time
+<code>hmac.compare_digest</code> to prevent timing attacks.</li>
+<li><strong>Access Tokens</strong>: Cryptographically signed access
+tokens using <strong>HMAC-SHA256</strong> with 12-hour expiration
+(<code>DEFAULT_TOKEN_TTL_HOURS = 12</code>). In production mode
+(<code>CIVILENS_ENV=production</code>), hardcoded development tokens are
+strictly forbidden.</li>
+<li><strong>Upload Security</strong>:
+<ul>
+<li>Magic byte header inspection via PIL verifies true file type
+(spoofed <code>.jpg</code> extensions containing executable shell code
+are rejected).</li>
+<li>Maximum upload size strictly capped at 10MB.</li>
+<li>Filenames are sanitized and converted to UUIDs to prevent directory
+traversal attacks (<code>../../etc/passwd</code>).</li>
+</ul></li>
+<li><strong>Location Privacy</strong>: GPS coordinates are captured with
+explicit user permission and stored only for valid municipal
+complaints.</li>
+<li><strong>API Credential Protection</strong>: Cloud API keys
+(e.g. <code>ROBOFLOW_API_KEY</code>) are stored in <code>.env</code>,
+never exposed to the frontend, and masked in all diagnostic logs
+(<code>NIae...0duw</code>).</li>
+</ol>
+<hr />
+<h1 id="part-15-testing-verification-regression-test-suite">PART 15 —
+TESTING, VERIFICATION &amp; REGRESSION TEST SUITE</h1>
+<p>CIVILENS maintains a zero-failure testing policy: - <strong>Total
+Passing Pytest Tests</strong>: <strong>244 / 244</strong> (0 failures, 1
+warning from starlette deprecation). - <strong>Execution Time</strong>:
+~30 seconds for full test suite. - <strong>Frontend Build</strong>:
+<code>npm run build</code> succeeds in 327ms with 0 errors. -
+<strong>Headless Chrome Automation Suite
+(<code>scripts/verify_comparison_ui.py</code>)</strong>: - Test 1
+(Citizen Role): Verified that Model Comparison UI is 100% hidden. - Test
+2 (Pothole Comparison): Verified baseline
+(<code>YOLOv8s RDD2022</code>), hosted (<code>potholes-krmk8/2</code>),
+latency (650ms), and bounding box tab switching. - Test 3 (Garbage
+Comparison): Verified baseline (<code>YOLO11s TACO</code>), hosted
+(<code>garbage_detection-wvzwv-n8vsv/1</code>), and RF-DETR Nano
+architecture. - Test 4 (Legacy Complaint): Verified quiet state message
+without fake data. - Test 5 (Failed Hosted Inference): Verified
+structured <code>AUTH_ERROR</code> alert without breaking local scoring.
+- Test 6 (Admin Role): Verified full comparison panel visibility.</p>
+<hr />
+<h1 id="part-16-repository-structure-file-organization-map">PART 16 —
+REPOSITORY STRUCTURE &amp; FILE ORGANIZATION MAP</h1>
+<pre><code>chiragwalaproj/
+├── app/
+│   ├── api/routes.py                     # All 48 REST API endpoints
+│   ├── config.py                         # Environment variables and model configuration
+│   ├── main.py                           # FastAPI application entry point and lifespan hooks
+│   ├── core/
+│   │   ├── pipeline.py                   # Master pipeline coordinator
+│   │   ├── security.py                   # PBKDF2 hashing, HMAC tokens, RBAC gates
+│   │   └── demo_store.py                 # In-memory store and SQLite demo repository facade
+│   ├── db/
+│   │   ├── database.py                   # SQLAlchemy engine, session maker, WAL configuration
+│   │   ├── models.py                     # 9 SQLAlchemy persistent ORM table definitions
+│   │   └── repository.py                 # SQLite transaction repository &amp; seed management
+│   ├── models/
+│   │   ├── issue.py                      # Core Pydantic schemas (Issue, DynamicPriorityBreakdown)
+│   │   └── field_guidance.py             # Field guidance schemas (Citations, Actions, Checklists)
+│   ├── modules/
+│   │   ├── cross_validation/validator.py # Text-image consistency verification
+│   │   ├── evaluation/evaluator.py       # Classification evaluation metrics engine
+│   │   ├── gis/                          # GIS mapper and boundary restriction (bounds.py)
+│   │   ├── lifecycle/                    # SSIM scene comparability &amp; OpenCV verification
+│   │   ├── nlp/                          # TF-IDF classifier, deduplication, location parser
+│   │   ├── priority/engine.py            # 6-factor additive dynamic priority calculation
+│   │   ├── routing/dispatcher.py         # Configurable department routing &amp; SLA actions
+│   │   ├── spatiotemporal/               # Haversine DBSCAN hotspots and recurrence tracking
+│   │   └── vision/                       # YOLO road &amp; waste detectors, Roboflow adapter, manager
+│   └── services/
+│       ├── guidance/                     # Knowledge base, scraper, statutory guidance engine
+│       └── upload_service.py             # Secure image upload verification and disk storage
+├── data/
+│   ├── civic_issues.db                   # Persistent SQLite database
+│   ├── seed_issues.json                  # Baseline seed complaints (CIVIC-2026-001 to 006)
+│   ├── cache/                            # Deterministic SHA-256 Roboflow prediction cache
+│   ├── evaluation/                       # Evaluation manifests and held-out test datasets
+│   └── test_samples/                     # Verified test fixture images (pothole, bottle, repair)
+├── docs/                                 # Project documentation, guides, and model cards
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/                     # Login cards, role login forms, demo fill buttons
+│   │   │   ├── common/                   # KpiCards, LocationPicker, PriorityGauge, Toast
+│   │   │   ├── guidance/                 # AI Field Guidance section and document modal
+│   │   │   ├── issues/                   # IssueDetailDrawer, VisionModelComparison, NewComplaintModal
+│   │   │   ├── layout/                   # Sidebar navigation, TopBar application header
+│   │   │   ├── map/                      # Tactical Leaflet GIS map workspace (CivicMap)
+│   │   │   ├── portal/                   # Citizen Portal grievance filing and feedback view
+│   │   │   └── views/                    # OverviewView (Command Center), MapView, AnalyticsView
+│   │   ├── context/AuthContext.tsx       # Authentication context and role state management
+│   │   ├── config/geo.ts                 # Mumbai &amp; Navi Mumbai geographic bounds and landmarks
+│   │   └── types/index.ts                # TypeScript data interfaces matching Pydantic models
+│   └── package.json
+├── models/                               # Local PyTorch checkpoints: yolov8s_rdd2022.pt, taco_yolo11s.pt
+├── scripts/                              # Verification suites, evaluation sweep tools, diagnostic scripts
+└── tests/                                # 26 automated Pytest test files (244 passing tests)</code></pre>
+<hr />
+<h1 id="part-17-reproducible-setup-installation-execution-guide">PART 17
+— REPRODUCIBLE SETUP, INSTALLATION &amp; EXECUTION GUIDE</h1>
+<p><em>(Refer to <a
+href="./SETUP_GUIDE.md"><code>docs/SETUP_GUIDE.md</code></a> and <a
+href="./CIVILENS_TECHNICAL_REFERENCE.md"><code>docs/CIVILENS_TECHNICAL_REFERENCE.md</code></a>
+for step-by-step commands).</em></p>
+<hr />
+<h1 id="part-18-live-academic-demonstration-walkthrough">PART 18 — LIVE
+ACADEMIC DEMONSTRATION WALKTHROUGH</h1>
+<p><em>(Refer to <a
+href="./CIVILENS_DEMO_GUIDE.md"><code>docs/CIVILENS_DEMO_GUIDE.md</code></a>
+for the exact viva presentation script, dialogue, and 5-scenario live
+execution steps).</em></p>
+<hr />
+<h1 id="part-19-architectural-history-key-engineering-decisions">PART 19
+— ARCHITECTURAL HISTORY &amp; KEY ENGINEERING DECISIONS</h1>
+<ol type="1">
+<li><strong>Why Scope was Frozen to Two Categories</strong>: Early
+project phases explored flooding, streetlights, and traffic signals.
+Faculty feedback correctly identified that surface water reflections and
+night illumination cannot establish municipal pipe bursts or circuit
+breaks via standard computer vision. CIVILENS frozen perception strictly
+to Potholes and Garbage, where genuine PyTorch detectors operate
+reliably.</li>
+<li><strong>Why Local YOLO Was Retained Over Roboflow Cloud</strong>:
+Roboflow cloud models were evaluated as candidates. While functional,
+they exhibited 12x higher latency (~650ms vs ~50ms), single-class
+taxonomic collapse (missing road cracks and distinct waste materials),
+API credit costs, and citizen location privacy risks. Local YOLO models
+remain authoritative for production.</li>
+<li><strong>Why the Resolution Center Page Was Removed</strong>: The
+separate “Resolution Center” sidebar page created navigation redundancy.
+Municipal Officers manage the entire complaint lifecycle—from inspection
+to guidance, task assignment, and post-repair photographic
+closure—directly from the <strong>Issue Detail Drawer</strong>.</li>
+<li><strong>Why Aurora Indigo Design Was Retained</strong>: Civic
+operations workspaces require clean, high-contrast, high-trust visual
+ergonomics. Aurora Indigo uses a light workspace (<code>#F6F7FC</code>),
+pure-white cards (<code>#FFFFFF</code>), midnight-indigo navigation
+(<code>#13152E</code>), and restrained violet accents
+(<code>#6457E8</code>), avoiding dark “cyberpunk” dashboard
+antipatterns.</li>
+</ol>
+<hr />
+<h1 id="part-20-known-limitations-future-scope">PART 20 — KNOWN
+LIMITATIONS &amp; FUTURE SCOPE</h1>
+<h3 id="current-verified-limitations">20.1 Current Verified
+Limitations</h3>
+<ol type="1">
+<li><strong>Small Statistical NLP Split</strong>: The textual classifier
+is trained on <span class="math inline"><em>N</em> = 27</span> samples
+and evaluated against <span class="math inline"><em>N</em> = 6</span>
+held-out seed issues. It demonstrates deterministic prototype mechanics
+but must not be claimed as municipal-scale NLP accuracy.</li>
+<li><strong>Pavement Clutter in Waste Detection</strong>: Local street
+waste precision is <span class="math inline">81.33%</span> at conf <span
+class="math inline">0.45</span>; complex gravel, broken asphalt, and
+fallen leaves can occasionally trigger false alarms, necessitating human
+supervisory review.</li>
+<li><strong>SSIM Perspective Sensitivity</strong>: OpenCV structural
+similarity verification requires comparable camera angles. Significant
+perspective shifts drop SSIM below threshold, safely falling back to
+manual review.</li>
+<li><strong>Geographic Boundary</strong>: Validated exclusively for
+Greater Mumbai and Navi Mumbai coordinates.</li>
+</ol>
+<h3 id="realistic-future-scope">20.2 Realistic Future Scope</h3>
+<ol type="1">
+<li><strong>Vernacular &amp; Multi-Lingual NLP</strong>: Expanding
+training data to include Marathi, Hindi, and Hinglish grievance idioms
+common in Mumbai.</li>
+<li><strong>Edge Hardware Deployment</strong>: Porting local YOLO models
+to NVIDIA Jetson edge devices mounted on municipal garbage collection
+trucks for passive automated road scanning.</li>
+<li><strong>Live Municipal ERP Integration</strong>: Developing
+bi-directional REST connectors to sync work orders directly with the BMC
+SAP / Civic Redressal ERP system.</li>
+<li><strong>IoT Sensor Integration</strong>: Connecting ultrasonic storm
+water depth sensors for ground-truth urban flooding detection.</li>
+</ol>
+<hr />
+<h1 id="part-21-student-friendly-technical-glossary">PART 21 —
+STUDENT-FRIENDLY TECHNICAL GLOSSARY</h1>
+<ul>
+<li><strong>YOLO (You Only Look Once)</strong>: A fast, single-stage
+deep learning algorithm that detects objects and draws bounding boxes in
+a single pass through a neural network.</li>
+<li><strong>Bounding Box</strong>: A rectangular coordinate boundary
+enclosing a detected defect, normalized in CIVILENS to <span
+class="math inline">[0.0, 1.0]</span>.</li>
+<li><strong>Confidence Score</strong>: The probability (<span
+class="math inline">0.00</span> to <span
+class="math inline">1.00</span>) that an object detection is real.</li>
+<li><strong>Precision vs. Recall</strong>: Precision is “how many
+detected potholes are real potholes”; Recall is “how many of all actual
+potholes on the street did the model catch”.</li>
+<li><strong>F1 Score</strong>: The balanced harmonic mean between
+precision and recall.</li>
+<li><strong>Inference</strong>: The process of running a trained neural
+network on a new image to generate predictions.</li>
+<li><strong>Hosted vs. Local Inference</strong>: Local inference runs
+directly on the device/server CPU/GPU without internet. Hosted inference
+sends the image over the internet to a third-party cloud server (like
+Roboflow).</li>
+<li><strong>FastAPI</strong>: A modern, high-performance Python web
+framework for building REST APIs with automatic documentation and
+validation.</li>
+<li><strong>DBSCAN (Density-Based Spatial Clustering)</strong>: An
+unsupervised clustering algorithm that groups spatial coordinates that
+are closely packed together while marking outliers as noise.</li>
+<li><strong>Haversine Distance</strong>: The angular geodesic distance
+between two points on the surface of a sphere given their latitude and
+longitude.</li>
+<li><strong>SSIM (Structural Similarity Index)</strong>: An algorithm
+that measures the perceptual similarity between two images based on
+luminance, contrast, and structural texture.</li>
+<li><strong>RBAC (Role-Based Access Control)</strong>: Restricting API
+endpoints and UI features based on authenticated user roles (Citizen,
+Inspector, Admin).</li>
+<li><strong>RAG / Grounded AI</strong>: Providing an AI model with
+verified reference documents (such as MoRTH specifications) so its
+recommendations are factually grounded in official engineering
+standards.</li>
+</ul>
+<hr />
+<h1 id="part-22-questions-another-ai-must-be-able-to-answer">PART 22 —
+QUESTIONS ANOTHER AI MUST BE ABLE TO ANSWER</h1>
+<ol type="1">
+<li><strong>What exactly does CIVILENS do?</strong>
+<ul>
+<li>It is an explainable multimodal civic intelligence platform for
+municipal command centers that uses YOLO computer vision, NLP, and GIS
+to triage, prioritize, assign, and track road damage and street litter
+complaints.</li>
+</ul></li>
+<li><strong>Why are only two categories supported for computer
+vision?</strong>
+<ul>
+<li>Following faculty feedback, automated vision is frozen to
+Potholes/Road Damage (YOLOv8s RDD2022) and Municipal Waste (YOLO11s
+TACO) because ground-level smartphone photos reliably capture them.
+Categories like flooding and streetlights cannot be validated from
+surface photos and are routed for human review with zero synthetic
+boxes.</li>
+</ul></li>
+<li><strong>How does the AI detect potholes?</strong>
+<ul>
+<li>It runs an 11.14M parameter PyTorch YOLOv8s model trained on the
+multi-national RDD2022 dataset, detecting longitudinal cracks
+(<code>D00</code>), transverse cracks (<code>D10</code>), alligator
+cracks (<code>D20</code>), and potholes (<code>D40</code>).</li>
+</ul></li>
+<li><strong>How does the AI detect garbage?</strong>
+<ul>
+<li>It runs a 9.43M parameter YOLO11s model trained on the TACO taxonomy
+with spatial attention layers (<code>C2PSA</code>), detecting 9 distinct
+waste materials at a calibrated confidence threshold of 0.45.</li>
+</ul></li>
+<li><strong>Why retain local YOLO models if Roboflow cloud API is
+integrated?</strong>
+<ul>
+<li>Local YOLO runs 12x faster (~50ms vs ~650ms), detects multiple
+damage classes (Roboflow detects only single generic classes), costs
+zero API credits, and protects citizen location privacy by keeping image
+data on local infrastructure.</li>
+</ul></li>
+<li><strong>How is priority calculated?</strong>
+<ul>
+<li>Using an explainable 6-factor additive formula (0–100 points):
+Urgency (max 20), Text Severity (max 20), Visual Severity (max 20),
+Related Reports (max 15), Recency (max 10), and Location Risk / Hotspots
+(max 15).</li>
+</ul></li>
+<li><strong>What happens if a citizen uploads a picture of a cat for a
+pothole complaint?</strong>
+<ul>
+<li>The road detector finds 0 road defects; the cross-modal validator
+flags the complaint as <code>INCONSISTENT</code> (score 0.25) and routes
+it for manual supervisory triage. Crucially, it is never marked as
+“fraudulent”.</li>
+</ul></li>
+<li><strong>What is the geographic boundary of CIVILENS?</strong>
+<ul>
+<li>Coordinates are strictly restricted to Greater Mumbai and Navi
+Mumbai (Lat 18.85–19.33, Lng 72.75–73.18).</li>
+</ul></li>
+<li><strong>How many automated tests pass in the codebase?</strong>
+<ul>
+<li>Exactly 244 backend Pytest tests pass, with 0 frontend TypeScript
+build errors, and all 6 headless Chrome browser automation tests
+passing.</li>
+</ul></li>
+</ol>
+<hr />
+<h1 id="part-23-presentation-preparation-reference">PART 23 —
+PRESENTATION PREPARATION REFERENCE</h1>
+<h3 id="second-elevator-pitch">30-Second Elevator Pitch:</h3>
+<blockquote>
+<p><em>“CIVILENS is an explainable multimodal civic infrastructure
+intelligence platform designed for municipal command centers. Instead of
+treating citizen complaints as vague text and dumb photo attachments,
+CIVILENS uses specialized YOLO computer vision and NLP to localize
+physical defects, cross-validate evidence consistency, and calculate an
+authoritative 0–100 priority score. Operating within Greater Mumbai and
+Navi Mumbai, it empowers municipal officers to assign work orders to
+field crews with grounded engineering guidelines from MoRTH and BMC
+standard operating procedures.”</em></p>
+</blockquote>
+<h3 id="minute-technical-overview">1-Minute Technical Overview:</h3>
+<blockquote>
+<p><em>“Traditional civic complaint portals suffer from subjective
+reporting, duplicate ticket flooding, and static FIFO queues that let
+dangerous road hazards sit unattended. CIVILENS solves this through
+multimodal artificial intelligence. When a citizen submits a complaint
+via GPS, our backend executes dual local neural networks: a YOLOv8s
+model fine-tuned on RDD2022 for road damage and a YOLO11s model trained
+on TACO for street litter. The system cross-validates text against
+vision, checks for duplicates using Haversine geodesic clustering, and
+calculates an explainable 6-component risk score. Municipal officers in
+the Command Center receive database-driven KPIs, dynamic triage queues,
+side-by-side cloud model benchmarking via Roboflow, and statutory AI
+Field Guidance citing official Ministry of Road Transport
+specifications.”</em></p>
+</blockquote>
+<h3 id="minute-comprehensive-viva-overview">3-Minute Comprehensive Viva
+Overview:</h3>
+<blockquote>
+<p><em>(Deliver the 1-Minute overview, then elaborate on the three key
+pillars: 1. Ethical Cross-Modal Validation, 2. Local vs Hosted Model
+Benchmarking, and 3. Ward Operations Lifecycle with verified test
+evidence of 244 passing tests and zero synthetic bounding
+boxes).</em></p>
+</blockquote>
+<hr />
+<h1 id="part-24-quality-signoff-auditor-attestation">PART 24 — QUALITY
+SIGNOFF &amp; AUDITOR ATTESTATION</h1>
+<ul>
+<li><strong>Codebase Audited</strong>:
+<code>/Users/abby/chiragwalaproj</code></li>
+<li><strong>Verification Status</strong>: 244 / 244 Pytest tests
+passing; 0 TypeScript errors; 6 / 6 browser scenarios verified.</li>
+<li><strong>Truthful Disclosure</strong>: All performance metrics,
+limitations, and operational boundaries have been disclosed with
+complete scientific integrity.</li>
+<li><strong>Signed by</strong>: CIVILENS Automated Engineering Auditor
+(Antigravity AI)</li>
+</ul>
+</body>
+</html>
