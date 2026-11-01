@@ -36,6 +36,7 @@ import { CardSpotlight } from '../aceternity/CardSpotlight'
 import { ErrorBoundary } from '../common/ErrorBoundary'
 import { cn } from '../../lib/utils'
 import { useCivicMotion } from '../../lib/motionContext'
+import { useAuth } from '../../context/AuthContext'
 
 // Helper to gracefully fallback variants without stripping properties when reduced motion is preferred
 const getVariants = (variants: Variants, isReduced: boolean): Variants => {
@@ -182,6 +183,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   const [canScroll, setCanScroll] = useState<boolean>(false)
   const [activeCategoryTooltip, setActiveCategoryTooltip] = useState<string | null>(null)
   const { isReduced } = useCivicMotion()
+  const { user } = useAuth()
 
   // Track the actual internal scroll container
   const { scrollYProgress, scrollY } = useScroll({ container: containerRef })
@@ -498,7 +500,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
           <div
             className="flex items-center gap-2 cursor-pointer hover:text-[#11162A] transition"
-            onClick={() => onNavigate('resolution')}
+            onClick={() => onNavigate('explorer')}
           >
             <Clock className="w-3.5 h-3.5 text-blue-500" />
             <span className="text-[#65708B]">Pending Resolution:</span>
@@ -512,9 +514,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             onClick={() => onNavigate('analytics')}
           >
             <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" />
-            <span className="text-[#65708B]">Closure Verification:</span>
+            <span className="text-[#65708B]">Quality Assurance:</span>
             <strong className="text-[#6457E8] font-semibold font-mono">
-              Inspection Mode
+              Continuous SLA
             </strong>
           </div>
         </div>

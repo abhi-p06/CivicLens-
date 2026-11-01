@@ -28,6 +28,8 @@ from app.modules.priority.engine import priority_engine
 from app.modules.routing.dispatcher import department_dispatcher
 from app.services.upload_service import upload_service
 from app.config import settings
+from fastapi import HTTPException, status
+from app.modules.gis.bounds import is_within_supported_bounds, OUT_OF_BOUNDS_ERROR
 
 class CivicIssueIntelligencePipeline:
     """
@@ -92,21 +94,42 @@ class CivicIssueIntelligencePipeline:
         text_severity = nlp_out["severity"]
 
         # -------------------------------------------------------------
-        # Feature 4: Location Extraction & Geocoding
+        # Feature 4: Location Extraction & Geocoding with Regional Bounds Enforcement
         # -------------------------------------------------------------
-        if payload.latitude and payload.longitude:
-            resolved_location = payload.location or "Reported GPS Coordinates"
-            lat, lng = payload.latitude, payload.longitude
-            loc_mode = "user_gps_coordinates"
-            ward = payload.ward or "User GPS"
+        loc_method = getattr(payload, "location_method", None) or "manual"
+
+        if payload.latitude is not None and payload.longitude is not None:
+            lat = float(payload.latitude)
+            lng = float(payload.longitude)
+            if not is_within_supported_bounds(lat, lng):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=OUT_OF_BOUNDS_ERROR
+                )
+            loc_mode = f"user_{loc_method}_coordinates"
+            ward = payload.ward or location_extractor.derive_ward_from_coordinates(lat, lng)
+            resolved_location = payload.location or location_extractor.derive_landmark_from_coordinates(lat, lng)
         else:
+            has_explicit_location = bool(payload.location and len(str(payload.location).strip()) > 0)
+            has_text = bool(text and len(text.strip()) > 0)
+            if not has_explicit_location and not has_text:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="A valid complaint location within Mumbai and Navi Mumbai is required."
+                )
+
             loc_out = location_extractor.extract_and_geocode(
                 text=text,
                 user_location=payload.location
             )
-            resolved_location = loc_out["resolvedLocation"]
             lat = loc_out["latitude"]
             lng = loc_out["longitude"]
+            if not is_within_supported_bounds(lat, lng):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=OUT_OF_BOUNDS_ERROR
+                )
+            resolved_location = loc_out["resolvedLocation"]
             loc_mode = loc_out["extractionMode"]
             ward = payload.ward or loc_out["ward"]
 
@@ -331,10 +354,13 @@ class CivicIssueIntelligencePipeline:
             imageUrl=resolved_img,
             uploadId=resolved_upload,
             citizen_id=payload.citizen_id,
+            location_method=getattr(payload, "location_method", None) or ("gps" if "gps" in analysis.get("locationMode", "") else "manual"),
             status=status,
             metadata={
                 "source": payload.source,
                 "ward": analysis["ward"],
+                "locationMethod": getattr(payload, "location_method", None) or ("gps" if "gps" in analysis.get("locationMode", "") else "manual"),
+                "locationCaptureMethod": getattr(payload, "location_method", None) or ("gps" if "gps" in analysis.get("locationMode", "") else "manual"),
                 "classificationMode": analysis["classificationMode"],
                 "visionMode": analysis["visionMode"],
                 "isAutoDrafted": analysis["isAutoDrafted"],

@@ -20,13 +20,13 @@ import { PriorityGauge } from '../common/PriorityGauge'
 import { ConsistencyBadge } from '../common/ConsistencyBadge'
 import { api } from '../../services/api'
 import { cn } from '../../lib/utils'
+import { useAuth } from '../../context/AuthContext'
 
 interface IssueIntelligenceViewProps {
   issues: Issue[]
   selectedIssue: Issue | null
   onSelectIssue: (issue: Issue) => void
   onUpdateIssue: (updated: Issue) => void
-  onOpenResolutionModal: (issue: Issue) => void
 }
 
 export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
@@ -34,8 +34,8 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
   selectedIssue,
   onSelectIssue,
   onUpdateIssue,
-  onOpenResolutionModal,
 }) => {
+  const { user } = useAuth()
   const current = selectedIssue || issues[0] || null
   const [advancing, setAdvancing] = useState(false)
 
@@ -336,42 +336,10 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
 
           {/* Timeline & Lifecycle Action Bar */}
           <div className="p-5 bg-white border border-[#E4E7F1] rounded-2xl space-y-3 shadow-xs">
-            {(() => {
-              const isEligibleForVerification = [
-                'ACTION IN PROGRESS',
-                'VERIFICATION',
-                'RESOLVED',
-                'In Progress',
-                'Verified Closed'
-              ].includes(current.status)
-
-              return (
-                <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
-                  <div>
-                    <span>Work Order Lifecycle Timeline</span>
-                    {!isEligibleForVerification && (
-                      <span className="block text-[11px] text-amber-600 font-normal mt-0.5">
-                        Verification locked: Issue must reach &apos;ACTION IN PROGRESS&apos; or &apos;VERIFICATION&apos;.
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    disabled={!isEligibleForVerification}
-                    onClick={() => isEligibleForVerification && onOpenResolutionModal(current)}
-                    title={!isEligibleForVerification ? "Verification locked until work advances to ACTION IN PROGRESS or VERIFICATION" : "Verify Resolution"}
-                    className={cn(
-                      "px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition flex items-center gap-1",
-                      isEligibleForVerification
-                        ? "bg-[#10B981] hover:bg-[#059669] text-white cursor-pointer"
-                        : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
-                    )}
-                  >
-                    <Camera className="w-3.5 h-3.5" />
-                    <span>Verify Resolution</span>
-                  </button>
-                </div>
-              )
-            })()}
+            <div className="text-xs font-semibold text-[#65708B] flex items-center justify-between">
+              <span>Work Order Lifecycle Timeline</span>
+              <span className="text-[11px] text-[#65708B]">Advance stage to update incident status</span>
+            </div>
 
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               {lifecycleStages.map((st) => {

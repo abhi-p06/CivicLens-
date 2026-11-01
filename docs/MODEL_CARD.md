@@ -135,3 +135,76 @@ This document specifies the architecture, training data provenance, evaluation b
 - **Administrative Routing Domain**: The platform defines 6 configurable municipal departments in `department_dispatcher` (`get_default_routing_config()`), including `Storm Water & Drainage` (`IssueCategory.STORM_WATER` routed to `Storm Water Drains Department (SWD)` / `MCGM-SWD`).
 - **Absence of Dedicated ML Training Samples**: The trained TF-IDF + Logistic Regression model (`_pipeline`) does NOT contain dedicated training samples for `IssueCategory.STORM_WATER`. It has exactly 5 trained classes.
 - **Honest Fallback Handling**: Unseen citizen complaints containing explicit storm water drainage terminology (e.g., *"nullah"*, *"culvert"*, *"stormwater"*) produce ML confidence <0.25 across the 5 trained classes and drop to deterministic keyword fallback (`mode="demo_fallback"`). They are routed directly to `Storm Water Drains Department (SWD)` without falsely claiming `real_ml` inference.
+
+---
+
+## Model 4: Roboflow Hosted Pothole Detector (Experimental Candidate)
+
+### 4.1 Architecture & Implementation
+- **Provider**: Roboflow Serverless Hosted API
+- **Model ID**: `potholes-krmk8/2`
+- **Architecture**: YOLO26 Object Detection (Upstream Roboflow Train)
+- **Deployment Mode**: Optional comparison candidate via `InferenceHTTPClient` (`inference-sdk`)
+- **Primary Supported Class**: `Pothole` (Single class)
+
+### 4.2 Upstream Publisher Claims vs. Local Held-Out Benchmark
+- **Upstream Publisher Claims** (Jayden's Workspace, Universe Roboflow):
+  - mAP@50: **91.2%**
+  - Precision: **89.1%**
+  - Recall: **85.9%**
+- **CIVILENS Controlled Held-Out Evaluation** (`scripts/evaluate_roboflow_candidates.py` on held-out road test split, $N=10$):
+  - **Local Validation Verification**: Achieved **94.6% confidence** on clear, localized close-up test pothole (`repair_pothole_before.jpg`).
+  - **Held-Out Test Set (Complex Street Scenarios)**:
+    - Precision: **0.0%**
+    - Recall: **0.0%** (0 True Positives, 5 False Negatives)
+    - F1-Score: **0.0%**
+    - mAP@50: **0.0%**
+  - *Comparison with Local Production Model (`models/yolov8s_rdd2022.pt`)*:
+    - Local Precision: **25.0%**, Recall: **20.0%**, F1: **22.2%**, mAP@50: **20.0%** on same difficult test split.
+- **Taxonomic & Domain Limitations**:
+  - The hosted model predicts strictly a single class (`Pothole`). It possesses **zero capability** for longitudinal cracks (`D00`), transverse cracks (`D10`), or structural alligator fatigue cracking (`D20`).
+  - The model fails to generalize to distant, oblique-angle, or shadowed potholes prevalent in Indian municipal dashcam imagery.
+
+### 4.3 Operational Latency, Quota & Privacy Boundaries
+- **Average Inference Latency**: **615.6 ms** (cloud round-trip + inference) vs. **218.9 ms** for local PyTorch on CPU (~2.8x slower).
+- **Quota & Credit Protection**: Roboflow serverless calls consume monthly API plan credits. Deduplicated with SHA-256 caching (`data/cache/roboflow_predictions_cache.json`).
+- **Data Privacy & Sovereign Boundary**: Image payloads are transmitted over public HTTPS to third-party US cloud infrastructure. For civic grievance platforms requiring data residency compliance (e.g. municipal privacy directives), unencrypted cloud forwarding without citizen consent is prohibited.
+- **Production Status**: **REJECTED FOR PRODUCTION DEPLOYMENT**. Retained strictly as optional side-by-side comparison tooling via `POST /api/v1/vision/compare`.
+
+---
+
+## Model 5: Roboflow Hosted Municipal Garbage Detector (Experimental Candidate)
+
+### 5.1 Architecture & Implementation
+- **Provider**: Roboflow Serverless Hosted API
+- **Model ID**: `garbage_detection-wvzwv-n8vsv/1`
+- **Architecture**: RF-DETR Nano (Transformer-based object detection)
+- **Deployment Mode**: Optional comparison candidate via `InferenceHTTPClient` (`inference-sdk`)
+- **Primary Supported Class**: `garbage` (Broad monolithic class)
+
+### 5.2 Upstream Publisher Claims vs. Local Held-Out Benchmark
+- **Upstream Publisher Claims** (Sahil's Workspace, Universe Roboflow):
+  - mAP@50: **91.8%**
+  - Precision: **93.4%**
+  - Recall: **88.9%**
+- **CIVILENS Controlled Held-Out Evaluation** (`scripts/evaluate_roboflow_candidates.py` on held-out waste test split, $N=10$, IoU $\ge 0.50$):
+  - **Hosted Model (`RF-DETR Nano`)**:
+    - Precision: **50.0%** (2 TP, 2 FP)
+    - Recall: **28.6%** (2 TP, 5 FN)
+    - F1-Score: **36.4%**
+    - mAP@50: **14.4%**
+    - mAP@50-95: **7.2%**
+  - **Local Production Model (`models/taco_yolo11s.pt`)**:
+    - Precision: **87.5%** (7 TP, 1 FP)
+    - Recall: **100.0%** (7 TP, 0 FN)
+    - F1-Score: **93.3%**
+    - mAP@50: **100.0%**
+    - mAP@50-95: **68.9%**
+- **Taxonomic & Domain Limitations**:
+  - The hosted RF-DETR Nano model outputs only a generic `garbage` bounding box, losing all granular material taxonomy.
+  - In contrast, the local TACO YOLO11s model accurately segments 9 distinct civic waste categories (`Plastic bag`, `Bottle`, `Can`, `Carton`, etc.), enabling targeted waste-management dispatch.
+
+### 5.3 Operational Latency, Quota & Privacy Boundaries
+- **Average Inference Latency**: **728.0 ms** vs. **93.7 ms** for local YOLO11s on CPU (~7.8x slower).
+- **Quota & Credit Protection**: Monitored and cached deterministically using image SHA-256 digests.
+- **Production Status**: **REJECTED FOR PRODUCTION DEPLOYMENT**. Local TACO YOLO11s demonstrates superior precision (+37.5%), superior recall (+71.4%), 8x faster execution, and zero external network/cloud dependencies.

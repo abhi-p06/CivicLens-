@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import { Issue, HotspotInfo } from '../../types'
+import { MUMBAI_NAVI_MUMBAI_BOUNDS } from '../../config/geo'
 
 export type MapLayerMode = 'markers' | 'clusters' | 'heatmap' | 'hotspots'
 
@@ -44,12 +45,18 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     if (!mapContainerRef.current) return
 
     if (!mapInstanceRef.current) {
+      const southWest = L.latLng(MUMBAI_NAVI_MUMBAI_BOUNDS.minLat - 0.05, MUMBAI_NAVI_MUMBAI_BOUNDS.minLng - 0.05)
+      const northEast = L.latLng(MUMBAI_NAVI_MUMBAI_BOUNDS.maxLat + 0.05, MUMBAI_NAVI_MUMBAI_BOUNDS.maxLng + 0.05)
+      const regionBounds = L.latLngBounds(southWest, northEast)
+
       // Centered on the active urban corridor (Vidyavihar / Ghatkopar / Kurla) to eliminate empty sea space
       const map = L.map(mapContainerRef.current, {
         center: [19.0728, 72.8998],
         zoom: 13,
         minZoom: 10,
         maxZoom: 18,
+        maxBounds: regionBounds,
+        maxBoundsViscosity: 1.0,
         zoomControl: false,
         attributionControl: false,
       })

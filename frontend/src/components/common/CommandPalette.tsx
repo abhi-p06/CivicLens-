@@ -16,6 +16,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { Issue } from '../../types'
+import { useAuth } from '../../context/AuthContext'
 import {
   CommandDialog,
   CommandInput,
@@ -71,7 +72,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     { id: 'hotspots', label: 'Spatial Hotspots (DBSCAN)', icon: Flame },
     { id: 'recurring', label: 'Recurring Defect Analysis', icon: RotateCcw },
     { id: 'unreported', label: 'Unreported Patrol Detections', icon: Camera },
-    { id: 'resolution', label: 'Resolution Center & SLA', icon: CheckCircle2 },
     { id: 'analytics', label: 'Model Benchmarks & Metrics', icon: BarChart3 },
   ]
 

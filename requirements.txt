@@ -14,6 +14,7 @@ scikit-learn>=1.4.0
 ultralytics>=8.1.0
 huggingface_hub>=0.20.0
 pillow>=10.2.0
+inference-sdk>=1.8.0
 
 # GIS & Mapping
 folium>=0.16.0

@@ -216,3 +216,63 @@ To verify all 13 Phase 11 authentication and security gates:
 ```bash
 pytest -v tests/test_phase11_authentication.py
 ```
+
+---
+
+## 12. Roboflow Hosted Model Integration & Comparison (Phase 14)
+
+CIVILENS supports optional serverless hosted computer vision inference via the Roboflow Hosted API using the official `inference-sdk`. This capability is designed strictly for **controlled model evaluation and side-by-side benchmarking** against local production detectors.
+
+### Configuration & Environment Variables
+
+Add the following keys to your `.env` configuration file:
+
+```bash
+# Roboflow Hosted Vision Provider Settings
+CIVILENS_VISION_PROVIDER="local" # Options: "local" (default), "compare", "hosted"
+ROBOFLOW_API_KEY="your_roboflow_private_api_key_here"
+ROBOFLOW_POTHOLE_MODEL_ID="potholes-krmk8/2"
+ROBOFLOW_GARBAGE_MODEL_ID="garbage_detection-wvzwv-n8vsv/1"
+ROBOFLOW_CACHE_DIR="data/cache"
+ROBOFLOW_TIMEOUT_SEC=15
+```
+
+### Provider Modes
+
+| Mode | Behavior | API Calls | Production Safety |
+|---|---|---|---|
+| `local` (Default) | Runs purely local PyTorch models (`models/yolov8s_rdd2022.pt`, `models/taco_yolo11s.pt`). Zero network requests. | 0 calls | 100% offline, zero credit usage |
+| `compare` | Local inference remains production authority; hosted candidate runs in parallel only on explicit `/compare` requests or opt-in evaluation. | On-demand | Production priority and severity are never altered |
+| `hosted` | Experimental mode directing primary detection to hosted endpoints (development only). | Per upload | Requires active API key |
+
+### Free Tier API Credit Protection & Caching
+
+1. **Deterministic SHA-256 Caching**: Every hosted request is keyed by the image binary SHA-256 checksum and model ID in `data/cache/roboflow_predictions_cache.json`. Repeated evaluation of identical images consumes zero API credits.
+2. **Opt-in Only**: Routine citizen complaints and demo submissions never call Roboflow unless explicitly invoked via `POST /api/v1/vision/compare` or `--enable-hosted`.
+3. **Graceful Fallback**: If network errors, HTTP 401/403 (invalid key), HTTP 429 (rate limit), or timeouts occur, the platform logs the error with masked keys and falls back gracefully to local inference without crashing.
+
+### Data Privacy & Sovereign Cloud Boundary
+
+- Sending citizen photos to third-party cloud APIs transmits civic infrastructure imagery outside local jurisdiction.
+- For production municipal deployments, keep `CIVILENS_VISION_PROVIDER=local` to preserve complete data sovereignty and zero-trust data residency.
+- API keys are strictly masked in logs (`sk_live_...4car`) and are never exposed in frontend bundles or client responses.
+
+### Reproducible Evaluation Script
+
+To run the controlled side-by-side benchmark comparing local vs. hosted models on held-out test splits:
+
+```bash
+# Benchmark on held-out test splits with sample limit to conserve credits
+python scripts/evaluate_roboflow_candidates.py --sample-limit 10 --split test
+
+# View generated evaluation report
+cat data/evaluation/roboflow_evaluation_report.json
+```
+
+### Automated Roboflow Test Suite
+
+To verify the hosted adapter, credential protection, SHA-256 caching, coordinate normalization, and comparison endpoints:
+
+```bash
+pytest -v tests/test_roboflow_integration.py
+```

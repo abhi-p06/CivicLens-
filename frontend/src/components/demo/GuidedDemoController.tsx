@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Sliders,
   ShieldAlert,
+  BarChart3,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react'
@@ -58,17 +59,17 @@ export const DEMO_STEPS = [
     viewId: 'map',
     preset: undefined,
     instruction: 'Spatial visualization across Mumbai wards. Compare 6-factor priority scores, Haversine DBSCAN hotspots, and department routing.',
-    actionLabel: 'Next: Verify Pothole Repair',
+    actionLabel: 'Next: Model Benchmarks & Metrics',
     icon: MapPin,
   },
   {
     step: 5,
-    title: 'Pothole Before & After Repair Verification',
-    viewId: 'resolution',
-    preset: 'resolution',
-    instruction: 'Lifecycle verification: Compare pothole before-and-after repair images using OpenCV SSIM & YOLO defect clearance (LIKELY RESOLVED).',
+    title: 'Model Benchmarks & Pipeline Evaluation',
+    viewId: 'analytics',
+    preset: undefined,
+    instruction: 'Empirical verification: Review held-out precision, recall, mAP@50, and latency metrics across active computer vision and NLP models.',
     actionLabel: 'Complete Presentation Demo',
-    icon: CheckCircle2,
+    icon: BarChart3,
   },
 ]
 

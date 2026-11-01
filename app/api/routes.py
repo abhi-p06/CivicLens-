@@ -41,6 +41,13 @@ from app.modules.evaluation.evaluator import evaluator
 from app.modules.vision.yolo_detector import yolo_detector
 from app.modules.vision.manager import vision_manager
 from app.modules.nlp.classifier import nlp_classifier
+from app.modules.nlp.location import location_extractor
+from app.modules.gis.bounds import (
+    is_within_supported_bounds,
+    get_supported_bounds,
+    OUT_OF_BOUNDS_ERROR
+)
+import urllib.request
 
 router = APIRouter(prefix="/api/v1", tags=["Civic Issue Intelligence"])
 
@@ -335,6 +342,37 @@ def analyze_complaint_endpoint(payload: IssueCreate) -> Dict[str, Any]:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Analysis pipeline error: {str(e)}"
         )
+
+class VisionCompareRequest(BaseModel):
+    image_path: Optional[str] = None
+    upload_id: Optional[str] = None
+    image_url: Optional[str] = None
+    category: Optional[str] = "Roads & Footpaths"
+
+@router.post("/vision/compare")
+def compare_vision_models_endpoint(payload: VisionCompareRequest) -> Dict[str, Any]:
+    """
+    Controlled Vision Comparison Endpoint (Phase 14):
+    Runs local production detector side-by-side with hosted Roboflow candidate.
+    Returns comparison metrics, bounding boxes, latencies without altering issue priority.
+    """
+    target_path = None
+    if payload.upload_id or payload.image_url:
+        server_path, _, _ = upload_service.resolve_image_reference(
+            upload_id=payload.upload_id,
+            image_url=payload.image_url
+        )
+        target_path = server_path
+    elif payload.image_path:
+        target_path = payload.image_path
+
+    if not target_path or not os.path.exists(target_path):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Valid image_path, upload_id, or image_url is required for model comparison."
+        )
+
+    return vision_manager.compare_models(target_path, category_hint=payload.category)
 
 # -----------------------------------------------------------------------------
 # Authentication & Role Administration Endpoints
@@ -728,6 +766,64 @@ def get_gis_geojson() -> Dict[str, Any]:
 def get_gis_interactive_map() -> str:
     issues = demo_store.list_issues()
     return gis_mapper.generate_map_html(issues)
+
+@router.get("/geo/bounds")
+def get_geographic_bounds() -> Dict[str, Any]:
+    """Returns the configured regional boundaries for Mumbai & Navi Mumbai."""
+    return get_supported_bounds()
+
+@router.get("/geo/reverse-geocode")
+def reverse_geocode(
+    lat: float = Query(..., description="Latitude coordinate"),
+    lng: float = Query(..., description="Longitude coordinate")
+) -> Dict[str, Any]:
+    """
+    Reverse geocodes coordinates within Mumbai & Navi Mumbai.
+    Validates boundary and derives canonical locality and municipal ward.
+    """
+    if not is_within_supported_bounds(lat, lng):
+        return {
+            "valid": False,
+            "error": OUT_OF_BOUNDS_ERROR,
+            "latitude": lat,
+            "longitude": lng
+        }
+
+    derived_ward = location_extractor.derive_ward_from_coordinates(lat, lng)
+    local_name = location_extractor.derive_landmark_from_coordinates(lat, lng)
+    address = local_name
+
+    try:
+        url = f"https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}&zoom=18&addressdetails=1"
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "CiviLens-CivicIntelligence/1.0"}
+        )
+        with urllib.request.urlopen(req, timeout=2.5) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                disp_name = data.get("display_name")
+                if disp_name:
+                    parts = [p.strip() for p in disp_name.split(",")]
+                    address = ", ".join(parts[:4])
+    except Exception:
+        address = local_name
+
+    return {
+        "valid": True,
+        "address": address,
+        "ward": derived_ward,
+        "latitude": lat,
+        "longitude": lng
+    }
+
+@router.get("/geo/search")
+def search_locations(
+    query: str = Query("", description="Search term for Mumbai/Navi Mumbai localities"),
+    limit: int = Query(6, ge=1, le=20)
+) -> List[Dict[str, Any]]:
+    """Autocomplete search for Mumbai & Navi Mumbai localities and landmarks."""
+    return location_extractor.search_landmarks(query=query, limit=limit)
 
 @router.get("/evaluation/metrics")
 def get_evaluation_metrics() -> Dict[str, Any]:

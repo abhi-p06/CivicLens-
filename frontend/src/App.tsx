@@ -10,7 +10,6 @@ import { CommandPalette } from './components/common/CommandPalette'
 import { ModelStatusModal } from './components/common/ModelStatusModal'
 import { SettingsModal } from './components/common/SettingsModal'
 import { NewComplaintModal } from './components/issues/NewComplaintModal'
-import { ResolutionModal } from './components/issues/ResolutionModal'
 import { IssueDetailDrawer } from './components/issues/IssueDetailDrawer'
 import { ToastProvider, useToast } from './components/common/Toast'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
@@ -33,7 +32,6 @@ import { MapView } from './components/views/MapView'
 import { HotspotsView } from './components/views/HotspotsView'
 import { RecurringView } from './components/views/RecurringView'
 import { UnreportedView } from './components/views/UnreportedView'
-import { ResolutionView } from './components/views/ResolutionView'
 import { AnalyticsView } from './components/views/AnalyticsView'
 import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
 
@@ -62,7 +60,7 @@ function AppContent() {
         setActiveView('citizen_portal')
       }
     } else if (user?.role === 'inspector') {
-      const officerAllowed = ['overview', 'explorer', 'map', 'intelligence', 'live', 'resolution', 'analytics']
+      const officerAllowed = ['overview', 'explorer', 'map', 'intelligence', 'live', 'analytics']
       if (!officerAllowed.includes(activeView)) {
         setActiveView('overview')
       }
@@ -101,8 +99,6 @@ function AppContent() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [newComplaintOpen, setNewComplaintOpen] = useState(false)
   const [activeScenario, setActiveScenario] = useState<number | null>(null)
-  const [resolutionModalOpen, setResolutionModalOpen] = useState(false)
-  const [targetResolutionIssue, setTargetResolutionIssue] = useState<Issue | null>(null)
   const [inspectingIssue, setInspectingIssue] = useState<Issue | null>(null)
 
   // Initial Data Fetch
@@ -126,6 +122,43 @@ function AppContent() {
   useEffect(() => {
     loadData()
   }, [])
+
+  // Real-time synchronization across views and browser tabs/windows
+  useEffect(() => {
+    let syncChannel: BroadcastChannel | null = null
+    try {
+      syncChannel = new BroadcastChannel('civilens_sync_channel')
+      syncChannel.onmessage = (event) => {
+        if (event.data?.type === 'NEW_ISSUE' && event.data?.issue) {
+          const newIssue: Issue = event.data.issue
+          setIssues((prev) => {
+            if (prev.some((i) => i.issueId === newIssue.issueId)) return prev
+            return [newIssue, ...prev]
+          })
+          loadData()
+        }
+      }
+    } catch {
+      // BroadcastChannel not supported in environment
+    }
+
+    const handleFocus = () => {
+      loadData()
+    }
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      syncChannel?.close()
+    }
+  }, [])
+
+  // Auto-refresh dataset when navigating to tactical GIS map or operational views
+  useEffect(() => {
+    if (activeView === 'map' || activeView === 'overview' || activeView === 'explorer' || activeView === 'intelligence') {
+      loadData()
+    }
+  }, [activeView])
 
   // Keyboard shortcut listener for Demo Mode (Alt+D)
   useEffect(() => {
@@ -177,9 +210,17 @@ function AppContent() {
   ).length
 
   const handleIssueCreated = (created: Issue) => {
-    setIssues((prev) => [created, ...prev])
+    setIssues((prev) => {
+      if (prev.some((i) => i.issueId === created.issueId)) return prev
+      return [created, ...prev]
+    })
     setInspectingIssue(created)
     success('Incident Ingested & Dispatched', `Work order ${created.issueId} routed to ${created.department}`)
+    try {
+      const ch = new BroadcastChannel('civilens_sync_channel')
+      ch.postMessage({ type: 'NEW_ISSUE', issue: created })
+      ch.close()
+    } catch {}
     loadData()
   }
 
@@ -204,11 +245,6 @@ function AppContent() {
     setNewComplaintOpen(true)
   }
 
-  const handleOpenResolution = (issue: Issue) => {
-    setTargetResolutionIssue(issue)
-    setResolutionModalOpen(true)
-  }
-
   // Demo Sequence Stepper (Screens 1 to 5)
   const handleSetDemoStep = (step: number) => {
     const bounded = Math.max(1, Math.min(5, step))
@@ -220,7 +256,7 @@ function AppContent() {
       setActiveView('map')
       setInspectingIssue(displayedIssues.length > 0 ? displayedIssues[0] : null)
     } else if (bounded === 5) {
-      setActiveView('resolution')
+      setActiveView('analytics')
       setInspectingIssue(displayedIssues.length > 0 ? displayedIssues[0] : null)
     }
   }
@@ -306,7 +342,6 @@ function AppContent() {
                   selectedIssue={inspectingIssue || (displayedIssues.length > 0 ? displayedIssues[0] : null)}
                   onSelectIssue={setInspectingIssue}
                   onUpdateIssue={handleIssueUpdated}
-                  onOpenResolutionModal={handleOpenResolution}
                 />
               )}
 
@@ -349,16 +384,8 @@ function AppContent() {
                 />
               )}
 
-              {activeView === 'resolution' && (
-                <ResolutionView
-                  issues={displayedIssues}
-                  onSelectIssue={setInspectingIssue}
-                  onOpenResolutionModal={handleOpenResolution}
-                />
-              )}
-
               {activeView === 'citizen_portal' && (
-                <CitizenPortalView />
+                <CitizenPortalView onIssueCreated={handleIssueCreated} />
               )}
 
               {activeView === 'analytics' && (
@@ -407,18 +434,10 @@ function AppContent() {
         initialScenario={activeScenario}
       />
 
-      <ResolutionModal
-        isOpen={resolutionModalOpen}
-        onClose={() => setResolutionModalOpen(false)}
-        issue={targetResolutionIssue}
-        onVerified={handleIssueUpdated}
-      />
-
       <IssueDetailDrawer
         issue={inspectingIssue}
         onClose={() => setInspectingIssue(null)}
         onUpdateIssue={handleIssueUpdated}
-        onOpenResolutionModal={handleOpenResolution}
         onNavigateToIntelligence={(iss) => {
           setInspectingIssue(iss)
           setActiveView('intelligence')

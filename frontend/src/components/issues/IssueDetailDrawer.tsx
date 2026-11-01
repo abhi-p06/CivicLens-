@@ -22,12 +22,12 @@ import { ConsistencyBadge } from '../common/ConsistencyBadge'
 import { api } from '../../services/api'
 import { cn } from '../../lib/utils'
 import { Portal } from '../common/Portal'
+import { useAuth } from '../../context/AuthContext'
 
 interface IssueDetailDrawerProps {
   issue: Issue | null
   onClose: () => void
   onUpdateIssue: (updated: Issue) => void
-  onOpenResolutionModal: (issue: Issue) => void
   onNavigateToIntelligence?: (issue: Issue) => void
 }
 
@@ -35,9 +35,9 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   issue,
   onClose,
   onUpdateIssue,
-  onOpenResolutionModal,
   onNavigateToIntelligence,
 }) => {
+  const { user } = useAuth()
   const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const lifecycleStages: IssueStatus[] = [
@@ -407,13 +407,13 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
             </div>
           </div>
 
-          {/* Resolution Evidence (Feature 20) */}
+          {/* Resolution Evidence */}
           {issue.resolutionEvidence && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-emerald-700 font-bold text-xs">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Feature 20: Resolution Verified</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>Closure Summary</span>
                 </div>
                 <span className="px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-medium">
                   {issue.resolutionEvidence.resolutionStatus}
@@ -422,51 +422,23 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
               <div className="text-emerald-950 text-xs font-sans">
                 {issue.resolutionEvidence.verificationSummary}
               </div>
-              <div className="text-[10px] text-emerald-700 font-mono">
-                Confidence: {(issue.resolutionEvidence.resolutionConfidence * 100).toFixed(1)}% &bull; Verified: {new Date(issue.resolutionEvidence.verifiedAt || issue.resolutionEvidence.verified_at || Date.now()).toLocaleTimeString()}
-              </div>
             </div>
           )}
         </div>
 
         {/* Footer Actions */}
-        {(() => {
-          const isEligibleForVerification = [
-            'ACTION IN PROGRESS',
-            'VERIFICATION',
-            'RESOLVED',
-            'In Progress',
-            'Verified Closed'
-          ].includes(issue.status)
-
-          return (
-            <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-              <div className="text-xs text-[#65708B] space-y-0.5">
-                <div>Coordinates: {issue.latitude.toFixed(4)}, {issue.longitude.toFixed(4)}</div>
-                {!isEligibleForVerification && (
-                  <div className="text-[11px] text-amber-600 font-medium flex items-center gap-1">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                    <span>Verification locked: Issue must advance to &apos;ACTION IN PROGRESS&apos; or &apos;VERIFICATION&apos;.</span>
-                  </div>
-                )}
-              </div>
-              <button
-                disabled={!isEligibleForVerification}
-                onClick={() => isEligibleForVerification && onOpenResolutionModal(issue)}
-                title={!isEligibleForVerification ? "Verification locked until work advances to ACTION IN PROGRESS or VERIFICATION" : "Verify Field Resolution"}
-                className={cn(
-                  "flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition shadow-xs",
-                  isEligibleForVerification
-                    ? "bg-[#10B981] hover:bg-[#059669] text-white cursor-pointer"
-                    : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
-                )}
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Verify Field Resolution</span>
-              </button>
-            </div>
-          )
-        })()}
+        <div className="px-6 py-4 bg-white border-t border-[#E4E7F1] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="text-xs text-[#65708B] space-y-0.5">
+            <div>Coordinates: {issue.latitude.toFixed(4)}, {issue.longitude.toFixed(4)}</div>
+            <div className="text-[11px] text-[#65708B]">Ward: {issue.ward || 'Municipal Operations Area'}</div>
+          </div>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl border border-[#E4E7F1] bg-[#F0F2F9] hover:bg-slate-200 text-xs font-semibold text-[#11162A] transition cursor-pointer"
+          >
+            Close Panel
+          </button>
+        </div>
             </motion.div>
         </motion.div>
       )}

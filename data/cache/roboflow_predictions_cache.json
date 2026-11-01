@@ -1,0 +1,791 @@
+{
+  "19cf6cf58ca2df0c88cc8a1cda1b5857dba0c2015dfdb038363cfbe0714e8478:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "530d1dac-6bdf-4138-8a98-fe48bd3199a0",
+      "time": 0.0064700329676270485,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": [
+        {
+          "x": 112.5,
+          "y": 91.5,
+          "width": 129.0,
+          "height": 67.0,
+          "confidence": 0.9457392692565918,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "b43d57bd-3649-49d7-aba9-1dbad4f72511"
+        }
+      ]
+    },
+    "latency_ms": 1544.16,
+    "timestamp": 1793480427.6890008
+  },
+  "752084966a0dc2205ea9c968d31b9ea8e7695acbc101094cfdfc89f358df24e9:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "5514f8c9-5d4f-4526-b787-1f2fb8a38343",
+      "time": 0.01738676498644054,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 1537,
+        "height": 2049
+      },
+      "predictions": [
+        {
+          "x": 771.5,
+          "y": 683.5,
+          "width": 1531.0,
+          "height": 1367.0,
+          "confidence": 0.8968346118927002,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "f9cafdda-4617-470f-b630-00c386c526eb"
+        }
+      ]
+    },
+    "latency_ms": 1449.44,
+    "timestamp": 1793480429.142699
+  },
+  "f5b424f795b577496ebc8eaf5cf6c430a86ec9b401f08ebc200d47a147711f9f:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "22a776ef-847d-46c7-8906-8a5fcd6d8c22",
+      "time": 0.00791944283992052,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 1663.14,
+    "timestamp": 1793480595.811109
+  },
+  "e3b7bd756c16a6d0437013f2b3edfe9e59f04990a194f2944d5a08fe10bfa728:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "00ee1ac2-c7a2-4cd3-acd8-f7df0c5f6515",
+      "time": 0.008735131472349167,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 567.52,
+    "timestamp": 1793480596.4734201
+  },
+  "70f834be3f44a28a9ba61aa77953cb7864bd055f4ca15b2a0eadcb802f909b8c:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "38bcdd83-daae-4ffe-933d-b067077de601",
+      "time": 0.00696199294179678,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 510.39,
+    "timestamp": 1793480597.080083
+  },
+  "a96459ac3c44e3d607b55ff73cf3cdcfaf1dd7b97970f167d98ba96e9eebe33a:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "966d70df-aafc-4928-bdb1-1262a23b5192",
+      "time": 0.007458438165485859,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 479.94,
+    "timestamp": 1793480597.6538181
+  },
+  "91a3c05e061443dfd623d7d8dc8757a620bb953e60d1350a9066bbf8c73fa671:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "d5b01900-387b-48cb-accc-a6065108a52b",
+      "time": 0.006498048081994057,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 479.62,
+    "timestamp": 1793480598.230248
+  },
+  "1f06f0fea2f0267ecada574535d3fd97170673a0b37236e4aaa589d2ac088185:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "e31589f7-2ef8-4362-9a58-64916314aa5b",
+      "time": 0.007366606034338474,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 445.29,
+    "timestamp": 1793480598.769462
+  },
+  "8d82a2ad7171df3c7d0aec95d1d19beaf387eb522d426a2c850321649485724d:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "1d14d63f-452d-4d20-8770-7a0b9612be98",
+      "time": 0.009163415990769863,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 586.77,
+    "timestamp": 1793480599.4597938
+  },
+  "d463dea29afcefdf172b33418c3f93d61f8eb91a5bc91bb1d71d3944f2176c10:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "4ca97b3c-cdc4-4c23-8fec-d8e3f6c44daf",
+      "time": 0.006567409262061119,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 432.07,
+    "timestamp": 1793480600.019883
+  },
+  "dbee28d92f684453eaf604f83a577323fe32f7829e1532e30cb4301b2897a2c5:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "29c06d09-b6d6-42a2-9b4e-9ca4bad167de",
+      "time": 0.007036472670733929,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 489.57,
+    "timestamp": 1793480600.6089768
+  },
+  "8730e537368174ed2816c11db5e5efded2a3fd068e591c0aaf8d34d4815216e1:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "92ebbc85-0db3-45b5-bd7c-71d2de557baa",
+      "time": 0.0065519679337739944,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 501.38,
+    "timestamp": 1793480601.204886
+  },
+  "21f927275a2088b2a5bb193f85e5035c25ca963634c3b9fdacade4d6ffa70f28:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "f6b53ae9-b91b-40d6-a26f-1c1511cb758d",
+      "time": 0.34482518600998446,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 2448,
+        "height": 3264
+      },
+      "predictions": [
+        {
+          "x": 1255.0,
+          "y": 1815.5,
+          "width": 492.0,
+          "height": 449.0,
+          "confidence": 0.6428954601287842,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "9c164a82-880a-409d-904a-b463023e07c8"
+        }
+      ]
+    },
+    "latency_ms": 2002.43,
+    "timestamp": 1793480603.364715
+  },
+  "14cabdf2633cd59bf256c4c3f9d639e5d5668370bd068f421cee33a0ecceae88:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "de865815-b8d2-46c2-8ad2-83435a76b0be",
+      "time": 0.03168681601528078,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 2448,
+        "height": 3264
+      },
+      "predictions": [
+        {
+          "x": 1272.0,
+          "y": 1627.5,
+          "width": 758.0,
+          "height": 3255.0,
+          "confidence": 0.7746350169181824,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "6469fb80-b650-4a20-8117-423289b86d7a"
+        }
+      ]
+    },
+    "latency_ms": 808.16,
+    "timestamp": 1793480604.2655602
+  },
+  "06df3ad2e022b3fb16d4c059a7ffcf908c664bcafee96191b4a5dfc357a03a05:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "0fd9990e-18ec-4d4c-beff-8cdbfa9ccec3",
+      "time": 0.03677795099793002,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 2448,
+        "height": 3264
+      },
+      "predictions": []
+    },
+    "latency_ms": 853.06,
+    "timestamp": 1793480605.214679
+  },
+  "725a72684edb2eb89448100f71692fe93e38f812b493456ef5e52e14218db265:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "b48f844d-5693-44bf-accc-d4f1490f1bc6",
+      "time": 0.04004405898740515,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 2448,
+        "height": 3264
+      },
+      "predictions": [
+        {
+          "x": 720.5,
+          "y": 1791.0,
+          "width": 1441.0,
+          "height": 1320.0,
+          "confidence": 0.7316452264785767,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "a43128fc-909f-4324-a76c-6b1a3dbe0302"
+        }
+      ]
+    },
+    "latency_ms": 818.96,
+    "timestamp": 1793480606.130157
+  },
+  "07db90dd4c5cc1fe07ff25636de60451e0745b8394322c749b1ae34072b6db38:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "0b59e228-b3f6-4654-ab34-a8f246edc56e",
+      "time": 0.04988416499691084,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 2448,
+        "height": 3264
+      },
+      "predictions": [
+        {
+          "x": 1184.5,
+          "y": 1181.5,
+          "width": 579.0,
+          "height": 767.0,
+          "confidence": 0.7494881749153137,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "a52c5dc9-72b7-4e82-8b75-a733c6288ed6"
+        }
+      ]
+    },
+    "latency_ms": 865.2,
+    "timestamp": 1793480607.085493
+  },
+  "df7b7a9fd6185eb4cd05f2c783d905dfad1b87b6ae771ae2f9c6018ccc3777b8:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "2732748a-ea18-4121-8e2a-8e574d66bccb",
+      "time": 0.015924038976663724,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 371.97,
+    "timestamp": 1793480607.548933
+  },
+  "d044c70f84f6d3078f344be875dc1bfaae0b07c8bc4abc5a851db35a4570447f:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "eeb00eb2-e270-4222-bbf4-79c2912bac4c",
+      "time": 0.007393453997792676,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 332.4,
+    "timestamp": 1793480607.970582
+  },
+  "a62a0619d919e3be68435fea7529a6c3885a2ce926f0169087a6e84c5c3cf7bd:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "d6fd66b9-26a0-44d3-93a3-589cb4038d2c",
+      "time": 0.007760108012007549,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 387.99,
+    "timestamp": 1793480608.44594
+  },
+  "6b7f4d65c7966d83afe43113fd52607a385011f6d629f373245cf25fc5cbba39:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "91aff63e-f765-4cbb-ae41-8c961563795b",
+      "time": 0.007752297009574249,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 385.36,
+    "timestamp": 1793480608.921269
+  },
+  "5bd738946b4df6d4d7b9df62f8510b9c745547989c0ae6806acb6d964b3ddde8:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "7facee8a-5d69-4147-bdeb-0d52ea19981b",
+      "time": 0.007797168014803901,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 720,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 453.99,
+    "timestamp": 1793480609.460177
+  },
+  "b60294ad3d4e1d4ef3aefc9b83997f941faeac55a8dbcdd631eabbc155c566c8:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "0c39f670-e5ce-47c6-a4b2-772d72cfe4b8",
+      "time": 0.007714209146797657,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": [
+        {
+          "x": 113.0,
+          "y": 111.0,
+          "width": 222.0,
+          "height": 222.0,
+          "confidence": 0.5690736174583435,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "25645256-fa39-4a40-924b-f9eafda93726"
+        }
+      ]
+    },
+    "latency_ms": 2906.12,
+    "timestamp": 1793481095.987693
+  },
+  "19cf6cf58ca2df0c88cc8a1cda1b5857dba0c2015dfdb038363cfbe0714e8478:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "c87670c4-0fd3-4fac-a954-762ceb6a40e2",
+      "time": 0.011827129987068474,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": []
+    },
+    "latency_ms": 1492.9,
+    "timestamp": 1793481097.856353
+  },
+  "a595e87a414a66f428ec14cb878435bc65a2dcf2ad2d5defc5bbbd29017458af:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "7fa8abed-2786-4a7d-8485-709eea2b2287",
+      "time": 0.006472025066614151,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": [
+        {
+          "x": 112.5,
+          "y": 171.0,
+          "width": 133.0,
+          "height": 50.0,
+          "confidence": 0.5080783367156982,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "39937ce3-861d-49e7-9e1f-5693d42fc0ca"
+        }
+      ]
+    },
+    "latency_ms": 854.76,
+    "timestamp": 1793481099.264448
+  },
+  "ff3d48c33c62806ace15ac0cd1a081371c2418b542c6caa5d2b11a2b3e31bbfa:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "2db9dfe8-cb9e-44fa-a130-3b97a430258d",
+      "time": 0.005601594224572182,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 120,
+        "height": 120
+      },
+      "predictions": []
+    },
+    "latency_ms": 1284.24,
+    "timestamp": 1793481104.8343492
+  },
+  "ee72782ac7cca25f66f34e733eed0bd83dd2ebbc9165b41ca42b900df3dc7159:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "63e95fa7-526b-43a4-8087-b2eeb1008a13",
+      "time": 0.00933847899432294,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 120,
+        "height": 120
+      },
+      "predictions": []
+    },
+    "latency_ms": 355.5,
+    "timestamp": 1793481105.506927
+  },
+  "8bce85c0ce018c7b4650c512ba4d1a422fdd18e135a62a27b7376a3ecfbbc61d:garbage_detection-wvzwv-n8vsv/1": {
+    "raw_response": {
+      "inference_id": "a8b07058-9f7b-441f-8054-0ac7bb90542c",
+      "time": 0.48552495599142276,
+      "resolved_model": {
+        "model_id": "garbage_detection-wvzwv-n8vsv/1",
+        "model_package_id": "5362b72bfb9f01d2e0b8cba2048d932c",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 1600,
+        "height": 900
+      },
+      "predictions": [
+        {
+          "x": 852.5,
+          "y": 504.0,
+          "width": 1403.0,
+          "height": 646.0,
+          "confidence": 0.9088311791419983,
+          "class": "garbage",
+          "class_id": 0,
+          "detection_id": "dbc6cb14-012b-49b4-b85d-dbcbbf6e022d"
+        }
+      ]
+    },
+    "latency_ms": 1579.29,
+    "timestamp": 1793481107.808578
+  },
+  "49268c26894c4932aac62ba8181e4246fbce777c3752547ac042e7974c1c817c:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "6a9f30ab-10a5-4775-9f6b-bb7f4e63caa5",
+      "time": 0.009108636528253555,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 960,
+        "height": 720
+      },
+      "predictions": []
+    },
+    "latency_ms": 563.17,
+    "timestamp": 1793481108.714525
+  },
+  "8bce85c0ce018c7b4650c512ba4d1a422fdd18e135a62a27b7376a3ecfbbc61d:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "4661228e-23d3-45eb-9b79-01479210190d",
+      "time": 0.010785174556076527,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 1600,
+        "height": 900
+      },
+      "predictions": []
+    },
+    "latency_ms": 1983.76,
+    "timestamp": 1793481111.146275
+  },
+  "49a11c314df4aa2495671561ffdd6241babaa1558ac2fe86ed0adb291eb00fd0:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "ecd8b1eb-490b-4e15-aa90-16cc91d06921",
+      "time": 0.005699126049876213,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": [
+        {
+          "x": 114.0,
+          "y": 96.5,
+          "width": 150.0,
+          "height": 71.0,
+          "confidence": 0.8818575143814087,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "2abc1a81-d379-450e-b716-5bce6c547718"
+        }
+      ]
+    },
+    "latency_ms": 341.83,
+    "timestamp": 1793481120.990985
+  },
+  "0fbdeb2e03fb1f91ad0abd8baf29ec119930884124ef5fa6ada453101e8f5b0e:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "1ea5e879-8bdc-4b3d-b4df-5ad024ade0b0",
+      "time": 0.007528907619416714,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 224,
+        "height": 224
+      },
+      "predictions": [
+        {
+          "x": 112.5,
+          "y": 91.5,
+          "width": 129.0,
+          "height": 67.0,
+          "confidence": 0.9482412934303284,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "570a2415-9816-4385-87e4-f99d1efc4159"
+        }
+      ]
+    },
+    "latency_ms": 337.94,
+    "timestamp": 1793481125.796322
+  },
+  "37558e9172a395567bfffce924ea4895cbd4496359f68c05b0f3adc47dbb2033:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "e5fcd8b6-7da3-4093-81c8-82d94343290c",
+      "time": 0.13125902201863937,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 960,
+        "height": 904
+      },
+      "predictions": [
+        {
+          "x": 524.5,
+          "y": 468.5,
+          "width": 871.0,
+          "height": 337.0,
+          "confidence": 0.696378767490387,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "f8ba0f74-f3c4-41ab-8beb-10fc766e22bd"
+        }
+      ]
+    },
+    "latency_ms": 6649.12,
+    "timestamp": 1793532308.991925
+  },
+  "cf0093bf9d1bec2f783a0dcd86e89ab4c370955646cf98f4390dcbb65319bb4f:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "b126acdd-dae3-403e-b4bb-3d27bf853697",
+      "time": 0.07711819797987118,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 906,
+        "height": 894
+      },
+      "predictions": [
+        {
+          "x": 449.0,
+          "y": 481.0,
+          "width": 524.0,
+          "height": 222.0,
+          "confidence": 0.9604180455207825,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "2e62cbd5-6690-46cf-b90c-39d02ed95c4b"
+        }
+      ]
+    },
+    "latency_ms": 3530.26,
+    "timestamp": 1793532438.936888
+  }
+}

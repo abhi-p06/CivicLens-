@@ -96,9 +96,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ],
         },
         {
-          title: 'VERIFICATION',
+          title: 'BENCHMARKS',
           items: [
-            { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
             { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
           ],
         },
@@ -138,9 +137,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ],
       },
       {
-        title: 'VERIFICATION',
+        title: 'BENCHMARKS',
         items: [
-          { id: 'resolution', label: 'Resolution Center', icon: CheckCircle2 },
           { id: 'analytics', label: 'Model Benchmarks', icon: BarChart3 },
         ],
       },

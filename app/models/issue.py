@@ -113,6 +113,7 @@ class IssueCreate(BaseModel):
     location: Optional[str] = Field(None, description="Landmark or locality name")
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    location_method: Optional[str] = Field("manual", description="Capture method: gps or manual")
     imageUrl: Optional[str] = None
     uploadId: Optional[str] = None
     category: Optional[str] = Field(None, description="User-selected category (Roads & Footpaths, Sanitation & Garbage) or None for auto-prediction")
@@ -178,6 +179,7 @@ class Issue(BaseModel):
     location: str
     latitude: float
     longitude: float
+    location_method: Optional[str] = "manual"
     ward: Optional[str] = "N-Ward"
     timestamp: str
     imageUrl: Optional[str] = None

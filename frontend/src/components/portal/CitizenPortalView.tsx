@@ -23,8 +23,13 @@ import { Issue, IssueCategory, PriorityLevel } from '../../types'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../common/Toast'
 import { useCivicMotion } from '../../lib/motionContext'
+import { LocationPicker, LocationData } from '../common/LocationPicker'
 
-export const CitizenPortalView: React.FC = () => {
+interface CitizenPortalViewProps {
+  onIssueCreated?: (issue: Issue) => void
+}
+
+export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCreated }) => {
   const { user } = useAuth()
   const { success, error: toastError } = useToast()
   const { isReduced } = useCivicMotion()
@@ -35,7 +40,14 @@ export const CitizenPortalView: React.FC = () => {
 
   // Form State for New Complaint
   const [complaintText, setComplaintText] = useState('')
-  const [locationName, setLocationName] = useState('')
+  const [locationData, setLocationData] = useState<LocationData>({
+    address: '',
+    latitude: null,
+    longitude: null,
+    ward: 'N-Ward',
+    method: 'gps',
+    isValid: false,
+  })
   const [categoryChoice, setCategoryChoice] = useState<'road' | 'garbage'>('road')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -77,7 +89,7 @@ export const CitizenPortalView: React.FC = () => {
       if (complaintText.trim()) {
         const preview = await api.analyzeComplaint({
           complaintText: complaintText.trim(),
-          location: locationName.trim() || 'Mumbai Locality',
+          location: locationData.address.trim() || 'Mumbai Locality',
           category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
           uploadId: uploadRes.uploadId,
         })
@@ -95,7 +107,7 @@ export const CitizenPortalView: React.FC = () => {
     try {
       const preview = await api.analyzeComplaint({
         complaintText: complaintText.trim(),
-        location: locationName.trim() || 'Mumbai Locality',
+        location: locationData.address.trim() || 'Mumbai Locality',
         category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
         uploadId: uploadedId || undefined,
       })
@@ -112,11 +124,21 @@ export const CitizenPortalView: React.FC = () => {
       return
     }
 
+    if (!locationData.isValid || !locationData.latitude || !locationData.longitude || !locationData.address.trim()) {
+      toastError('A verified location within Mumbai or Navi Mumbai is required before filing a complaint.')
+      return
+    }
+
     setIsSubmitting(true)
     try {
       const payload = {
         complaintText: complaintText.trim(),
-        location: locationName.trim() || 'Municipal Ward Area',
+        location: locationData.address.trim(),
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        location_method: locationData.method,
+        locationMethod: locationData.method,
+        ward: locationData.ward,
         category: categoryChoice === 'road' ? 'Roads & Footpaths' : 'Sanitation & Garbage',
         uploadId: uploadedId || undefined,
         imageUrl: previewUrl || undefined,
@@ -126,9 +148,21 @@ export const CitizenPortalView: React.FC = () => {
       const created = await api.submitIssue(payload)
       success(`Complaint ${created.issueId} submitted successfully!`)
 
+      // Immediately notify parent so GIS map and global state update in real-time
+      if (onIssueCreated) {
+        onIssueCreated(created)
+      }
+
       // Reset form
       setComplaintText('')
-      setLocationName('')
+      setLocationData({
+        address: '',
+        latitude: null,
+        longitude: null,
+        ward: 'N-Ward',
+        method: 'gps',
+        isValid: false,
+      })
       setSelectedFile(null)
       setPreviewUrl(null)
       setUploadedId(null)
@@ -298,22 +332,13 @@ export const CitizenPortalView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Location Input */}
-              <div>
-                <label className="block text-xs font-semibold text-[#11162A] mb-1.5">
-                  Location / Locality Landmark
-                </label>
-                <div className="relative">
-                  <MapPin className="w-4 h-4 text-[#65708B] absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Near Vidyavihar Station West, LBS Road"
-                    value={locationName}
-                    onChange={(e) => setLocationName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E4E7F1] focus:border-[#6457E8] focus:ring-2 focus:ring-[#6457E8]/20 outline-none text-xs sm:text-sm text-[#11162A] transition"
-                  />
-                </div>
+              {/* Location Input with Real-time GPS & Map Picker */}
+              <div className="bg-slate-50/60 rounded-2xl border border-[#E4E7F1] p-4 sm:p-5">
+                <LocationPicker
+                  value={locationData}
+                  onChange={setLocationData}
+                  disabled={isSubmitting}
+                />
               </div>
 
               {/* Complaint Description */}
@@ -427,7 +452,7 @@ export const CitizenPortalView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting || isUploading}
+                  disabled={isSubmitting || isUploading || !locationData.isValid || !complaintText.trim()}
                   className="px-6 py-2.5 rounded-xl bg-[#6457E8] hover:bg-[#5145CF] disabled:opacity-50 text-white text-xs sm:text-sm font-semibold transition cursor-pointer shadow-sm flex items-center gap-2"
                 >
                   {isSubmitting ? (

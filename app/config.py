@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -19,6 +22,12 @@ class Settings(BaseModel):
     yolo_device: str = os.getenv("YOLO_DEVICE", "cpu")
     default_lat: float = float(os.getenv("DEFAULT_LATITUDE", "19.0760"))
     default_lng: float = float(os.getenv("DEFAULT_LONGITUDE", "72.8777"))
+
+    # Configurable Geographic Boundary: Mumbai & Navi Mumbai Only
+    geo_min_lat: float = float(os.getenv("CIVILENS_GEO_MIN_LAT", "18.85"))
+    geo_max_lat: float = float(os.getenv("CIVILENS_GEO_MAX_LAT", "19.33"))
+    geo_min_lng: float = float(os.getenv("CIVILENS_GEO_MIN_LNG", "72.75"))
+    geo_max_lng: float = float(os.getenv("CIVILENS_GEO_MAX_LNG", "73.18"))
     civilens_presentation_mode: bool = os.getenv("CIVILENS_PRESENTATION_MODE", "false").lower() in ("true", "1", "yes")
     seed_complaints_on_startup: bool = os.getenv("CIVILENS_SEED_COMPLAINTS", "true").lower() in ("true", "1", "yes")
     db_path: str = os.getenv(
@@ -42,6 +51,14 @@ class Settings(BaseModel):
     inspector_api_key: str = os.getenv("CIVILENS_INSPECTOR_API_KEY", "")
     admin_api_key: str = os.getenv("CIVILENS_ADMIN_API_KEY", "")
     allow_dev_tokens: bool = os.getenv("CIVILENS_ALLOW_DEV_TOKENS", "true").lower() in ("true", "1", "yes")
+
+    # Roboflow Hosted Model Integration (Phase 14)
+    roboflow_api_key: str = os.getenv("ROBOFLOW_API_KEY", "")
+    roboflow_pothole_model_id: str = os.getenv("ROBOFLOW_POTHOLE_MODEL_ID", "potholes-krmk8/2")
+    roboflow_garbage_model_id: str = os.getenv("ROBOFLOW_GARBAGE_MODEL_ID", "garbage_detection-wvzwv-n8vsv/1")
+    civilens_vision_provider: str = os.getenv("CIVILENS_VISION_PROVIDER", "local").lower()
+    roboflow_cache_dir: str = os.getenv("ROBOFLOW_CACHE_DIR", "data/cache")
+    roboflow_timeout_sec: float = float(os.getenv("ROBOFLOW_TIMEOUT_SEC", "15.0"))
 
     @property
     def is_presentation_database(self) -> bool:

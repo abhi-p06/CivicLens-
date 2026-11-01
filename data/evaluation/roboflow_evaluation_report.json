@@ -1,0 +1,89 @@
+{
+  "split": "test",
+  "sample_limit_per_category": 10,
+  "confidence_threshold": 0.25,
+  "results": {
+    "road_damage": {
+      "task": "ROAD_DAMAGE",
+      "primary_defect": "Pothole (D40)",
+      "sample_count": 10,
+      "local": {
+        "model_name": "YOLOv8s RDD2022 (Local D40)",
+        "true_positives": 0,
+        "false_positives": 1,
+        "false_negatives": 5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "mAP50": 0.0,
+        "clean_neg_alarms": 0,
+        "clean_neg_total": 5,
+        "clean_neg_alarm_rate": 0.0,
+        "latency_ms": {
+          "mean": 218.88,
+          "median": 95.26
+        }
+      },
+      "hosted": {
+        "model_name": "potholes-krmk8/2 (Roboflow Hosted)",
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "mAP50": 0.0,
+        "clean_neg_alarms": 0,
+        "clean_neg_total": 5,
+        "clean_neg_alarm_rate": 0.0,
+        "latency_ms": {
+          "mean": 615.57,
+          "median": 495.48
+        },
+        "new_api_calls_credits": 10,
+        "api_failure_count": 0
+      }
+    },
+    "sanitation": {
+      "task": "SANITATION",
+      "primary_defect": "Municipal Waste / Litter",
+      "sample_count": 10,
+      "local": {
+        "model_name": "YOLO11s TACO (Local Waste)",
+        "true_positives": 7,
+        "false_positives": 1,
+        "false_negatives": 0,
+        "precision": 0.875,
+        "recall": 1.0,
+        "f1_score": 0.9333,
+        "mAP50": 1.0,
+        "clean_neg_alarms": 1,
+        "clean_neg_total": 5,
+        "clean_neg_alarm_rate": 0.2,
+        "latency_ms": {
+          "mean": 93.74,
+          "median": 88.12
+        }
+      },
+      "hosted": {
+        "model_name": "garbage_detection-wvzwv-n8vsv/1 (Roboflow Hosted)",
+        "true_positives": 2,
+        "false_positives": 2,
+        "false_negatives": 5,
+        "precision": 0.5,
+        "recall": 0.2857,
+        "f1_score": 0.3636,
+        "mAP50": 0.1436,
+        "clean_neg_alarms": 0,
+        "clean_neg_total": 5,
+        "clean_neg_alarm_rate": 0.0,
+        "latency_ms": {
+          "mean": 727.95,
+          "median": 631.08
+        },
+        "new_api_calls_credits": 10,
+        "api_failure_count": 0
+      }
+    }
+  }
+}

@@ -89,6 +89,10 @@ export const api = {
   async submitIssue(payload: {
     complaintText: string
     location?: string
+    latitude?: number
+    longitude?: number
+    location_method?: 'gps' | 'manual'
+    locationMethod?: 'gps' | 'manual'
     imageUrl?: string
     uploadId?: string
     category?: string
@@ -104,7 +108,29 @@ export const api = {
       headers,
       body: JSON.stringify(payload),
     })
-    if (!res.ok) throw new Error('Failed to submit issue')
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null)
+      const detail = Array.isArray(errBody?.detail) ? errBody.detail[0]?.msg : errBody?.detail
+      throw new Error(detail || 'Failed to submit issue')
+    }
+    return res.json()
+  },
+
+  async getGeoBounds(): Promise<{ region: string; min_lat: number; max_lat: number; min_lng: number; max_lng: number }> {
+    const res = await fetch(`${BASE_URL}/geo/bounds`)
+    if (!res.ok) throw new Error('Failed to fetch geographic bounds')
+    return res.json()
+  },
+
+  async reverseGeocode(lat: number, lng: number): Promise<{ valid: boolean; address?: string; ward?: string; error?: string; latitude: number; longitude: number }> {
+    const res = await fetch(`${BASE_URL}/geo/reverse-geocode?lat=${lat}&lng=${lng}`)
+    if (!res.ok) throw new Error('Failed to reverse-geocode coordinates')
+    return res.json()
+  },
+
+  async searchLocations(query: string, limit: number = 6): Promise<Array<{ name: string; ward: string; latitude: number; longitude: number }>> {
+    const res = await fetch(`${BASE_URL}/geo/search?query=${encodeURIComponent(query)}&limit=${limit}`)
+    if (!res.ok) throw new Error('Failed to search locations')
     return res.json()
   },
 

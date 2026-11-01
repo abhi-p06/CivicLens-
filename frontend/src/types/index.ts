@@ -136,6 +136,8 @@ export interface Issue {
   location: string
   latitude: number
   longitude: number
+  location_method?: 'gps' | 'manual'
+  locationMethod?: 'gps' | 'manual'
   ward: string
   timestamp: string
   department: string

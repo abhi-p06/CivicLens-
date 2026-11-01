@@ -6,6 +6,7 @@ import { Issue } from '../../types'
 import { PriorityGauge } from '../common/PriorityGauge'
 import { ConsistencyBadge } from '../common/ConsistencyBadge'
 import { Portal } from '../common/Portal'
+import { LocationPicker, LocationData } from '../common/LocationPicker'
 
 interface NewComplaintModalProps {
   isOpen: boolean
@@ -22,6 +23,14 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
 }) => {
   const [complaintText, setComplaintText] = useState('')
   const [location, setLocation] = useState('')
+  const [locationData, setLocationData] = useState<LocationData>({
+    address: 'Somaiya Vidyavihar Main Gate, Vidyavihar East',
+    latitude: 19.0728,
+    longitude: 72.8998,
+    ward: 'N-Ward',
+    method: 'manual',
+    isValid: true,
+  })
   const [imageUrl, setImageUrl] = useState('')
   const [category, setCategory] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -100,6 +109,14 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         'Critical deep pothole crater breaking wheel rims and causing major skidding risk near school entrance.'
       )
       setLocation('Somaiya Vidyavihar Main Gate, Vidyavihar East')
+      setLocationData({
+        address: 'Somaiya Vidyavihar Main Gate, Vidyavihar East',
+        latitude: 19.0728,
+        longitude: 72.8998,
+        ward: 'N-Ward',
+        method: 'manual',
+        isValid: true,
+      })
       setImageUrl('')
     } else if (num === 2) {
       setCategory('Sanitation & Garbage')
@@ -107,6 +124,14 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         'Accumulated municipal garbage dump with discarded plastic bottles, cups, and decaying cartons along sidewalk creating extreme stench.'
       )
       setLocation('Station Road, Kurla West')
+      setLocationData({
+        address: 'Station Road, Kurla West',
+        latitude: 19.0655,
+        longitude: 72.8710,
+        ward: 'L-Ward',
+        method: 'manual',
+        isValid: true,
+      })
       setImageUrl('')
     } else if (num === 3) {
       setCategory('Roads & Footpaths')
@@ -114,6 +139,14 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         'Massive asphalt crater and structural road fissure breaking vehicle suspensions on main transit corridor.'
       )
       setLocation('S.V. Road, Santacruz')
+      setLocationData({
+        address: 'S.V. Road, Santacruz',
+        latitude: 19.0800,
+        longitude: 72.8410,
+        ward: 'H/West',
+        method: 'manual',
+        isValid: true,
+      })
       setImageUrl('')
     } else if (num === 4) {
       setCategory('Roads & Footpaths')
@@ -121,6 +154,14 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
         'Deep road depression detected during autonomous visual patrol inspection near school perimeter.'
       )
       setLocation('Kurla West')
+      setLocationData({
+        address: 'Kurla West',
+        latitude: 19.0655,
+        longitude: 72.8710,
+        ward: 'L-Ward',
+        method: 'manual',
+        isValid: true,
+      })
       setImageUrl('')
     }
   }
@@ -166,7 +207,12 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
     try {
       const res = await api.submitIssue({
         complaintText,
-        location: location || undefined,
+        location: locationData.address || location || undefined,
+        latitude: locationData.latitude || undefined,
+        longitude: locationData.longitude || undefined,
+        location_method: locationData.method,
+        locationMethod: locationData.method,
+        ward: locationData.ward,
         imageUrl: imageUrl || undefined,
         uploadId: uploadId || undefined,
         category: category || undefined,
@@ -284,40 +330,34 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
             />
           </div>
 
-          {/* Location & Image Inputs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#11162A] flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#6457E8]" />
-                <span>Reported Landmark / Location</span>
-              </label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. Vidyavihar, LBS Marg, Dharavi"
-                className="w-full bg-white border border-[#E4E7F1] text-[#11162A] placeholder-[#65708B] rounded-xl p-2.5 text-xs font-sans outline-none focus:border-[#6457E8] focus:ring-1 focus:ring-[#6457E8] shadow-xs"
-              />
-            </div>
+          {/* Location Selection with GPS and Map Picker */}
+          <div className="bg-slate-50/70 rounded-2xl border border-[#E4E7F1] p-3.5 sm:p-4">
+            <LocationPicker
+              value={locationData}
+              onChange={setLocationData}
+              disabled={loading}
+            />
+          </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Image className="w-3.5 h-3.5 text-[#6457E8]" />
-                  <span>Field Photo Evidence</span>
-                </span>
-                <span className="text-[#65708B] font-normal text-[11px]">
-                  JPEG, PNG, WebP &le; 10MB
-                </span>
-              </label>
+          {/* Photo Evidence Input */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#11162A] flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Image className="w-3.5 h-3.5 text-[#6457E8]" />
+                <span>Field Photo Evidence</span>
+              </span>
+              <span className="text-[#65708B] font-normal text-[11px]">
+                JPEG, PNG, WebP &le; 10MB
+              </span>
+            </label>
 
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
 
               <div className="flex gap-2">
                 <input
@@ -385,7 +425,6 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
                 </div>
               )}
             </div>
-          </div>
 
           {error && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-center gap-2 text-xs">

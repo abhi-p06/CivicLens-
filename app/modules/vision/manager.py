@@ -1,12 +1,17 @@
 import os
 import time
+import logging
 from typing import Dict, Any, Optional, List
 from PIL import Image
 
+from app.config import settings
 from app.models.issue import VisualDetectionDetail, IssueCategory
 from app.modules.vision.road_detector import RoadDamageDetector
 from app.modules.vision.waste_detector import WasteDetector
 from app.modules.vision.flooding_detector import FloodingDetector
+from app.modules.vision.roboflow_adapter import roboflow_adapter
+
+logger = logging.getLogger("civilens.vision.manager")
 
 class VisionPipelineManager:
     """
@@ -37,6 +42,7 @@ class VisionPipelineManager:
         self.road_detector = RoadDamageDetector()
         self.waste_detector = WasteDetector()
         self.flooding_detector = FloodingDetector()
+        self.roboflow_adapter = roboflow_adapter
 
     def is_task_supported(self, category_str: str) -> bool:
         c_lower = category_str.lower()
@@ -46,15 +52,111 @@ class VisionPipelineManager:
             return True
         return False
 
+    def compare_models(
+        self,
+        image_path: str,
+        category_hint: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Executes explicit side-by-side comparison between local and hosted Roboflow candidate.
+        Does NOT merge predictions or mutate production priority logic.
+        """
+        local_result = self._execute_local_detection(image_path, category_hint=category_hint, is_demo=False)
+        hosted_result = self.roboflow_adapter.infer(image_path, category_hint=category_hint)
+
+        local_objs = local_result.get("detectedObjects", [])
+        hosted_objs = hosted_result.get("detectedObjects", [])
+
+        summary = {
+            "localModel": local_result.get("sourceModel", "local_detector"),
+            "hostedModel": f"{hosted_result.get('modelId', 'unknown')} ({hosted_result.get('architecture', 'hosted')})",
+            "task": hosted_result.get("task", local_result.get("task", "UNKNOWN")),
+            "localDetectionCount": len(local_objs),
+            "hostedDetectionCount": len(hosted_objs),
+            "localPrimaryDetection": local_result.get("visualDetection"),
+            "hostedPrimaryDetection": hosted_result.get("visualDetection"),
+            "localConfidence": local_result.get("visualConfidence", 0.0),
+            "hostedConfidence": hosted_result.get("visualConfidence", 0.0),
+            "localLatencyMs": local_result.get("inferenceTimeMs", 0.0),
+            "hostedLatencyMs": hosted_result.get("inferenceTimeMs", 0.0),
+            "hostedStatus": hosted_result.get("status", "UNAVAILABLE"),
+            "hostedCached": hosted_result.get("cached", False)
+        }
+
+        return {
+            "mode": "compare",
+            "imagePath": image_path,
+            "categoryHint": category_hint,
+            "comparisonSummary": summary,
+            "local": local_result,
+            "hosted": hosted_result
+        }
+
     def detect(
+        self,
+        image_path_or_url: Optional[str],
+        category_hint: Optional[str] = None,
+        is_demo: bool = False,
+        enable_comparison: Optional[bool] = None
+    ) -> Dict[str, Any]:
+        """
+        Coordinates genuine visual detection across task-specific models.
+        Modes:
+        - local: Default production mode using local YOLO models.
+        - compare: Runs local baseline and attaches hosted candidate separately without merging.
+        - hosted: Attempts hosted inference with safe fallback to local on failure.
+        """
+        provider = (getattr(settings, "civilens_vision_provider", None) or "local").lower()
+        should_compare = enable_comparison if enable_comparison is not None else (provider == "compare")
+
+        # 1. Hosted Provider Mode (with safe local fallback)
+        if provider == "hosted" and image_path_or_url and os.path.exists(image_path_or_url) and not is_demo:
+            try:
+                hosted_res = self.roboflow_adapter.infer(image_path_or_url, category_hint=category_hint)
+                if hosted_res.get("status") in ("SUCCESS", "EMPTY"):
+                    return {
+                        "visualDetection": hosted_res.get("visualDetection") or "No visible issues detected",
+                        "visualConfidence": hosted_res.get("visualConfidence", 0.0),
+                        "detectedObjects": hosted_res.get("detectedObjects", []),
+                        "visionExecutionMode": "roboflow_hosted_inference",
+                        "imageDimensions": hosted_res.get("imageDimensions", [640, 640]),
+                        "inferenceTimeMs": hosted_res.get("inferenceTimeMs", 0.0),
+                        "detectedClasses": hosted_res.get("detectedClasses", []),
+                        "classCounts": hosted_res.get("classCounts", {}),
+                        "task": hosted_res.get("task", "UNKNOWN"),
+                        "sourceModel": f"roboflow_{hosted_res.get('modelId', 'hosted')}"
+                    }
+                else:
+                    logger.warning(
+                        f"Roboflow hosted inference failed ({hosted_res.get('error')}); falling back to local detector."
+                    )
+            except Exception as e:
+                logger.warning(f"Roboflow hosted inference exception ({e}); falling back to local detector.")
+
+        # 2. Local baseline execution (always preserved)
+        local_out = self._execute_local_detection(image_path_or_url, category_hint=category_hint, is_demo=is_demo)
+
+        # 3. Compare mode: attach separate hosted comparison without mutating local detections or severity
+        if should_compare and image_path_or_url and os.path.exists(image_path_or_url) and not is_demo:
+            try:
+                comp = self.compare_models(image_path_or_url, category_hint=category_hint)
+                local_out["visionComparison"] = comp
+                local_out["hosted"] = comp.get("hosted")
+            except Exception as e:
+                local_out["visionComparison"] = {
+                    "mode": "compare",
+                    "status": "UNAVAILABLE",
+                    "error": str(e)
+                }
+
+        return local_out
+
+    def _execute_local_detection(
         self,
         image_path_or_url: Optional[str],
         category_hint: Optional[str] = None,
         is_demo: bool = False
     ) -> Dict[str, Any]:
-        """
-        Coordinates genuine visual detection across task-specific models.
-        """
         # -------------------------------------------------------------
         # 0. EXPLICIT DEMO MODE (Isolated Fallback)
         # -------------------------------------------------------------

@@ -176,9 +176,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             </div>
 
             <div className="p-3 bg-[#F0F2F9] rounded-xl border border-[#E4E7F1]">
-              <div className="text-[#65708B] text-[11px] font-medium">CV VERIFIED</div>
+              <div className="text-[#65708B] text-[11px] font-medium">RESOLVED RATE</div>
               <div className="text-base font-bold text-[#6457E8] mt-0.5">
-                {verifiedCount} Orders
+                {((resolvedCount / totalIssuesCount) * 100).toFixed(0)}%
               </div>
             </div>
 
@@ -302,9 +302,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             </div>
 
             <div className="p-3.5 bg-[#F0F2F9] rounded-xl border border-[#E4E7F1]">
-              <div className="text-[#65708B] text-[11px] font-medium">RESOLUTION VERIF F1</div>
+              <div className="text-[#65708B] text-[11px] font-medium">CROSS-MODAL F1</div>
               <div className="text-lg font-bold text-[#8B5CF6] mt-1 font-mono">
-                {(((metrics.resolution_verification?.f1_macro ?? metrics.resolution_verification?.macro_f1) ?? 1) * 100).toFixed(1)}%
+                {(((metrics.text_image_consistency?.f1_macro ?? metrics.text_image_consistency?.macro_f1) ?? 0) * 100).toFixed(1)}%
               </div>
             </div>
           </div>

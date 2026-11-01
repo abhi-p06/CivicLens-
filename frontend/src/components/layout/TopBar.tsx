@@ -87,8 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({
     hotspots: 'Spatial Intelligence',
     recurring: 'Spatial Intelligence',
     unreported: 'Spatial Intelligence',
-    resolution: 'Verification',
-    analytics: 'Verification',
+    analytics: 'Benchmarks',
     intelligence: 'Operations',
     citizen_portal: 'Citizen Grievances',
   }
@@ -102,7 +101,6 @@ export const TopBar: React.FC<TopBarProps> = ({
     hotspots: 'Spatiotemporal Hotspots',
     recurring: 'Recurring Infrastructure',
     unreported: 'Patrol Detections',
-    resolution: 'Resolution Center',
     analytics: 'Model Benchmarks',
     intelligence: 'Issue Dossier',
     citizen_portal: 'Citizen Portal',
