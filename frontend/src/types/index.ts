@@ -128,6 +128,61 @@ export interface VisualDetectionDetail {
   execution_mode?: string
 }
 
+export interface HostedCandidateResult {
+  provider: string
+  status: 'SUCCESS' | 'EMPTY' | 'ERROR' | 'UNAVAILABLE'
+  modelId: string
+  architecture: string
+  task: string
+  visualDetection?: string | null
+  visualConfidence?: number
+  detectedObjects?: VisualDetectionDetail[]
+  detectedClasses?: string[]
+  classCounts?: Record<string, number>
+  imageDimensions?: [number, number]
+  inferenceTimeMs?: number
+  cached?: boolean
+  rawPredictionCount?: number
+  error?: string
+  errorCategory?: string
+}
+
+export interface ComparisonSummary {
+  localModel: string
+  hostedModel: string
+  task: string
+  localDetectionCount: number
+  hostedDetectionCount: number
+  localPrimaryDetection: string | null
+  hostedPrimaryDetection: string | null
+  localConfidence: number
+  hostedConfidence: number
+  localLatencyMs: number
+  hostedLatencyMs: number
+  hostedStatus: string
+  hostedCached: boolean
+}
+
+export interface VisionComparisonData {
+  mode: string
+  imagePath?: string
+  categoryHint?: string
+  comparisonSummary?: ComparisonSummary
+  local?: {
+    visualDetection?: string | null
+    visualConfidence?: number
+    detectedObjects?: VisualDetectionDetail[]
+    visionExecutionMode?: string
+    imageDimensions?: [number, number]
+    inferenceTimeMs?: number
+    detectedClasses?: string[]
+    classCounts?: Record<string, number>
+    task?: string
+    sourceModel?: string
+  }
+  hosted?: HostedCandidateResult
+}
+
 export interface TaskAssignment {
   department: string
   team_name: string

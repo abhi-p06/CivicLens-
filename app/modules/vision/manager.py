@@ -61,7 +61,12 @@ class VisionPipelineManager:
         Executes explicit side-by-side comparison between local and hosted Roboflow candidate.
         Does NOT merge predictions or mutate production priority logic.
         """
-        local_result = self._execute_local_detection(image_path, category_hint=category_hint, is_demo=False)
+        cat_lower = (category_hint or "").lower()
+        if any(k in cat_lower for k in ["sanitation", "garbage", "waste", "trash", "litter"]):
+            local_result = self.waste_detector.detect(image_path)
+        else:
+            local_result = self.road_detector.detect(image_path)
+
         hosted_result = self.roboflow_adapter.infer(image_path, category_hint=category_hint)
 
         local_objs = local_result.get("detectedObjects", [])

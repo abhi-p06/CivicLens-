@@ -877,5 +877,35 @@
     },
     "latency_ms": 2637.11,
     "timestamp": 1793563258.288248
+  },
+  "0617bf2dfb3af4bf209825cafd7c5e6bb65cbdf6ee930231b0bf90f201500b96:potholes-krmk8/2": {
+    "raw_response": {
+      "inference_id": "988aa51b-9684-4a1b-bab0-ecab47bbbe70",
+      "time": 0.017634595977142453,
+      "resolved_model": {
+        "model_id": "potholes-krmk8/2",
+        "model_package_id": "9cabe999151428d2e2e9fb145a75c813",
+        "backend": "onnx",
+        "quantization": "fp32"
+      },
+      "image": {
+        "width": 1200,
+        "height": 896
+      },
+      "predictions": [
+        {
+          "x": 561.5,
+          "y": 473.0,
+          "width": 775.0,
+          "height": 390.0,
+          "confidence": 0.9512707591056824,
+          "class": "Pothole",
+          "class_id": 0,
+          "detection_id": "10d54690-eec1-4898-b0d4-b536ea11ed79"
+        }
+      ]
+    },
+    "latency_ms": 2354.6,
+    "timestamp": 1793564281.339617
   }
 }

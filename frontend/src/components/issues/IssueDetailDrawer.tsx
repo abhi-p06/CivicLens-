@@ -34,6 +34,7 @@ import { Portal } from '../common/Portal'
 import { useAuth } from '../../context/AuthContext'
 import { AIGuidanceSection } from '../guidance/AIGuidanceSection'
 import { GuidanceDocumentModal } from '../guidance/GuidanceDocumentModal'
+import { VisionModelComparison } from './VisionModelComparison'
 
 interface IssueDetailDrawerProps {
   issue: Issue | null
@@ -1042,6 +1043,9 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* Vision Model Comparison: Production Baseline vs Roboflow Hosted (Inspector & Admin only) */}
+                <VisionModelComparison issue={issue} />
 
                 {/* Explainable Dynamic Priority Gauge */}
                 <div className="p-4 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-2.5">
