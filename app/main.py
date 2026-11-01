@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,7 +6,10 @@ from app.config import settings
 from app.db.database import init_db
 from app.core.demo_store import demo_store
 from app.modules.routing.dispatcher import department_dispatcher
+from app.services.guidance.knowledge_base import GuidanceKnowledgeBase
 from app.api.routes import router
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,7 +19,9 @@ async def lifespan(app: FastAPI):
     if not settings.is_presentation_database and settings.seed_complaints_on_startup:
         demo_store.seed_if_empty()
     demo_store.seed_default_users_if_empty()
+    demo_store.seed_default_teams_and_wards_if_empty()
     department_dispatcher.load_from_db()
+    GuidanceKnowledgeBase().seed_if_empty()
     yield
 
 app = FastAPI(

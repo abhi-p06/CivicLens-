@@ -54,10 +54,12 @@ class Settings(BaseModel):
 
     # Roboflow Hosted Model Integration (Phase 14)
     roboflow_api_key: str = os.getenv("ROBOFLOW_API_KEY", "")
+    roboflow_api_url: str = os.getenv("ROBOFLOW_API_URL", "https://serverless.roboflow.com")
     roboflow_pothole_model_id: str = os.getenv("ROBOFLOW_POTHOLE_MODEL_ID", "potholes-krmk8/2")
     roboflow_garbage_model_id: str = os.getenv("ROBOFLOW_GARBAGE_MODEL_ID", "garbage_detection-wvzwv-n8vsv/1")
     civilens_vision_provider: str = os.getenv("CIVILENS_VISION_PROVIDER", "local").lower()
     roboflow_cache_dir: str = os.getenv("ROBOFLOW_CACHE_DIR", "data/cache")
+    roboflow_cache_enabled: bool = os.getenv("ROBOFLOW_CACHE_ENABLED", "true").lower() in ("true", "1", "yes")
     roboflow_timeout_sec: float = float(os.getenv("ROBOFLOW_TIMEOUT_SEC", "15.0"))
 
     @property

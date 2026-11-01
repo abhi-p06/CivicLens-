@@ -16,7 +16,13 @@ import {
   Sparkles,
   HelpCircle,
   Shield,
-  Layers
+  Layers,
+  Wrench,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+  Check,
 } from 'lucide-react'
 import { api } from '../../services/api'
 import { Issue, IssueCategory, PriorityLevel } from '../../types'
@@ -56,6 +62,41 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [analysisPreview, setAnalysisPreview] = useState<any | null>(null)
   const [selectedIssueDetail, setSelectedIssueDetail] = useState<Issue | null>(null)
+
+  // Operations Progress & Feedback States
+  const [expandedTimelines, setExpandedTimelines] = useState<Record<string, boolean>>({})
+  const [reopenNotes, setReopenNotes] = useState<Record<string, string>>({})
+  const [showReopenPrompt, setShowReopenPrompt] = useState<Record<string, boolean>>({})
+  const [submittingFeedback, setSubmittingFeedback] = useState<Record<string, boolean>>({})
+
+  const handleCitizenFeedback = async (
+    issueId: string,
+    feedback: 'CONFIRMED_RESOLVED' | 'REOPEN_REQUESTED',
+    note?: string
+  ) => {
+    setSubmittingFeedback((prev) => ({ ...prev, [issueId]: true }))
+    try {
+      const updated = await api.submitCitizenFeedback(issueId, {
+        feedback,
+        note,
+        citizen_name: user?.name || 'Abhinay',
+      })
+      setMyIssues((prev) => prev.map((i) => (i.issueId === issueId ? updated : i)))
+      if (selectedIssueDetail && selectedIssueDetail.issueId === issueId) {
+        setSelectedIssueDetail(updated)
+      }
+      setShowReopenPrompt((prev) => ({ ...prev, [issueId]: false }))
+      success(
+        feedback === 'CONFIRMED_RESOLVED'
+          ? 'Thank you! Resolution confirmed successfully.'
+          : 'Reopen request submitted to municipal officers.'
+      )
+    } catch (err: any) {
+      toastError(err.message || 'Failed to submit feedback')
+    } finally {
+      setSubmittingFeedback((prev) => ({ ...prev, [issueId]: false }))
+    }
+  }
 
   const loadMyIssues = async () => {
     setIsLoading(true)
@@ -519,78 +560,242 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
                 return (
                   <div
                     key={issue.issueId}
-                    className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 transition p-2 rounded-xl"
+                    className="py-4 flex flex-col gap-3 hover:bg-slate-50/60 transition p-3 rounded-xl border border-transparent hover:border-[#E4E7F1]"
                   >
-                    <div className="flex items-start gap-3.5 min-w-0">
-                      {/* Image Thumbnail or Category Icon */}
-                      {issue.imageUrl ? (
-                        <img
-                          src={issue.imageUrl}
-                          alt={issue.category}
-                          className="w-14 h-14 rounded-lg object-cover border border-[#E4E7F1] shrink-0"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center text-xl shrink-0 border border-[#E4E7F1]">
-                          {issue.category.includes('Road') ? '🚗' : '🗑️'}
-                        </div>
-                      )}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-start gap-3.5 min-w-0">
+                        {/* Image Thumbnail or Category Icon */}
+                        {issue.imageUrl ? (
+                          <img
+                            src={issue.imageUrl}
+                            alt={issue.category}
+                            className="w-14 h-14 rounded-lg object-cover border border-[#E4E7F1] shrink-0"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center text-xl shrink-0 border border-[#E4E7F1]">
+                            {issue.category.includes('Road') ? '🚗' : '🗑️'}
+                          </div>
+                        )}
 
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono text-[11px] font-bold text-[#11162A]">
-                            {issue.issueId}
-                          </span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold border border-slate-200">
-                            {issue.category}
-                          </span>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold font-mono border ${
-                              isResolved
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : isInProgress
-                                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                : 'bg-blue-50 text-blue-700 border-blue-200'
-                            }`}
-                          >
-                            {issue.status}
-                          </span>
-                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono text-[11px] font-bold text-[#11162A]">
+                              {issue.issueId}
+                            </span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold border border-slate-200">
+                              {issue.category}
+                            </span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold font-mono border ${
+                                isResolved
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : isInProgress
+                                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                  : 'bg-blue-50 text-blue-700 border-blue-200'
+                              }`}
+                            >
+                              {issue.status}
+                            </span>
+                          </div>
 
-                        <p className="text-xs font-semibold text-[#11162A] mt-1 line-clamp-1">
-                          {issue.complaintText}
-                        </p>
+                          <p className="text-xs font-semibold text-[#11162A] mt-1 line-clamp-1">
+                            {issue.complaintText}
+                          </p>
 
-                        <div className="flex items-center gap-3 text-[11px] text-[#65708B] mt-1 flex-wrap">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-slate-400" />
-                            {issue.location}
-                          </span>
-                          <span>&bull;</span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-slate-400" />
-                            {issue.timestamp}
-                          </span>
-                          {issue.visualDetection && (
-                            <>
-                              <span>&bull;</span>
-                              <span className="text-[#6457E8] font-medium">
-                                Detected: {issue.visualDetection} ({(((issue.visualConfidence ?? 0)) * 100).toFixed(0)}%)
-                              </span>
-                            </>
-                          )}
+                          <div className="flex items-center gap-3 text-[11px] text-[#65708B] mt-1 flex-wrap">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3 text-slate-400" />
+                              {issue.location}
+                            </span>
+                            <span>&bull;</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-slate-400" />
+                              {issue.timestamp}
+                            </span>
+                            {issue.visualDetection && (
+                              <>
+                                <span>&bull;</span>
+                                <span className="text-[#6457E8] font-medium">
+                                  Detected: {issue.visualDetection} ({(((issue.visualConfidence ?? 0)) * 100).toFixed(0)}%)
+                                </span>
+                              </>
+                            )}
+                          </div>
                         </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        <button
+                          onClick={() => setSelectedIssueDetail(issue)}
+                          className="px-3 py-1.5 rounded-lg border border-[#E4E7F1] hover:bg-white text-xs font-medium text-[#11162A] transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-[#6457E8]" />
+                          <span>View Details</span>
+                        </button>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                      <button
-                        onClick={() => setSelectedIssueDetail(issue)}
-                        className="px-3 py-1.5 rounded-lg border border-[#E4E7F1] hover:bg-white text-xs font-medium text-[#11162A] transition cursor-pointer flex items-center gap-1 shadow-2xs"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-[#6457E8]" />
-                        <span>View Details</span>
-                      </button>
-                    </div>
+                    {/* 1. Assigned Team & Expected Date Banner */}
+                    {issue.assignment?.team_name && (
+                      <div className="px-3 py-2 rounded-xl bg-[#6457E8]/10 border border-[#6457E8]/20 text-xs flex items-center justify-between flex-wrap gap-2">
+                        <div className="flex items-center gap-2 font-medium text-[#6457E8]">
+                          <Wrench className="w-4 h-4 text-[#6457E8]" />
+                          <span>
+                            Assigned Team:{' '}
+                            <strong className="font-semibold text-[#11162A]">
+                              {issue.assignment.team_name}
+                            </strong>
+                          </span>
+                          {issue.assignment.assigned_officer && (
+                            <span className="text-[#65708B] text-[11px]">
+                              (Officer: {issue.assignment.assigned_officer})
+                            </span>
+                          )}
+                        </div>
+                        {issue.assignment.scheduled_date && (
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#11162A] font-medium">
+                            <Calendar className="w-3.5 h-3.5 text-[#6457E8]" />
+                            <span>
+                              Scheduled Date: <strong>{issue.assignment.scheduled_date}</strong>
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 2. Expandable Progress Timeline */}
+                    {issue.timeline && issue.timeline.length > 0 && (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedTimelines((prev) => ({
+                              ...prev,
+                              [issue.issueId]: !prev[issue.issueId],
+                            }))
+                          }
+                          className="flex items-center gap-1.5 text-[11px] font-semibold text-[#6457E8] hover:text-[#5145CF] cursor-pointer"
+                        >
+                          <span>Progress Timeline ({issue.timeline.length} updates)</span>
+                          {expandedTimelines[issue.issueId] ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          )}
+                        </button>
+
+                        {expandedTimelines[issue.issueId] && (
+                          <div className="mt-2 p-3 bg-white border border-[#E4E7F1] rounded-xl space-y-2.5">
+                            <div className="relative pl-5 space-y-2.5 before:absolute before:left-2 before:top-1.5 before:bottom-1.5 before:w-[2px] before:bg-[#E4E7F1]">
+                              {issue.timeline.map((evt, idx) => (
+                                <div key={evt.id || idx} className="relative text-[11px]">
+                                  <div className="absolute -left-5 top-1 w-2.5 h-2.5 rounded-full bg-white border-2 border-[#6457E8]" />
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-[#11162A]">{evt.title}</span>
+                                    <span className="text-[10px] text-[#65708B]">
+                                      {new Date(evt.timestamp).toLocaleString()}
+                                    </span>
+                                  </div>
+                                  <div className="text-[10px] text-[#65708B]">
+                                    By: {evt.actor}
+                                  </div>
+                                  {evt.description && (
+                                    <p className="mt-0.5 text-slate-700 bg-[#F0F2F9] p-1.5 rounded-md">
+                                      {evt.description}
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 3. Citizen Feedback Prompt for Resolved Complaints */}
+                    {(issue.status === 'RESOLVED' || issue.status === 'Verified Closed') && (
+                      <div className="p-3 rounded-xl bg-slate-50 border border-[#E4E7F1] space-y-2">
+                        {issue.citizen_feedback ? (
+                          <div className="flex items-center gap-2 text-xs">
+                            {issue.citizen_feedback.status === 'CONFIRMED_RESOLVED' ? (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs">
+                                <Check className="w-3.5 h-3.5" />
+                                <span>You confirmed this problem is resolved</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-xs">
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                <span>Reopen requested: {issue.citizen_feedback.note || 'Issue still persists'}</span>
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <span className="text-xs font-semibold text-[#11162A]">
+                                Has this issue been resolved to your satisfaction?
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  disabled={submittingFeedback[issue.issueId]}
+                                  onClick={() => handleCitizenFeedback(issue.issueId, 'CONFIRMED_RESOLVED')}
+                                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition cursor-pointer flex items-center gap-1 disabled:opacity-50"
+                                >
+                                  <Check className="w-3.5 h-3.5" />
+                                  <span>Confirm Problem Resolved</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={submittingFeedback[issue.issueId]}
+                                  onClick={() =>
+                                    setShowReopenPrompt((prev) => ({
+                                      ...prev,
+                                      [issue.issueId]: !prev[issue.issueId],
+                                    }))
+                                  }
+                                  className="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1 disabled:opacity-50"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                  <span>Issue Still Persists / Request Reopen</span>
+                                </button>
+                              </div>
+                            </div>
+
+                            {showReopenPrompt[issue.issueId] && (
+                              <div className="mt-2 pt-2 border-t border-[#E4E7F1] flex gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Explain what is still unresolved on-site..."
+                                  value={reopenNotes[issue.issueId] || ''}
+                                  onChange={(e) =>
+                                    setReopenNotes((prev) => ({
+                                      ...prev,
+                                      [issue.issueId]: e.target.value,
+                                    }))
+                                  }
+                                  className="flex-1 bg-white border border-[#E4E7F1] rounded-lg px-2.5 py-1 text-xs outline-none focus:border-amber-500 font-sans"
+                                />
+                                <button
+                                  type="button"
+                                  disabled={submittingFeedback[issue.issueId]}
+                                  onClick={() =>
+                                    handleCitizenFeedback(
+                                      issue.issueId,
+                                      'REOPEN_REQUESTED',
+                                      reopenNotes[issue.issueId]
+                                    )
+                                  }
+                                  className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                                >
+                                  Submit Reopen
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )
               })}

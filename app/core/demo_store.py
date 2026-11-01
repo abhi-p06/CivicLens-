@@ -6,6 +6,7 @@ from app.models.issue import (
     IssueCategory,
     PriorityLevel
 )
+from app.models.field_guidance import FieldGuidanceResult, OfficerDecisionType
 from app.db.database import init_db
 from app.db.repository import SqliteIssueRepository
 
@@ -101,6 +102,75 @@ class DemoDataStore:
 
     def seed_default_users_if_empty(self) -> int:
         return self.repository.seed_default_users_if_empty()
+
+    # Forward Ward Operations Management methods
+    def seed_default_teams_and_wards_if_empty(self) -> None:
+        return self.repository.seed_default_teams_and_wards_if_empty()
+
+    def list_teams(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.list_teams(category=category)
+
+    def get_team(self, team_id: str) -> Optional[Dict[str, Any]]:
+        return self.repository.get_team(team_id)
+
+    def create_team(self, team_data: Dict[str, Any]) -> Dict[str, Any]:
+        return self.repository.create_team(team_data)
+
+    def update_team(self, team_id: str, team_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self.repository.update_team(team_id, team_data)
+
+    def delete_team(self, team_id: str) -> bool:
+        return self.repository.delete_team(team_id)
+
+    def list_wards(self) -> List[Dict[str, Any]]:
+        return self.repository.list_wards()
+
+    def update_ward(self, ward_code: str, ward_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self.repository.update_ward(ward_code, ward_data)
+
+    def assign_task(self, issue_id: str, assignment_data: Dict[str, Any], actor: str = "Abhinay", role: str = "inspector") -> Optional[Issue]:
+        return self.repository.assign_task(issue_id, assignment_data, actor=actor, role=role)
+
+    def schedule_task(self, issue_id: str, scheduled_date: str, schedule_type: str = "WORK", instructions: Optional[str] = None, actor: str = "Abhinay", role: str = "inspector") -> Optional[Issue]:
+        return self.repository.schedule_task(issue_id, scheduled_date, schedule_type=schedule_type, instructions=instructions, actor=actor, role=role)
+
+    def record_action(self, issue_id: str, action_type: str, action_data: Dict[str, Any], actor: str = "Abhinay", role: str = "inspector") -> Optional[Issue]:
+        return self.repository.record_action(issue_id, action_type, action_data, actor=actor, role=role)
+
+    def complete_task(self, issue_id: str, completion_note: str, closure_reason: str = "Work executed to municipal standard", completion_photo_url: Optional[str] = None, actor: str = "Abhinay", role: str = "inspector") -> Optional[Issue]:
+        return self.repository.complete_task(issue_id, completion_note, closure_reason=closure_reason, completion_photo_url=completion_photo_url, actor=actor, role=role)
+
+    def reopen_task(self, issue_id: str, reason: str, note: Optional[str] = None, actor: str = "Abhinay", role: str = "inspector") -> Optional[Issue]:
+        return self.repository.reopen_task(issue_id, reason, note=note, actor=actor, role=role)
+
+    def record_feedback(self, issue_id: str, feedback: str, note: Optional[str] = None, citizen_name: str = "Abhinay") -> Optional[Issue]:
+        return self.repository.record_feedback(issue_id, feedback, note=note, citizen_name=citizen_name)
+
+    def get_operations_kpis(self) -> Dict[str, Any]:
+        return self.repository.get_operations_kpis()
+
+    def get_or_generate_field_guidance(self, issue_id: str, force_regenerate: bool = False) -> Optional[FieldGuidanceResult]:
+        return self.repository.get_or_generate_field_guidance(issue_id, force_regenerate=force_regenerate)
+
+    def record_guidance_decision(
+        self,
+        issue_id: str,
+        item_id: str,
+        decision: OfficerDecisionType,
+        edited_text: Optional[str] = None,
+        reason: Optional[str] = None,
+        actor: str = "Abhinay",
+        role: str = "inspector"
+    ) -> Optional[FieldGuidanceResult]:
+        return self.repository.record_guidance_decision(
+            issue_id=issue_id,
+            item_id=item_id,
+            decision=decision,
+            edited_text=edited_text,
+            reason=reason,
+            actor=actor,
+            role=role
+        )
 
 # Global singleton instance
 demo_store = DemoDataStore()

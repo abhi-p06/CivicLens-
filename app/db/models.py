@@ -176,3 +176,119 @@ class UserRecord(Base):
     )
 
 
+class TeamRecord(Base):
+    """
+    Persistent storage for municipal field teams (Roads & Sanitation).
+    """
+    __tablename__ = "operational_teams"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    department: Mapped[str] = mapped_column(String(128), nullable=False)
+    category: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="AVAILABLE")
+    ward: Mapped[str] = mapped_column(String(64), nullable=False, default="ALL")
+    contact_lead: Mapped[str] = mapped_column(String(128), nullable=False, default="Duty Supervisor")
+    active_tasks_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class WardConfigRecord(Base):
+    """
+    Persistent storage for municipal ward operational configurations.
+    """
+    __tablename__ = "ward_configs"
+
+    ward_code: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    ward_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    lead_officer: Mapped[str] = mapped_column(String(128), nullable=False, default="Abhinay")
+    active_teams: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class GuidanceSourceRecord(Base):
+    """
+    Controlled allowlist registry of trusted government research sources.
+    """
+    __tablename__ = "guidance_sources"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    domain: Mapped[str] = mapped_column(String(128), nullable=False, unique=True, index=True)
+    base_url: Mapped[str] = mapped_column(String(255), nullable=False)
+    category: Mapped[str] = mapped_column(String(64), nullable=False, default="ALL")
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    is_allowlisted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    last_retrieved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    last_status: Mapped[str] = mapped_column(String(32), nullable=False, default="NEVER_RUN")
+    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class GuidanceDocumentRecord(Base):
+    """
+    Persistent indexed knowledge base of official government specifications,
+    manuals, and circulars for grounding AI field recommendations.
+    """
+    __tablename__ = "guidance_documents"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    source_domain: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    source_org: Mapped[str] = mapped_column(String(128), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    url: Mapped[str] = mapped_column(String(512), nullable=False)
+    publication_date: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    document_version: Mapped[str] = mapped_column(String(64), nullable=False, default="Current")
+    document_status: Mapped[str] = mapped_column(String(32), nullable=False, default="CURRENT", index=True)
+    applicable_category: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    content_type: Mapped[str] = mapped_column(String(64), nullable=False, default="text/html")
+    file_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    raw_text: Mapped[str] = mapped_column(Text, nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    sections_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    is_approved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, index=True)
+    last_retrieved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+    __table_args__ = (
+        Index("ix_guidance_cat_status", "applicable_category", "document_status", "is_approved"),
+    )
+
+
+

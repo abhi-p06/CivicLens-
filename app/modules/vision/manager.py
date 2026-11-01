@@ -109,8 +109,12 @@ class VisionPipelineManager:
         provider = (getattr(settings, "civilens_vision_provider", None) or "local").lower()
         should_compare = enable_comparison if enable_comparison is not None else (provider == "compare")
 
+        fallback_triggered = False
+        fallback_reason = None
+        fallback_error_cat = None
+
         # 1. Hosted Provider Mode (with safe local fallback)
-        if provider == "hosted" and image_path_or_url and os.path.exists(image_path_or_url) and not is_demo:
+        if provider == "hosted" and image_path_or_url and os.path.exists(image_path_or_url):
             try:
                 hosted_res = self.roboflow_adapter.infer(image_path_or_url, category_hint=category_hint)
                 if hosted_res.get("status") in ("SUCCESS", "EMPTY"):
@@ -124,20 +128,32 @@ class VisionPipelineManager:
                         "detectedClasses": hosted_res.get("detectedClasses", []),
                         "classCounts": hosted_res.get("classCounts", {}),
                         "task": hosted_res.get("task", "UNKNOWN"),
-                        "sourceModel": f"roboflow_{hosted_res.get('modelId', 'hosted')}"
+                        "sourceModel": f"roboflow_{hosted_res.get('modelId', 'hosted')}",
+                        "provider": "roboflow"
                     }
                 else:
+                    fallback_triggered = True
+                    fallback_reason = hosted_res.get("error", "Hosted model returned error status")
+                    fallback_error_cat = hosted_res.get("errorCategory", "UNKNOWN")
                     logger.warning(
-                        f"Roboflow hosted inference failed ({hosted_res.get('error')}); falling back to local detector."
+                        f"Roboflow hosted inference failed (category={fallback_error_cat}, error={fallback_reason}); falling back to local detector."
                     )
             except Exception as e:
+                fallback_triggered = True
+                fallback_reason = str(e)
+                fallback_error_cat = "UNKNOWN"
                 logger.warning(f"Roboflow hosted inference exception ({e}); falling back to local detector.")
 
         # 2. Local baseline execution (always preserved)
         local_out = self._execute_local_detection(image_path_or_url, category_hint=category_hint, is_demo=is_demo)
 
+        if fallback_triggered:
+            local_out["fallbackTriggered"] = True
+            local_out["fallbackReason"] = fallback_reason
+            local_out["hostedErrorCategory"] = fallback_error_cat
+
         # 3. Compare mode: attach separate hosted comparison without mutating local detections or severity
-        if should_compare and image_path_or_url and os.path.exists(image_path_or_url) and not is_demo:
+        if should_compare and image_path_or_url and os.path.exists(image_path_or_url):
             try:
                 comp = self.compare_models(image_path_or_url, category_hint=category_hint)
                 local_out["visionComparison"] = comp

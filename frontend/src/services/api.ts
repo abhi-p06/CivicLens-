@@ -7,7 +7,14 @@ import {
   ResolutionEvidence,
   AuthResponse,
   AuthUser,
-  UserRole
+  UserRole,
+  FieldTeam,
+  WardConfig,
+  OperationsKpis,
+  FieldGuidance,
+  GuidanceSource,
+  GuidanceDocument,
+  OfficerDecisionType
 } from '../types'
 
 const BASE_URL = '/api/v1'
@@ -277,6 +284,407 @@ export const api = {
     const res = await fetch(`${BASE_URL}/admin/users`, { headers })
     if (!res.ok) throw new Error('Failed to fetch user accounts')
     return res.json()
+  },
+
+  // --------------------------------------------------------------------------
+  // Ward Operations Management
+  // --------------------------------------------------------------------------
+
+  async getOperationsKpis(): Promise<OperationsKpis> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader()
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/operations/kpis`, { headers })
+    if (!res.ok) throw new Error('Failed to fetch operational KPIs')
+    return res.json()
+  },
+
+  async getFieldTeams(category?: string): Promise<FieldTeam[]> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader()
+    if (auth) headers['Authorization'] = auth
+
+    const query = category ? `?category=${encodeURIComponent(category)}` : ''
+    const res = await fetch(`${BASE_URL}/teams${query}`, { headers })
+    if (!res.ok) throw new Error('Failed to fetch field teams')
+    return res.json()
+  },
+
+  async assignTask(
+    issueId: string,
+    payload: {
+      department: string
+      team_name: string
+      team_id?: string
+      assigned_officer?: string
+      priority?: string
+      scheduled_date?: string
+      instructions?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/assign`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to assign task')
+    }
+    return res.json()
+  },
+
+  async scheduleTask(
+    issueId: string,
+    payload: {
+      scheduled_date: string
+      schedule_type?: string
+      instructions?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/schedule`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to schedule task')
+    }
+    return res.json()
+  },
+
+  async recordAction(
+    issueId: string,
+    payload: {
+      action_type: string
+      measures?: string[]
+      stage?: string
+      scheduled_date?: string
+      frequency?: string
+      notes?: string
+      photo_url?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/action`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to record action')
+    }
+    return res.json()
+  },
+
+  async completeTask(
+    issueId: string,
+    payload: {
+      completion_note: string
+      closure_reason?: string
+      completion_photo_url?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/complete`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to complete complaint')
+    }
+    return res.json()
+  },
+
+  async reopenTask(
+    issueId: string,
+    payload: {
+      reason: string
+      note?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/reopen`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to reopen complaint')
+    }
+    return res.json()
+  },
+
+  async submitCitizenFeedback(
+    issueId: string,
+    payload: {
+      feedback: 'CONFIRMED_RESOLVED' | 'REOPEN_REQUESTED'
+      note?: string
+      citizen_name?: string
+    }
+  ): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('citizen')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/feedback`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to submit citizen feedback')
+    }
+    return res.json()
+  },
+
+  admin: {
+    async getTeams(): Promise<FieldTeam[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/teams`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch teams')
+      return res.json()
+    },
+
+    async createTeam(payload: Partial<FieldTeam>): Promise<FieldTeam> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/admin/teams`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to create team')
+      }
+      return res.json()
+    },
+
+    async updateTeam(teamId: string, payload: Partial<FieldTeam>): Promise<FieldTeam> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/admin/teams/${teamId}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to update team')
+      }
+      return res.json()
+    },
+
+    async deleteTeam(teamId: string): Promise<void> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/admin/teams/${teamId}`, {
+        method: 'DELETE',
+        headers,
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to delete team')
+      }
+    },
+
+    async getWards(): Promise<WardConfig[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/admin/wards`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch wards')
+      return res.json()
+    },
+
+    async updateWard(wardCode: string, payload: Partial<WardConfig>): Promise<WardConfig> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/admin/wards/${wardCode}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to update ward')
+      }
+      return res.json()
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // AI Field Guidance & Government Research
+  // ---------------------------------------------------------------------------
+  async getFieldGuidance(issueId: string, forceRegenerate = false): Promise<FieldGuidance> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const url = `${BASE_URL}/issues/${issueId}/guidance${forceRegenerate ? '?force_regenerate=true' : ''}`
+    const res = await fetch(url, { headers })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to fetch field guidance')
+    }
+    return res.json()
+  },
+
+  async regenerateFieldGuidance(issueId: string): Promise<FieldGuidance> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/guidance/regenerate`, {
+      method: 'POST',
+      headers,
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to regenerate field guidance')
+    }
+    return res.json()
+  },
+
+  async recordGuidanceDecision(
+    issueId: string,
+    payload: {
+      item_id: string
+      decision: OfficerDecisionType
+      edited_text?: string
+      reason?: string
+    }
+  ): Promise<FieldGuidance> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/guidance/decision`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to record guidance decision')
+    }
+    return res.json()
+  },
+
+  async getGuidanceDocument(docId: string): Promise<GuidanceDocument> {
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader()
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/guidance/documents/${docId}`, { headers })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to load guidance document')
+    }
+    return res.json()
+  },
+
+  // Admin Guidance Management
+  adminGuidance: {
+    async listSources(): Promise<GuidanceSource[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/admin/guidance/sources`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch guidance sources')
+      return res.json()
+    },
+
+    async updateSource(sourceId: string, updates: { is_active?: boolean; category?: string }): Promise<GuidanceSource> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/admin/guidance/sources/${sourceId}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates),
+      })
+      if (!res.ok) throw new Error('Failed to update guidance source')
+      return res.json()
+    },
+
+    async listDocuments(category?: string, status?: string): Promise<GuidanceDocument[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const query = new URLSearchParams()
+      if (category) query.append('category', category)
+      if (status) query.append('status', status)
+
+      const res = await fetch(`${BASE_URL}/admin/guidance/documents?${query.toString()}`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch guidance documents')
+      return res.json()
+    },
+
+    async updateDocument(docId: string, updates: { document_status?: string; is_approved?: boolean }): Promise<GuidanceDocument> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/admin/guidance/documents/${docId}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates),
+      })
+      if (!res.ok) throw new Error('Failed to update guidance document')
+      return res.json()
+    },
+
+    async ingestSource(payload: { source_url?: string; source_id?: string; force_refresh?: boolean }): Promise<any> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/admin/guidance/ingest`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Document ingestion failed')
+      }
+      return res.json()
+    },
   },
 
   auth: {

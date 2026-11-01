@@ -5,11 +5,17 @@ export type IssueStatus =
   | 'ANALYZED'
   | 'PRIORITIZED'
   | 'ASSIGNED'
+  | 'SCHEDULED'
   | 'ACTION IN PROGRESS'
   | 'VERIFICATION'
   | 'RESOLVED'
+  | 'REOPENED'
   | 'TRIAGED'
   | 'DUPLICATE'
+  | 'AWAITING INSPECTION'
+  | 'AWAITING CONFIRMATION'
+  | 'Verified Closed'
+  | 'In Progress'
 
 export type IssueCategory =
   | 'Roads & Footpaths'
@@ -122,6 +128,93 @@ export interface VisualDetectionDetail {
   execution_mode?: string
 }
 
+export interface TaskAssignment {
+  department: string
+  team_name: string
+  team_id?: string
+  assigned_officer: string
+  priority: string
+  scheduled_date?: string
+  instructions?: string
+  assigned_at?: string
+  assigned_by?: string
+}
+
+export interface TimelineEvent {
+  id: string
+  event_type: string
+  title: string
+  description: string
+  actor: string
+  role: string
+  timestamp: string
+  evidence_url?: string
+  metadata?: Record<string, any>
+}
+
+export interface TemporaryMeasures {
+  measures: string[]
+  notes?: string
+  recorded_at: string
+  recorded_by: string
+}
+
+export interface RepeatCollection {
+  is_scheduled: boolean
+  frequency: string
+  next_collection_date?: string
+  instructions?: string
+  scheduled_at?: string
+  scheduled_by?: string
+}
+
+export interface CompletionDetails {
+  completed_at: string
+  completed_by: string
+  completion_note: string
+  completion_photo_url?: string
+  closure_reason: string
+}
+
+export interface CitizenFeedback {
+  status: 'CONFIRMED_RESOLVED' | 'REOPEN_REQUESTED'
+  note?: string
+  submitted_at: string
+  citizen_name: string
+}
+
+export interface FieldTeam {
+  id: string
+  name: string
+  department: string
+  category: string
+  status: 'AVAILABLE' | 'BUSY' | 'OFF_DUTY'
+  ward: string
+  contact_lead: string
+  active_tasks_count?: number
+}
+
+export interface WardConfig {
+  ward_code: string
+  ward_name: string
+  lead_officer: string
+  active_teams: string[]
+}
+
+export interface OperationsKpis {
+  unassigned_complaints: number
+  high_priority_complaints: number
+  work_in_progress: number
+  resolved_this_month: number
+  category_workload: {
+    roads: number
+    sanitation: number
+    total: number
+  }
+  ward_distribution: Record<string, number>
+  total_complaints: number
+}
+
 export interface Issue {
   issueId: string
   complaintText: string
@@ -169,6 +262,15 @@ export interface Issue {
   statusHistory?: Array<{ status: IssueStatus; timestamp: string; note?: string }>
   citizen_id?: string
   citizenId?: string
+  
+  // Lightweight Ward Operations Management Fields
+  assignment?: TaskAssignment
+  timeline?: TimelineEvent[]
+  temporary_measures?: TemporaryMeasures
+  repeat_collection?: RepeatCollection
+  completion_details?: CompletionDetails
+  citizen_feedback?: CitizenFeedback
+  
   metadata?: Record<string, any>
 }
 
@@ -264,4 +366,110 @@ export interface SystemHealth {
   storageMode: string
   subsystems: Record<string, SubsystemTelemetry>
 }
+
+// -----------------------------------------------------------------------------
+// AI Field Guidance & Government Research Types
+// -----------------------------------------------------------------------------
+
+export type RecommendationType = 'PRECAUTION' | 'ACTION' | 'CHECKLIST'
+export type OfficerDecisionType = 'PENDING' | 'ACCEPTED' | 'EDITED' | 'DISMISSED'
+
+export interface GuidanceCitation {
+  doc_id: string
+  doc_title: string
+  source_org: string
+  url: string
+  section: string
+  page_number?: number | null
+  document_version?: string | null
+  document_status?: string
+  is_statutory_requirement?: boolean
+}
+
+export interface GuidanceActionItem {
+  id: string
+  item_type: RecommendationType
+  title: string
+  description: string
+  steps: string[]
+  equipment: string[]
+  handling_precautions: string[]
+  citation: GuidanceCitation
+  is_requirement: boolean
+  officer_decision: OfficerDecisionType
+  edited_text?: string | null
+  decision_reason?: string | null
+  decided_by?: string | null
+  decided_at?: string | null
+}
+
+export interface ConflictingSourceTopic {
+  topic: string
+  source_a: string
+  position_a: string
+  source_b: string
+  position_b: string
+  recommended_reconciliation: string
+}
+
+export interface FieldGuidance {
+  guidance_id: string
+  issue_id: string
+  category: string
+  generated_at: string
+  situation_summary: string
+  recommendation_rationale: string
+  immediate_precautions: GuidanceActionItem[]
+  recommended_field_actions: GuidanceActionItem[]
+  equipment_and_resources: string[]
+  handling_precautions: string[]
+  completion_checklist: Array<{ item: string; statutory?: boolean }>
+  retrieved_references: GuidanceCitation[]
+  disagreements: ConflictingSourceTopic[]
+  is_hazardous_escalation: boolean
+  escalation_notice?: string | null
+  has_insufficient_sources: boolean
+  fallback_message?: string | null
+  engineering_disclaimer?: string | null
+}
+
+export interface GuidanceSource {
+  id: string
+  name: string
+  domain: string
+  base_url: string
+  category: string
+  is_active: boolean
+  is_allowlisted: boolean
+  last_status: string
+  last_retrieved_at?: string | null
+  error_message?: string | null
+}
+
+export interface GuidanceDocument {
+  id: string
+  source_id: string
+  source_domain: string
+  source_org: string
+  title: string
+  url: string
+  publication_date: string
+  document_version: string
+  document_status: string
+  applicable_category: string
+  content_type: string
+  file_hash: string
+  summary: string
+  sections?: Array<{
+    section_id?: string
+    section_title?: string
+    page_number?: number
+    content?: string
+    is_statutory?: boolean
+  }>
+  sections_count?: number
+  is_approved: boolean
+  last_retrieved_at?: string | null
+}
+
 

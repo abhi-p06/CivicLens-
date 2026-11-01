@@ -4,6 +4,7 @@ import json
 import hashlib
 import logging
 import threading
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 from PIL import Image
@@ -27,6 +28,42 @@ def mask_api_key(key: str) -> str:
         return "***"
     return f"{key[:4]}...{key[-4:]}"
 
+def log_roboflow_diagnostic(
+    model_id: str,
+    response_status: Any,
+    latency_ms: float,
+    prediction_count: int,
+    success: bool,
+    cached: bool = False,
+    error_category: Optional[str] = None,
+    error_message: Optional[str] = None
+) -> None:
+    """
+    Emits structured diagnostic telemetry for Roboflow serverless calls.
+    Guarantees private API keys and image byte contents are never logged.
+    """
+    sanitized_error = error_message
+    if sanitized_error and settings.roboflow_api_key and settings.roboflow_api_key in sanitized_error:
+        sanitized_error = sanitized_error.replace(settings.roboflow_api_key, mask_api_key(settings.roboflow_api_key))
+
+    record = {
+        "provider": "roboflow_serverless",
+        "model_id": model_id,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "response_status": response_status,
+        "latency_ms": round(latency_ms, 2),
+        "prediction_count": prediction_count,
+        "success": success,
+        "cached": cached,
+        "error_category": error_category,
+        "error_message": sanitized_error
+    }
+    print(f"[ROBOFLOW_DIAGNOSTIC] {json.dumps(record)}", flush=True)
+    if success:
+        logger.info(f"[ROBOFLOW_DIAGNOSTIC] {json.dumps(record)}")
+    else:
+        logger.warning(f"[ROBOFLOW_DIAGNOSTIC] {json.dumps(record)}")
+
 class RoboflowHostedAdapter:
     """
     Modular Adapter for Roboflow Hosted Inference Models:
@@ -43,6 +80,7 @@ class RoboflowHostedAdapter:
 
     def __init__(self):
         self.api_key = settings.roboflow_api_key
+        self.api_url = getattr(settings, "roboflow_api_url", "https://serverless.roboflow.com")
         self.pothole_model_id = settings.roboflow_pothole_model_id
         self.garbage_model_id = settings.roboflow_garbage_model_id
         self.timeout_sec = settings.roboflow_timeout_sec
@@ -91,12 +129,12 @@ class RoboflowHostedAdapter:
                     warnings.filterwarnings("ignore", category=InferenceSDKGuidanceWarning)
                     config = InferenceConfiguration(api_key_transport="both")
                     client = InferenceHTTPClient(
-                        api_url="https://detect.roboflow.com",
+                        api_url=self.api_url,
                         api_key=self.api_key.strip()
                     )
                     client.use_configuration(config)
                     self._client = client
-                    logger.info(f"Initialized Roboflow client with key {mask_api_key(self.api_key)}")
+                    logger.info(f"Initialized Roboflow client at {self.api_url} with key {mask_api_key(self.api_key)}")
                 except Exception as e:
                     logger.error(f"Failed to initialize Roboflow client: {e}")
                     self._client = None
@@ -131,15 +169,26 @@ class RoboflowHostedAdapter:
         use_cache: bool = True
     ) -> Dict[str, Any]:
         """
-        Executes Roboflow hosted inference with normalized coordinates and result caching.
+        Executes Roboflow hosted serverless inference with normalized coordinates,
+        structured diagnostic logging, and persistent result caching.
         """
         model_id, architecture, task, primary_target = self.resolve_model_info(category_hint or "")
 
         if not os.path.exists(image_path):
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=404,
+                latency_ms=0.0,
+                prediction_count=0,
+                success=False,
+                error_category="IMAGE_NOT_FOUND",
+                error_message=f"Image file not found: {image_path}"
+            )
             return {
                 "provider": "roboflow",
                 "status": "ERROR",
                 "error": f"Image file not found: {image_path}",
+                "errorCategory": "IMAGE_NOT_FOUND",
                 "modelId": model_id,
                 "architecture": architecture,
                 "task": task,
@@ -153,10 +202,20 @@ class RoboflowHostedAdapter:
 
         # Check API key configuration
         if not self.is_configured():
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=401,
+                latency_ms=0.0,
+                prediction_count=0,
+                success=False,
+                error_category="AUTH_ERROR",
+                error_message="ROBOFLOW_API_KEY is not configured or invalid."
+            )
             return {
                 "provider": "roboflow",
                 "status": "UNAVAILABLE",
                 "error": "ROBOFLOW_API_KEY is not configured or invalid.",
+                "errorCategory": "AUTH_ERROR",
                 "modelId": model_id,
                 "architecture": architecture,
                 "task": task,
@@ -172,10 +231,20 @@ class RoboflowHostedAdapter:
         try:
             img_hash = compute_image_sha256(image_path)
         except Exception as e:
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=500,
+                latency_ms=0.0,
+                prediction_count=0,
+                success=False,
+                error_category="UNKNOWN",
+                error_message=f"Failed to compute image hash: {e}"
+            )
             return {
                 "provider": "roboflow",
                 "status": "ERROR",
                 "error": f"Failed to compute image hash: {e}",
+                "errorCategory": "UNKNOWN",
                 "modelId": model_id,
                 "architecture": architecture,
                 "task": task,
@@ -188,11 +257,21 @@ class RoboflowHostedAdapter:
             }
 
         cache_key = f"{img_hash}:{model_id}"
+        cache_enabled = getattr(settings, "roboflow_cache_enabled", True)
 
         # 2. Check cache
-        if use_cache and cache_key in self._cache:
+        if use_cache and cache_enabled and cache_key in self._cache:
             cached_data = self._cache[cache_key]
             logger.info(f"Using cached Roboflow prediction for {Path(image_path).name} ({cache_key[:16]}...)")
+            raw_cached_preds = cached_data.get("raw_response", {}).get("predictions", [])
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=200,
+                latency_ms=cached_data.get("latency_ms", 0.0),
+                prediction_count=len(raw_cached_preds),
+                success=True,
+                cached=True
+            )
             return self._normalize_predictions(
                 raw_response=cached_data["raw_response"],
                 image_path=image_path,
@@ -206,10 +285,20 @@ class RoboflowHostedAdapter:
         # 3. Execute hosted inference
         client = self._get_client()
         if client is None:
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=500,
+                latency_ms=0.0,
+                prediction_count=0,
+                success=False,
+                error_category="UNKNOWN",
+                error_message="Roboflow client could not be initialized."
+            )
             return {
                 "provider": "roboflow",
                 "status": "ERROR",
                 "error": "Roboflow client could not be initialized.",
+                "errorCategory": "UNKNOWN",
                 "modelId": model_id,
                 "architecture": architecture,
                 "task": task,
@@ -225,6 +314,8 @@ class RoboflowHostedAdapter:
         max_retries = 2
         raw_res = None
         last_error = None
+        last_status_code = None
+        error_cat = "UNKNOWN"
 
         for attempt in range(max_retries):
             try:
@@ -233,20 +324,39 @@ class RoboflowHostedAdapter:
             except Exception as e:
                 err_str = str(e)
                 status_code = getattr(e, "status_code", None)
-                # Check for non-retryable errors
-                if status_code in (401, 403):
-                    last_error = f"Authentication failed (HTTP {status_code}): Invalid or inactive Roboflow API key."
+                if status_code is None and hasattr(e, "response") and hasattr(e.response, "status_code"):
+                    status_code = e.response.status_code
+
+                err_lower = err_str.lower()
+                # Categorize error
+                if status_code in (401, 403) or "401" in err_str or "403" in err_str or "unauthorized" in err_lower or "forbidden" in err_lower:
+                    last_status_code = status_code or 401
+                    error_cat = "AUTH_ERROR"
+                    last_error = f"Authentication failed (HTTP {last_status_code}): Invalid or inactive Roboflow API key."
                     logger.error(f"Roboflow 401/403: {last_error}")
                     break
-                elif status_code == 404:
+                elif status_code == 404 or "404" in err_str or "not found" in err_lower:
+                    last_status_code = status_code or 404
+                    error_cat = "MODEL_NOT_FOUND"
                     last_error = f"Model not found (HTTP 404): Check model ID '{model_id}'."
                     logger.error(f"Roboflow 404: {last_error}")
                     break
-                elif status_code == 429:
+                elif status_code == 429 or "429" in err_str or "rate limit" in err_lower or "quota" in err_lower:
+                    last_status_code = status_code or 429
+                    error_cat = "RATE_LIMIT"
                     last_error = "Rate limit / quota exceeded (HTTP 429): Monthly free API credit exhausted."
                     logger.error(f"Roboflow 429: {last_error}")
                     break
+                elif status_code in (408, 504) or isinstance(e, (TimeoutError, ConnectionError)) or "timeout" in err_lower or "timed out" in err_lower or "connection" in err_lower:
+                    last_status_code = status_code or 504
+                    error_cat = "NETWORK_TIMEOUT"
+                    last_error = f"Network timeout connecting to Roboflow serverless gateway: {err_str}"
+                    logger.warning(f"Roboflow timeout attempt {attempt + 1}: {err_str}")
+                    if attempt < max_retries - 1:
+                        time.sleep(1.0)
                 else:
+                    last_status_code = status_code or 500
+                    error_cat = "UNKNOWN"
                     last_error = f"Inference request error: {err_str}"
                     logger.warning(f"Roboflow request attempt {attempt + 1} failed: {err_str}")
                     if attempt < max_retries - 1:
@@ -255,10 +365,21 @@ class RoboflowHostedAdapter:
         elapsed_ms = (time.time() - t0) * 1000.0
 
         if raw_res is None:
+            log_roboflow_diagnostic(
+                model_id=model_id,
+                response_status=last_status_code or 500,
+                latency_ms=elapsed_ms,
+                prediction_count=0,
+                success=False,
+                cached=False,
+                error_category=error_cat,
+                error_message=last_error
+            )
             return {
                 "provider": "roboflow",
                 "status": "ERROR",
                 "error": last_error or "Unknown error calling Roboflow API",
+                "errorCategory": error_cat,
                 "modelId": model_id,
                 "architecture": architecture,
                 "task": task,
@@ -271,7 +392,7 @@ class RoboflowHostedAdapter:
             }
 
         # 4. Save to cache
-        if use_cache:
+        if use_cache and cache_enabled:
             self._cache[cache_key] = {
                 "raw_response": raw_res,
                 "latency_ms": round(elapsed_ms, 2),
@@ -279,7 +400,18 @@ class RoboflowHostedAdapter:
             }
             self._save_cache()
 
-        # 5. Normalize results
+        # 5. Log success telemetry
+        raw_preds = raw_res.get("predictions", [])
+        log_roboflow_diagnostic(
+            model_id=model_id,
+            response_status=200,
+            latency_ms=elapsed_ms,
+            prediction_count=len(raw_preds),
+            success=True,
+            cached=False
+        )
+
+        # 6. Normalize results
         return self._normalize_predictions(
             raw_response=raw_res,
             image_path=image_path,

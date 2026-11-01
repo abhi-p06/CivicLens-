@@ -28,8 +28,24 @@ from app.models.issue import (
     ResolutionStatus,
     ResolutionEvidence,
     HotspotInfo,
-    RecurrenceInfo
+    RecurrenceInfo,
+    TaskAssignRequest,
+    ScheduleRequest,
+    ActionRequest,
+    CompleteRequest,
+    ReopenRequest,
+    FeedbackRequest
 )
+from app.models.field_guidance import (
+    FieldGuidanceResult,
+    GuidanceDecisionRequest,
+    AdminSourceUpdateRequest,
+    AdminDocumentUpdateRequest,
+    AdminIngestRequest
+)
+from app.services.guidance.knowledge_base import GuidanceKnowledgeBase
+from app.services.guidance.scraper import DocumentScraper
+from app.services.guidance.registry import validate_source_url
 from app.core.demo_store import demo_store
 from app.core.pipeline import pipeline
 from app.modules.lifecycle.tracker import lifecycle_tracker
@@ -598,6 +614,216 @@ def update_issue_status(
     updated = demo_store.update_status(issue_id, target_status, note=payload.note, actor=current_user.user_id)
     return updated
 
+# -----------------------------------------------------------------------------
+# Lightweight Ward Operations Management Endpoints
+# -----------------------------------------------------------------------------
+
+@router.get("/operations/kpis")
+def get_operations_kpis() -> Dict[str, Any]:
+    """
+    Returns actual database-driven operational KPIs:
+    - Unassigned complaints
+    - High-priority complaints
+    - Work in progress
+    - Complaints resolved this month
+    - Road vs sanitation workload
+    - Ward-level complaint distribution
+    """
+    return demo_store.get_operations_kpis()
+
+@router.post("/issues/{issue_id}/assign", response_model=Issue)
+def assign_issue_task(
+    issue_id: str,
+    payload: TaskAssignRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Assigns task to a predefined field team with scheduled date and instructions.
+    Persists assignment in database and appends to issue activity timeline.
+    """
+    updated = demo_store.assign_task(
+        issue_id=issue_id,
+        assignment_data=payload.model_dump(),
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/schedule", response_model=Issue)
+def schedule_issue_task(
+    issue_id: str,
+    payload: ScheduleRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Schedules an inspection or repair work date for an issue.
+    """
+    updated = demo_store.schedule_task(
+        issue_id=issue_id,
+        scheduled_date=payload.scheduled_date,
+        schedule_type=payload.schedule_type,
+        instructions=payload.instructions,
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/action", response_model=Issue)
+def record_issue_action(
+    issue_id: str,
+    payload: ActionRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Records issue-specific actions:
+    - Roads: temporary safety measures, inspection completed, work progress
+    - Sanitation: waste collection scheduled, repeat collection, cleanup progress
+    """
+    updated = demo_store.record_action(
+        issue_id=issue_id,
+        action_type=payload.action_type,
+        action_data=payload.model_dump(),
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/complete", response_model=Issue)
+def complete_issue_task(
+    issue_id: str,
+    payload: CompleteRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Completes and closes an issue. Strictly requires a completion note and closure reason.
+    """
+    if not payload.completion_note or not payload.completion_note.strip():
+        raise HTTPException(status_code=400, detail="Completion note is strictly required to close a complaint.")
+    
+    updated = demo_store.complete_task(
+        issue_id=issue_id,
+        completion_note=payload.completion_note,
+        closure_reason=payload.closure_reason,
+        completion_photo_url=payload.completion_photo_url,
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/reopen", response_model=Issue)
+def reopen_issue_task(
+    issue_id: str,
+    payload: ReopenRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Reopens a complaint when defect persists or recurs.
+    """
+    if not payload.reason or not payload.reason.strip():
+        raise HTTPException(status_code=400, detail="Reopen reason is required.")
+        
+    updated = demo_store.reopen_task(
+        issue_id=issue_id,
+        reason=payload.reason,
+        note=payload.note,
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/feedback", response_model=Issue)
+def submit_citizen_feedback(
+    issue_id: str,
+    payload: FeedbackRequest,
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
+) -> Issue:
+    """
+    Citizen confirms resolution or reports issue remains unresolved (triggers reopen).
+    """
+    citizen_name = current_user.name if current_user else "Citizen"
+    try:
+        updated = demo_store.record_feedback(
+            issue_id=issue_id,
+            feedback=payload.feedback,
+            note=payload.note,
+            citizen_name=citizen_name
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+        
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+# -----------------------------------------------------------------------------
+# Teams & Ward Configurations
+# -----------------------------------------------------------------------------
+
+@router.get("/teams")
+def list_field_teams(category: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Returns list of municipal field teams and availability status."""
+    return demo_store.list_teams(category=category)
+
+@router.post("/admin/teams")
+def create_field_team(
+    payload: Dict[str, Any],
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Creates a new operational field team."""
+    if not payload.get("name") or not str(payload["name"]).strip():
+        raise HTTPException(status_code=400, detail="Team name is required.")
+    return demo_store.create_team(payload)
+
+@router.patch("/admin/teams/{team_id}")
+def update_field_team(
+    team_id: str,
+    payload: Dict[str, Any],
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Updates team details or availability status (AVAILABLE, BUSY, OFF_DUTY)."""
+    updated = demo_store.update_team(team_id, payload)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Team {team_id} not found")
+    return updated
+
+@router.delete("/admin/teams/{team_id}")
+def delete_field_team(
+    team_id: str,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, str]:
+    """Admin: Deletes a field team."""
+    success = demo_store.delete_team(team_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Team {team_id} not found")
+    return {"status": "success", "message": f"Team {team_id} removed"}
+
+@router.get("/admin/wards")
+def list_ward_configurations() -> List[Dict[str, Any]]:
+    """Returns list of configured municipal wards and lead officers."""
+    return demo_store.list_wards()
+
+@router.patch("/admin/wards/{ward_code}")
+def update_ward_configuration(
+    ward_code: str,
+    payload: Dict[str, Any],
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Updates designated lead officer and assigned active teams for a ward."""
+    updated = demo_store.update_ward(ward_code, payload)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Ward {ward_code} not found")
+    return updated
+
 @router.post("/issues/{issue_id}/verify", response_model=Issue)
 def verify_issue_resolution(
     issue_id: str,
@@ -972,3 +1198,211 @@ def reset_demo_data(
     demo_store.reset_demo()
     department_dispatcher.reset_to_defaults()
     return {"message": "Demo data successfully reset to baseline seed state."}
+
+# ==============================================================================
+# AI Field Guidance & Official Government Research Endpoints
+# ==============================================================================
+
+@router.get("/issues/{issue_id}/guidance", response_model=FieldGuidanceResult)
+def get_issue_guidance(
+    issue_id: str,
+    force_regenerate: bool = Query(False),
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> FieldGuidanceResult:
+    """
+    Retrieves or generates context-aware, grounded field guidance for a civic issue.
+    Enforces inspector / municipal officer authentication.
+    """
+    guidance = demo_store.get_or_generate_field_guidance(issue_id, force_regenerate=force_regenerate)
+    if not guidance:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return guidance
+
+@router.post("/issues/{issue_id}/guidance/regenerate", response_model=FieldGuidanceResult)
+def regenerate_issue_guidance(
+    issue_id: str,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> FieldGuidanceResult:
+    """
+    Forces fresh re-synthesis of field guidance against latest official knowledge base.
+    """
+    guidance = demo_store.get_or_generate_field_guidance(issue_id, force_regenerate=True)
+    if not guidance:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return guidance
+
+@router.post("/issues/{issue_id}/guidance/decision", response_model=FieldGuidanceResult)
+def record_guidance_decision(
+    issue_id: str,
+    payload: GuidanceDecisionRequest,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> FieldGuidanceResult:
+    """
+    Records officer decision (ACCEPTED, EDITED, DISMISSED) for a specific guidance item.
+    When accepted or edited, appends text to task instructions and adds a timeline event.
+    Never automatically assigns teams, orders materials, or closes issues.
+    """
+    guidance = demo_store.record_guidance_decision(
+        issue_id=issue_id,
+        item_id=payload.item_id,
+        decision=payload.decision,
+        edited_text=payload.edited_text,
+        reason=payload.reason,
+        actor=getattr(current_user, "name", None) or "Abhinay",
+        role=current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+    )
+    if not guidance:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return guidance
+
+@router.get("/guidance/documents/{doc_id}", response_model=Dict[str, Any])
+def get_guidance_document(
+    doc_id: str,
+    current_user: AuthenticatedUser = Depends(get_current_user)
+) -> Dict[str, Any]:
+    """
+    Returns full details, metadata, and sections for a specific official guidance document.
+    """
+    kb = GuidanceKnowledgeBase()
+    doc = kb.get_document(doc_id)
+    if not doc:
+        raise HTTPException(status_code=404, detail=f"Guidance document {doc_id} not found")
+    return doc
+
+# ------------------------------------------------------------------------------
+# Admin Source & Document Management Endpoints
+# ------------------------------------------------------------------------------
+
+@router.get("/admin/guidance/sources", response_model=List[Dict[str, Any]])
+def list_admin_guidance_sources(
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> List[Dict[str, Any]]:
+    """
+    Admin: Lists all registered official government guidance sources.
+    """
+    kb = GuidanceKnowledgeBase()
+    return kb.list_sources()
+
+@router.patch("/admin/guidance/sources/{source_id}", response_model=Dict[str, Any])
+def update_admin_guidance_source(
+    source_id: str,
+    payload: AdminSourceUpdateRequest,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """
+    Admin: Updates source category or active status.
+    """
+    kb = GuidanceKnowledgeBase()
+    updates = payload.model_dump(exclude_unset=True)
+    res = kb.update_source(source_id, updates)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Source {source_id} not found")
+    return res
+
+@router.get("/admin/guidance/documents", response_model=List[Dict[str, Any]])
+def list_admin_guidance_documents(
+    category: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> List[Dict[str, Any]]:
+    """
+    Admin: Lists all ingested documents in the knowledge base.
+    """
+    kb = GuidanceKnowledgeBase()
+    return kb.list_documents(category=category, status=status)
+
+@router.patch("/admin/guidance/documents/{doc_id}", response_model=Dict[str, Any])
+def update_admin_guidance_document(
+    doc_id: str,
+    payload: AdminDocumentUpdateRequest,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """
+    Admin: Updates document approval status or lifecycle status (CURRENT/DRAFT/SUPERSEDED).
+    """
+    kb = GuidanceKnowledgeBase()
+    updates = payload.model_dump(exclude_unset=True)
+    if "document_status" in updates and hasattr(updates["document_status"], "value"):
+        updates["document_status"] = updates["document_status"].value
+    res = kb.update_document(doc_id, updates)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
+    return res
+
+@router.post("/admin/guidance/ingest", response_model=Dict[str, Any])
+async def ingest_guidance_document(
+    payload: AdminIngestRequest,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """
+    Admin: Scrapes and ingests an official document from an allowlisted government URL.
+    Validates domain against official allowlist, parses HTML/PDF, computes SHA-256 hash,
+    and updates/supersedes the knowledge base.
+    """
+    kb = GuidanceKnowledgeBase()
+    target_url = payload.source_url
+    target_source_id = payload.source_id
+
+    if not target_url and target_source_id:
+        sources = kb.list_sources()
+        matched = next((s for s in sources if s["id"] == target_source_id), None)
+        if not matched:
+            raise HTTPException(status_code=404, detail=f"Source {target_source_id} not found")
+        target_url = matched["base_url"]
+    elif not target_url:
+        raise HTTPException(status_code=400, detail="Either source_url or source_id must be provided")
+
+    is_valid, domain, error = validate_source_url(target_url)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=f"Disallowed or non-government source: {error}")
+
+    scraper = DocumentScraper()
+    scraped = await scraper.fetch_and_parse(target_url)
+
+    if not scraped.get("is_successful"):
+        if target_source_id:
+            kb.update_source(target_source_id, {
+                "last_status": "ERROR",
+                "error_message": scraped.get("error_message")
+            })
+        raise HTTPException(status_code=502, detail=f"Scraping failed: {scraped.get('error_message')}")
+
+    # Determine category and source
+    category = "Roads & Footpaths" if any(k in target_url.lower() or k in domain.lower() for k in ["morth", "road", "pothole"]) else "Sanitation & Garbage"
+    source_org = "Government Department"
+    sources = kb.list_sources()
+    src = next((s for s in sources if s["domain"] == domain or s["id"] == target_source_id), None)
+    if src:
+        source_org = src["name"]
+        category = src.get("category", category)
+
+    ingested = kb.save_ingested_document(
+        doc_data={
+            "source_domain": domain,
+            "source_org": source_org,
+            "title": scraped["title"],
+            "url": target_url,
+            "content_type": scraped.get("content_type", "text/html"),
+            "file_hash": scraped["file_hash"],
+            "raw_text": scraped.get("raw_text", ""),
+            "sections": scraped.get("sections", [])
+        },
+        source_id=src["id"] if src else f"SRC-{domain.upper()}",
+        category=category,
+        version="Live-Ingested"
+    )
+
+    if src:
+        from datetime import datetime, timezone
+        kb.update_source(src["id"], {
+            "last_status": "OK",
+            "error_message": None,
+            "last_retrieved_at": datetime.now(timezone.utc)
+        })
+
+    return {
+        "status": "SUCCESS",
+        "message": f"Successfully ingested document '{scraped['title']}' from {domain}.",
+        "document": ingested
+    }
+

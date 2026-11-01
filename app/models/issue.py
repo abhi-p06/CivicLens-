@@ -24,16 +24,19 @@ class IssueStatus(str, Enum):
     ANALYZED = "ANALYZED"
     PRIORITIZED = "PRIORITIZED"
     ASSIGNED = "ASSIGNED"
+    SCHEDULED = "SCHEDULED"
     ACTION_IN_PROGRESS = "ACTION IN PROGRESS"
     VERIFICATION = "VERIFICATION"
     RESOLVED = "RESOLVED"
+    REOPENED = "REOPENED"
     
     # Backwards compatibility aliases
     REPORTED = "Reported"
     TRIAGED = "Triaged"
     IN_PROGRESS = "In Progress"
     VERIFIED_CLOSED = "Verified Closed"
-    REOPENED = "Reopened"
+    AWAITING_INSPECTION = "AWAITING INSPECTION"
+    AWAITING_CONFIRMATION = "AWAITING CONFIRMATION"
 
 class ConsistencyLevel(str, Enum):
     CONSISTENT = "CONSISTENT"
@@ -170,6 +173,96 @@ class EvidenceConsistencyResult(BaseModel):
     visualEvidence: str
     reason: str
 
+# -----------------------------------------------------------------------------
+# Ward Operations Management Models
+# -----------------------------------------------------------------------------
+
+class TaskAssignment(BaseModel):
+    department: str
+    team_name: str
+    team_id: Optional[str] = None
+    assigned_officer: str = "Abhinay"
+    priority: str = "HIGH"
+    scheduled_date: Optional[str] = None
+    instructions: Optional[str] = None
+    assigned_at: Optional[str] = None
+    assigned_by: Optional[str] = None
+
+class TimelineEvent(BaseModel):
+    id: str
+    event_type: str
+    title: str
+    description: str
+    actor: str
+    role: str = "inspector"
+    timestamp: str
+    evidence_url: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+class TemporaryMeasures(BaseModel):
+    measures: List[str] = Field(default_factory=list)
+    notes: Optional[str] = None
+    recorded_at: str
+    recorded_by: str
+
+class RepeatCollection(BaseModel):
+    is_scheduled: bool = False
+    frequency: str = "Weekly"
+    next_collection_date: Optional[str] = None
+    instructions: Optional[str] = None
+    scheduled_at: Optional[str] = None
+    scheduled_by: Optional[str] = None
+
+class CompletionDetails(BaseModel):
+    completed_at: str
+    completed_by: str
+    completion_note: str
+    completion_photo_url: Optional[str] = None
+    closure_reason: str
+
+class CitizenFeedback(BaseModel):
+    status: str  # "CONFIRMED_RESOLVED" or "REOPEN_REQUESTED"
+    note: Optional[str] = None
+    submitted_at: str
+    citizen_name: str
+
+# Request Schemas
+class TaskAssignRequest(BaseModel):
+    department: str
+    team_name: str
+    team_id: Optional[str] = None
+    assigned_officer: Optional[str] = None
+    priority: Optional[str] = "HIGH"
+    scheduled_date: Optional[str] = None
+    instructions: Optional[str] = None
+
+class ScheduleRequest(BaseModel):
+    scheduled_date: str
+    schedule_type: str = "WORK"  # "INSPECTION" or "WORK"
+    instructions: Optional[str] = None
+
+class ActionRequest(BaseModel):
+    action_type: str
+    measures: Optional[List[str]] = None
+    stage: Optional[str] = None
+    scheduled_date: Optional[str] = None
+    frequency: Optional[str] = None
+    notes: Optional[str] = None
+    photo_url: Optional[str] = None
+
+class CompleteRequest(BaseModel):
+    completion_note: str
+    closure_reason: str = "Work executed to municipal standard"
+    completion_photo_url: Optional[str] = None
+
+class ReopenRequest(BaseModel):
+    reason: str
+    note: Optional[str] = None
+
+class FeedbackRequest(BaseModel):
+    feedback: str  # "CONFIRMED_RESOLVED" or "REOPEN_REQUESTED"
+    note: Optional[str] = None
+
 class Issue(BaseModel):
     issueId: str
     complaintText: str
@@ -231,5 +324,13 @@ class Issue(BaseModel):
     resolutionEvidence: Optional[ResolutionEvidence] = None
     resolutionHistory: List[ResolutionEvidence] = Field(default_factory=list)
     statusHistory: List[Dict[str, Any]] = Field(default_factory=list)
+    
+    # Lightweight Ward Operations Management Fields
+    assignment: Optional[TaskAssignment] = None
+    timeline: List[TimelineEvent] = Field(default_factory=list)
+    temporary_measures: Optional[TemporaryMeasures] = None
+    repeat_collection: Optional[RepeatCollection] = None
+    completion_details: Optional[CompletionDetails] = None
+    citizen_feedback: Optional[CitizenFeedback] = None
     
     metadata: Dict[str, Any] = {}

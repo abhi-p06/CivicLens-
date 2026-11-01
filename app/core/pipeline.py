@@ -268,6 +268,10 @@ class CivicIssueIntelligencePipeline:
             "visionMode": vision_mode,
             "visionModel": vis_model,
             "visionTask": vis_task,
+            "visionComparison": vision_out.get("visionComparison"),
+            "hosted": vision_out.get("hosted"),
+            "visionFallbackTriggered": vision_out.get("fallbackTriggered", False),
+            "visionFallbackReason": vision_out.get("fallbackReason"),
             
             # Feature 18 Output
             "evidenceConsistency": consistency_detail.consistencyScore,
@@ -365,7 +369,11 @@ class CivicIssueIntelligencePipeline:
                 "visionMode": analysis["visionMode"],
                 "isAutoDrafted": analysis["isAutoDrafted"],
                 "departmentCode": analysis["departmentCode"],
-                "uploadId": resolved_upload
+                "uploadId": resolved_upload,
+                "visionComparison": analysis.get("visionComparison"),
+                "hosted": analysis.get("hosted"),
+                "visionFallbackTriggered": analysis.get("visionFallbackTriggered", False),
+                "visionFallbackReason": analysis.get("visionFallbackReason")
             }
         )
 

@@ -125,7 +125,8 @@ class TestRoboflowIntegration:
         with patch.object(adapter, "_get_client", return_value=mock_client):
             res = adapter.infer(test_image_path, category_hint="Roads & Footpaths", use_cache=False)
             assert res["status"] == "ERROR"
-            assert "Inference request error" in res["error"]
+            assert ("Inference request error" in res["error"]) or ("Network timeout" in res["error"])
+            assert res.get("errorCategory") == "NETWORK_TIMEOUT"
             assert len(res["detectedObjects"]) == 0
             # Ensure fake boxes are never produced
             assert res["visualDetection"] is None
@@ -267,4 +268,55 @@ class TestRoboflowIntegration:
             for obj in local_objs:
                 assert obj.source_model in ["YOLOv8s RDD2022", "yolov8s_rdd2022.pt"]
                 assert obj.execution_mode == "real_yolo_inference"
+
+    def test_hosted_fallback_auth_error_no_mislabeling(self, test_image_path):
+        """Verify that simulated 401 AUTH_ERROR logs category, triggers fallback, and never mislabels local YOLO."""
+        from app.core.pipeline import pipeline
+        from app.models.issue import IssueCreate
+
+        with patch.object(settings, "civilens_vision_provider", "hosted"):
+            mock_401 = {
+                "provider": "roboflow",
+                "status": "ERROR",
+                "error": "Authentication failed (HTTP 401): Invalid or inactive Roboflow API key.",
+                "errorCategory": "AUTH_ERROR",
+                "modelId": "potholes-krmk8/2",
+                "architecture": "YOLO26",
+                "task": "ROAD_DAMAGE",
+                "detectedObjects": [],
+                "visualDetection": None,
+                "visualConfidence": 0.0,
+                "inferenceTimeMs": 150.0,
+                "cached": False
+            }
+            with patch.object(vision_manager.roboflow_adapter, "infer", return_value=mock_401):
+                res = vision_manager.detect(test_image_path, category_hint="Roads & Footpaths", enable_comparison=False)
+                assert res.get("fallbackTriggered") is True
+                assert res.get("hostedErrorCategory") == "AUTH_ERROR"
+                assert "Authentication failed" in res.get("fallbackReason", "")
+                # Must be local YOLO, NEVER mislabeled as Roboflow
+                assert res["visionExecutionMode"] == "real_yolo_inference"
+                assert res["sourceModel"] in ["YOLOv8s RDD2022", "yolov8s_rdd2022.pt"]
+
+    def test_complaint_pipeline_stores_comparison_in_metadata(self):
+        """Verify real complaint pipeline stores separate comparison outputs in issue.metadata."""
+        from app.core.pipeline import pipeline
+        from app.models.issue import IssueCreate
+
+        with patch.object(settings, "civilens_vision_provider", "compare"):
+            payload = IssueCreate(
+                complaintText="Severe crater pothole causing vehicle alignment damage on LBS Marg",
+                location="LBS Marg, Kurla West, Mumbai",
+                latitude=19.0700,
+                longitude=72.8800,
+                imageUrl="data/test_samples/repair_pothole_before.jpg",
+                category="Roads & Footpaths"
+            )
+            issue = pipeline.process_complaint(payload)
+            assert issue.issueId.startswith("CIVIC-")
+            assert "visionComparison" in issue.metadata
+            assert "hosted" in issue.metadata
+            assert issue.metadata["visionComparison"]["mode"] == "compare"
+            # Baseline remains local YOLO
+            assert issue.visionMode in ["real_yolo_inference", "deterministic_demo_fallback"]
 
