@@ -34,8 +34,23 @@ from app.db.models import (
     VerificationHistoryRecord,
     UserRecord,
     TeamRecord,
-    WardConfigRecord
+    WardConfigRecord,
+    MunicipalAuthorityRecord,
+    AdminZoneRecord,
+    AdminWardRecord,
+    SubWardRecord,
+    LocalityBeatRecord,
+    OfficerJurisdictionRecord,
+    JurisdictionAuditLogRecord
 )
+from app.modules.gis.hierarchy_data import (
+    MUNICIPAL_AUTHORITIES,
+    ADMINISTRATIVE_ZONES,
+    ADMINISTRATIVE_WARDS,
+    CIVILENS_OPERATIONAL_SUB_WARDS,
+    LOCALITY_BEATS
+)
+from app.modules.gis.hierarchy_spatial import resolve_coordinates_hierarchy, check_ward_mismatch
 from app.models.field_guidance import FieldGuidanceResult, OfficerDecisionType
 from app.services.guidance.guidance_engine import GuidanceEngine
 
@@ -160,7 +175,30 @@ DEFAULT_WARDS = [
     },
 ]
 
+def _ensure_hierarchy(issue: Issue) -> Issue:
+    if not getattr(issue, "sub_ward_id", None) or not getattr(issue, "routing_path", None):
+        res = resolve_coordinates_hierarchy(issue.latitude, issue.longitude)
+        if res.get("is_valid"):
+            issue.authority_id = res.get("authority_id", "AUTH-BMC")
+            issue.authority_code = res.get("authority_code", "BMC")
+            issue.authority_name = res.get("authority_name", "Brihanmumbai Municipal Corporation")
+            issue.zone_id = res.get("zone_id")
+            issue.zone_name = res.get("zone_name")
+            issue.ward_id = res.get("ward_id")
+            if not issue.ward or issue.ward in ("None", "ALL", "HQ-Ward"):
+                issue.ward = res.get("ward_code", "N-Ward")
+            issue.sub_ward_id = res.get("sub_ward_id")
+            issue.sub_ward_name = res.get("sub_ward_name")
+            issue.locality_id = res.get("locality_id")
+            issue.locality_name = res.get("locality_name")
+            if not getattr(issue, "routing_path", None):
+                dept_name = "Road Infrastructure Maintenance" if "Road" in str(issue.category) else "Solid Waste Management"
+                crew_name = "Quick Patch Asphalt Squad (Ward N)" if "Road" in str(issue.category) else "Solid Waste Rapid Response (Ward N)"
+                issue.routing_path = f"{issue.authority_code} → {issue.ward} → {issue.sub_ward_name} → {issue.locality_name or issue.location} → {dept_name} → {res.get('supervisor_name', 'Area Supervisor')} → {crew_name}"
+    return issue
+
 def _ensure_timeline(issue: Issue) -> Issue:
+    _ensure_hierarchy(issue)
     if not issue.timeline:
         initial_event = TimelineEvent(
             id=f"evt-{issue.issueId[:8]}",
@@ -556,6 +594,20 @@ class SqliteIssueRepository:
             sla_hours=int(issue.slaHours),
             citizen_id=getattr(issue, "citizen_id", None),
             status=stat_val,
+            authority_id=getattr(issue, "authority_id", "AUTH-BMC"),
+            authority_code=getattr(issue, "authority_code", "BMC"),
+            authority_name=getattr(issue, "authority_name", "Brihanmumbai Municipal Corporation"),
+            zone_id=getattr(issue, "zone_id", None),
+            zone_name=getattr(issue, "zone_name", None),
+            ward_id=getattr(issue, "ward_id", None),
+            sub_ward_id=getattr(issue, "sub_ward_id", None),
+            sub_ward_name=getattr(issue, "sub_ward_name", None),
+            locality_id=getattr(issue, "locality_id", None),
+            locality_name=getattr(issue, "locality_name", None),
+            routing_path=getattr(issue, "routing_path", None),
+            jurisdiction_verified=bool(getattr(issue, "jurisdiction_verified", True)),
+            jurisdiction_review_required=bool(getattr(issue, "jurisdiction_review_required", False)),
+            jurisdiction_review_reason=getattr(issue, "jurisdiction_review_reason", None),
             data_json=issue.model_dump_json()
         )
 
@@ -593,6 +645,20 @@ class SqliteIssueRepository:
         record.sla_hours = int(issue.slaHours)
         record.citizen_id = getattr(issue, "citizen_id", None)
         record.status = stat_val
+        record.authority_id = getattr(issue, "authority_id", record.authority_id)
+        record.authority_code = getattr(issue, "authority_code", record.authority_code)
+        record.authority_name = getattr(issue, "authority_name", record.authority_name)
+        record.zone_id = getattr(issue, "zone_id", record.zone_id)
+        record.zone_name = getattr(issue, "zone_name", record.zone_name)
+        record.ward_id = getattr(issue, "ward_id", record.ward_id)
+        record.sub_ward_id = getattr(issue, "sub_ward_id", record.sub_ward_id)
+        record.sub_ward_name = getattr(issue, "sub_ward_name", record.sub_ward_name)
+        record.locality_id = getattr(issue, "locality_id", record.locality_id)
+        record.locality_name = getattr(issue, "locality_name", record.locality_name)
+        record.routing_path = getattr(issue, "routing_path", record.routing_path)
+        record.jurisdiction_verified = bool(getattr(issue, "jurisdiction_verified", True))
+        record.jurisdiction_review_required = bool(getattr(issue, "jurisdiction_review_required", False))
+        record.jurisdiction_review_reason = getattr(issue, "jurisdiction_review_reason", record.jurisdiction_review_reason)
         record.data_json = issue.model_dump_json()
 
     def record_verification(self, issue_id: str, evidence: ResolutionEvidence) -> Issue:
@@ -853,6 +919,8 @@ class SqliteIssueRepository:
                     )
                     session.add(rec)
                 logger.info(f"Seeded {len(DEFAULT_WARDS)} default ward configurations.")
+
+        self.seed_hierarchy_if_empty()
 
     def list_teams(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         self.seed_default_teams_and_wards_if_empty()
@@ -1636,6 +1704,798 @@ class SqliteIssueRepository:
         issue.metadata["field_guidance"] = guidance.model_dump()
         self.update_issue(issue)
         return guidance
+
+    # --------------------------------------------------------------------------
+    # Hierarchical Ward Management, Sub-Ward Routing & Crew Allocation
+    # --------------------------------------------------------------------------
+
+    def seed_hierarchy_if_empty(self) -> None:
+        init_db(self._session_factory().get_bind())
+        with self._get_session() as session:
+            auth_count = session.scalar(select(func.count()).select_from(MunicipalAuthorityRecord)) or 0
+            if auth_count == 0:
+                for a in MUNICIPAL_AUTHORITIES:
+                    rec = MunicipalAuthorityRecord(
+                        id=a["id"],
+                        code=a["code"],
+                        name=a["name"],
+                        short_name=a.get("short_name"),
+                        city=a["city"],
+                        headquarters=a.get("headquarters"),
+                        is_active=a.get("is_active", True),
+                        boundary_geojson=json.dumps(a.get("boundary_geojson")) if a.get("boundary_geojson") else None
+                    )
+                    session.add(rec)
+                logger.info(f"Seeded {len(MUNICIPAL_AUTHORITIES)} municipal authorities (BMC & NMMC).")
+
+            zone_count = session.scalar(select(func.count()).select_from(AdminZoneRecord)) or 0
+            if zone_count == 0:
+                for z in ADMINISTRATIVE_ZONES:
+                    rec = AdminZoneRecord(
+                        id=z["id"],
+                        authority_id=z["authority_id"],
+                        code=z["code"],
+                        name=z["name"],
+                        zonal_officer=z.get("zonal_officer"),
+                        is_active=z.get("is_active", True),
+                        boundary_geojson=json.dumps(z.get("boundary_geojson")) if z.get("boundary_geojson") else None
+                    )
+                    session.add(rec)
+                logger.info(f"Seeded {len(ADMINISTRATIVE_ZONES)} administrative zones.")
+
+            ward_count = session.scalar(select(func.count()).select_from(AdminWardRecord)) or 0
+            if ward_count == 0:
+                for w in ADMINISTRATIVE_WARDS:
+                    rec = AdminWardRecord(
+                        id=w["id"],
+                        authority_id=w["authority_id"],
+                        zone_id=w.get("zone_id"),
+                        ward_code=w["ward_code"],
+                        ward_name=w["ward_name"],
+                        office_address=w.get("office_address"),
+                        lead_officer=w.get("lead_officer", "Abhinay"),
+                        is_active=w.get("is_active", True),
+                        boundary_geojson=json.dumps(w.get("boundary_geojson")) if w.get("boundary_geojson") else None
+                    )
+                    session.add(rec)
+                logger.info(f"Seeded {len(ADMINISTRATIVE_WARDS)} administrative wards.")
+
+            sub_count = session.scalar(select(func.count()).select_from(SubWardRecord)) or 0
+            if sub_count == 0:
+                for s in CIVILENS_OPERATIONAL_SUB_WARDS:
+                    rec = SubWardRecord(
+                        id=s["id"],
+                        ward_id=s["ward_id"],
+                        authority_id=s["authority_id"],
+                        sub_ward_code=s["sub_ward_code"],
+                        name=s["name"],
+                        is_official=False,
+                        operational_type="CIVILENS_OPERATIONAL_SUB_WARD",
+                        supervisor_name=s.get("supervisor_name", "Area Supervisor"),
+                        default_road_team_id=s.get("default_road_team_id"),
+                        default_swm_team_id=s.get("default_swm_team_id"),
+                        is_active=s.get("is_active", True),
+                        boundary_geojson=json.dumps(s.get("boundary_geojson")) if s.get("boundary_geojson") else None
+                    )
+                    session.add(rec)
+                logger.info(f"Seeded {len(CIVILENS_OPERATIONAL_SUB_WARDS)} CIVILENS operational sub-wards.")
+
+            loc_count = session.scalar(select(func.count()).select_from(LocalityBeatRecord)) or 0
+            if loc_count == 0:
+                for l in LOCALITY_BEATS:
+                    rec = LocalityBeatRecord(
+                        id=l["id"],
+                        sub_ward_id=l["sub_ward_id"],
+                        ward_id=l["ward_id"],
+                        authority_id=l.get("authority_id", "AUTH-BMC"),
+                        name=l["name"],
+                        landmark=l.get("landmark"),
+                        latitude=l["latitude"],
+                        longitude=l["longitude"],
+                        radius_meters=l.get("radius_meters", 500.0),
+                        is_active=l.get("is_active", True)
+                    )
+                    session.add(rec)
+                logger.info(f"Seeded {len(LOCALITY_BEATS)} operational locality beats.")
+
+            # Assign default officer jurisdiction: Inspector Abhinay assigned to N-Ward
+            oj_count = session.scalar(select(func.count()).select_from(OfficerJurisdictionRecord)) or 0
+            if oj_count == 0:
+                oj = OfficerJurisdictionRecord(
+                    id="OJ-INSP-01",
+                    user_id="INSP-MUMBAI-01",
+                    authority_id="AUTH-BMC",
+                    ward_code="N-Ward",
+                    sub_ward_id="SUB-BMC-N-01",
+                    jurisdiction_level="WARD_OFFICER"
+                )
+                session.add(oj)
+
+            # Update teams with authority_id and default sub_ward_id if missing
+            team_recs = session.scalars(select(TeamRecord)).all()
+            for tr in team_recs:
+                if not tr.authority_id:
+                    tr.authority_id = "AUTH-NMMC" if "NMMC" in (tr.ward or "") else "AUTH-BMC"
+                if not tr.sub_ward_id:
+                    if tr.ward == "N-Ward":
+                        tr.sub_ward_id = "SUB-BMC-N-01"
+                    elif tr.ward == "L-Ward":
+                        tr.sub_ward_id = "SUB-BMC-L-01"
+                    elif tr.ward == "G/North":
+                        tr.sub_ward_id = "SUB-BMC-GN-01"
+                    elif tr.ward == "K/West":
+                        tr.sub_ward_id = "SUB-BMC-HW-01"
+                    elif "Vashi" in (tr.ward or ""):
+                        tr.sub_ward_id = "SUB-NMMC-V-01"
+
+    def list_authorities(self) -> List[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(MunicipalAuthorityRecord).where(MunicipalAuthorityRecord.is_active.is_(True)).order_by(MunicipalAuthorityRecord.name)
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "code": r.code,
+                    "name": r.name,
+                    "short_name": r.short_name,
+                    "city": r.city,
+                    "headquarters": r.headquarters,
+                    "boundary_geojson": json.loads(r.boundary_geojson) if r.boundary_geojson else None
+                }
+                for r in records
+            ]
+
+    def list_admin_wards(self, authority_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(AdminWardRecord).where(AdminWardRecord.is_active.is_(True))
+            if authority_id:
+                stmt = stmt.where(AdminWardRecord.authority_id == authority_id)
+            stmt = stmt.order_by(AdminWardRecord.ward_code)
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "authority_id": r.authority_id,
+                    "zone_id": r.zone_id,
+                    "ward_code": r.ward_code,
+                    "ward_name": r.ward_name,
+                    "office_address": r.office_address,
+                    "lead_officer": r.lead_officer,
+                    "boundary_geojson": json.loads(r.boundary_geojson) if r.boundary_geojson else None
+                }
+                for r in records
+            ]
+
+    def list_sub_wards(self, ward_code: Optional[str] = None, ward_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(SubWardRecord).where(SubWardRecord.is_active.is_(True))
+            if ward_id:
+                stmt = stmt.where(SubWardRecord.ward_id == ward_id)
+            elif ward_code:
+                # Find ward_id from ward_code
+                w = session.scalar(select(AdminWardRecord).where(AdminWardRecord.ward_code == ward_code))
+                if w:
+                    stmt = stmt.where(SubWardRecord.ward_id == w.id)
+            stmt = stmt.order_by(SubWardRecord.sub_ward_code)
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "ward_id": r.ward_id,
+                    "authority_id": r.authority_id,
+                    "sub_ward_code": r.sub_ward_code,
+                    "name": r.name,
+                    "is_official": r.is_official,
+                    "operational_type": r.operational_type,
+                    "supervisor_name": r.supervisor_name,
+                    "default_road_team_id": r.default_road_team_id,
+                    "default_swm_team_id": r.default_swm_team_id,
+                    "boundary_geojson": json.loads(r.boundary_geojson) if r.boundary_geojson else None
+                }
+                for r in records
+            ]
+
+    def get_sub_ward(self, sub_ward_id: str) -> Optional[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == sub_ward_id))
+            if not rec:
+                return None
+            return {
+                "id": rec.id,
+                "ward_id": rec.ward_id,
+                "authority_id": rec.authority_id,
+                "sub_ward_code": rec.sub_ward_code,
+                "name": rec.name,
+                "is_official": rec.is_official,
+                "operational_type": rec.operational_type,
+                "supervisor_name": rec.supervisor_name,
+                "default_road_team_id": rec.default_road_team_id,
+                "default_swm_team_id": rec.default_swm_team_id,
+                "is_active": rec.is_active,
+                "boundary_geojson": json.loads(rec.boundary_geojson) if rec.boundary_geojson else None
+            }
+
+    def create_sub_ward(self, sub_ward_data: Dict[str, Any]) -> Dict[str, Any]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            ward_id = sub_ward_data.get("ward_id")
+            ward_rec = session.scalar(select(AdminWardRecord).where(AdminWardRecord.id == ward_id))
+            authority_id = ward_rec.authority_id if ward_rec else "AUTH-BMC"
+
+            sub_id = sub_ward_data.get("id") or f"SUB-{uuid.uuid4().hex[:8].upper()}"
+            sub_code = sub_ward_data.get("sub_ward_code") or f"SW-{uuid.uuid4().hex[:4].upper()}"
+            name = sub_ward_data.get("name") or f"CIVILENS Operational Sub-Ward {sub_code}"
+
+            rec = SubWardRecord(
+                id=sub_id,
+                ward_id=ward_id,
+                authority_id=authority_id,
+                sub_ward_code=sub_code,
+                name=name,
+                is_official=False,  # Enforce non-official flag
+                operational_type="CIVILENS_OPERATIONAL_SUB_WARD",
+                supervisor_name=sub_ward_data.get("supervisor_name", "Area Supervisor"),
+                default_road_team_id=sub_ward_data.get("default_road_team_id"),
+                default_swm_team_id=sub_ward_data.get("default_swm_team_id"),
+                is_active=True,
+                boundary_geojson=json.dumps(sub_ward_data.get("boundary_geojson")) if sub_ward_data.get("boundary_geojson") else None
+            )
+            session.add(rec)
+            return {
+                "id": rec.id,
+                "ward_id": rec.ward_id,
+                "authority_id": rec.authority_id,
+                "sub_ward_code": rec.sub_ward_code,
+                "name": rec.name,
+                "is_official": False,
+                "operational_type": rec.operational_type,
+                "supervisor_name": rec.supervisor_name,
+                "default_road_team_id": rec.default_road_team_id,
+                "default_swm_team_id": rec.default_swm_team_id,
+                "is_active": True,
+                "boundary_geojson": sub_ward_data.get("boundary_geojson")
+            }
+
+    def update_sub_ward(self, sub_ward_id: str, sub_ward_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == sub_ward_id))
+            if not rec:
+                return None
+            if "name" in sub_ward_data and sub_ward_data["name"] is not None:
+                rec.name = sub_ward_data["name"]
+            if "supervisor_name" in sub_ward_data and sub_ward_data["supervisor_name"] is not None:
+                rec.supervisor_name = sub_ward_data["supervisor_name"]
+            if "default_road_team_id" in sub_ward_data:
+                rec.default_road_team_id = sub_ward_data["default_road_team_id"]
+            if "default_swm_team_id" in sub_ward_data:
+                rec.default_swm_team_id = sub_ward_data["default_swm_team_id"]
+            if "is_active" in sub_ward_data and sub_ward_data["is_active"] is not None:
+                rec.is_active = sub_ward_data["is_active"]
+            if "boundary_geojson" in sub_ward_data and sub_ward_data["boundary_geojson"] is not None:
+                rec.boundary_geojson = json.dumps(sub_ward_data["boundary_geojson"])
+
+            return {
+                "id": rec.id,
+                "ward_id": rec.ward_id,
+                "authority_id": rec.authority_id,
+                "sub_ward_code": rec.sub_ward_code,
+                "name": rec.name,
+                "is_official": rec.is_official,
+                "operational_type": rec.operational_type,
+                "supervisor_name": rec.supervisor_name,
+                "default_road_team_id": rec.default_road_team_id,
+                "default_swm_team_id": rec.default_swm_team_id,
+                "is_active": rec.is_active,
+                "boundary_geojson": json.loads(rec.boundary_geojson) if rec.boundary_geojson else None
+            }
+
+    def delete_sub_ward(self, sub_ward_id: str) -> bool:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == sub_ward_id))
+            if not rec:
+                return False
+            rec.is_active = False
+            return True
+
+    def list_localities(self, sub_ward_id: Optional[str] = None, ward_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(LocalityBeatRecord).where(LocalityBeatRecord.is_active.is_(True))
+            if sub_ward_id:
+                stmt = stmt.where(LocalityBeatRecord.sub_ward_id == sub_ward_id)
+            if ward_id:
+                stmt = stmt.where(LocalityBeatRecord.ward_id == ward_id)
+            stmt = stmt.order_by(LocalityBeatRecord.name)
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "sub_ward_id": r.sub_ward_id,
+                    "ward_id": r.ward_id,
+                    "authority_id": r.authority_id,
+                    "name": r.name,
+                    "landmark": r.landmark,
+                    "latitude": r.latitude,
+                    "longitude": r.longitude,
+                    "radius_meters": r.radius_meters,
+                    "is_active": r.is_active
+                }
+                for r in records
+            ]
+
+    def create_locality(self, locality_data: Dict[str, Any]) -> Dict[str, Any]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            sub_id = locality_data.get("sub_ward_id")
+            sub_rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == sub_id))
+            ward_id = sub_rec.ward_id if sub_rec else "WARD-BMC-N"
+            authority_id = sub_rec.authority_id if sub_rec else "AUTH-BMC"
+
+            loc_id = locality_data.get("id") or f"LOC-{uuid.uuid4().hex[:8].upper()}"
+            rec = LocalityBeatRecord(
+                id=loc_id,
+                sub_ward_id=sub_id,
+                ward_id=ward_id,
+                authority_id=authority_id,
+                name=locality_data["name"],
+                landmark=locality_data.get("landmark"),
+                latitude=float(locality_data["latitude"]),
+                longitude=float(locality_data["longitude"]),
+                radius_meters=float(locality_data.get("radius_meters", 500.0)),
+                is_active=True
+            )
+            session.add(rec)
+            return {
+                "id": rec.id,
+                "sub_ward_id": rec.sub_ward_id,
+                "ward_id": rec.ward_id,
+                "authority_id": rec.authority_id,
+                "name": rec.name,
+                "landmark": rec.landmark,
+                "latitude": rec.latitude,
+                "longitude": rec.longitude,
+                "radius_meters": rec.radius_meters,
+                "is_active": True
+            }
+
+    def get_officer_jurisdiction(self, user_id: str) -> Optional[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(OfficerJurisdictionRecord).where(OfficerJurisdictionRecord.user_id == user_id)
+            rec = session.scalar(stmt)
+            if not rec:
+                return None
+            return {
+                "id": rec.id,
+                "user_id": rec.user_id,
+                "authority_id": rec.authority_id,
+                "ward_code": rec.ward_code,
+                "sub_ward_id": rec.sub_ward_id,
+                "jurisdiction_level": rec.jurisdiction_level
+            }
+
+    def assign_officer_jurisdiction(
+        self,
+        user_id: str,
+        ward_code: str,
+        sub_ward_id: Optional[str] = None,
+        authority_id: str = "AUTH-BMC",
+        jurisdiction_level: str = "WARD_OFFICER"
+    ) -> Dict[str, Any]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(OfficerJurisdictionRecord).where(OfficerJurisdictionRecord.user_id == user_id)
+            rec = session.scalar(stmt)
+            if not rec:
+                rec = OfficerJurisdictionRecord(
+                    id=f"OJ-{uuid.uuid4().hex[:6].upper()}",
+                    user_id=user_id,
+                    authority_id=authority_id,
+                    ward_code=ward_code,
+                    sub_ward_id=sub_ward_id,
+                    jurisdiction_level=jurisdiction_level
+                )
+                session.add(rec)
+            else:
+                rec.authority_id = authority_id
+                rec.ward_code = ward_code
+                rec.sub_ward_id = sub_ward_id
+                rec.jurisdiction_level = jurisdiction_level
+
+            return {
+                "id": rec.id,
+                "user_id": rec.user_id,
+                "authority_id": rec.authority_id,
+                "ward_code": rec.ward_code,
+                "sub_ward_id": rec.sub_ward_id,
+                "jurisdiction_level": rec.jurisdiction_level
+            }
+
+    def update_issue_jurisdiction(
+        self,
+        issue_id: str,
+        new_ward_code: str,
+        new_sub_ward_id: Optional[str] = None,
+        new_locality_id: Optional[str] = None,
+        changed_by: str = "Abhinay",
+        changed_by_role: str = "inspector",
+        reason: str = "Municipal jurisdiction correction"
+    ) -> Optional[Issue]:
+        """
+        Allows authorized municipal officers and admins to correct the administrative assignment
+        of a complaint, persisting the change in the database and recording an immutable audit log.
+        """
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            rec = session.scalar(select(IssueRecord).where(IssueRecord.id == issue_id))
+            if not rec:
+                return None
+
+            issue = Issue.model_validate_json(rec.data_json)
+            _ensure_timeline(issue)
+
+            # 1. Capture previous jurisdiction snapshot
+            prev_jurisdiction = {
+                "authority_id": issue.authority_id,
+                "authority_code": issue.authority_code,
+                "ward_code": issue.ward,
+                "ward_id": issue.ward_id,
+                "sub_ward_id": issue.sub_ward_id,
+                "sub_ward_name": issue.sub_ward_name,
+                "locality_id": issue.locality_id,
+                "locality_name": issue.locality_name,
+                "routing_path": issue.routing_path
+            }
+
+            # 2. Look up new administrative entities
+            ward_rec = session.scalar(select(AdminWardRecord).where(AdminWardRecord.ward_code == new_ward_code))
+            if not ward_rec:
+                # Try finding by ward_id or partial
+                ward_rec = session.scalar(select(AdminWardRecord).where(AdminWardRecord.id == new_ward_code))
+
+            auth_id = ward_rec.authority_id if ward_rec else ("AUTH-NMMC" if "NMMC" in new_ward_code else "AUTH-BMC")
+            auth_rec = session.scalar(select(MunicipalAuthorityRecord).where(MunicipalAuthorityRecord.id == auth_id))
+            auth_code = auth_rec.code if auth_rec else ("NMMC" if "NMMC" in new_ward_code else "BMC")
+            auth_name = auth_rec.name if auth_rec else "Brihanmumbai Municipal Corporation"
+
+            # Resolve sub-ward
+            sub_rec = None
+            if new_sub_ward_id:
+                sub_rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == new_sub_ward_id))
+            if not sub_rec and ward_rec:
+                # Pick first active sub-ward
+                sub_rec = session.scalar(select(SubWardRecord).where(SubWardRecord.ward_id == ward_rec.id))
+
+            sub_name = sub_rec.name if sub_rec else f"Operational Service Area ({new_ward_code})"
+            sub_id = sub_rec.id if sub_rec else None
+            supervisor = sub_rec.supervisor_name if sub_rec else "Area Supervisor"
+
+            # Resolve locality
+            loc_rec = None
+            if new_locality_id:
+                loc_rec = session.scalar(select(LocalityBeatRecord).where(LocalityBeatRecord.id == new_locality_id))
+            elif sub_rec:
+                loc_rec = session.scalar(select(LocalityBeatRecord).where(LocalityBeatRecord.sub_ward_id == sub_rec.id))
+
+            loc_name = loc_rec.name if loc_rec else issue.location
+            loc_id = loc_rec.id if loc_rec else None
+
+            # 3. Construct new routing path
+            dept_name = issue.department or ("Road Infrastructure Maintenance" if "Road" in str(issue.category) else "Solid Waste Management")
+            crew_name = "Quick Patch Asphalt Squad (Ward N)" if "Road" in str(issue.category) else "Solid Waste Rapid Response (Ward N)"
+            new_routing_path = f"{auth_code} → {new_ward_code} → {sub_name} → {loc_name} → {dept_name} → {supervisor} → {crew_name}"
+
+            new_jurisdiction = {
+                "authority_id": auth_id,
+                "authority_code": auth_code,
+                "authority_name": auth_name,
+                "ward_code": new_ward_code,
+                "ward_id": ward_rec.id if ward_rec else None,
+                "sub_ward_id": sub_id,
+                "sub_ward_name": sub_name,
+                "locality_id": loc_id,
+                "locality_name": loc_name,
+                "routing_path": new_routing_path
+            }
+
+            now_iso = datetime.now(timezone.utc).isoformat()
+
+            # 4. Record audit log
+            audit_log = JurisdictionAuditLogRecord(
+                id=f"AUDIT-JUR-{uuid.uuid4().hex[:8].upper()}",
+                issue_id=issue_id,
+                previous_jurisdiction_json=json.dumps(prev_jurisdiction),
+                new_jurisdiction_json=json.dumps(new_jurisdiction),
+                changed_by=changed_by,
+                changed_by_role=changed_by_role,
+                reason=reason,
+                timestamp=datetime.now(timezone.utc)
+            )
+            session.add(audit_log)
+
+            # 5. Append event to issue timeline
+            evt = TimelineEvent(
+                id=f"evt-jur-{uuid.uuid4().hex[:6]}",
+                event_type="JURISDICTION_CORRECTED",
+                title=f"Jurisdiction Corrected: {new_ward_code}",
+                description=f"{changed_by} ({changed_by_role}) reallocated complaint from {prev_jurisdiction.get('ward_code')} to {new_ward_code}. Reason: {reason}",
+                actor=changed_by,
+                role=changed_by_role,
+                timestamp=now_iso,
+                metadata={
+                    "previous_jurisdiction": prev_jurisdiction,
+                    "new_jurisdiction": new_jurisdiction,
+                    "reason": reason
+                }
+            )
+            issue.timeline.append(evt)
+
+            # 6. Update issue fields
+            issue.ward = new_ward_code
+            issue.authority_id = auth_id
+            issue.authority_code = auth_code
+            issue.authority_name = auth_name
+            issue.ward_id = ward_rec.id if ward_rec else None
+            issue.sub_ward_id = sub_id
+            issue.sub_ward_name = sub_name
+            issue.locality_id = loc_id
+            issue.locality_name = loc_name
+            issue.routing_path = new_routing_path
+            issue.jurisdiction_review_required = False
+            issue.jurisdiction_verified = True
+            issue.jurisdiction_review_reason = None
+            if not hasattr(issue, "jurisdiction_history") or issue.jurisdiction_history is None:
+                issue.jurisdiction_history = []
+            issue.jurisdiction_history.append({
+                "previous": prev_jurisdiction,
+                "new": new_jurisdiction,
+                "changed_by": changed_by,
+                "changed_by_role": changed_by_role,
+                "reason": reason,
+                "timestamp": now_iso
+            })
+
+            self._update_record_from_issue(rec, issue)
+            return issue
+
+    def get_jurisdiction_audit_logs(self, issue_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            stmt = select(JurisdictionAuditLogRecord)
+            if issue_id:
+                stmt = stmt.where(JurisdictionAuditLogRecord.issue_id == issue_id)
+            stmt = stmt.order_by(JurisdictionAuditLogRecord.timestamp.desc())
+            records = session.scalars(stmt).all()
+            return [
+                {
+                    "id": r.id,
+                    "issue_id": r.issue_id,
+                    "previous_jurisdiction": json.loads(r.previous_jurisdiction_json),
+                    "new_jurisdiction": json.loads(r.new_jurisdiction_json),
+                    "changed_by": r.changed_by,
+                    "changed_by_role": r.changed_by_role,
+                    "reason": r.reason,
+                    "timestamp": r.timestamp.isoformat()
+                }
+                for r in records
+            ]
+
+    def get_hierarchy_tree(
+        self,
+        authority_code: Optional[str] = None,
+        ward_code: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Builds complete hierarchical geographical tree (Authority -> Zone -> Ward -> Sub-Ward -> Locality)
+        with real-time aggregated workload metrics computed directly from SQLite records.
+        """
+        self.seed_hierarchy_if_empty()
+        with self._get_session() as session:
+            # Query all base data
+            authorities = session.scalars(select(MunicipalAuthorityRecord).where(MunicipalAuthorityRecord.is_active.is_(True))).all()
+            zones = session.scalars(select(AdminZoneRecord).where(AdminZoneRecord.is_active.is_(True))).all()
+            wards = session.scalars(select(AdminWardRecord).where(AdminWardRecord.is_active.is_(True))).all()
+            sub_wards = session.scalars(select(SubWardRecord).where(SubWardRecord.is_active.is_(True))).all()
+            localities = session.scalars(select(LocalityBeatRecord).where(LocalityBeatRecord.is_active.is_(True))).all()
+            teams = session.scalars(select(TeamRecord)).all()
+            issues = session.scalars(select(IssueRecord)).all()
+
+            # Map teams by ward and sub_ward
+            teams_by_ward: Dict[str, List[str]] = {}
+            teams_by_sub_ward: Dict[str, List[str]] = {}
+            for t in teams:
+                w = t.ward
+                if w:
+                    teams_by_ward.setdefault(w, []).append(t.name)
+                sw = t.sub_ward_id
+                if sw:
+                    teams_by_sub_ward.setdefault(sw, []).append(t.name)
+
+            # Map issues by sub_ward_id and ward
+            issues_by_sub_ward: Dict[str, List[IssueRecord]] = {}
+            issues_by_ward: Dict[str, List[IssueRecord]] = {}
+            for iss in issues:
+                w = iss.ward
+                if w:
+                    issues_by_ward.setdefault(w, []).append(iss)
+                sw = iss.sub_ward_id
+                if sw:
+                    issues_by_sub_ward.setdefault(sw, []).append(iss)
+
+            def calc_metrics(iss_list: List[IssueRecord]) -> Dict[str, int]:
+                total = len(iss_list)
+                unassigned = 0
+                assigned = 0
+                in_progress = 0
+                completed = 0
+                for i in iss_list:
+                    st = (i.status or "").upper()
+                    if st in ("RESOLVED", "VERIFIED CLOSED"):
+                        completed += 1
+                    elif st in ("ACTION IN PROGRESS", "IN_PROGRESS", "IN PROGRESS"):
+                        in_progress += 1
+                    elif st in ("ASSIGNED", "SCHEDULED"):
+                        assigned += 1
+                    else:
+                        # Check assignment in data_json
+                        try:
+                            d = json.loads(i.data_json)
+                            if d.get("assignment") and d["assignment"].get("team_name"):
+                                assigned += 1
+                            else:
+                                unassigned += 1
+                        except Exception:
+                            unassigned += 1
+                return {
+                    "total_complaints": total,
+                    "unassigned_complaints": unassigned,
+                    "assigned_complaints": assigned,
+                    "in_progress_tasks": in_progress,
+                    "completed_complaints": completed
+                }
+
+            # Build tree
+            tree = []
+            for auth in authorities:
+                if authority_code and auth.code.upper() != authority_code.upper():
+                    continue
+
+                auth_node = {
+                    "id": auth.id,
+                    "label": f"{auth.name} ({auth.code})",
+                    "code": auth.code,
+                    "type": "authority",
+                    "is_official": True,
+                    "is_active": auth.is_active,
+                    "boundary_geojson": json.loads(auth.boundary_geojson) if auth.boundary_geojson else None,
+                    "children": [],
+                    "assigned_crews": [],
+                    "assigned_crews_count": 0
+                }
+
+                auth_zones = [z for z in zones if z.authority_id == auth.id]
+                auth_issues: List[IssueRecord] = []
+
+                for zone in auth_zones:
+                    zone_node = {
+                        "id": zone.id,
+                        "label": zone.name,
+                        "code": zone.code,
+                        "type": "zone",
+                        "parent_id": auth.id,
+                        "is_official": True,
+                        "is_active": zone.is_active,
+                        "lead_officer": zone.zonal_officer,
+                        "boundary_geojson": json.loads(zone.boundary_geojson) if zone.boundary_geojson else None,
+                        "children": [],
+                        "assigned_crews": [],
+                        "assigned_crews_count": 0
+                    }
+
+                    zone_wards = [w for w in wards if w.zone_id == zone.id or (not w.zone_id and w.authority_id == auth.id)]
+                    zone_issues: List[IssueRecord] = []
+
+                    for w in zone_wards:
+                        if ward_code and w.ward_code.upper() != ward_code.upper():
+                            continue
+
+                        ward_teams = teams_by_ward.get(w.ward_code, []) + teams_by_ward.get(w.id, [])
+                        w_issues = issues_by_ward.get(w.ward_code, [])
+
+                        ward_node = {
+                            "id": w.id,
+                            "label": w.ward_name,
+                            "code": w.ward_code,
+                            "type": "ward",
+                            "parent_id": zone.id,
+                            "is_official": True,
+                            "is_active": w.is_active,
+                            "lead_officer": w.lead_officer,
+                            "boundary_geojson": json.loads(w.boundary_geojson) if w.boundary_geojson else None,
+                            "assigned_crews": ward_teams,
+                            "assigned_crews_count": len(ward_teams),
+                            "children": []
+                        }
+
+                        w_subs = [s for s in sub_wards if s.ward_id == w.id]
+                        w_sub_issues: List[IssueRecord] = []
+
+                        for sw in w_subs:
+                            sw_teams = teams_by_sub_ward.get(sw.id, [])
+                            sw_issues = issues_by_sub_ward.get(sw.id, [])
+                            w_sub_issues.extend(sw_issues)
+
+                            sub_node = {
+                                "id": sw.id,
+                                "label": sw.name,
+                                "code": sw.sub_ward_code,
+                                "type": "sub_ward",
+                                "parent_id": w.id,
+                                "is_official": sw.is_official,
+                                "operational_type": sw.operational_type,
+                                "is_active": sw.is_active,
+                                "supervisor_name": sw.supervisor_name,
+                                "assigned_crews": sw_teams,
+                                "assigned_crews_count": len(sw_teams),
+                                "boundary_geojson": json.loads(sw.boundary_geojson) if sw.boundary_geojson else None,
+                                "children": []
+                            }
+
+                            sw_locs = [l for l in localities if l.sub_ward_id == sw.id]
+                            for loc in sw_locs:
+                                loc_node = {
+                                    "id": loc.id,
+                                    "label": loc.name,
+                                    "code": f"BEAT-{loc.name[:4].upper()}",
+                                    "type": "locality",
+                                    "parent_id": sw.id,
+                                    "is_official": False,
+                                    "is_active": loc.is_active,
+                                    "landmark": loc.landmark,
+                                    "latitude": loc.latitude,
+                                    "longitude": loc.longitude,
+                                    "radius_meters": loc.radius_meters,
+                                    "total_complaints": 0,
+                                    "unassigned_complaints": 0,
+                                    "assigned_complaints": 0,
+                                    "in_progress_tasks": 0,
+                                    "completed_complaints": 0,
+                                    "assigned_crews": [],
+                                    "assigned_crews_count": 0,
+                                    "children": []
+                                }
+                                sub_node["children"].append(loc_node)
+
+                            sub_metrics = calc_metrics(sw_issues)
+                            sub_node.update(sub_metrics)
+                            ward_node["children"].append(sub_node)
+
+                        # All issues belonging to ward
+                        all_ward_issues = list({i.id: i for i in (w_issues + w_sub_issues)}.values())
+                        ward_metrics = calc_metrics(all_ward_issues)
+                        ward_node.update(ward_metrics)
+                        zone_node["children"].append(ward_node)
+                        zone_issues.extend(all_ward_issues)
+
+                    all_zone_issues = list({i.id: i for i in zone_issues}.values())
+                    zone_metrics = calc_metrics(all_zone_issues)
+                    zone_node.update(zone_metrics)
+                    auth_node["children"].append(zone_node)
+                    auth_issues.extend(all_zone_issues)
+
+                all_auth_issues = list({i.id: i for i in auth_issues}.values())
+                auth_metrics = calc_metrics(all_auth_issues)
+                auth_node.update(auth_metrics)
+                tree.append(auth_node)
+
+            return tree
+
 
 
 

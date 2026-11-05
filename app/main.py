@@ -20,6 +20,7 @@ async def lifespan(app: FastAPI):
         demo_store.seed_if_empty()
     demo_store.seed_default_users_if_empty()
     demo_store.seed_default_teams_and_wards_if_empty()
+    demo_store.seed_hierarchy_if_empty()
     department_dispatcher.load_from_db()
     GuidanceKnowledgeBase().seed_if_empty()
     yield

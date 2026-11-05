@@ -121,6 +121,9 @@ class IssueCreate(BaseModel):
     uploadId: Optional[str] = None
     category: Optional[str] = Field(None, description="User-selected category (Roads & Footpaths, Sanitation & Garbage) or None for auto-prediction")
     ward: Optional[str] = Field(None, description="Optional municipal ward")
+    selected_ward: Optional[str] = Field(None, description="Citizen-selected administrative ward (compared against GPS-derived ward)")
+    sub_ward_id: Optional[str] = None
+    locality_id: Optional[str] = None
     source: str = "citizen_portal"
     citizen_id: Optional[str] = None
 
@@ -318,6 +321,23 @@ class Issue(BaseModel):
     department: str = "Municipal Administration"
     recommendedAction: str = "Inspect and triage"
     slaHours: int = 72
+    
+    # Hierarchical Ward & Operations Management
+    authority_id: Optional[str] = "AUTH-BMC"
+    authority_code: Optional[str] = "BMC"
+    authority_name: Optional[str] = "Brihanmumbai Municipal Corporation"
+    zone_id: Optional[str] = None
+    zone_name: Optional[str] = None
+    ward_id: Optional[str] = None
+    sub_ward_id: Optional[str] = None
+    sub_ward_name: Optional[str] = None
+    locality_id: Optional[str] = None
+    locality_name: Optional[str] = None
+    routing_path: Optional[str] = None
+    jurisdiction_verified: bool = True
+    jurisdiction_review_required: bool = False
+    jurisdiction_review_reason: Optional[str] = None
+    jurisdiction_history: List[Dict[str, Any]] = Field(default_factory=list)
     
     # Issue Lifecycle & Resolution Verification (Feature 20)
     status: IssueStatus = IssueStatus.OPEN

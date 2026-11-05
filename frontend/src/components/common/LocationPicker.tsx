@@ -27,6 +27,19 @@ export interface LocationData {
   ward: string
   method: 'gps' | 'manual'
   isValid: boolean
+  authority_id?: string
+  authority_name?: string
+  zone_name?: string
+  ward_id?: string
+  sub_ward_id?: string
+  sub_ward_name?: string
+  locality_id?: string
+  locality_name?: string
+  isMismatch?: boolean
+  derivedWard?: string
+  mismatchMessage?: string
+  reviewRequired?: boolean
+  reviewReason?: string
 }
 
 interface LocationPickerProps {
@@ -49,6 +62,12 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<Array<{ name: string; ward: string; latitude: number; longitude: number }>>([])
   const [isSearching, setIsSearching] = useState(false)
+  const [mismatchAlert, setMismatchAlert] = useState<{
+    selected: string
+    derived: string
+    authority: string
+    message: string
+  } | null>(null)
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
@@ -153,8 +172,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
     // 1. Boundary check against Mumbai & Navi Mumbai
     if (!isWithinSupportedRegion(latRounded, lngRounded)) {
-      setBoundaryError(OUT_OF_BOUNDS_ERROR)
+      setBoundaryError('Point coordinates lie outside supported Brihanmumbai (BMC) and Navi Mumbai (NMMC) municipal boundaries. CIVILENS cannot route civic complaints outside supported municipal authorities.')
       setLocationStatus(null)
+      setMismatchAlert(null)
       onChange({
         ...value,
         latitude: latRounded,
@@ -166,35 +186,73 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     }
 
     setBoundaryError(null)
-    setLocationStatus('Resolving locality and municipal ward...')
+    setLocationStatus('Performing point-in-polygon spatial verification across BMC & NMMC boundaries...')
 
     try {
-      // Call backend reverse-geocode for ward & clean address
-      const res = await api.reverseGeocode(latRounded, lngRounded)
-      if (res.valid && res.address) {
-        const derivedWard = res.ward || 'N-Ward'
+      // 2. Spatial Hierarchy & Point-in-Polygon Check
+      const verifyRes = await api.hierarchy.verifyLocation(latRounded, lngRounded, value.ward)
+
+      if (!verifyRes.is_valid_jurisdiction) {
+        setBoundaryError('Location coordinates do not fall within any supported BMC or NMMC administrative wards.')
+        setLocationStatus(null)
+        setMismatchAlert(null)
         onChange({
-          address: res.address,
+          ...value,
           latitude: latRounded,
           longitude: lngRounded,
-          ward: derivedWard,
           method,
-          isValid: true,
+          isValid: false,
         })
-        setLocationStatus(`Locked: ${latRounded}° N, ${lngRounded}° E • Ward: ${derivedWard}`)
-      } else {
-        // Fallback
-        const fallbackAddress = `Coordinates: ${latRounded}, ${lngRounded}`
-        onChange({
-          address: value.address || fallbackAddress,
-          latitude: latRounded,
-          longitude: lngRounded,
-          ward: 'N-Ward',
-          method,
-          isValid: true,
-        })
-        setLocationStatus(`Locked: ${latRounded}° N, ${lngRounded}° E`)
+        return
       }
+
+      const derivedWard = verifyRes.ward_name || verifyRes.ward_code || 'N-Ward'
+
+      if (verifyRes.is_mismatch && verifyRes.derived_ward && value.ward) {
+        setMismatchAlert({
+          selected: verifyRes.selected_ward || value.ward,
+          derived: verifyRes.derived_ward,
+          authority: verifyRes.authority_name || 'Brihanmumbai Municipal Corporation',
+          message: verifyRes.mismatch_message || `Coordinates place location in ${verifyRes.derived_ward}, but ${value.ward} was selected.`,
+        })
+      } else {
+        setMismatchAlert(null)
+      }
+
+      // Reverse geocode for clean address
+      let cleanAddress = value.address
+      try {
+        const geoRes = await api.reverseGeocode(latRounded, lngRounded)
+        if (geoRes.valid && geoRes.address) {
+          cleanAddress = geoRes.address
+        }
+      } catch {
+        if (!cleanAddress) cleanAddress = `Coordinates: ${latRounded}, ${lngRounded}`
+      }
+
+      onChange({
+        address: cleanAddress,
+        latitude: latRounded,
+        longitude: lngRounded,
+        ward: verifyRes.is_mismatch ? (value.ward || derivedWard) : derivedWard,
+        method,
+        isValid: true,
+        authority_id: verifyRes.authority_id,
+        authority_name: verifyRes.authority_name,
+        zone_name: verifyRes.zone_name,
+        ward_id: verifyRes.ward_id,
+        sub_ward_id: verifyRes.sub_ward_id,
+        sub_ward_name: verifyRes.sub_ward_name,
+        locality_id: verifyRes.locality_id,
+        locality_name: verifyRes.locality_name,
+        isMismatch: verifyRes.is_mismatch,
+        derivedWard: verifyRes.derived_ward,
+        mismatchMessage: verifyRes.mismatch_message,
+        reviewRequired: verifyRes.review_required,
+        reviewReason: verifyRes.review_reason,
+      })
+
+      setLocationStatus(`Locked: ${latRounded}° N, ${lngRounded}° E • ${verifyRes.authority_name || 'BMC'} (${derivedWard})`)
     } catch {
       onChange({
         address: value.address || `GPS: ${latRounded}, ${lngRounded}`,
@@ -206,6 +264,16 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       })
       setLocationStatus(`Locked: ${latRounded}° N, ${lngRounded}° E`)
     }
+  }
+
+  const handleAcceptDerivedWard = (derivedWard: string) => {
+    setMismatchAlert(null)
+    onChange({
+      ...value,
+      ward: derivedWard,
+      isMismatch: false,
+      mismatchMessage: undefined,
+    })
   }
 
   // OPTION A: Browser native Geolocation API
@@ -458,6 +526,28 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         </div>
       </div>
 
+      {/* Mismatch Alert Banner */}
+      {mismatchAlert && (
+        <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <div className="font-bold text-amber-900">Administrative Jurisdiction Mismatch</div>
+              <p className="text-[11px] text-amber-800 mt-0.5">
+                You selected <strong>{mismatchAlert.selected}</strong>, but GPS coordinates geographically map inside <strong>{mismatchAlert.derived}</strong> ({mismatchAlert.authority}).
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleAcceptDerivedWard(mismatchAlert.derived)}
+            className="px-3 py-1.5 bg-[#6457E8] text-white rounded-lg text-xs font-semibold hover:bg-[#5145CF] transition shrink-0 cursor-pointer shadow-xs"
+          >
+            Apply Derived Ward ({mismatchAlert.derived})
+          </button>
+        </div>
+      )}
+
       {/* Active Validation & Verification Status Banner */}
       {boundaryError && (
         <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3 text-xs">
@@ -474,16 +564,45 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       )}
 
       {value.isValid && value.latitude && value.longitude && (
-        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-3 py-2 text-xs">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-            <span className="font-semibold">
-              Location Verified: {value.latitude.toFixed(4)}° N, {value.longitude.toFixed(4)}° E
+        <div className="bg-emerald-50/80 border border-emerald-200 text-emerald-900 rounded-xl p-3 text-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+              <span className="font-semibold">
+                Spatial Point-in-Polygon Verified: {value.latitude.toFixed(4)}° N, {value.longitude.toFixed(4)}° E
+              </span>
+            </div>
+            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-200/60 text-emerald-900">
+              {value.method.toUpperCase()}
             </span>
           </div>
-          <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900">
-            {value.ward || 'Municipal Ward'} ({value.method.toUpperCase()})
-          </span>
+
+          {/* Resolved Hierarchy Breadcrumb Strip */}
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px] pt-1 border-t border-emerald-200/60">
+            <span className="px-2 py-0.5 rounded bg-[#13152E] text-white font-bold">
+              {value.authority_name || 'Brihanmumbai Municipal Corporation'}
+            </span>
+            <span className="text-emerald-700 font-bold">&rsaquo;</span>
+            <span className="px-2 py-0.5 rounded bg-[#8B5CF6]/15 text-[#6457E8] font-bold">
+              {value.ward}
+            </span>
+            {value.sub_ward_name && (
+              <>
+                <span className="text-emerald-700 font-bold">&rsaquo;</span>
+                <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-medium border border-blue-200">
+                  Sub-Ward: {value.sub_ward_name}
+                </span>
+              </>
+            )}
+            {value.locality_name && (
+              <>
+                <span className="text-emerald-700 font-bold">&rsaquo;</span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                  Beat: {value.locality_name}
+                </span>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -15,6 +15,7 @@ import {
   Settings2,
   Radio,
   FolderOpen,
+  Network,
 } from 'lucide-react'
 import {
   Sidebar as ShadcnSidebar,
@@ -109,6 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         title: 'OPERATIONS',
         items: [
           { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
+          { id: 'ward_hierarchy', label: 'Ward Hierarchy & Allocation', icon: Network },
           { id: 'analyze', label: 'Analyze Complaint', icon: ScanSearch },
           { id: 'intelligence', label: 'Issue Intelligence', icon: Activity },
           { id: 'map', label: 'Tactical GIS Map', icon: Map },

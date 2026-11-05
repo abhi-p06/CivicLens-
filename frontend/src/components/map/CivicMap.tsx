@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import { Issue, HotspotInfo } from '../../types'
 import { MUMBAI_NAVI_MUMBAI_BOUNDS } from '../../config/geo'
+import { api } from '../../services/api'
 
 export type MapLayerMode = 'markers' | 'clusters' | 'heatmap' | 'hotspots'
 
@@ -15,6 +16,8 @@ interface CivicMapProps {
   layerMode?: MapLayerMode
   showHotspotBoundaries?: boolean
   showHotspotCircles?: boolean
+  showAdminWards?: boolean
+  showSubWards?: boolean
   className?: string
 }
 
@@ -28,6 +31,8 @@ export const CivicMap: React.FC<CivicMapProps> = ({
   layerMode = 'markers',
   showHotspotBoundaries = true,
   showHotspotCircles,
+  showAdminWards = true,
+  showSubWards = true,
   className = 'h-full w-full',
 }) => {
   const displayHotspotBoundaries =
@@ -38,7 +43,25 @@ export const CivicMap: React.FC<CivicMapProps> = ({
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
   const heatmapLayerRef = useRef<L.LayerGroup | null>(null)
   const clustersLayerRef = useRef<L.LayerGroup | null>(null)
+  const boundariesLayerRef = useRef<L.LayerGroup | null>(null)
   const hasFittedInitialBoundsRef = useRef<boolean>(false)
+
+  const [boundariesGeoJson, setBoundariesGeoJson] = useState<any | null>(null)
+  const [wardsVisible, setWardsVisible] = useState<boolean>(showAdminWards)
+  const [subWardsVisible, setSubWardsVisible] = useState<boolean>(showSubWards)
+
+  // Load GIS Boundaries once
+  useEffect(() => {
+    let active = true
+    api.hierarchy.getGisBoundaries()
+      .then((data) => {
+        if (active) setBoundariesGeoJson(data)
+      })
+      .catch((e) => console.warn('Could not load GIS boundaries:', e))
+    return () => {
+      active = false
+    }
+  }, [])
 
   // 1. Initialize Map Instance
   useEffect(() => {
@@ -83,11 +106,13 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       ).addTo(map)
 
       // Layer Groups
+      const bl = L.layerGroup().addTo(map)
       const ml = L.layerGroup().addTo(map)
       const hl = L.layerGroup().addTo(map)
       const hml = L.layerGroup().addTo(map)
       const cl = L.layerGroup().addTo(map)
 
+      boundariesLayerRef.current = bl
       markersLayerRef.current = ml
       hotspotsLayerRef.current = hl
       heatmapLayerRef.current = hml
@@ -102,6 +127,59 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       }
     }
   }, [])
+
+  // Render Administrative & Sub-Ward GIS Boundaries
+  useEffect(() => {
+    const bl = boundariesLayerRef.current
+    if (!bl || !boundariesGeoJson) return
+    bl.clearLayers()
+
+    const features = boundariesGeoJson.features || []
+    features.forEach((feature: any) => {
+      const type = feature.properties?.type
+      if (type === 'ADMIN_WARD' && !wardsVisible) return
+      if (type === 'CIVILENS_OPERATIONAL_SUB_WARD' && !subWardsVisible) return
+
+      const isSubWard = type === 'CIVILENS_OPERATIONAL_SUB_WARD'
+      const color = isSubWard ? '#6457E8' : '#8B5CF6'
+
+      const geo = L.geoJSON(feature, {
+        style: {
+          color: color,
+          weight: isSubWard ? 1.5 : 2.0,
+          opacity: isSubWard ? 0.9 : 0.75,
+          dashArray: isSubWard ? '4, 4' : undefined,
+          fillColor: color,
+          fillOpacity: isSubWard ? 0.08 : 0.04,
+        },
+        onEachFeature: (_, layer) => {
+          const props = feature.properties || {}
+          const authorityLabel = props.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : 'Brihanmumbai (BMC)'
+          const content = isSubWard
+            ? `
+              <div style="font-family: sans-serif; font-size: 11px; color: #11162A; line-height: 1.4; min-width: 170px;">
+                <div style="font-weight: 700; color: #6457E8; font-size: 12px;">${props.name}</div>
+                <div style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: #E0E7FF; color: #3730A3; margin: 3px 0;">CIVILENS Operational Service Area</div>
+                <div style="color: #65708B;">Code: <strong style="color: #11162A;">${props.code}</strong></div>
+                <div style="color: #65708B;">Supervisor: <strong style="color: #11162A;">${props.supervisor_name || 'Assigned Lead'}</strong></div>
+                <div style="color: #65708B;">Department: <strong style="color: #11162A;">${props.assigned_department || 'Infrastructure'}</strong></div>
+              </div>
+            `
+            : `
+              <div style="font-family: sans-serif; font-size: 11px; color: #11162A; line-height: 1.4; min-width: 170px;">
+                <div style="font-weight: 700; color: #13152E; font-size: 12px;">${props.name} (${props.code})</div>
+                <div style="color: #6457E8; font-weight: 600; font-size: 10px;">${authorityLabel}</div>
+                <div style="margin-top: 4px; color: #65708B;">Office: <span style="color: #11162A;">${props.office_location || 'Ward Office'}</span></div>
+                <div style="color: #65708B;">Nodal Officer: <span style="color: #11162A;">${props.officer_in_charge || 'Officer In Charge'}</span></div>
+              </div>
+            `
+          layer.bindPopup(content)
+          layer.bindTooltip(`${props.name} (${props.code})`, { sticky: true })
+        },
+      })
+      bl.addLayer(geo)
+    })
+  }, [boundariesGeoJson, wardsVisible, subWardsVisible])
 
   // 2. Render Layers based on layerMode and state
   useEffect(() => {
@@ -462,6 +540,29 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
   return (
     <div className="relative isolate z-0 layer-map-container h-full w-full overflow-hidden rounded-lg border border-[#212348] bg-[#10162A]">
+      {/* Floating Tactical Layer Controls */}
+      <div className="absolute top-3 left-3 z-[400] bg-[#13152E]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white text-[11px] flex items-center gap-3 shadow-md pointer-events-auto">
+        <span className="text-[10px] uppercase font-bold text-[#8B5CF6] tracking-wider">GIS Layers:</span>
+        <label className="flex items-center gap-1.5 cursor-pointer hover:text-white text-slate-300">
+          <input
+            type="checkbox"
+            checked={wardsVisible}
+            onChange={(e) => setWardsVisible(e.target.checked)}
+            className="rounded border-slate-600 accent-[#8B5CF6] cursor-pointer"
+          />
+          <span>Admin Wards</span>
+        </label>
+        <label className="flex items-center gap-1.5 cursor-pointer hover:text-white text-slate-300">
+          <input
+            type="checkbox"
+            checked={subWardsVisible}
+            onChange={(e) => setSubWardsVisible(e.target.checked)}
+            className="rounded border-slate-600 accent-[#6457E8] cursor-pointer"
+          />
+          <span>CIVILENS Sub-Wards</span>
+        </label>
+      </div>
+
       <div ref={mapContainerRef} className={className} />
     </div>
   )

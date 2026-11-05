@@ -34,6 +34,7 @@ import { RecurringView } from './components/views/RecurringView'
 import { UnreportedView } from './components/views/UnreportedView'
 import { AnalyticsView } from './components/views/AnalyticsView'
 import { IssueIntelligenceView } from './components/views/IssueIntelligenceView'
+import { WardHierarchyAllocationView } from './components/views/WardHierarchyAllocationView'
 
 function AppContent() {
   const { user } = useAuth()
@@ -393,6 +394,12 @@ function AppContent() {
                   issues={displayedIssues}
                   hotspots={hotspots}
                   recurringIssues={recurringIssues}
+                />
+              )}
+
+              {activeView === 'ward_hierarchy' && (
+                <WardHierarchyAllocationView
+                  onSelectIssue={setInspectingIssue}
                 />
               )}
             </motion.div>

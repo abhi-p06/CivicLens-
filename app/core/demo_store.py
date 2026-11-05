@@ -172,5 +172,81 @@ class DemoDataStore:
             role=role
         )
 
+    # Hierarchical Ward Management Forwarding Methods
+    def seed_hierarchy_if_empty(self) -> None:
+        return self.repository.seed_hierarchy_if_empty()
+
+    def get_hierarchy_tree(self, authority_code: Optional[str] = None, ward_code: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.get_hierarchy_tree(authority_code=authority_code, ward_code=ward_code)
+
+    def list_authorities(self) -> List[Dict[str, Any]]:
+        return self.repository.list_authorities()
+
+    def list_admin_wards(self, authority_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.list_admin_wards(authority_id=authority_id)
+
+    def list_sub_wards(self, ward_code: Optional[str] = None, ward_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.list_sub_wards(ward_code=ward_code, ward_id=ward_id)
+
+    def get_sub_ward(self, sub_ward_id: str) -> Optional[Dict[str, Any]]:
+        return self.repository.get_sub_ward(sub_ward_id)
+
+    def create_sub_ward(self, sub_ward_data: Dict[str, Any]) -> Dict[str, Any]:
+        return self.repository.create_sub_ward(sub_ward_data)
+
+    def update_sub_ward(self, sub_ward_id: str, sub_ward_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return self.repository.update_sub_ward(sub_ward_id, sub_ward_data)
+
+    def delete_sub_ward(self, sub_ward_id: str) -> bool:
+        return self.repository.delete_sub_ward(sub_ward_id)
+
+    def list_localities(self, sub_ward_id: Optional[str] = None, ward_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.list_localities(sub_ward_id=sub_ward_id, ward_id=ward_id)
+
+    def create_locality(self, locality_data: Dict[str, Any]) -> Dict[str, Any]:
+        return self.repository.create_locality(locality_data)
+
+    def get_officer_jurisdiction(self, user_id: str) -> Optional[Dict[str, Any]]:
+        return self.repository.get_officer_jurisdiction(user_id)
+
+    def assign_officer_jurisdiction(
+        self,
+        user_id: str,
+        ward_code: str,
+        sub_ward_id: Optional[str] = None,
+        authority_id: str = "AUTH-BMC",
+        jurisdiction_level: str = "WARD_OFFICER"
+    ) -> Dict[str, Any]:
+        return self.repository.assign_officer_jurisdiction(
+            user_id=user_id,
+            ward_code=ward_code,
+            sub_ward_id=sub_ward_id,
+            authority_id=authority_id,
+            jurisdiction_level=jurisdiction_level
+        )
+
+    def update_issue_jurisdiction(
+        self,
+        issue_id: str,
+        new_ward_code: str,
+        new_sub_ward_id: Optional[str] = None,
+        new_locality_id: Optional[str] = None,
+        changed_by: str = "Abhinay",
+        changed_by_role: str = "inspector",
+        reason: str = "Municipal jurisdiction correction"
+    ) -> Optional[Issue]:
+        return self.repository.update_issue_jurisdiction(
+            issue_id=issue_id,
+            new_ward_code=new_ward_code,
+            new_sub_ward_id=new_sub_ward_id,
+            new_locality_id=new_locality_id,
+            changed_by=changed_by,
+            changed_by_role=changed_by_role,
+            reason=reason
+        )
+
+    def get_jurisdiction_audit_logs(self, issue_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        return self.repository.get_jurisdiction_audit_logs(issue_id=issue_id)
+
 # Global singleton instance
 demo_store = DemoDataStore()

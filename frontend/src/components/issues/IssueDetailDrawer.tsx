@@ -23,6 +23,7 @@ import {
   Check,
   Truck,
   ArrowRight,
+  Network,
 } from 'lucide-react'
 import { Issue, IssueStatus, FieldTeam, TimelineEvent } from '../../types'
 import { StatusBadge } from '../common/StatusBadge'
@@ -100,6 +101,74 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
   const [reopenReason, setReopenReason] = useState('')
   const [submittingReopen, setSubmittingReopen] = useState(false)
   const [reopenError, setReopenError] = useState<string | null>(null)
+
+  // Jurisdiction Reallocation State
+  const [showReallocateForm, setShowReallocateForm] = useState(false)
+  const [reallocateAuthority, setReallocateAuthority] = useState('AUTH-BMC')
+  const [reallocateWard, setReallocateWard] = useState('')
+  const [reallocateSubWard, setReallocateSubWard] = useState('')
+  const [reallocateReason, setReallocateReason] = useState('')
+  const [submittingReallocate, setSubmittingReallocate] = useState(false)
+  const [availableWards, setAvailableWards] = useState<any[]>([])
+  const [availableSubWards, setAvailableSubWards] = useState<any[]>([])
+  const [showAuditHistory, setShowAuditHistory] = useState(false)
+
+  // Load wards when reallocateAuthority changes
+  const loadWardsForAuthority = async (authId: string) => {
+    try {
+      const wards = await api.hierarchy.getAdminWards(authId)
+      setAvailableWards(wards)
+      if (wards.length > 0) {
+        setReallocateWard(wards[0].code)
+        loadSubWardsForWard(wards[0].code)
+      }
+    } catch (e) {
+      console.error('Error fetching admin wards:', e)
+    }
+  }
+
+  // Load sub-wards when reallocateWard changes
+  const loadSubWardsForWard = async (wardCode: string) => {
+    try {
+      const subWards = await api.hierarchy.getSubWards(wardCode)
+      setAvailableSubWards(subWards)
+      if (subWards.length > 0) {
+        setReallocateSubWard(subWards[0].id)
+      } else {
+        setReallocateSubWard('')
+      }
+    } catch (e) {
+      console.error('Error fetching sub-wards:', e)
+    }
+  }
+
+  useEffect(() => {
+    if (showReallocateForm) {
+      loadWardsForAuthority(reallocateAuthority)
+    }
+  }, [showReallocateForm, reallocateAuthority])
+
+  const handleReallocateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!issue || !reallocateReason.trim()) return
+
+    try {
+      setSubmittingReallocate(true)
+      const updated = await api.hierarchy.correctIssueJurisdiction(issue.issueId, {
+        new_authority_id: reallocateAuthority,
+        new_ward: reallocateWard,
+        new_sub_ward_id: reallocateSubWard || undefined,
+        reason: reallocateReason.trim(),
+      })
+      onUpdateIssue(updated)
+      setShowReallocateForm(false)
+      setReallocateReason('')
+    } catch (err: any) {
+      alert(err?.message || 'Failed to reallocate jurisdiction')
+    } finally {
+      setSubmittingReallocate(false)
+    }
+  }
 
   // Load field teams on mount
   useEffect(() => {
@@ -427,6 +496,229 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-[#F6F7FC]">
+                {/* GEOGRAPHICAL HIERARCHY & ROUTING PATH SECTION */}
+                <div className="p-4 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-lg bg-[#13152E] text-white">
+                        <Network className="w-4 h-4 text-[#8B5CF6]" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-[#11162A] tracking-tight block">
+                          Administrative Routing & Jurisdiction Path
+                        </span>
+                        <span className="text-[10px] text-[#65708B]">
+                          Spatial Point-in-Polygon Engine allocation
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      {issue.jurisdiction_history && issue.jurisdiction_history.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setShowAuditHistory(!showAuditHistory)}
+                          className="px-2.5 py-1 text-[11px] font-semibold bg-[#F0F2F9] text-[#11162A] rounded-lg border border-[#E4E7F1] hover:bg-slate-200 transition cursor-pointer"
+                        >
+                          {showAuditHistory ? 'Hide History' : `Audit History (${issue.jurisdiction_history.length})`}
+                        </button>
+                      )}
+                      {(user?.role === 'admin' || user?.role === 'inspector') && (
+                        <button
+                          type="button"
+                          onClick={() => setShowReallocateForm(!showReallocateForm)}
+                          className="px-2.5 py-1 text-[11px] font-semibold bg-[#6457E8] text-white rounded-lg hover:bg-[#5145CF] transition shadow-xs cursor-pointer"
+                        >
+                          {showReallocateForm ? 'Close Reallocation' : 'Reallocate Ward / Sub-Ward'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Review Required Warning */}
+                  {issue.jurisdiction_review_required && (
+                    <div className="p-2.5 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-bold">Jurisdiction Review Required:</span>
+                        <p className="text-[11px] text-amber-800 mt-0.5">
+                          {issue.jurisdiction_review_reason || 'Geographic coordinate boundary verification flagged an administrative mismatch.'}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Complete 7-Tier Routing Path Breadcrumb Strip */}
+                  <div className="p-3 bg-[#F6F7FC] rounded-xl border border-[#E4E7F1] space-y-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#65708B] block">
+                      Persisted Complaint Routing Tree
+                    </span>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                      {/* Authority */}
+                      <span className="px-2.5 py-1 rounded-lg bg-[#13152E] text-white font-bold text-[11px] shadow-xs">
+                        {issue.authority_name || (issue.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : 'Mumbai (BMC)')}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Zone */}
+                      <span className="px-2.5 py-1 rounded-lg bg-[#8B5CF6]/15 text-[#6457E8] font-bold text-[11px]">
+                        {issue.zone_name || 'Zone VI'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Ward */}
+                      <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-[11px]">
+                        {issue.ward || 'N-Ward'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Sub-Ward */}
+                      <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold text-[11px]">
+                        {issue.sub_ward_name || 'Sub-Ward N-01'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Locality / Beat */}
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium text-[11px]">
+                        {issue.locality_name || 'Service Beat'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Department */}
+                      <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold text-[11px]">
+                        {issue.department || 'Road Maintenance'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* Assigned Crew */}
+                      <span className="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 border border-teal-200 font-semibold text-[11px]">
+                        {issue.assignment?.team_name || 'Area Crew 01'}
+                      </span>
+                    </div>
+
+                    {issue.routing_path && (
+                      <div className="text-[10px] text-[#65708B] font-mono pt-1">
+                        System Routing String: {issue.routing_path}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Reallocation Form */}
+                  {showReallocateForm && (
+                    <form onSubmit={handleReallocateSubmit} className="p-3.5 bg-white border border-[#6457E8]/30 rounded-xl space-y-3 text-xs">
+                      <div className="font-bold text-[#11162A] flex items-center gap-1.5">
+                        <Building className="w-4 h-4 text-[#6457E8]" />
+                        <span>Administrative Jurisdiction Correction</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#11162A] mb-1">Authority</label>
+                          <select
+                            value={reallocateAuthority}
+                            onChange={(e) => {
+                              setReallocateAuthority(e.target.value)
+                              loadWardsForAuthority(e.target.value)
+                            }}
+                            className="w-full p-2 bg-[#F6F7FC] border border-[#E4E7F1] rounded-lg text-xs"
+                          >
+                            <option value="AUTH-BMC">Brihanmumbai (BMC)</option>
+                            <option value="AUTH-NMMC">Navi Mumbai (NMMC)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#11162A] mb-1">Administrative Ward</label>
+                          <select
+                            value={reallocateWard}
+                            onChange={(e) => {
+                              setReallocateWard(e.target.value)
+                              loadSubWardsForWard(e.target.value)
+                            }}
+                            className="w-full p-2 bg-[#F6F7FC] border border-[#E4E7F1] rounded-lg text-xs"
+                          >
+                            {availableWards.map((w) => (
+                              <option key={w.id} value={w.code}>
+                                {w.code} - {w.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#11162A] mb-1">Sub-Ward / Service Beat</label>
+                          <select
+                            value={reallocateSubWard}
+                            onChange={(e) => setReallocateSubWard(e.target.value)}
+                            className="w-full p-2 bg-[#F6F7FC] border border-[#E4E7F1] rounded-lg text-xs"
+                          >
+                            <option value="">-- Auto-Assign Sub-Ward --</option>
+                            {availableSubWards.map((sw) => (
+                              <option key={sw.id} value={sw.id}>
+                                {sw.code} - {sw.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-[#11162A] mb-1">
+                          Mandatory Reallocation Reason <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Corrected boundary pin after field verification by N-Ward nodal team"
+                          value={reallocateReason}
+                          onChange={(e) => setReallocateReason(e.target.value)}
+                          className="w-full p-2 bg-[#F6F7FC] border border-[#E4E7F1] rounded-lg text-xs"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowReallocateForm(false)}
+                          className="px-3 py-1.5 border border-[#E4E7F1] rounded-lg font-semibold text-[#65708B]"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={submittingReallocate || !reallocateReason.trim()}
+                          className="px-3 py-1.5 bg-[#6457E8] text-white rounded-lg font-semibold hover:bg-[#5145CF] disabled:opacity-50"
+                        >
+                          {submittingReallocate ? 'Updating...' : 'Persist Jurisdiction Correction'}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Audit History Log */}
+                  {showAuditHistory && issue.jurisdiction_history && (
+                    <div className="p-3 bg-[#F0F2F9] rounded-xl space-y-2 border border-[#E4E7F1] text-xs">
+                      <span className="font-bold text-[#11162A] block text-[11px]">
+                        Immutable Jurisdiction Change History
+                      </span>
+                      <div className="space-y-1.5">
+                        {issue.jurisdiction_history.map((log) => (
+                          <div key={log.id} className="p-2 bg-white rounded-lg border border-[#E4E7F1] text-[11px] space-y-1">
+                            <div className="flex items-center justify-between text-[#65708B]">
+                              <span>Changed by: <strong>{log.changed_by}</strong> ({log.changed_by_role})</span>
+                              <span>{new Date(log.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div className="text-[#11162A]">
+                              Reallocated: <span className="font-mono text-rose-600">{log.previous_ward || 'Initial'}</span> &rarr; <span className="font-mono text-emerald-600 font-bold">{log.new_ward}</span>
+                            </div>
+                            <div className="text-[#65708B] italic">Reason: "{log.reason}"</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* AI FIELD GUIDANCE SECTION */}
                 <AIGuidanceSection
                   issue={issue}

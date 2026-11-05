@@ -81,6 +81,42 @@ def init_db(target_engine: Optional[Engine] = None) -> None:
                 conn.execute(text("ALTER TABLE issues ADD COLUMN citizen_id VARCHAR(64)"))
                 conn.execute(text("CREATE INDEX IF NOT EXISTS ix_issues_citizen_id ON issues (citizen_id)"))
                 conn.commit()
+
+            # Hierarchical routing columns migration for issues
+            issue_cols = [
+                ("authority_id", "VARCHAR(64)"),
+                ("authority_code", "VARCHAR(32)"),
+                ("authority_name", "VARCHAR(128)"),
+                ("zone_id", "VARCHAR(64)"),
+                ("zone_name", "VARCHAR(128)"),
+                ("ward_id", "VARCHAR(64)"),
+                ("sub_ward_id", "VARCHAR(64)"),
+                ("sub_ward_name", "VARCHAR(128)"),
+                ("locality_id", "VARCHAR(64)"),
+                ("locality_name", "VARCHAR(128)"),
+                ("routing_path", "TEXT"),
+                ("jurisdiction_verified", "BOOLEAN DEFAULT 1"),
+                ("jurisdiction_review_required", "BOOLEAN DEFAULT 0"),
+                ("jurisdiction_review_reason", "TEXT"),
+            ]
+            for col_name, col_type in issue_cols:
+                if columns and col_name not in columns:
+                    conn.execute(text(f"ALTER TABLE issues ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
+
+            # Teams migration
+            cursor_teams = conn.execute(text("PRAGMA table_info(operational_teams)"))
+            team_cols = [row[1] for row in cursor_teams.fetchall()]
+            new_team_cols = [
+                ("sub_ward_id", "VARCHAR(64)"),
+                ("authority_id", "VARCHAR(64) DEFAULT 'AUTH-BMC'"),
+                ("supervisor_name", "VARCHAR(128)"),
+                ("capacity", "INTEGER DEFAULT 6"),
+            ]
+            for col_name, col_type in new_team_cols:
+                if team_cols and col_name not in team_cols:
+                    conn.execute(text(f"ALTER TABLE operational_teams ADD COLUMN {col_name} {col_type}"))
+                    conn.commit()
         except Exception:
             pass
 

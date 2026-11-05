@@ -61,6 +61,22 @@ class IssueRecord(Base):
     recommended_action: Mapped[str] = mapped_column(Text, nullable=False, default="Inspect and triage")
     sla_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=72)
     
+    # Hierarchical Ward & Operations Management
+    authority_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    authority_code: Mapped[Optional[str]] = mapped_column(String(32), nullable=True, index=True)
+    authority_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    zone_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    zone_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    ward_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    sub_ward_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    sub_ward_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    locality_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    locality_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    routing_path: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    jurisdiction_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    jurisdiction_review_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
+    jurisdiction_review_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
     # Ownership & Status
     citizen_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
@@ -188,6 +204,10 @@ class TeamRecord(Base):
     category: Mapped[str] = mapped_column(String(64), nullable=False)
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="AVAILABLE")
     ward: Mapped[str] = mapped_column(String(64), nullable=False, default="ALL")
+    sub_ward_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    authority_id: Mapped[str] = mapped_column(String(64), nullable=False, default="AUTH-BMC")
+    supervisor_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    capacity: Mapped[int] = mapped_column(Integer, nullable=False, default=6)
     contact_lead: Mapped[str] = mapped_column(String(128), nullable=False, default="Duty Supervisor")
     active_tasks_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
@@ -218,6 +238,190 @@ class WardConfigRecord(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class MunicipalAuthorityRecord(Base):
+    """
+    Persistent storage for separate municipal authorities (e.g. BMC and NMMC).
+    """
+    __tablename__ = "authorities"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    code: Mapped[str] = mapped_column(String(32), unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    short_name: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    city: Mapped[str] = mapped_column(String(64), nullable=False)
+    headquarters: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    boundary_geojson: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class AdminZoneRecord(Base):
+    """
+    Persistent storage for official administrative zones under a municipal authority.
+    """
+    __tablename__ = "admin_zones"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    authority_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    code: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    zonal_officer: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    boundary_geojson: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class AdminWardRecord(Base):
+    """
+    Persistent storage for official administrative wards / ward offices.
+    """
+    __tablename__ = "admin_wards"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    authority_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    zone_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    ward_code: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    ward_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    office_address: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    lead_officer: Mapped[str] = mapped_column(String(128), nullable=False, default="Abhinay")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    boundary_geojson: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class SubWardRecord(Base):
+    """
+    Persistent storage for CIVILENS operational sub-wards / service beats.
+    Clearly flagged with is_official=False to prevent false labeling.
+    """
+    __tablename__ = "sub_wards"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    ward_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    authority_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    sub_ward_code: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    is_official: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    operational_type: Mapped[str] = mapped_column(String(64), nullable=False, default="CIVILENS_OPERATIONAL_SUB_WARD")
+    supervisor_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    supervisor_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    default_road_team_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    default_swm_team_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    boundary_geojson: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class LocalityBeatRecord(Base):
+    """
+    Persistent storage for micro-localities, service beats, and landmark road corridors.
+    """
+    __tablename__ = "localities"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    sub_ward_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    ward_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    authority_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    landmark: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    radius_meters: Mapped[float] = mapped_column(Float, default=500.0, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+
+class OfficerJurisdictionRecord(Base):
+    """
+    Scoped jurisdiction assignment linking municipal officers and supervisors
+    to specific authorities, administrative wards, or operational sub-wards.
+    """
+    __tablename__ = "officer_jurisdictions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    user_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    authority_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    ward_code: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    sub_ward_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
+    jurisdiction_level: Mapped[str] = mapped_column(String(64), nullable=False, default="WARD_OFFICER")
+    assigned_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class JurisdictionAuditLogRecord(Base):
+    """
+    Complete audit trail of jurisdiction corrections and routing changes.
+    Tracks previous vs new jurisdiction, changing actor, timestamp, and mandatory reason.
+    """
+    __tablename__ = "jurisdiction_audit_logs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, index=True)
+    issue_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    previous_jurisdiction_json: Mapped[str] = mapped_column(Text, nullable=False)
+    new_jurisdiction_json: Mapped[str] = mapped_column(Text, nullable=False)
+    changed_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    changed_by_role: Mapped[str] = mapped_column(String(32), nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc)
     )
 
 

@@ -30,6 +30,7 @@ from app.services.upload_service import upload_service
 from app.config import settings
 from fastapi import HTTPException, status
 from app.modules.gis.bounds import is_within_supported_bounds, OUT_OF_BOUNDS_ERROR
+from app.modules.gis.hierarchy_spatial import resolve_coordinates_hierarchy, check_ward_mismatch
 
 class CivicIssueIntelligencePipeline:
     """
@@ -134,6 +135,26 @@ class CivicIssueIntelligencePipeline:
             ward = payload.ward or loc_out["ward"]
 
         # -------------------------------------------------------------
+        # Point-in-Polygon Hierarchical Resolution & Ward Mismatch Check
+        # -------------------------------------------------------------
+        geo_res = resolve_coordinates_hierarchy(lat, lng)
+        if not geo_res.get("is_valid"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=geo_res.get("error", OUT_OF_BOUNDS_ERROR)
+            )
+
+        # Compare manually selected administrative area with GPS-derived ward
+        user_selected_ward = getattr(payload, "selected_ward", None) or getattr(payload, "ward", None)
+        derived_ward = geo_res["ward_code"]
+        mismatch_info = check_ward_mismatch(user_selected_ward, derived_ward)
+
+        # Enforce verified geographical jurisdiction assignment
+        ward = derived_ward
+        if not resolved_location:
+            resolved_location = geo_res.get("landmark") or geo_res.get("locality_name") or f"{derived_ward} Sector"
+
+        # -------------------------------------------------------------
         # Features 5, 6: Duplicate & Near-Duplicate Detection
         # -------------------------------------------------------------
         dedup_out = deduplication_engine.check_duplicate(
@@ -233,11 +254,25 @@ class CivicIssueIntelligencePipeline:
         )
 
         # -------------------------------------------------------------
-        # Feature 19: Configurable Department Routing & Recommended Action
+        # Feature 19: Configurable Department Routing & Hierarchical Path
         # -------------------------------------------------------------
         department, recommended_action, sla_hours, dept_code = department_dispatcher.route_issue(
             category=category,
             priority=priority_level
+        )
+
+        supervisor_name = geo_res.get("supervisor_name") or "Area Supervisor"
+        is_road_cat = "Road" in str(category.value if hasattr(category, "value") else category)
+        default_team_id = geo_res.get("default_road_team_id") if is_road_cat else geo_res.get("default_swm_team_id")
+        team_rec = demo_store.repository.get_team(default_team_id) if default_team_id else None
+        team_name = team_rec["name"] if team_rec else (
+            "Quick Patch Asphalt Squad (Ward N)" if is_road_cat else "Solid Waste Rapid Response (Ward N)"
+        )
+
+        routing_path = (
+            f"{geo_res['authority_code']} → {geo_res['ward_name']} → "
+            f"{geo_res['sub_ward_name']} → {geo_res['locality_name']} → "
+            f"{department} → {supervisor_name} → {team_name}"
         )
 
         overall_severity = max(text_severity, vis_severity)
@@ -256,6 +291,26 @@ class CivicIssueIntelligencePipeline:
             "latitude": lat,
             "longitude": lng,
             "ward": ward,
+            "authority_id": geo_res["authority_id"],
+            "authority_code": geo_res["authority_code"],
+            "authority_name": geo_res["authority_name"],
+            "zone_id": geo_res["zone_id"],
+            "zone_name": geo_res["zone_name"],
+            "ward_id": geo_res["ward_id"],
+            "ward_code": geo_res["ward_code"],
+            "sub_ward_id": geo_res["sub_ward_id"],
+            "sub_ward_name": geo_res["sub_ward_name"],
+            "locality_id": geo_res["locality_id"],
+            "locality_name": geo_res["locality_name"],
+            "routing_path": routing_path,
+            "supervisor_name": supervisor_name,
+            "default_team_id": default_team_id,
+            "default_team_name": team_name,
+            "has_ward_mismatch": mismatch_info.get("is_mismatch", False),
+            "mismatch_details": mismatch_info,
+            "jurisdiction_verified": not geo_res.get("requires_admin_review", False),
+            "jurisdiction_review_required": geo_res.get("requires_admin_review", False) or mismatch_info.get("is_mismatch", False),
+            "jurisdiction_review_reason": geo_res.get("review_reason") or mismatch_info.get("warning_message"),
             "locationMode": loc_mode,
             "isDuplicate": is_dup,
             "duplicateGroup": dup_group,
@@ -355,6 +410,20 @@ class CivicIssueIntelligencePipeline:
             recommendedAction=analysis["recommendedAction"],
             slaHours=analysis["slaHours"],
             ward=analysis.get("ward", "N-Ward"),
+            authority_id=analysis.get("authority_id", "AUTH-BMC"),
+            authority_code=analysis.get("authority_code", "BMC"),
+            authority_name=analysis.get("authority_name", "Brihanmumbai Municipal Corporation"),
+            zone_id=analysis.get("zone_id"),
+            zone_name=analysis.get("zone_name"),
+            ward_id=analysis.get("ward_id"),
+            sub_ward_id=analysis.get("sub_ward_id"),
+            sub_ward_name=analysis.get("sub_ward_name"),
+            locality_id=analysis.get("locality_id"),
+            locality_name=analysis.get("locality_name"),
+            routing_path=analysis.get("routing_path"),
+            jurisdiction_verified=analysis.get("jurisdiction_verified", True),
+            jurisdiction_review_required=analysis.get("jurisdiction_review_required", False),
+            jurisdiction_review_reason=analysis.get("jurisdiction_review_reason"),
             imageUrl=resolved_img,
             uploadId=resolved_upload,
             citizen_id=payload.citizen_id,
@@ -363,6 +432,11 @@ class CivicIssueIntelligencePipeline:
             metadata={
                 "source": payload.source,
                 "ward": analysis["ward"],
+                "authority": analysis.get("authority_code"),
+                "subWard": analysis.get("sub_ward_name"),
+                "routingPath": analysis.get("routing_path"),
+                "hasWardMismatch": analysis.get("has_ward_mismatch", False),
+                "mismatchDetails": analysis.get("mismatch_details"),
                 "locationMethod": getattr(payload, "location_method", None) or ("gps" if "gps" in analysis.get("locationMode", "") else "manual"),
                 "locationCaptureMethod": getattr(payload, "location_method", None) or ("gps" if "gps" in analysis.get("locationMode", "") else "manual"),
                 "classificationMode": analysis["classificationMode"],
@@ -376,6 +450,18 @@ class CivicIssueIntelligencePipeline:
                 "visionFallbackReason": analysis.get("visionFallbackReason")
             }
         )
+
+        if analysis.get("has_ward_mismatch"):
+            issue.timeline.append(TimelineEvent(
+                id=f"evt-mismatch-{uuid.uuid4().hex[:6]}",
+                event_type="LOCATION_MISMATCH_DETECTED",
+                title="Geographical Ward Mismatch Flagged",
+                description=analysis.get("jurisdiction_review_reason") or "Selected ward differed from GPS coordinates.",
+                actor="System (Spatial Engine)",
+                role="system",
+                timestamp=analysis["timestamp"],
+                metadata=analysis.get("mismatch_details", {})
+            ))
 
         demo_store.add_issue(issue)
         if resolved_upload:

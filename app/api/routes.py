@@ -43,6 +43,16 @@ from app.models.field_guidance import (
     AdminDocumentUpdateRequest,
     AdminIngestRequest
 )
+from app.models.hierarchy import (
+    LocationVerificationRequest,
+    LocationVerificationResult,
+    JurisdictionUpdatePayload,
+    SubWardCreate,
+    SubWardUpdate,
+    LocalityBeatCreate,
+    LocalityBeatUpdate
+)
+from app.modules.gis.hierarchy_spatial import resolve_coordinates_hierarchy, check_ward_mismatch
 from app.services.guidance.knowledge_base import GuidanceKnowledgeBase
 from app.services.guidance.scraper import DocumentScraper
 from app.services.guidance.registry import validate_source_url
@@ -543,15 +553,36 @@ def get_issues(
     priority: Optional[PriorityLevel] = None,
     status_filter: Optional[IssueStatus] = Query(None, alias="status"),
     hotspot_only: bool = False,
-    citizen_id: Optional[str] = None
+    citizen_id: Optional[str] = None,
+    ward: Optional[str] = None,
+    sub_ward_id: Optional[str] = None,
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
 ) -> List[Issue]:
-    return demo_store.list_issues(
+    effective_ward = ward
+    effective_sub_ward = sub_ward_id
+
+    # If Municipal Officer has an assigned jurisdiction and no explicit override is provided, scope issues
+    if current_user and current_user.role == "inspector":
+        oj = demo_store.get_officer_jurisdiction(current_user.user_id)
+        if oj and oj.get("ward_code") and not ward:
+            effective_ward = oj["ward_code"]
+            if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id") and not sub_ward_id:
+                effective_sub_ward = oj["sub_ward_id"]
+
+    issues = demo_store.list_issues(
         category=category,
         priority=priority,
         status_filter=status_filter,
         hotspot_only=hotspot_only,
         citizen_id=citizen_id
     )
+
+    if effective_ward and effective_ward != "ALL" and "ALL WARDS" not in effective_ward.upper():
+        issues = [i for i in issues if i.ward == effective_ward or (i.ward and effective_ward in i.ward)]
+    if effective_sub_ward:
+        issues = [i for i in issues if getattr(i, "sub_ward_id", None) == effective_sub_ward]
+
+    return issues
 
 @router.get("/issues/my", response_model=List[Issue])
 def get_my_issues(
@@ -823,6 +854,239 @@ def update_ward_configuration(
     if not updated:
         raise HTTPException(status_code=404, detail=f"Ward {ward_code} not found")
     return updated
+
+# -----------------------------------------------------------------------------
+# Hierarchical Ward Management & Operations Allocation Endpoints
+# -----------------------------------------------------------------------------
+
+@router.get("/hierarchy/tree")
+def get_hierarchy_tree(
+    authority: Optional[str] = Query(None, description="Optional authority filter (BMC or NMMC)"),
+    ward: Optional[str] = Query(None, description="Optional ward filter (e.g. N-Ward)")
+) -> List[Dict[str, Any]]:
+    """Returns complete collapsible tree structure with real-time calculated workloads."""
+    return demo_store.get_hierarchy_tree(authority_code=authority, ward_code=ward)
+
+@router.get("/hierarchy/authorities")
+def list_municipal_authorities() -> List[Dict[str, Any]]:
+    """Returns official municipal authorities (BMC & NMMC)."""
+    return demo_store.list_authorities()
+
+@router.get("/hierarchy/wards")
+def list_hierarchical_wards(
+    authority_id: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Returns official administrative wards with geographical boundaries."""
+    return demo_store.list_admin_wards(authority_id=authority_id)
+
+@router.get("/hierarchy/sub-wards")
+def list_operational_sub_wards(
+    ward_code: Optional[str] = None,
+    ward_id: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Returns configured CIVILENS operational sub-wards for a ward."""
+    return demo_store.list_sub_wards(ward_code=ward_code, ward_id=ward_id)
+
+@router.post("/hierarchy/sub-wards", status_code=status.HTTP_201_CREATED)
+def create_operational_sub_ward(
+    payload: SubWardCreate,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Creates a new CIVILENS operational sub-ward."""
+    return demo_store.create_sub_ward(payload.model_dump())
+
+@router.patch("/hierarchy/sub-wards/{sub_ward_id}")
+def update_operational_sub_ward(
+    sub_ward_id: str,
+    payload: SubWardUpdate,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Updates an operational sub-ward."""
+    updated = demo_store.update_sub_ward(sub_ward_id, payload.model_dump(exclude_unset=True))
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Sub-ward {sub_ward_id} not found")
+    return updated
+
+@router.delete("/hierarchy/sub-wards/{sub_ward_id}")
+def deactivate_operational_sub_ward(
+    sub_ward_id: str,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, str]:
+    """Admin: Deactivates an operational sub-ward."""
+    success = demo_store.delete_sub_ward(sub_ward_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Sub-ward {sub_ward_id} not found")
+    return {"status": "success", "message": f"Sub-ward {sub_ward_id} deactivated"}
+
+@router.get("/hierarchy/localities")
+def list_localities(
+    sub_ward_id: Optional[str] = None,
+    ward_id: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Returns configured operational locality beats."""
+    return demo_store.list_localities(sub_ward_id=sub_ward_id, ward_id=ward_id)
+
+@router.post("/hierarchy/localities", status_code=status.HTTP_201_CREATED)
+def create_locality(
+    payload: LocalityBeatCreate,
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Creates a new locality beat."""
+    return demo_store.create_locality(payload.model_dump())
+
+@router.post("/hierarchy/verify-location", response_model=LocationVerificationResult)
+def verify_location(payload: LocationVerificationRequest) -> LocationVerificationResult:
+    """
+    Point-in-polygon spatial verification for GPS coordinates or confirmed pin.
+    Determines Municipal Authority, Zone, Ward, Sub-Ward, and Locality.
+    Compares against citizen's selected ward to detect location mismatches.
+    """
+    res = resolve_coordinates_hierarchy(payload.latitude, payload.longitude)
+    if not res.get("is_valid"):
+        return LocationVerificationResult(
+            is_valid=False,
+            error=res.get("error", "Location outside supported boundaries"),
+            latitude=payload.latitude,
+            longitude=payload.longitude
+        )
+
+    derived_ward = res["ward_code"]
+    mismatch = check_ward_mismatch(payload.selected_ward, derived_ward)
+
+    return LocationVerificationResult(
+        is_valid=True,
+        latitude=payload.latitude,
+        longitude=payload.longitude,
+        authority_id=res.get("authority_id"),
+        authority_code=res.get("authority_code"),
+        authority_name=res.get("authority_name"),
+        zone_id=res.get("zone_id"),
+        zone_code=res.get("zone_code"),
+        zone_name=res.get("zone_name"),
+        ward_id=res.get("ward_id"),
+        ward_code=derived_ward,
+        ward_name=res.get("ward_name"),
+        sub_ward_id=res.get("sub_ward_id"),
+        sub_ward_code=res.get("sub_ward_code"),
+        sub_ward_name=res.get("sub_ward_name"),
+        is_official_sub_ward=False,
+        locality_id=res.get("locality_id"),
+        locality_name=res.get("locality_name"),
+        landmark=res.get("landmark"),
+        supervisor_name=res.get("supervisor_name"),
+        is_ambiguous=res.get("is_ambiguous", False),
+        requires_admin_review=res.get("requires_admin_review", False),
+        review_reason=res.get("review_reason"),
+        has_ward_mismatch=mismatch.get("is_mismatch", False),
+        selected_ward=payload.selected_ward,
+        warning_message=mismatch.get("warning_message")
+    )
+
+@router.get("/hierarchy/jurisdiction/me")
+def get_my_jurisdiction(
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Optional[Dict[str, Any]]:
+    """Returns assigned geographical jurisdiction for authenticated Municipal Officer."""
+    return demo_store.get_officer_jurisdiction(current_user.user_id)
+
+@router.post("/hierarchy/supervisors/assign")
+def assign_supervisor_jurisdiction(
+    payload: Dict[str, Any],
+    current_user: AuthenticatedUser = Depends(require_admin)
+) -> Dict[str, Any]:
+    """Admin: Assigns officer/supervisor to a ward or operational sub-ward."""
+    user_id = payload.get("user_id")
+    ward_code = payload.get("ward_code")
+    sub_ward_id = payload.get("sub_ward_id")
+    authority_id = payload.get("authority_id", "AUTH-BMC")
+    level = payload.get("jurisdiction_level", "WARD_OFFICER")
+    if not user_id or not ward_code:
+        raise HTTPException(status_code=400, detail="user_id and ward_code are required")
+
+    return demo_store.assign_officer_jurisdiction(
+        user_id=user_id,
+        ward_code=ward_code,
+        sub_ward_id=sub_ward_id,
+        authority_id=authority_id,
+        jurisdiction_level=level
+    )
+
+@router.patch("/issues/{issue_id}/jurisdiction", response_model=Issue)
+def correct_issue_jurisdiction(
+    issue_id: str,
+    payload: JurisdictionUpdatePayload,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Municipal Officer / Admin: Corrects jurisdiction assignment of a complaint,
+    updating routing tree path and recording an immutable audit log.
+    """
+    updated = demo_store.update_issue_jurisdiction(
+        issue_id=issue_id,
+        new_ward_code=payload.ward_code,
+        new_sub_ward_id=payload.sub_ward_id,
+        new_locality_id=payload.locality_id,
+        changed_by=current_user.name or current_user.username,
+        changed_by_role=current_user.role,
+        reason=payload.reason
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.get("/issues/{issue_id}/jurisdiction-history")
+def get_issue_jurisdiction_history(issue_id: str) -> List[Dict[str, Any]]:
+    """Returns audit log of jurisdiction changes for an issue."""
+    return demo_store.get_jurisdiction_audit_logs(issue_id=issue_id)
+
+@router.get("/gis/boundaries")
+def get_gis_boundaries() -> Dict[str, Any]:
+    """Returns GeoJSON FeatureCollection of all administrative and operational sub-ward boundaries."""
+    wards = demo_store.list_admin_wards()
+    sub_wards = demo_store.list_sub_wards()
+    features = []
+
+    for w in wards:
+        geom = w.get("boundary_geojson")
+        if geom:
+            features.append({
+                "type": "Feature",
+                "id": w["id"],
+                "geometry": geom,
+                "properties": {
+                    "layer": "ward",
+                    "id": w["id"],
+                    "code": w["ward_code"],
+                    "name": w["ward_name"],
+                    "authority_id": w["authority_id"],
+                    "lead_officer": w.get("lead_officer", "Lead Officer"),
+                    "is_official": True
+                }
+            })
+
+    for sw in sub_wards:
+        geom = sw.get("boundary_geojson")
+        if geom:
+            features.append({
+                "type": "Feature",
+                "id": sw["id"],
+                "geometry": geom,
+                "properties": {
+                    "layer": "sub_ward",
+                    "id": sw["id"],
+                    "code": sw["sub_ward_code"],
+                    "name": sw["name"],
+                    "ward_id": sw["ward_id"],
+                    "supervisor_name": sw.get("supervisor_name", "Area Supervisor"),
+                    "is_official": False,
+                    "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD"
+                }
+            })
+
+    return {
+        "type": "FeatureCollection",
+        "features": features
+    }
 
 @router.post("/issues/{issue_id}/verify", response_model=Issue)
 def verify_issue_resolution(

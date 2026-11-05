@@ -318,6 +318,23 @@ export interface Issue {
   citizen_id?: string
   citizenId?: string
   
+  // Hierarchical Ward Routing & Governance Fields
+  authority_id?: string
+  authority_code?: string
+  authority_name?: string
+  zone_id?: string
+  zone_name?: string
+  ward_id?: string
+  sub_ward_id?: string
+  sub_ward_name?: string
+  locality_id?: string
+  locality_name?: string
+  routing_path?: string
+  jurisdiction_verified?: boolean
+  jurisdiction_review_required?: boolean
+  jurisdiction_review_reason?: string
+  jurisdiction_history?: JurisdictionAuditLog[]
+
   // Lightweight Ward Operations Management Fields
   assignment?: TaskAssignment
   timeline?: TimelineEvent[]
@@ -526,5 +543,150 @@ export interface GuidanceDocument {
   is_approved: boolean
   last_retrieved_at?: string | null
 }
+
+export interface MunicipalAuthority {
+  id: string
+  code: string
+  name: string
+  short_name: string
+  state: string
+  headquarters?: string
+  center_lat: number
+  center_lng: number
+  is_active: boolean
+  boundary_geojson?: Record<string, any>
+}
+
+export interface AdminZone {
+  id: string
+  authority_id: string
+  code: string
+  name: string
+  zone_number: number
+  is_active: boolean
+  boundary_geojson?: Record<string, any>
+}
+
+export interface AdminWard {
+  id: string
+  authority_id: string
+  zone_id?: string
+  code: string
+  name: string
+  office_location?: string
+  officer_in_charge?: string
+  contact_phone?: string
+  center_lat: number
+  center_lng: number
+  is_active: boolean
+  boundary_geojson?: Record<string, any>
+}
+
+export interface SubWard {
+  id: string
+  ward_id: string
+  code: string
+  name: string
+  is_official: boolean
+  operational_type: string
+  center_lat: number
+  center_lng: number
+  supervisor_name?: string
+  assigned_department?: string
+  is_active: boolean
+  boundary_geojson?: Record<string, any>
+  created_at?: string
+}
+
+export interface LocalityBeat {
+  id: string
+  sub_ward_id: string
+  code: string
+  name: string
+  beat_type: string
+  center_lat: number
+  center_lng: number
+  radius_meters?: number
+  is_active: boolean
+}
+
+export interface HierarchyTreeNode {
+  id: string
+  label?: string
+  name: string
+  code: string
+  type?: 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
+  level: 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
+  parent_id?: string
+  is_official: boolean
+  is_active: boolean
+  boundary_geojson?: Record<string, any>
+  lead_officer?: string
+  supervisor_name?: string
+  supervisor?: string
+  department?: string
+  assigned_crews_count?: number
+  assigned_crews?: any[]
+  available_crews?: number
+  total_complaints: number
+  unassigned_complaints: number
+  assigned_complaints: number
+  in_progress_tasks: number
+  completed_complaints: number
+  children: HierarchyTreeNode[]
+}
+
+export interface JurisdictionAuditLog {
+  id: string
+  issue_id: string
+  previous_authority_id?: string
+  previous_ward?: string
+  previous_sub_ward_id?: string
+  new_authority_id: string
+  new_ward: string
+  new_sub_ward_id?: string
+  new_routing_path?: string
+  changed_by: string
+  changed_by_role: string
+  reason: string
+  timestamp: string
+}
+
+export interface LocationVerificationResult {
+  is_valid: boolean
+  error?: string | null
+  latitude?: number
+  longitude?: number
+  authority_id?: string
+  authority_code?: string
+  authority_name?: string
+  zone_id?: string
+  zone_code?: string
+  zone_name?: string
+  ward_id?: string
+  ward_code?: string
+  ward_name?: string
+  sub_ward_id?: string
+  sub_ward_code?: string
+  sub_ward_name?: string
+  is_official_sub_ward?: boolean
+  locality_id?: string
+  locality_name?: string
+  landmark?: string
+  supervisor_name?: string
+  is_ambiguous?: boolean
+  requires_admin_review?: boolean
+  review_reason?: string
+  has_ward_mismatch?: boolean
+  selected_ward?: string
+  warning_message?: string
+  // Aliases for convenience
+  is_valid_jurisdiction?: boolean
+  is_mismatch?: boolean
+  derived_ward?: string
+  mismatch_message?: string
+  review_required?: boolean
+}
+
 
 

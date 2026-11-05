@@ -14,7 +14,14 @@ import {
   FieldGuidance,
   GuidanceSource,
   GuidanceDocument,
-  OfficerDecisionType
+  OfficerDecisionType,
+  MunicipalAuthority,
+  AdminWard,
+  SubWard,
+  LocalityBeat,
+  HierarchyTreeNode,
+  JurisdictionAuditLog,
+  LocationVerificationResult
 } from '../types'
 
 const BASE_URL = '/api/v1'
@@ -104,6 +111,9 @@ export const api = {
     uploadId?: string
     category?: string
     ward?: string
+    selected_ward?: string
+    sub_ward_id?: string
+    locality_id?: string
     source?: string
   }): Promise<Issue> {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }
@@ -683,6 +693,247 @@ export const api = {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.detail || 'Document ingestion failed')
       }
+      return res.json()
+    },
+  },
+
+  hierarchy: {
+    async getTree(): Promise<HierarchyTreeNode[]> {
+      const res = await fetch(`${BASE_URL}/hierarchy/tree`)
+      if (!res.ok) throw new Error('Failed to fetch hierarchy tree')
+      const data = await res.json()
+      const normalizeNode = (n: any): HierarchyTreeNode => ({
+        ...n,
+        name: n.name || n.label || '',
+        level: n.level || n.type || 'ward',
+        supervisor: n.supervisor || n.supervisor_name || '',
+        available_crews: n.available_crews ?? n.assigned_crews_count ?? 0,
+        children: (n.children || []).map(normalizeNode),
+      })
+      return data.map(normalizeNode)
+    },
+
+    async getAuthorities(): Promise<MunicipalAuthority[]> {
+      const res = await fetch(`${BASE_URL}/hierarchy/authorities`)
+      if (!res.ok) throw new Error('Failed to fetch authorities')
+      return res.json()
+    },
+
+    async getAdminWards(authorityId?: string): Promise<AdminWard[]> {
+      const query = authorityId ? `?authority_id=${encodeURIComponent(authorityId)}` : ''
+      const res = await fetch(`${BASE_URL}/hierarchy/wards${query}`)
+      if (!res.ok) throw new Error('Failed to fetch admin wards')
+      return res.json()
+    },
+
+    async getSubWards(wardId?: string): Promise<SubWard[]> {
+      const query = wardId ? `?ward_id=${encodeURIComponent(wardId)}` : ''
+      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards${query}`)
+      if (!res.ok) throw new Error('Failed to fetch sub-wards')
+      return res.json()
+    },
+
+    async createSubWard(payload: {
+      ward_id: string
+      code?: string
+      sub_ward_code?: string
+      name: string
+      center_lat?: number
+      center_lng?: number
+      supervisor_name?: string
+      assigned_department?: string
+      boundary_geojson?: Record<string, any>
+    }): Promise<SubWard> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const body = {
+        ward_id: payload.ward_id,
+        sub_ward_code: payload.sub_ward_code || payload.code || 'SW-NEW',
+        name: payload.name,
+        supervisor_name: payload.supervisor_name || 'Area Supervisor',
+        is_active: true,
+        boundary_geojson: payload.boundary_geojson,
+      }
+
+      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to create operational sub-ward')
+      }
+      return res.json()
+    },
+
+    async updateSubWard(subWardId: string, payload: Partial<SubWard>): Promise<SubWard> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards/${encodeURIComponent(subWardId)}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to update operational sub-ward')
+      }
+      return res.json()
+    },
+
+    async deleteSubWard(subWardId: string): Promise<{ success: boolean; message: string }> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards/${encodeURIComponent(subWardId)}`, {
+        method: 'DELETE',
+        headers,
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to delete operational sub-ward')
+      }
+      return res.json()
+    },
+
+    async getLocalities(subWardId?: string): Promise<LocalityBeat[]> {
+      const query = subWardId ? `?sub_ward_id=${encodeURIComponent(subWardId)}` : ''
+      const res = await fetch(`${BASE_URL}/hierarchy/localities${query}`)
+      if (!res.ok) throw new Error('Failed to fetch localities')
+      return res.json()
+    },
+
+    async createLocality(payload: {
+      sub_ward_id: string
+      code: string
+      name: string
+      center_lat: number
+      center_lng: number
+      radius_meters?: number
+      beat_type?: string
+    }): Promise<LocalityBeat> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/localities`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to create locality/beat')
+      }
+      return res.json()
+    },
+
+    async verifyLocation(lat: number, lng: number, selectedWard?: string): Promise<LocationVerificationResult> {
+      const res = await fetch(`${BASE_URL}/hierarchy/verify-location`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          latitude: lat,
+          longitude: lng,
+          selected_ward: selectedWard,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Location verification failed')
+      }
+      return res.json()
+    },
+
+    async getMyJurisdiction(): Promise<{
+      user_id: string
+      role: string
+      assigned_ward_id?: string
+      assigned_sub_ward_id?: string
+    }> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/jurisdiction/me`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch officer jurisdiction')
+      return res.json()
+    },
+
+    async assignSupervisor(payload: {
+      user_id: string
+      ward_id?: string
+      sub_ward_id?: string
+      role_title?: string
+    }): Promise<{ success: boolean; message: string }> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader('admin')
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/supervisors/assign`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to assign supervisor')
+      }
+      return res.json()
+    },
+
+    async correctIssueJurisdiction(
+      issueId: string,
+      payload: {
+        new_authority_id?: string
+        new_ward?: string
+        ward_code?: string
+        new_sub_ward_id?: string
+        sub_ward_id?: string
+        reason: string
+      }
+    ): Promise<Issue> {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      const body = {
+        ward_code: payload.ward_code || payload.new_ward,
+        sub_ward_id: payload.sub_ward_id || payload.new_sub_ward_id,
+        reason: payload.reason,
+      }
+
+      const res = await fetch(`${BASE_URL}/issues/${encodeURIComponent(issueId)}/jurisdiction`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to correct issue jurisdiction')
+      }
+      return res.json()
+    },
+
+    async getIssueJurisdictionHistory(issueId: string): Promise<JurisdictionAuditLog[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/issues/${encodeURIComponent(issueId)}/jurisdiction-history`, { headers })
+      if (!res.ok) throw new Error('Failed to fetch jurisdiction history')
+      return res.json()
+    },
+
+    async getGisBoundaries(): Promise<any> {
+      const res = await fetch(`${BASE_URL}/gis/boundaries`)
+      if (!res.ok) throw new Error('Failed to fetch GIS boundaries')
       return res.json()
     },
   },

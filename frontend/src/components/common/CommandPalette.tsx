@@ -14,6 +14,7 @@ import {
   PlusCircle,
   AlertTriangle,
   ArrowRight,
+  Network,
 } from 'lucide-react'
 import { Issue } from '../../types'
 import { useAuth } from '../../context/AuthContext'
@@ -64,6 +65,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   const views = [
     { id: 'overview', label: 'Command Center Overview', icon: LayoutDashboard },
+    { id: 'ward_hierarchy', label: 'Ward Hierarchy & Crew Allocation', icon: Network },
     { id: 'analyze', label: 'Analyze Complaint (AI Laboratory)', icon: Sparkles },
     { id: 'intelligence', label: 'Issue Intelligence & Evidence', icon: AlertTriangle },
     { id: 'map', label: 'Tactical GIS Issue Map', icon: Map },

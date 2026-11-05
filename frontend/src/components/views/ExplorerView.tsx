@@ -35,14 +35,27 @@ type ActionQueueTab =
   | 'IN_PROGRESS'
   | 'AWAITING_CONFIRMATION'
   | 'REOPENED'
+  | 'JURISDICTION_REVIEW'
 
 export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssue }) => {
   const [activeTab, setActiveTab] = useState<ActionQueueTab>('ALL')
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL')
+  const [selectedSubWard, setSelectedSubWard] = useState<string>('ALL')
   const [sortField, setSortField] = useState<'priority' | 'time'>('priority')
 
-  // Helper filter logic for the 7 operations queue filters
+  // Extract unique sub-wards
+  const availableSubWards = React.useMemo(() => {
+    const map = new Map<string, string>()
+    issues.forEach((i) => {
+      if (i.sub_ward_id && i.sub_ward_name) {
+        map.set(i.sub_ward_id, i.sub_ward_name)
+      }
+    })
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }))
+  }, [issues])
+
+  // Helper filter logic for the operations queue filters
   const matchesTab = (issue: Issue, tab: ActionQueueTab): boolean => {
     const isResolved = issue.status === 'RESOLVED' || issue.status === 'Verified Closed'
     const statusNormalized = (issue.status || '').toUpperCase().replace(/[\s-]/g, '_')
@@ -72,6 +85,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
         )
       case 'REOPENED':
         return statusNormalized === 'REOPENED'
+      case 'JURISDICTION_REVIEW':
+        return Boolean(issue.jurisdiction_review_required)
       case 'ALL':
       default:
         return true
@@ -88,11 +103,13 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
     IN_PROGRESS: issues.filter((i) => matchesTab(i, 'IN_PROGRESS')).length,
     AWAITING_CONFIRMATION: issues.filter((i) => matchesTab(i, 'AWAITING_CONFIRMATION')).length,
     REOPENED: issues.filter((i) => matchesTab(i, 'REOPENED')).length,
+    JURISDICTION_REVIEW: issues.filter((i) => matchesTab(i, 'JURISDICTION_REVIEW')).length,
   }
 
   const tabs: { id: ActionQueueTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'ALL', label: 'All Complaints', icon: Filter },
     { id: 'UNASSIGNED', label: 'Unassigned', icon: ClipboardList },
+    { id: 'JURISDICTION_REVIEW', label: 'Review Required', icon: AlertTriangle },
     { id: 'AWAITING_INSPECTION', label: 'Awaiting Inspection', icon: Eye },
     { id: 'ASSIGNED', label: 'Assigned', icon: Wrench },
     { id: 'SCHEDULED', label: 'Scheduled', icon: Calendar },
@@ -121,7 +138,11 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
       (selectedCategory.includes('Road') && i.category?.includes('Road')) ||
       (selectedCategory.includes('Sanitation') && (i.category?.includes('Sanitation') || i.category?.includes('Garbage')))
     const matchTab = matchesTab(i, activeTab)
-    return matchSearch && matchCat && matchTab
+    const matchSubWard =
+      selectedSubWard === 'ALL' ||
+      i.sub_ward_id === selectedSubWard ||
+      i.sub_ward_name === selectedSubWard
+    return matchSearch && matchCat && matchTab && matchSubWard
   })
 
   filtered.sort((a, b) => {
@@ -187,6 +208,41 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
           )
         })}
       </div>
+
+      {/* Sub-Ward Operational Service Area Filter Strip */}
+      {availableSubWards.length > 0 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
+          <span className="text-[11px] font-bold text-[#65708B] uppercase shrink-0">Sub-Ward Beat:</span>
+          <button
+            onClick={() => setSelectedSubWard('ALL')}
+            className={cn(
+              'px-2.5 py-1 rounded-lg font-medium text-[11px] transition shrink-0 cursor-pointer',
+              selectedSubWard === 'ALL'
+                ? 'bg-[#6457E8] text-white font-semibold shadow-xs'
+                : 'bg-white border border-[#E4E7F1] text-[#65708B] hover:text-[#11162A]'
+            )}
+          >
+            All Sub-Wards ({issues.length})
+          </button>
+          {availableSubWards.map((sw) => {
+            const count = issues.filter((i) => i.sub_ward_id === sw.id || i.sub_ward_name === sw.name).length
+            return (
+              <button
+                key={sw.id}
+                onClick={() => setSelectedSubWard(sw.id)}
+                className={cn(
+                  'px-2.5 py-1 rounded-lg font-medium text-[11px] transition shrink-0 cursor-pointer',
+                  selectedSubWard === sw.id
+                    ? 'bg-[#6457E8] text-white font-semibold shadow-xs'
+                    : 'bg-white border border-[#E4E7F1] text-[#65708B] hover:text-[#11162A]'
+                )}
+              >
+                {sw.name} ({count})
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Search & Secondary Filter Bar */}
       <div className="bg-white border border-[#E4E7F1] rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-center gap-3">
@@ -292,7 +348,20 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({ issues, onSelectIssu
                           <MapPin className="w-3.5 h-3.5 text-[#65708B] shrink-0" />
                           <span className="truncate max-w-[150px]">{issue.location}</span>
                         </div>
-                        <div className="text-xs text-[#65708B] pl-4">{issue.ward || 'N-Ward'}</div>
+                        <div className="text-[11px] text-[#65708B] pl-4 flex items-center gap-1.5 flex-wrap">
+                          <span className="font-semibold text-[#11162A]">{issue.ward || 'N-Ward'}</span>
+                          {issue.sub_ward_name && (
+                            <>
+                              <span>&bull;</span>
+                              <span className="text-[#6457E8] font-medium">{issue.sub_ward_name}</span>
+                            </>
+                          )}
+                          {issue.jurisdiction_review_required && (
+                            <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300">
+                              Review Req
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         {isUnassigned ? (
