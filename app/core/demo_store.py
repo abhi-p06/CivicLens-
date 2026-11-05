@@ -181,8 +181,17 @@ class DemoDataStore:
     def seed_hierarchy_if_empty(self) -> None:
         return self.repository.seed_hierarchy_if_empty()
 
-    def get_hierarchy_tree(self, authority_code: Optional[str] = None, ward_code: Optional[str] = None) -> List[Dict[str, Any]]:
-        return self.repository.get_hierarchy_tree(authority_code=authority_code, ward_code=ward_code)
+    def get_hierarchy_tree(
+        self,
+        authority_code: Optional[str] = None,
+        ward_code: Optional[str] = None,
+        sub_ward_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        return self.repository.get_hierarchy_tree(
+            authority_code=authority_code,
+            ward_code=ward_code,
+            sub_ward_id=sub_ward_id
+        )
 
     def list_authorities(self) -> List[Dict[str, Any]]:
         return self.repository.list_authorities()

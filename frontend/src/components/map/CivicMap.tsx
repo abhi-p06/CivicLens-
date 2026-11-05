@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import L from 'leaflet'
 import { Issue, HotspotInfo } from '../../types'
 import { MUMBAI_NAVI_MUMBAI_BOUNDS } from '../../config/geo'
@@ -6,7 +6,7 @@ import { api } from '../../services/api'
 
 export type MapLayerMode = 'markers' | 'clusters' | 'heatmap' | 'hotspots'
 
-interface CivicMapProps {
+export interface CivicMapProps {
   issues: Issue[]
   hotspots?: HotspotInfo[]
   selectedIssue?: Issue | null
@@ -18,6 +18,10 @@ interface CivicMapProps {
   showHotspotCircles?: boolean
   showAdminWards?: boolean
   showSubWards?: boolean
+  selectedWardCode?: string
+  selectedSubWardId?: string
+  onSelectWard?: (wardProps: any) => void
+  onSelectSubWard?: (subWardProps: any) => void
   className?: string
 }
 
@@ -33,27 +37,45 @@ export const CivicMap: React.FC<CivicMapProps> = ({
   showHotspotCircles,
   showAdminWards = true,
   showSubWards = true,
+  selectedWardCode,
+  selectedSubWardId,
+  onSelectWard,
+  onSelectSubWard,
   className = 'h-full w-full',
 }) => {
   const displayHotspotBoundaries =
     showHotspotCircles !== undefined ? showHotspotCircles : showHotspotBoundaries
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
+
+  // Dedicated Leaflet Layer Groups for Independent Toggling & Zero Lingering Artifacts
+  const adminWardsLayerRef = useRef<L.LayerGroup | null>(null)
+  const subWardsLayerRef = useRef<L.LayerGroup | null>(null)
   const markersLayerRef = useRef<L.LayerGroup | null>(null)
   const hotspotsLayerRef = useRef<L.LayerGroup | null>(null)
   const heatmapLayerRef = useRef<L.LayerGroup | null>(null)
   const clustersLayerRef = useRef<L.LayerGroup | null>(null)
-  const boundariesLayerRef = useRef<L.LayerGroup | null>(null)
   const hasFittedInitialBoundsRef = useRef<boolean>(false)
 
   const [boundariesGeoJson, setBoundariesGeoJson] = useState<any | null>(null)
   const [wardsVisible, setWardsVisible] = useState<boolean>(showAdminWards)
   const [subWardsVisible, setSubWardsVisible] = useState<boolean>(showSubWards)
+  const [currentZoom, setCurrentZoom] = useState<number>(13)
 
-  // Load GIS Boundaries once
+  // Keep internal toggle state synchronized if parent props change
+  useEffect(() => {
+    setWardsVisible(showAdminWards)
+  }, [showAdminWards])
+
+  useEffect(() => {
+    setSubWardsVisible(showSubWards)
+  }, [showSubWards])
+
+  // Load GIS Boundaries once from backend API
   useEffect(() => {
     let active = true
-    api.hierarchy.getGisBoundaries()
+    api.hierarchy
+      .getGisBoundaries()
       .then((data) => {
         if (active) setBoundariesGeoJson(data)
       })
@@ -68,11 +90,17 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     if (!mapContainerRef.current) return
 
     if (!mapInstanceRef.current) {
-      const southWest = L.latLng(MUMBAI_NAVI_MUMBAI_BOUNDS.minLat - 0.05, MUMBAI_NAVI_MUMBAI_BOUNDS.minLng - 0.05)
-      const northEast = L.latLng(MUMBAI_NAVI_MUMBAI_BOUNDS.maxLat + 0.05, MUMBAI_NAVI_MUMBAI_BOUNDS.maxLng + 0.05)
+      const southWest = L.latLng(
+        MUMBAI_NAVI_MUMBAI_BOUNDS.minLat - 0.05,
+        MUMBAI_NAVI_MUMBAI_BOUNDS.minLng - 0.05
+      )
+      const northEast = L.latLng(
+        MUMBAI_NAVI_MUMBAI_BOUNDS.maxLat + 0.05,
+        MUMBAI_NAVI_MUMBAI_BOUNDS.maxLng + 0.05
+      )
       const regionBounds = L.latLngBounds(southWest, northEast)
 
-      // Centered on the active urban corridor (Vidyavihar / Ghatkopar / Kurla) to eliminate empty sea space
+      // Centered on the active urban corridor (Vidyavihar / Ghatkopar / Kurla)
       const map = L.map(mapContainerRef.current, {
         center: [19.0728, 72.8998],
         zoom: 13,
@@ -84,10 +112,15 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         attributionControl: false,
       })
 
-      // Elegant Zoom Controls top-right
+      // Zoom Controls top-right
       L.control.zoom({ position: 'topright' }).addTo(map)
 
-      // Professional ESRI Dark Gray Canvas (High contrast roads, zero watermark, dark graphite)
+      // Track zoom level for dynamic, zoom-aware clustering
+      map.on('zoomend', () => {
+        setCurrentZoom(map.getZoom())
+      })
+
+      // ESRI Dark Gray Canvas (High contrast roads, zero watermark, dark graphite)
       L.tileLayer(
         'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
         {
@@ -96,23 +129,25 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         }
       ).addTo(map)
 
-      // ESRI Dark Gray Reference Labels Overlay (Crisp street names & landmarks)
+      // ESRI Dark Gray Reference Labels Overlay
       L.tileLayer(
         'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
         {
           maxZoom: 16,
-          opacity: 0.9,
+          opacity: 0.85,
         }
       ).addTo(map)
 
-      // Layer Groups
-      const bl = L.layerGroup().addTo(map)
+      // Independent Layer Groups
+      const awl = L.layerGroup().addTo(map)
+      const swl = L.layerGroup().addTo(map)
       const ml = L.layerGroup().addTo(map)
       const hl = L.layerGroup().addTo(map)
       const hml = L.layerGroup().addTo(map)
       const cl = L.layerGroup().addTo(map)
 
-      boundariesLayerRef.current = bl
+      adminWardsLayerRef.current = awl
+      subWardsLayerRef.current = swl
       markersLayerRef.current = ml
       hotspotsLayerRef.current = hl
       heatmapLayerRef.current = hml
@@ -128,60 +163,125 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     }
   }, [])
 
-  // Render Administrative & Sub-Ward GIS Boundaries
+  // 2. Render Administrative Ward GIS Boundaries (Official 24 BMC Wards)
   useEffect(() => {
-    const bl = boundariesLayerRef.current
-    if (!bl || !boundariesGeoJson) return
-    bl.clearLayers()
+    const awl = adminWardsLayerRef.current
+    if (!awl) return
+    awl.clearLayers()
+
+    if (!wardsVisible || !boundariesGeoJson) return
 
     const features = boundariesGeoJson.features || []
     features.forEach((feature: any) => {
-      const type = feature.properties?.type
-      if (type === 'ADMIN_WARD' && !wardsVisible) return
-      if (type === 'CIVILENS_OPERATIONAL_SUB_WARD' && !subWardsVisible) return
+      const type = feature.properties?.type || (feature.properties?.layer === 'ward' ? 'ADMIN_WARD' : '')
+      if (type !== 'ADMIN_WARD') return
 
-      const isSubWard = type === 'CIVILENS_OPERATIONAL_SUB_WARD'
-      const color = isSubWard ? '#6457E8' : '#8B5CF6'
+      const props = feature.properties || {}
+      const isSelected = selectedWardCode && (props.code === selectedWardCode || props.name?.includes(selectedWardCode))
+      const wardComplaintsCount = issues.filter(
+        (i) => i.ward === props.code || (i.ward && props.code && i.ward.includes(props.code))
+      ).length
 
       const geo = L.geoJSON(feature, {
         style: {
-          color: color,
-          weight: isSubWard ? 1.5 : 2.0,
-          opacity: isSubWard ? 0.9 : 0.75,
-          dashArray: isSubWard ? '4, 4' : undefined,
-          fillColor: color,
-          fillOpacity: isSubWard ? 0.08 : 0.04,
+          color: isSelected ? '#A78BFA' : '#8B5CF6',
+          weight: isSelected ? 3.5 : 2.0,
+          opacity: isSelected ? 1.0 : 0.8,
+          dashArray: undefined,
+          fillColor: isSelected ? '#C4B5FD' : '#8B5CF6',
+          fillOpacity: isSelected ? 0.16 : 0.05,
         },
         onEachFeature: (_, layer) => {
-          const props = feature.properties || {}
           const authorityLabel = props.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : 'Brihanmumbai (BMC)'
-          const content = isSubWard
-            ? `
-              <div style="font-family: sans-serif; font-size: 11px; color: #11162A; line-height: 1.4; min-width: 170px;">
-                <div style="font-weight: 700; color: #6457E8; font-size: 12px;">${props.name}</div>
-                <div style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: #E0E7FF; color: #3730A3; margin: 3px 0;">CIVILENS Operational Service Area</div>
-                <div style="color: #65708B;">Code: <strong style="color: #11162A;">${props.code}</strong></div>
-                <div style="color: #65708B;">Supervisor: <strong style="color: #11162A;">${props.supervisor_name || 'Assigned Lead'}</strong></div>
-                <div style="color: #65708B;">Department: <strong style="color: #11162A;">${props.assigned_department || 'Infrastructure'}</strong></div>
+          const content = `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; color: #11162A; line-height: 1.45; min-width: 190px;">
+              <div style="font-weight: 700; color: #13152E; font-size: 13px; margin-bottom: 2px;">
+                ${props.name} <span style="font-family: monospace; font-size: 11px; color: #6457E8;">(${props.code})</span>
               </div>
-            `
-            : `
-              <div style="font-family: sans-serif; font-size: 11px; color: #11162A; line-height: 1.4; min-width: 170px;">
-                <div style="font-weight: 700; color: #13152E; font-size: 12px;">${props.name} (${props.code})</div>
-                <div style="color: #6457E8; font-weight: 600; font-size: 10px;">${authorityLabel}</div>
-                <div style="margin-top: 4px; color: #65708B;">Office: <span style="color: #11162A;">${props.office_location || 'Ward Office'}</span></div>
-                <div style="color: #65708B;">Nodal Officer: <span style="color: #11162A;">${props.officer_in_charge || 'Officer In Charge'}</span></div>
+              <div style="display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: #EEF2FF; color: #4338CA; margin-bottom: 6px;">
+                ${authorityLabel}
               </div>
-            `
+              <div style="color: #65708B;">Office: <span style="color: #11162A; font-weight: 500;">${props.office_location || 'Municipal Ward Office'}</span></div>
+              <div style="color: #65708B;">Nodal Officer: <span style="color: #11162A; font-weight: 500;">${props.lead_officer || 'Officer In Charge'}</span></div>
+              <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #E4E7F1; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #65708B;">Active Incidents:</span>
+                <strong style="color: #6457E8; font-size: 12px;">${wardComplaintsCount}</strong>
+              </div>
+            </div>
+          `
           layer.bindPopup(content)
           layer.bindTooltip(`${props.name} (${props.code})`, { sticky: true })
+
+          layer.on('click', () => {
+            if (onSelectWard) {
+              onSelectWard({ ...props, complaintCount: wardComplaintsCount })
+            }
+          })
         },
       })
-      bl.addLayer(geo)
+      awl.addLayer(geo)
     })
-  }, [boundariesGeoJson, wardsVisible, subWardsVisible])
+  }, [boundariesGeoJson, wardsVisible, selectedWardCode, issues, onSelectWard])
 
-  // 2. Render Layers based on layerMode and state
+  // 3. Render CIVILENS Operational Sub-Ward Boundaries (Corridors, is_official=False)
+  useEffect(() => {
+    const swl = subWardsLayerRef.current
+    if (!swl) return
+    swl.clearLayers()
+
+    if (!subWardsVisible || !boundariesGeoJson) return
+
+    const features = boundariesGeoJson.features || []
+    features.forEach((feature: any) => {
+      const type = feature.properties?.type || (feature.properties?.layer === 'sub_ward' ? 'CIVILENS_OPERATIONAL_SUB_WARD' : '')
+      if (type !== 'CIVILENS_OPERATIONAL_SUB_WARD') return
+
+      const props = feature.properties || {}
+      const isSelected = selectedSubWardId && (props.id === selectedSubWardId || props.code === selectedSubWardId)
+      const subWardComplaintsCount = issues.filter(
+        (i) => i.sub_ward_id === props.id || (props.code && i.sub_ward_id && i.sub_ward_id.includes(props.code)) || (props.name && i.sub_ward_name === props.name)
+      ).length
+
+      const geo = L.geoJSON(feature, {
+        style: {
+          color: isSelected ? '#818CF8' : '#6457E8',
+          weight: isSelected ? 3.0 : 1.8,
+          opacity: isSelected ? 1.0 : 0.9,
+          dashArray: '5, 5',
+          fillColor: isSelected ? '#A5B4FC' : '#6457E8',
+          fillOpacity: isSelected ? 0.22 : 0.08,
+        },
+        onEachFeature: (_, layer) => {
+          const content = `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; color: #11162A; line-height: 1.45; min-width: 190px;">
+              <div style="font-weight: 700; color: #6457E8; font-size: 13px;">${props.name}</div>
+              <div style="display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 9.5px; font-weight: 600; background: #E0E7FF; color: #3730A3; margin: 4px 0 6px 0;">
+                CIVILENS Operational Service Area (Beat)
+              </div>
+              <div style="color: #65708B;">Sub-Ward Code: <strong style="color: #11162A;">${props.code}</strong></div>
+              <div style="color: #65708B;">Supervisor: <strong style="color: #11162A;">${props.supervisor_name || 'Area Supervisor'}</strong></div>
+              <div style="color: #65708B;">Department: <strong style="color: #11162A;">${props.assigned_department || 'Infrastructure & Public Works'}</strong></div>
+              <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #E4E7F1; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #65708B;">Active Beat Tasks:</span>
+                <strong style="color: #6457E8; font-size: 12px;">${subWardComplaintsCount}</strong>
+              </div>
+            </div>
+          `
+          layer.bindPopup(content)
+          layer.bindTooltip(`${props.name} (${props.code})`, { sticky: true })
+
+          layer.on('click', () => {
+            if (onSelectSubWard) {
+              onSelectSubWard({ ...props, complaintCount: subWardComplaintsCount })
+            }
+          })
+        },
+      })
+      swl.addLayer(geo)
+    })
+  }, [boundariesGeoJson, subWardsVisible, selectedSubWardId, issues, onSelectSubWard])
+
+  // 4. Render Tactical Incident Layers based on layerMode (Markers, Clusters, Heatmap, Hotspots)
   useEffect(() => {
     const map = mapInstanceRef.current
     const ml = markersLayerRef.current
@@ -205,22 +305,19 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         const isCritical = h.hotspotLevel === 'CRITICAL' || h.averagePriority >= 75
         const color = isCritical ? '#ef4444' : '#f97316'
 
-        // Safely extract coordinates (supports both { lat, lng } and [lat, lng])
         const lat = typeof h.center?.lat === 'number' ? h.center.lat : Array.isArray(h.center) ? Number(h.center[0]) : null
         const lng = typeof h.center?.lng === 'number' ? h.center.lng : Array.isArray(h.center) ? Number(h.center[1]) : null
         if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) return
 
-        // Hotspot Boundary Circle
         const circle = L.circle([lat, lng], {
-          radius: h.radiusMeters || 600,
+          radius: h.radiusMeters || 500,
           color: color,
           fillColor: color,
-          fillOpacity: isSelected ? 0.28 : 0.14,
+          fillOpacity: isSelected ? 0.28 : 0.12,
           weight: isSelected ? 2.5 : 1.5,
           dashArray: '5, 5',
         })
 
-        // Centroid Radar Beacon
         const beaconIcon = L.divIcon({
           className: 'custom-beacon',
           html: `
@@ -247,18 +344,12 @@ export const CivicMap: React.FC<CivicMapProps> = ({
             <div style="color: #94a3b8; font-size: 10px; margin-top: 2px;">
               Cluster Size: <strong style="color: #e2e8f0;">${h.issueCount} Issues</strong>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 4px; border-top: 1px solid #1e2638; padding-top: 3px;">
-              <span>Growth: <strong style="color: ${h.growthRate > 0 ? '#f43f5e' : '#10b981'};">${h.growthRate > 0 ? '+' : ''}${h.growthRate}%</strong></span>
-              <span>Avg Pri: <strong style="color: #38bdf8;">${h.averagePriority.toFixed(0)}</strong></span>
-            </div>
           </div>
         `
-
-        circle.bindTooltip(tooltipHtml, { className: 'leaflet-dark-tooltip' })
-        beacon.bindTooltip(tooltipHtml, { className: 'leaflet-dark-tooltip' })
+        beacon.bindTooltip(tooltipHtml, { sticky: true, className: 'leaflet-dark-tooltip' })
 
         const handleHotspotClick = () => {
-          map.flyTo([lat, lng], 14, { duration: 1.2, easeLinearity: 0.25 })
+          map.flyTo([lat, lng], 14, { duration: 1.0, easeLinearity: 0.25 })
           if (onSelectHotspot) onSelectHotspot(h)
         }
 
@@ -271,7 +362,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     }
 
     // -----------------------------------------------------------------
-    // B. HEATMAP LAYER (Smooth Continuous Density & Priority Heat)
+    // B. HEATMAP LAYER (Smooth Priority & Density Radii)
     // -----------------------------------------------------------------
     if (layerMode === 'heatmap') {
       issues.forEach((issue) => {
@@ -280,18 +371,18 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         const isCrit = issue.priorityLevel === 'CRITICAL' || issue.priorityScore >= 80
         const isHigh = issue.priorityLevel === 'HIGH' || issue.priorityScore >= 65
         const heatColor = isCrit ? '#EF4444' : isHigh ? '#F97316' : '#6457E8'
-        const heatRadius = isCrit ? 600 : isHigh ? 450 : 320
+        const heatRadius = isCrit ? 450 : isHigh ? 320 : 220
 
         const heatCircle = L.circle([issue.latitude, issue.longitude], {
           radius: heatRadius,
           color: heatColor,
           fillColor: heatColor,
-          fillOpacity: 0.24,
+          fillOpacity: 0.22,
           weight: 0,
         })
 
         heatCircle.on('click', () => {
-          map.flyTo([issue.latitude, issue.longitude], 15, { duration: 1.0 })
+          map.flyTo([issue.latitude, issue.longitude], 15, { duration: 0.85 })
           if (onSelectIssue) onSelectIssue(issue)
         })
 
@@ -301,11 +392,12 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     }
 
     // -----------------------------------------------------------------
-    // C. MARKER CLUSTERING LAYER
+    // C. DYNAMIC ZOOM-AWARE MARKER CLUSTERING LAYER
     // -----------------------------------------------------------------
     if (layerMode === 'clusters') {
-      // Spatial distance grid clustering
-      const clusterThreshold = 0.018 // ~2km spatial threshold
+      // Dynamic spatial threshold: decreases as user zooms in, cleanly separating clusters
+      const zoom = map.getZoom()
+      const clusterThreshold = Math.max(0.003, 0.045 / Math.pow(1.8, Math.max(10, zoom) - 10))
       const clusters: { centerLat: number; centerLng: number; items: Issue[] }[] = []
 
       issues.forEach((issue) => {
@@ -337,12 +429,14 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         const hasCritical = clus.items.some((i) => i.priorityLevel === 'CRITICAL' || i.priorityScore >= 80)
         const hasHigh = clus.items.some((i) => i.priorityLevel === 'HIGH' || i.priorityScore >= 65)
         const clusterClass = hasCritical ? 'critical' : hasHigh ? 'high' : ''
-        const size = Math.min(52, Math.max(34, 28 + clus.items.length * 3))
+        const size = Math.min(50, Math.max(32, 26 + clus.items.length * 3))
 
         const clusterIcon = L.divIcon({
           className: 'custom-cluster-wrapper',
           html: `
-            <div class="tactical-cluster-icon ${clusterClass}" style="width: ${size}px; height: ${size}px;">
+            <div class="tactical-cluster-icon ${clusterClass}" style="width: ${size}px; height: ${size}px; display: flex; align-items: center; justify-content: center; border-radius: 9999px; font-weight: bold; font-family: monospace; font-size: 11px; background: ${
+              hasCritical ? '#EF4444' : hasHigh ? '#F97316' : '#6457E8'
+            }; color: #FFFFFF; border: 2px solid #FFFFFF; box-shadow: 0 0 12px rgba(0,0,0,0.5);">
               <span>${clus.items.length}</span>
             </div>
           `,
@@ -354,7 +448,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
         marker.on('click', () => {
           if (clus.items.length === 1) {
-            map.flyTo([clus.centerLat, clus.centerLng], 15, { duration: 1.0 })
+            map.flyTo([clus.centerLat, clus.centerLng], 15, { duration: 0.85 })
             if (onSelectIssue) onSelectIssue(clus.items[0])
           } else {
             map.setView([clus.centerLat, clus.centerLng], map.getZoom() + 2, { animate: true })
@@ -362,9 +456,9 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         })
 
         marker.bindTooltip(
-          `<div style="font-family: monospace; font-size: 11px;">
+          `<div style="font-family: monospace; font-size: 11px; color: #FFFFFF;">
             Cluster: <strong>${clus.items.length} incidents</strong><br/>
-            Highest Priority: <strong style="color: ${hasCritical ? '#ef4444' : '#f97316'};">${hasCritical ? 'CRITICAL' : hasHigh ? 'HIGH' : 'STANDARD'}</strong>
+            Priority: <strong style="color: ${hasCritical ? '#ef4444' : '#f97316'};">${hasCritical ? 'CRITICAL' : hasHigh ? 'HIGH' : 'STANDARD'}</strong>
           </div>`,
           { className: 'leaflet-dark-tooltip' }
         )
@@ -375,7 +469,7 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     }
 
     // -----------------------------------------------------------------
-    // D. ISSUE MARKERS (Priority-Based Visual Emphasis)
+    // D. INCIDENT MARKERS WITH CATEGORY & PRIORITY DIFFERENTIATION
     // -----------------------------------------------------------------
     issues.forEach((issue) => {
       if (!issue.latitude || !issue.longitude) return
@@ -385,43 +479,73 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       const isMedium = issue.priorityLevel === 'MEDIUM' || issue.priorityScore >= 40
       const isSelected = selectedIssue?.issueId === issue.issueId
 
-      // Priority color & dimensional sizing
-      let markerColor = '#10b981' // Green
-      let outerSize = 22
-      let coreSize = 12
+      // Priority color styling
+      let priorityColor = '#10b981' // Green (Low)
+      if (isCritical) priorityColor = '#ef4444' // Red (Critical)
+      else if (isHigh) priorityColor = '#f97316' // Orange (High)
+      else if (isMedium) priorityColor = '#eab308' // Yellow (Medium)
 
-      if (isCritical) {
-        markerColor = '#ef4444' // Red
-        outerSize = 34
-        coreSize = 16
-      } else if (isHigh) {
-        markerColor = '#f97316' // Orange
-        outerSize = 26
-        coreSize = 14
-      } else if (isMedium) {
-        markerColor = '#eab308' // Yellow
-        outerSize = 22
-        coreSize = 12
+      // Category Differentiation (Distinctive SVG Icon & Ring Accent)
+      const isRoadCategory =
+        issue.category === 'Roads & Footpaths' ||
+        issue.category?.toLowerCase().includes('road') ||
+        issue.category?.toLowerCase().includes('pothole')
+      const isSanitationCategory =
+        issue.category === 'Sanitation & Garbage' ||
+        issue.category?.toLowerCase().includes('sanitation') ||
+        issue.category?.toLowerCase().includes('garbage') ||
+        issue.category?.toLowerCase().includes('solid waste')
+
+      let categoryBadgeColor = '#6457E8'
+      let categorySvg = ''
+
+      if (isRoadCategory) {
+        categoryBadgeColor = '#F97316' // Road maintenance orange
+        categorySvg = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19L8 5M16 5l4 14M10 9h4M9 15h6"/>
+          </svg>
+        `
+      } else if (isSanitationCategory) {
+        categoryBadgeColor = '#10B981' // Sanitation green
+        categorySvg = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+          </svg>
+        `
+      } else {
+        categoryBadgeColor = '#3B82F6'
+        categorySvg = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        `
       }
 
-      // Tactical SVG Icon with strong visual emphasis on critical incidents and selected issue
+      const outerSize = isCritical ? 34 : isHigh ? 28 : 24
+      const pinHtml = `
+        <div style="position: relative; width: ${outerSize}px; height: ${outerSize}px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          ${
+            isCritical
+              ? `<div style="position: absolute; width: ${outerSize}px; height: ${outerSize}px; border-radius: 9999px; background-color: ${priorityColor}; opacity: 0.35;" class="animate-ping"></div>`
+              : ''
+          }
+          ${
+            isSelected
+              ? `<div style="position: absolute; width: ${outerSize + 12}px; height: ${outerSize + 12}px; border-radius: 9999px; border: 2px solid #8B5CF6; box-shadow: 0 0 16px rgba(139,92,246,0.8); background: rgba(139,92,246,0.15);" class="animate-pulse"></div>`
+              : ''
+          }
+          <div style="width: ${outerSize - 4}px; height: ${outerSize - 4}px; border-radius: 9999px; background-color: #13152E; border: 2px solid ${priorityColor}; display: flex; align-items: center; justify-content: center; color: ${categoryBadgeColor}; box-shadow: 0 0 ${
+        isSelected ? '14px #8B5CF6' : isCritical ? '10px ' + priorityColor : '6px rgba(0,0,0,0.5)'
+      };">
+            ${categorySvg}
+          </div>
+        </div>
+      `
+
       const customIcon = L.divIcon({
         className: 'custom-incident-pin',
-        html: `
-          <div style="position: relative; width: ${outerSize}px; height: ${outerSize}px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-            ${
-              isCritical
-                ? `<div style="position: absolute; width: ${outerSize}px; height: ${outerSize}px; border-radius: 9999px; background-color: ${markerColor}; opacity: 0.35;" class="animate-ping"></div>`
-                : ''
-            }
-            ${
-              isSelected
-                ? `<div style="position: absolute; width: ${outerSize + 14}px; height: ${outerSize + 14}px; border-radius: 9999px; border: 2px solid #8B5CF6; box-shadow: 0 0 16px rgba(139,92,246,0.8); background: rgba(139,92,246,0.15);" class="animate-pulse"></div>`
-                : ''
-            }
-            <div style="width: ${coreSize}px; height: ${coreSize}px; border-radius: 9999px; background-color: ${markerColor}; border: 2px solid #080a0f; box-shadow: 0 0 ${isSelected ? '18px #8B5CF6' : isCritical ? '14px ' + markerColor : '8px ' + markerColor};"></div>
-          </div>
-        `,
+        html: pinHtml,
         iconSize: [outerSize, outerSize],
         iconAnchor: [outerSize / 2, outerSize / 2],
       })
@@ -431,23 +555,31 @@ export const CivicMap: React.FC<CivicMapProps> = ({
         zIndexOffset: isSelected ? 2000 : isCritical ? 1000 : isHigh ? 500 : 100,
       })
 
-      // Popup Content (Clean, readable Inter styling)
+      const routingPath = issue.routing_path || `${issue.authority_id || 'BMC'} → ${issue.ward || 'General Ward'}`
       const popupHtml = `
-        <div style="font-family: 'Inter', sans-serif; font-size: 12px; padding: 6px; min-width: 230px; line-height: 1.4;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <strong style="color: #A78BFA; font-size: 12px; font-family: monospace;">${issue.issueId}</strong>
-            <span style="color: ${markerColor}; font-weight: 600; font-size: 11px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 9999px;">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; padding: 6px; min-width: 240px; line-height: 1.45; color: #11162A;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <strong style="color: #6457E8; font-size: 12px; font-family: monospace;">${issue.issueId}</strong>
+            <span style="color: ${priorityColor}; font-weight: 700; font-size: 10px; background: #F0F2F9; padding: 2px 6px; border-radius: 9999px; border: 1px solid #E4E7F1;">
               ${issue.priorityLevel} &bull; ${issue.priorityScore.toFixed(0)}
             </span>
           </div>
-          <div style="color: #ffffff; font-weight: 600; font-size: 13px; margin-bottom: 2px;">${issue.category}</div>
-          <div style="color: #94a3b8; font-size: 11px; margin-bottom: 6px;">${issue.location} ${issue.ward ? `(${issue.ward})` : ''}</div>
-          <div style="color: #cbd5e1; font-size: 11px; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+          <div style="color: #11162A; font-weight: 700; font-size: 12px; margin-bottom: 2px;">
+            ${issue.category}
+          </div>
+          <div style="color: #65708B; font-size: 10.5px; margin-bottom: 6px;">
+            ${issue.location} ${issue.ward ? `(${issue.ward})` : ''}
+          </div>
+          <div style="background: #F6F7FC; border: 1px solid #E4E7F1; border-radius: 6px; padding: 5px; margin-bottom: 6px; font-family: monospace; font-size: 10px; color: #4338CA;">
+            <div style="font-weight: 600; font-size: 9px; color: #65708B; text-transform: uppercase;">Jurisdiction Routing:</div>
+            ${routingPath}
+          </div>
+          <div style="color: #374151; font-size: 10.5px; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
             ${issue.complaintText}
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 11px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px;">
-            <span>SLA: <strong style="color: #cbd5e1;">${issue.slaHours}h</strong></span>
-            <span style="color: #A78BFA; font-weight: 500;">${issue.status}</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E4E7F1; padding-top: 6px;">
+            <span style="color: #65708B;">SLA: <strong style="color: #11162A;">${issue.slaHours}h</strong></span>
+            <span style="color: #6457E8; font-weight: 600;">${issue.status}</span>
           </div>
         </div>
       `
@@ -471,17 +603,15 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     selectedHotspot,
     layerMode,
     displayHotspotBoundaries,
+    currentZoom,
     onSelectIssue,
     onSelectHotspot,
   ])
 
-  // 3. Optimal Viewport Bounds Fitting (Framing active incident cluster without empty sea)
+  // 5. Framing Active Incident Cluster Without Empty Sea Space
   useEffect(() => {
     const map = mapInstanceRef.current
-    if (!map) return
-
-    // If an issue is already explicitly selected by the user, keep focus on it
-    if (selectedIssue) return
+    if (!map || selectedIssue) return
 
     const validPoints: [number, number][] = []
 
@@ -496,24 +626,6 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       }
     })
 
-    hotspots.forEach((h) => {
-      const lat =
-        typeof h.center?.lat === 'number'
-          ? h.center.lat
-          : Array.isArray(h.center)
-          ? Number(h.center[0])
-          : null
-      const lng =
-        typeof h.center?.lng === 'number'
-          ? h.center.lng
-          : Array.isArray(h.center)
-          ? Number(h.center[1])
-          : null
-      if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
-        validPoints.push([lat, lng])
-      }
-    })
-
     if (validPoints.length > 0) {
       const bounds = L.latLngBounds(validPoints)
       map.fitBounds(bounds, {
@@ -523,9 +635,9 @@ export const CivicMap: React.FC<CivicMapProps> = ({
       })
       hasFittedInitialBoundsRef.current = true
     }
-  }, [issues, hotspots, selectedIssue])
+  }, [issues, selectedIssue])
 
-  // 4. Smooth Camera FlyTo on selectedIssue change
+  // 6. Smooth Camera FlyTo on selectedIssue change
   useEffect(() => {
     const map = mapInstanceRef.current
     if (!map || !selectedIssue) return
@@ -540,8 +652,8 @@ export const CivicMap: React.FC<CivicMapProps> = ({
 
   return (
     <div className="relative isolate z-0 layer-map-container h-full w-full overflow-hidden rounded-lg border border-[#212348] bg-[#10162A]">
-      {/* Floating Tactical Layer Controls */}
-      <div className="absolute top-3 left-3 z-[400] bg-[#13152E]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white text-[11px] flex items-center gap-3 shadow-md pointer-events-auto">
+      {/* Floating Tactical Layer Controls (Positioned cleanly below the top navigation HUD) */}
+      <div className="absolute top-20 left-4 z-[400] bg-[#13152E]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white text-[11px] flex items-center gap-3 shadow-md pointer-events-auto">
         <span className="text-[10px] uppercase font-bold text-[#8B5CF6] tracking-wider">GIS Layers:</span>
         <label className="flex items-center gap-1.5 cursor-pointer hover:text-white text-slate-300">
           <input
@@ -567,5 +679,3 @@ export const CivicMap: React.FC<CivicMapProps> = ({
     </div>
   )
 }
-
-export default CivicMap

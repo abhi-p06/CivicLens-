@@ -186,11 +186,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.890, 19.065],
-                [72.915, 19.065],
-                [72.915, 19.082],
-                [72.890, 19.082],
-                [72.890, 19.065]
+                [72.8956, 19.0721],
+                [72.9008, 19.0728],
+                [72.9016, 19.0761],
+                [72.8992, 19.0781],
+                [72.8960, 19.0777],
+                [72.8948, 19.0754],
+                [72.8956, 19.0721]
             ]]
         }
     },
@@ -209,11 +211,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.905, 19.082],
-                [72.935, 19.082],
-                [72.935, 19.108],
-                [72.905, 19.108],
-                [72.905, 19.082]
+                [72.9042, 19.0818],
+                [72.9081, 19.0824],
+                [72.9087, 19.0848],
+                [72.9069, 19.0863],
+                [72.9045, 19.0860],
+                [72.9036, 19.0843],
+                [72.9042, 19.0818]
             ]]
         }
     },
@@ -232,11 +236,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.915, 19.065],
-                [72.935, 19.065],
-                [72.935, 19.085],
-                [72.915, 19.085],
-                [72.915, 19.065]
+                [72.9168, 19.0750],
+                [72.9259, 19.0762],
+                [72.9273, 19.0819],
+                [72.9231, 19.0854],
+                [72.9175, 19.0847],
+                [72.9154, 19.0806],
+                [72.9168, 19.0750]
             ]]
         }
     },
@@ -257,11 +263,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.855, 19.055],
-                [72.880, 19.055],
-                [72.880, 19.075],
-                [72.855, 19.075],
-                [72.855, 19.055]
+                [72.8742, 19.0638],
+                [72.8781, 19.0644],
+                [72.8787, 19.0668],
+                [72.8769, 19.0683],
+                [72.8745, 19.0680],
+                [72.8736, 19.0663],
+                [72.8742, 19.0638]
             ]]
         }
     },
@@ -280,11 +288,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.855, 19.075],
-                [72.890, 19.075],
-                [72.890, 19.088],
-                [72.855, 19.088],
-                [72.855, 19.075]
+                [72.8816, 19.0911],
+                [72.8868, 19.0918],
+                [72.8876, 19.0951],
+                [72.8852, 19.0971],
+                [72.8820, 19.0967],
+                [72.8808, 19.0944],
+                [72.8816, 19.0911]
             ]]
         }
     },
@@ -305,11 +315,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.845, 19.035],
-                [72.868, 19.035],
-                [72.868, 19.055],
-                [72.845, 19.055],
-                [72.845, 19.035]
+                [72.8444, 19.0347],
+                [72.8522, 19.0358],
+                [72.8534, 19.0406],
+                [72.8498, 19.0436],
+                [72.8450, 19.0430],
+                [72.8432, 19.0395],
+                [72.8444, 19.0347]
             ]]
         }
     },
@@ -328,11 +340,13 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.835, 19.015],
-                [72.855, 19.015],
-                [72.855, 19.035],
-                [72.835, 19.035],
-                [72.835, 19.015]
+                [72.8356, 19.0181],
+                [72.8408, 19.0188],
+                [72.8416, 19.0221],
+                [72.8392, 19.0241],
+                [72.8360, 19.0237],
+                [72.8348, 19.0214],
+                [72.8356, 19.0181]
             ]]
         }
     },
@@ -353,16 +367,18 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.825, 19.055],
-                [72.845, 19.055],
-                [72.845, 19.070],
-                [72.825, 19.070],
-                [72.825, 19.055]
+                [72.8254, 19.0567],
+                [72.8332, 19.0578],
+                [72.8344, 19.0626],
+                [72.8308, 19.0656],
+                [72.8260, 19.0650],
+                [72.8242, 19.0615],
+                [72.8254, 19.0567]
             ]]
         }
     },
 
-    # NMMC Vashi Operational Sub-Wards
+    # NMMC Vashi Operational Sub-Wards (Vector boundaries unreleased by NMMC — marked unconfigured)
     {
         "id": "SUB-NMMC-V-01",
         "ward_id": "WARD-NMMC-VASHI",
@@ -375,16 +391,7 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "default_road_team_id": "TEAM-ROAD-04",
         "default_swm_team_id": "TEAM-SWM-04",
         "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.985, 19.070],
-                [73.010, 19.070],
-                [73.010, 19.088],
-                [72.985, 19.088],
-                [72.985, 19.070]
-            ]]
-        }
+        "boundary_geojson": None
     },
     {
         "id": "SUB-NMMC-V-02",
@@ -398,19 +405,10 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "default_road_team_id": "TEAM-ROAD-04",
         "default_swm_team_id": "TEAM-SWM-04",
         "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.980, 19.065],
-                [73.000, 19.065],
-                [73.000, 19.075],
-                [72.980, 19.075],
-                [72.980, 19.065]
-            ]]
-        }
+        "boundary_geojson": None
     },
 
-    # NMMC Belapur Operational Sub-Wards
+    # NMMC Belapur Operational Sub-Wards (Unconfigured spatial boundary)
     {
         "id": "SUB-NMMC-B-01",
         "ward_id": "WARD-NMMC-BELAPUR",
@@ -423,19 +421,10 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "default_road_team_id": "TEAM-ROAD-04",
         "default_swm_team_id": "TEAM-SWM-04",
         "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [73.020, 19.005],
-                [73.055, 19.005],
-                [73.055, 19.025],
-                [73.020, 19.025],
-                [73.020, 19.005]
-            ]]
-        }
+        "boundary_geojson": None
     },
 
-    # NMMC Nerul Operational Sub-Wards
+    # NMMC Nerul Operational Sub-Wards (Unconfigured spatial boundary)
     {
         "id": "SUB-NMMC-NR-01",
         "ward_id": "WARD-NMMC-NERUL",
@@ -448,19 +437,10 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "default_road_team_id": "TEAM-ROAD-04",
         "default_swm_team_id": "TEAM-SWM-04",
         "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [73.005, 19.020],
-                [73.030, 19.020],
-                [73.030, 19.045],
-                [73.005, 19.045],
-                [73.005, 19.020]
-            ]]
-        }
+        "boundary_geojson": None
     },
 
-    # NMMC Airoli Operational Sub-Wards
+    # NMMC Airoli Operational Sub-Wards (Unconfigured spatial boundary)
     {
         "id": "SUB-NMMC-A-01",
         "ward_id": "WARD-NMMC-AIROLI",
@@ -473,16 +453,7 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "default_road_team_id": "TEAM-ROAD-04",
         "default_swm_team_id": "TEAM-SWM-04",
         "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.985, 19.145],
-                [73.015, 19.145],
-                [73.015, 19.175],
-                [72.985, 19.175],
-                [72.985, 19.145]
-            ]]
-        }
+        "boundary_geojson": None
     }
 ]
 

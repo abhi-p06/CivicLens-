@@ -1029,9 +1029,36 @@ def update_ward_configuration(
 @router.get("/hierarchy/tree")
 def get_hierarchy_tree(
     authority: Optional[str] = Query(None, description="Optional authority filter (BMC or NMMC)"),
-    ward: Optional[str] = Query(None, description="Optional ward filter (e.g. N-Ward)")
+    ward: Optional[str] = Query(None, description="Optional ward filter (e.g. N-Ward)"),
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
 ) -> List[Dict[str, Any]]:
-    """Returns complete collapsible tree structure with real-time calculated workloads."""
+    """
+    Returns complete collapsible tree structure with real-time calculated workloads.
+    - Admin: Full Mumbai (BMC) and Navi Mumbai (NMMC) hierarchy.
+    - Inspector: Scoped strictly to their assigned municipal jurisdiction (e.g. N-Ward). Returns [] if unassigned.
+    - Citizen: HTTP 403 Forbidden.
+    """
+    if current_user:
+        if current_user.role == "citizen":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Citizens are not authorized to access administrative hierarchy management."
+            )
+        elif current_user.role == "inspector":
+            oj = demo_store.get_officer_jurisdiction(current_user.user_id)
+            if not oj or not oj.get("ward_code"):
+                return []
+            
+            assigned_ward = oj.get("ward_code")
+            auth_id = oj.get("authority_id")
+            auth_code = "BMC" if auth_id and "BMC" in auth_id else ("NMMC" if auth_id and "NMMC" in auth_id else None)
+            sub_id = oj.get("sub_ward_id") if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" else None
+            return demo_store.get_hierarchy_tree(
+                authority_code=auth_code,
+                ward_code=assigned_ward,
+                sub_ward_id=sub_id
+            )
+
     return demo_store.get_hierarchy_tree(authority_code=authority, ward_code=ward)
 
 @router.get("/hierarchy/authorities")
@@ -1108,7 +1135,7 @@ def verify_location(payload: LocationVerificationRequest) -> LocationVerificatio
     Determines Municipal Authority, Zone, Ward, Sub-Ward, and Locality.
     Compares against citizen's selected ward to detect location mismatches.
     """
-    res = resolve_coordinates_hierarchy(payload.latitude, payload.longitude)
+    res = resolve_coordinates_hierarchy(payload.latitude, payload.longitude, sub_wards=demo_store.list_sub_wards())
     if not res.get("is_valid"):
         return LocationVerificationResult(
             is_valid=False,
@@ -1235,11 +1262,13 @@ def get_gis_boundaries() -> Dict[str, Any]:
                 "geometry": geom,
                 "properties": {
                     "layer": "ward",
+                    "type": "ADMIN_WARD",
                     "id": w["id"],
                     "code": w["ward_code"],
                     "name": w["ward_name"],
                     "authority_id": w["authority_id"],
                     "lead_officer": w.get("lead_officer", "Lead Officer"),
+                    "office_location": w.get("office_address", "Ward Municipal Office"),
                     "is_official": True
                 }
             })
@@ -1253,11 +1282,14 @@ def get_gis_boundaries() -> Dict[str, Any]:
                 "geometry": geom,
                 "properties": {
                     "layer": "sub_ward",
+                    "type": "CIVILENS_OPERATIONAL_SUB_WARD",
                     "id": sw["id"],
                     "code": sw["sub_ward_code"],
                     "name": sw["name"],
                     "ward_id": sw["ward_id"],
+                    "authority_id": sw.get("authority_id", "AUTH-BMC"),
                     "supervisor_name": sw.get("supervisor_name", "Area Supervisor"),
+                    "assigned_department": "Infrastructure & Public Works",
                     "is_official": False,
                     "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD"
                 }

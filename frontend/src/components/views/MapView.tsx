@@ -58,6 +58,17 @@ export const MapView: React.FC<MapViewProps> = ({
   // Selected Entities
   const [inspectingIssue, setInspectingIssue] = useState<Issue | null>(null)
   const [inspectingHotspot, setInspectingHotspot] = useState<HotspotInfo | null>(null)
+  const [inspectingJurisdiction, setInspectingJurisdiction] = useState<{
+    type: 'ward' | 'sub_ward'
+    name: string
+    code: string
+    authority?: string
+    officer?: string
+    supervisor?: string
+    office?: string
+    department?: string
+    complaintCount: number
+  } | null>(null)
 
   // Categories list
   const categories = [
@@ -172,6 +183,7 @@ export const MapView: React.FC<MapViewProps> = ({
     setSelectedWard('ALL')
     setSelectedSubWard('ALL')
     setSelectedLocality('ALL')
+    setInspectingJurisdiction(null)
   }
 
   const isFiltered =
@@ -182,6 +194,8 @@ export const MapView: React.FC<MapViewProps> = ({
     selectedAuthority !== 'ALL' ||
     selectedWard !== 'ALL' ||
     selectedSubWard !== 'ALL' ||
+    selectedLocality !== 'ALL' ||
+    inspectingJurisdiction !== null
     selectedLocality !== 'ALL'
 
   // Handling Issue Selection
@@ -450,10 +464,11 @@ export const MapView: React.FC<MapViewProps> = ({
           {isFiltered && (
             <button
               onClick={resetFilters}
-              className="px-2.5 py-1 rounded-lg bg-[#1D1B48] hover:bg-[#2C2964] text-slate-200 text-[11px] border border-[#2C2964] flex items-center gap-1 transition cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-[#6457E8]/20 hover:bg-[#6457E8]/40 text-[#A5B4FC] hover:text-white text-[11px] font-medium border border-[#6457E8]/50 flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+              title="Clear all active filters"
             >
-              <RotateCcw className="w-3 h-3" />
-              <span>Reset</span>
+              <RotateCcw className="w-3 h-3 text-[#A5B4FC]" />
+              <span>Clear All Filters</span>
             </button>
           )}
 
@@ -476,8 +491,119 @@ export const MapView: React.FC<MapViewProps> = ({
           onSelectIssue={handleMarkerClick}
           selectedHotspot={inspectingHotspot}
           onSelectHotspot={handleHotspotClick}
+          selectedWardCode={selectedWard !== 'ALL' ? selectedWard : undefined}
+          selectedSubWardId={selectedSubWard !== 'ALL' ? selectedSubWard : undefined}
+          onSelectWard={(ward) => {
+            setSelectedWard(ward.code)
+            setInspectingJurisdiction({
+              type: 'ward',
+              name: ward.name,
+              code: ward.code,
+              authority: ward.authority_id === 'AUTH-NMMC' ? 'NMMC' : 'BMC',
+              officer: ward.lead_officer,
+              office: ward.office_location,
+              complaintCount: ward.complaintCount,
+            })
+          }}
+          onSelectSubWard={(subWard) => {
+            setSelectedSubWard(subWard.id)
+            setInspectingJurisdiction({
+              type: 'sub_ward',
+              name: subWard.name,
+              code: subWard.code,
+              authority: subWard.authority_id === 'AUTH-NMMC' ? 'NMMC' : 'BMC',
+              supervisor: subWard.supervisor_name,
+              department: subWard.assigned_department,
+              complaintCount: subWard.complaintCount,
+            })
+          }}
           className="h-full w-full"
         />
+
+        {/* Floating Jurisdiction Inspector (Shown upon clicking a boundary polygon) */}
+        <AnimatePresence>
+          {inspectingJurisdiction && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              className="absolute bottom-5 left-5 z-[500] max-w-sm bg-[#13152E]/95 backdrop-blur-md rounded-xl border border-[#212348] shadow-2xl p-3.5 text-xs text-white font-sans"
+            >
+              <div className="flex items-center justify-between pb-2 border-b border-[#212348] mb-2.5">
+                <div className="flex items-center gap-2">
+                  <Building className="w-4 h-4 text-[#8B5CF6]" />
+                  <span className="font-bold text-sm text-[#F1F5F9]">
+                    {inspectingJurisdiction.name}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setInspectingJurisdiction(null)}
+                  className="p-1 rounded text-slate-400 hover:text-white hover:bg-[#212348]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <div className="space-y-1 text-[11px] text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Jurisdiction Level:</span>
+                  <span className="font-semibold text-[#8B5CF6]">
+                    {inspectingJurisdiction.type === 'ward' ? 'Administrative Ward' : 'CIVILENS Operational Sub-Ward'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Code:</span>
+                  <span className="font-mono font-semibold text-white">{inspectingJurisdiction.code}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Authority:</span>
+                  <span className="font-semibold text-white">{inspectingJurisdiction.authority || 'BMC'}</span>
+                </div>
+                {inspectingJurisdiction.officer && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Nodal Officer:</span>
+                    <span className="text-white">{inspectingJurisdiction.officer}</span>
+                  </div>
+                )}
+                {inspectingJurisdiction.supervisor && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Supervisor:</span>
+                    <span className="text-white">{inspectingJurisdiction.supervisor}</span>
+                  </div>
+                )}
+                <div className="flex justify-between pt-1 border-t border-[#212348] mt-1.5 font-semibold">
+                  <span className="text-slate-400">Active Incidents in Boundary:</span>
+                  <span className="text-[#8B5CF6] text-xs">{inspectingJurisdiction.complaintCount}</span>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (inspectingJurisdiction.type === 'ward') {
+                      setSelectedWard(inspectingJurisdiction.code)
+                    } else {
+                      setSelectedSubWard(inspectingJurisdiction.code)
+                    }
+                  }}
+                  className="flex-1 py-1 px-2.5 rounded-lg bg-[#6457E8] hover:bg-[#5145CF] text-white text-[11px] font-medium transition cursor-pointer text-center"
+                >
+                  Filter Queue By This Unit
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedWard('ALL')
+                    setSelectedSubWard('ALL')
+                    setInspectingJurisdiction(null)
+                  }}
+                  className="py-1 px-2 rounded-lg bg-[#1D1B48] hover:bg-[#2C2964] text-slate-300 text-[11px] border border-[#2C2964] transition cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ------------------------------------------------------------- */}

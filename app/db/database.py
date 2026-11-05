@@ -94,6 +94,7 @@ def init_db(target_engine: Optional[Engine] = None) -> None:
                 ("sub_ward_name", "VARCHAR(128)"),
                 ("locality_id", "VARCHAR(64)"),
                 ("locality_name", "VARCHAR(128)"),
+                ("supervisor_name", "VARCHAR(128)"),
                 ("routing_path", "TEXT"),
                 ("jurisdiction_verified", "BOOLEAN DEFAULT 1"),
                 ("jurisdiction_review_required", "BOOLEAN DEFAULT 0"),

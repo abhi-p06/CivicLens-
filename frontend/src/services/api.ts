@@ -751,15 +751,33 @@ export const api = {
   },
 
   hierarchy: {
-    async getTree(): Promise<HierarchyTreeNode[]> {
-      const res = await fetch(`${BASE_URL}/hierarchy/tree`)
-      if (!res.ok) throw new Error('Failed to fetch hierarchy tree')
+    async getTree(params?: { authority?: string; ward?: string }): Promise<HierarchyTreeNode[]> {
+      const query = new URLSearchParams()
+      if (params?.authority) query.append('authority', params.authority)
+      if (params?.ward) query.append('ward', params.ward)
+      const qStr = query.toString() ? `?${query.toString()}` : ''
+
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+
+      const res = await fetch(`${BASE_URL}/hierarchy/tree${qStr}`, { headers })
+      if (!res.ok) {
+        if (res.status === 403) {
+          throw new Error('Access restricted: Citizens cannot view the administrative hierarchy tree.')
+        }
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.detail || 'Failed to fetch hierarchy tree')
+      }
       const data = await res.json()
       const normalizeNode = (n: any): HierarchyTreeNode => ({
         ...n,
         name: n.name || n.label || '',
+        label: n.label || n.name || '',
         level: n.level || n.type || 'ward',
+        type: n.type || n.level || 'ward',
         supervisor: n.supervisor || n.supervisor_name || '',
+        supervisor_name: n.supervisor_name || n.supervisor || '',
         available_crews: n.available_crews ?? n.assigned_crews_count ?? 0,
         children: (n.children || []).map(normalizeNode),
       })
@@ -767,21 +785,30 @@ export const api = {
     },
 
     async getAuthorities(): Promise<MunicipalAuthority[]> {
-      const res = await fetch(`${BASE_URL}/hierarchy/authorities`)
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
+      const res = await fetch(`${BASE_URL}/hierarchy/authorities`, { headers })
       if (!res.ok) throw new Error('Failed to fetch authorities')
       return res.json()
     },
 
     async getAdminWards(authorityId?: string): Promise<AdminWard[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
       const query = authorityId ? `?authority_id=${encodeURIComponent(authorityId)}` : ''
-      const res = await fetch(`${BASE_URL}/hierarchy/wards${query}`)
+      const res = await fetch(`${BASE_URL}/hierarchy/wards${query}`, { headers })
       if (!res.ok) throw new Error('Failed to fetch admin wards')
       return res.json()
     },
 
     async getSubWards(wardId?: string): Promise<SubWard[]> {
+      const headers: Record<string, string> = {}
+      const auth = getAuthHeader()
+      if (auth) headers['Authorization'] = auth
       const query = wardId ? `?ward_id=${encodeURIComponent(wardId)}` : ''
-      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards${query}`)
+      const res = await fetch(`${BASE_URL}/hierarchy/sub-wards${query}`, { headers })
       if (!res.ok) throw new Error('Failed to fetch sub-wards')
       return res.json()
     },

@@ -144,6 +144,14 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       const data = await api.hierarchy.getTree()
       setRawAuthorities(data)
 
+      if (!data || data.length === 0) {
+        setAllWardsList([])
+        setTreeData([])
+        setSelectedNode(null)
+        setLoading(false)
+        return
+      }
+
       // Collect flat list of all administrative wards for dropdown selection
       const wardsCollector: { id: string; name: string; code: string; auth: string }[] = []
       data.forEach((auth) => {
@@ -164,78 +172,96 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       const bmcAuth = data.find((a) => a.code === 'BMC' || a.id.includes('BMC'))
       const nmmcAuth = data.find((a) => a.code === 'NMMC' || a.id.includes('NMMC'))
 
-      const mumbaiCityNode: HierarchyTreeNode = {
-        id: 'CITY-MUMBAI',
-        label: 'Mumbai',
-        name: 'Mumbai',
-        code: 'MUMBAI',
-        level: 'city',
-        type: 'city',
-        is_official: true,
-        is_active: true,
-        boundary_geojson: bmcAuth?.boundary_geojson,
-        total_complaints: bmcAuth?.total_complaints || 0,
-        direct_complaints: 0,
-        unassigned_complaints: bmcAuth?.unassigned_complaints || 0,
-        assigned_complaints: bmcAuth?.assigned_complaints || 0,
-        in_progress_tasks: bmcAuth?.in_progress_tasks || 0,
-        completed_complaints: bmcAuth?.completed_complaints || 0,
-        assigned_crews_count: bmcAuth?.assigned_crews_count || 0,
-        children: bmcAuth ? [bmcAuth] : [],
-      }
+      const cityTree: HierarchyTreeNode[] = []
 
-      const naviMumbaiCityNode: HierarchyTreeNode = {
-        id: 'CITY-NAVI-MUMBAI',
-        label: 'Navi Mumbai',
-        name: 'Navi Mumbai',
-        code: 'NAVI_MUMBAI',
-        level: 'city',
-        type: 'city',
-        is_official: true,
-        is_active: true,
-        boundary_geojson: nmmcAuth?.boundary_geojson,
-        total_complaints: nmmcAuth?.total_complaints || 0,
-        direct_complaints: 0,
-        unassigned_complaints: nmmcAuth?.unassigned_complaints || 0,
-        assigned_complaints: nmmcAuth?.assigned_complaints || 0,
-        in_progress_tasks: nmmcAuth?.in_progress_tasks || 0,
-        completed_complaints: nmmcAuth?.completed_complaints || 0,
-        assigned_crews_count: nmmcAuth?.assigned_crews_count || 0,
-        children: nmmcAuth ? [nmmcAuth] : [],
-      }
-
-      const cityTree: HierarchyTreeNode[] = [mumbaiCityNode, naviMumbaiCityNode]
-      setTreeData(cityTree)
-
-      // Default expand top levels (City, Authority, First Zone)
-      const initialExpanded = new Set<string>()
-      initialExpanded.add('CITY-MUMBAI')
-      initialExpanded.add('CITY-NAVI-MUMBAI')
       if (bmcAuth) {
-        initialExpanded.add(bmcAuth.id)
-        if (bmcAuth.children && bmcAuth.children.length > 0) {
-          initialExpanded.add(bmcAuth.children[0].id)
-          if (bmcAuth.children[0].children && bmcAuth.children[0].children.length > 0) {
-            initialExpanded.add(bmcAuth.children[0].children[0].id)
-          }
+        cityTree.push({
+          id: 'CITY-MUMBAI',
+          label: 'Mumbai',
+          name: 'Mumbai',
+          code: 'MUMBAI',
+          level: 'city',
+          type: 'city',
+          is_official: true,
+          is_active: true,
+          boundary_geojson: bmcAuth?.boundary_geojson,
+          total_complaints: bmcAuth?.total_complaints || 0,
+          direct_complaints: 0,
+          unassigned_complaints: bmcAuth?.unassigned_complaints || 0,
+          assigned_complaints: bmcAuth?.assigned_complaints || 0,
+          in_progress_tasks: bmcAuth?.in_progress_tasks || 0,
+          completed_complaints: bmcAuth?.completed_complaints || 0,
+          assigned_crews_count: bmcAuth?.assigned_crews_count || 0,
+          children: [bmcAuth],
+        })
+      }
+
+      if (nmmcAuth) {
+        cityTree.push({
+          id: 'CITY-NAVI-MUMBAI',
+          label: 'Navi Mumbai',
+          name: 'Navi Mumbai',
+          code: 'NAVI_MUMBAI',
+          level: 'city',
+          type: 'city',
+          is_official: true,
+          is_active: true,
+          boundary_geojson: nmmcAuth?.boundary_geojson,
+          total_complaints: nmmcAuth?.total_complaints || 0,
+          direct_complaints: 0,
+          unassigned_complaints: nmmcAuth?.unassigned_complaints || 0,
+          assigned_complaints: nmmcAuth?.assigned_complaints || 0,
+          in_progress_tasks: nmmcAuth?.in_progress_tasks || 0,
+          completed_complaints: nmmcAuth?.completed_complaints || 0,
+          assigned_crews_count: nmmcAuth?.assigned_crews_count || 0,
+          children: [nmmcAuth],
+        })
+      }
+
+      // If data has other authorities not matching BMC or NMMC, include them
+      const otherAuths = data.filter((a) => a !== bmcAuth && a !== nmmcAuth)
+      if (otherAuths.length > 0) {
+        if (cityTree.length > 0) {
+          cityTree[0].children.push(...otherAuths)
+        } else {
+          cityTree.push(...otherAuths)
         }
       }
-      if (nmmcAuth) {
-        initialExpanded.add(nmmcAuth.id)
-      }
+
+      setTreeData(cityTree)
+
+      // Default expand nodes
+      const initialExpanded = new Set<string>()
+      cityTree.forEach((city) => {
+        initialExpanded.add(city.id)
+        city.children.forEach((auth) => {
+          initialExpanded.add(auth.id)
+          ;(auth.children || []).forEach((zone) => {
+            initialExpanded.add(zone.id)
+            ;(zone.children || []).forEach((ward) => {
+              initialExpanded.add(ward.id)
+            })
+          })
+        })
+      })
       setExpandedNodeIds(initialExpanded)
 
-      // Select first ward or BMC authority if none selected
-      if (!selectedNode && bmcAuth) {
+      // Select first ward or authority if none selected
+      if (!selectedNode && cityTree.length > 0) {
+        const firstCity = cityTree[0]
+        const firstAuth = firstCity.children[0]
         if (
-          bmcAuth.children &&
-          bmcAuth.children[0] &&
-          bmcAuth.children[0].children &&
-          bmcAuth.children[0].children[0]
+          firstAuth &&
+          firstAuth.children &&
+          firstAuth.children[0] &&
+          firstAuth.children[0].children &&
+          firstAuth.children[0].children[0]
         ) {
-          setSelectedNode(bmcAuth.children[0].children[0])
+          setSelectedNode(firstAuth.children[0].children[0])
+        } else if (firstAuth) {
+          setSelectedNode(firstAuth)
         } else {
-          setSelectedNode(bmcAuth)
+          setSelectedNode(firstCity)
         }
       }
     } catch (err: any) {
@@ -644,15 +670,21 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
   // Filter tree nodes recursively
   const filteredTree = useMemo(() => {
     if (!searchQuery.trim()) return treeData
-    const q = searchQuery.toLowerCase()
+    const q = searchQuery.toLowerCase().trim()
 
     const filterNode = (node: HierarchyTreeNode): HierarchyTreeNode | null => {
-      const matches =
-        node.name.toLowerCase().includes(q) ||
-        node.code.toLowerCase().includes(q) ||
-        (node.supervisor && node.supervisor.toLowerCase().includes(q)) ||
-        (node.department && node.department.toLowerCase().includes(q)) ||
-        (node.lead_officer && node.lead_officer.toLowerCase().includes(q))
+      const nodeName = (node.name || node.label || '').toLowerCase()
+      const nodeCode = (node.code || '').toLowerCase()
+      const supervisor = (node.supervisor || node.supervisor_name || '').toLowerCase()
+      const leadOfficer = (node.lead_officer || '').toLowerCase()
+      const department = (node.department || '').toLowerCase()
+
+      const directMatch =
+        nodeName.includes(q) ||
+        nodeCode.includes(q) ||
+        supervisor.includes(q) ||
+        leadOfficer.includes(q) ||
+        department.includes(q)
 
       let filteredChildren: HierarchyTreeNode[] = []
       if (node.children && node.children.length > 0) {
@@ -661,12 +693,20 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
           .filter((c): c is HierarchyTreeNode => c !== null)
       }
 
-      if (matches || filteredChildren.length > 0) {
+      if (directMatch) {
+        return {
+          ...node,
+          children: filteredChildren.length > 0 ? filteredChildren : (node.children || []),
+        }
+      }
+
+      if (filteredChildren.length > 0) {
         return {
           ...node,
           children: filteredChildren,
         }
       }
+
       return null
     }
 
@@ -674,6 +714,20 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       .map((node) => filterNode(node))
       .filter((n): n is HierarchyTreeNode => n !== null)
   }, [treeData, searchQuery])
+
+  // Auto-expand matching branches on search
+  useEffect(() => {
+    if (!searchQuery.trim()) return
+    const idsToExpand = new Set<string>()
+    const collectIds = (nodes: HierarchyTreeNode[]) => {
+      nodes.forEach((n) => {
+        idsToExpand.add(n.id)
+        if (n.children && n.children.length > 0) collectIds(n.children)
+      })
+    }
+    collectIds(filteredTree)
+    setExpandedNodeIds((prev) => new Set([...prev, ...idsToExpand]))
+  }, [searchQuery, filteredTree])
 
   // ---------------------------------------------------------------------------
   // 6. Sub-Ward CRUD Actions (Admin Only)
@@ -1211,7 +1265,7 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
                 <span>City & Administrative Tree</span>
               </h2>
               <span className="text-[11px] text-[#65708B] font-mono">
-                2 Cities • {rawAuthorities.length} Authorities
+                {treeData.length} {treeData.length === 1 ? 'City' : 'Cities'} • {rawAuthorities.length} {rawAuthorities.length === 1 ? 'Authority' : 'Authorities'}
               </span>
             </div>
 
@@ -1235,9 +1289,35 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
                 <RefreshCw className="w-5 h-5 animate-spin text-[#6457E8]" />
                 <span>Loading administrative tree...</span>
               </div>
+            ) : error ? (
+              <div className="p-8 text-center text-xs space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="text-rose-700 font-semibold">{error}</div>
+                <button
+                  onClick={() => {
+                    loadTree()
+                    loadTeams()
+                  }}
+                  className="px-3 py-1.5 text-xs font-semibold bg-[#6457E8] text-white rounded-lg hover:bg-[#5145CF] transition cursor-pointer"
+                >
+                  Retry Loading
+                </button>
+              </div>
+            ) : isInspector && rawAuthorities.length === 0 ? (
+              <div className="p-8 text-center text-xs space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div className="font-semibold text-[#11162A]">No Jurisdiction Assigned</div>
+                <p className="text-[#65708B] max-w-xs mx-auto">
+                  No administrative jurisdiction has been assigned to this account. Please contact an administrator.
+                </p>
+              </div>
             ) : filteredTree.length === 0 ? (
               <div className="p-8 text-center text-xs text-[#65708B]">
-                No administrative entities match "{searchQuery}"
+                {searchQuery ? `No administrative entities match "${searchQuery}"` : 'No administrative entities available.'}
               </div>
             ) : (
               filteredTree.map((cityNode) => renderTreeNode(cityNode, 0))

@@ -1991,9 +1991,9 @@ class SqliteIssueRepository:
                 session.commit()
                 logger.info(f"Seeded/Updated {len(ADMINISTRATIVE_WARDS)} administrative wards.")
 
-            sub_count = session.scalar(select(func.count()).select_from(SubWardRecord)) or 0
-            if sub_count == 0:
-                for s in CIVILENS_OPERATIONAL_SUB_WARDS:
+            for s in CIVILENS_OPERATIONAL_SUB_WARDS:
+                rec = session.get(SubWardRecord, s["id"])
+                if not rec:
                     rec = SubWardRecord(
                         id=s["id"],
                         ward_id=s["ward_id"],
@@ -2009,7 +2009,13 @@ class SqliteIssueRepository:
                         boundary_geojson=json.dumps(s.get("boundary_geojson")) if s.get("boundary_geojson") else None
                     )
                     session.add(rec)
-                logger.info(f"Seeded {len(CIVILENS_OPERATIONAL_SUB_WARDS)} CIVILENS operational sub-wards.")
+                else:
+                    rec.boundary_geojson = json.dumps(s.get("boundary_geojson")) if s.get("boundary_geojson") else None
+                    rec.name = s["name"]
+                    if s.get("supervisor_name"):
+                        rec.supervisor_name = s["supervisor_name"]
+            session.commit()
+            logger.info(f"Seeded/Synchronized {len(CIVILENS_OPERATIONAL_SUB_WARDS)} CIVILENS operational sub-wards.")
 
             loc_count = session.scalar(select(func.count()).select_from(LocalityBeatRecord)) or 0
             if loc_count == 0:
@@ -2533,7 +2539,8 @@ class SqliteIssueRepository:
     def get_hierarchy_tree(
         self,
         authority_code: Optional[str] = None,
-        ward_code: Optional[str] = None
+        ward_code: Optional[str] = None,
+        sub_ward_id: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Builds complete hierarchical geographical tree (Authority -> Zone -> Ward -> Sub-Ward -> Locality)
@@ -2631,8 +2638,10 @@ class SqliteIssueRepository:
                 auth_node = {
                     "id": auth.id,
                     "label": f"{auth.name} ({auth.code})",
+                    "name": auth.name,
                     "code": auth.code,
                     "type": "authority",
+                    "level": "authority",
                     "is_official": True,
                     "is_active": auth.is_active,
                     "boundary_geojson": json.loads(auth.boundary_geojson) if auth.boundary_geojson else None,
@@ -2649,8 +2658,10 @@ class SqliteIssueRepository:
                     zone_node = {
                         "id": zone.id,
                         "label": zone.name,
+                        "name": zone.name,
                         "code": zone.code,
                         "type": "zone",
+                        "level": "zone",
                         "parent_id": auth.id,
                         "is_official": True,
                         "is_active": zone.is_active,
@@ -2666,8 +2677,19 @@ class SqliteIssueRepository:
                     zone_issues: List[IssueRecord] = []
 
                     for w in zone_wards:
-                        if ward_code and w.ward_code.upper() != ward_code.upper():
-                            continue
+                        if ward_code:
+                            wc_clean = ward_code.strip().upper()
+                            matches_ward = (
+                                w.ward_code.upper() == wc_clean or
+                                w.ward_name.upper() == wc_clean or
+                                w.id.upper() == wc_clean or
+                                w.id.upper() == f"WARD-{wc_clean}" or
+                                w.id.upper() == f"WARD-BMC-{wc_clean}" or
+                                (len(wc_clean) >= 3 and wc_clean in w.ward_name.upper()) or
+                                (len(wc_clean) >= 3 and wc_clean in w.ward_code.upper())
+                            )
+                            if not matches_ward:
+                                continue
 
                         ward_teams = teams_by_ward.get(w.ward_code, []) + teams_by_ward.get(w.id, [])
                         ward_team_objs = team_objs_by_ward.get(w.ward_code, []) + team_objs_by_ward.get(w.id, [])
@@ -2676,12 +2698,15 @@ class SqliteIssueRepository:
                         ward_node = {
                             "id": w.id,
                             "label": w.ward_name,
+                            "name": w.ward_name,
                             "code": w.ward_code,
                             "type": "ward",
+                            "level": "ward",
                             "parent_id": zone.id,
                             "is_official": True,
                             "is_active": w.is_active,
                             "lead_officer": w.lead_officer,
+                            "office_address": w.office_address,
                             "boundary_geojson": json.loads(w.boundary_geojson) if w.boundary_geojson else None,
                             "assigned_crews": ward_teams,
                             "assigned_crews_count": len(ward_teams),
@@ -2693,6 +2718,9 @@ class SqliteIssueRepository:
                         w_sub_issues: List[IssueRecord] = []
 
                         for sw in w_subs:
+                            if sub_ward_id and sw.id != sub_ward_id and sw.sub_ward_code != sub_ward_id:
+                                continue
+
                             sw_teams = teams_by_sub_ward.get(sw.id, [])
                             sw_team_objs = team_objs_by_sub_ward.get(sw.id, [])
                             sw_issues = issues_by_sub_ward.get(sw.id, [])
@@ -2701,13 +2729,17 @@ class SqliteIssueRepository:
                             sub_node = {
                                 "id": sw.id,
                                 "label": sw.name,
+                                "name": sw.name,
                                 "code": sw.sub_ward_code,
                                 "type": "sub_ward",
+                                "level": "sub_ward",
                                 "parent_id": w.id,
                                 "is_official": sw.is_official,
                                 "operational_type": sw.operational_type,
                                 "is_active": sw.is_active,
                                 "supervisor_name": sw.supervisor_name,
+                                "supervisor": sw.supervisor_name,
+                                "department": getattr(sw, "assigned_department", None) or "Solid Waste & Infrastructure",
                                 "assigned_crews": sw_teams,
                                 "assigned_crews_count": len(sw_teams),
                                 "assigned_teams": sw_team_objs,
@@ -2721,8 +2753,10 @@ class SqliteIssueRepository:
                                 loc_node = {
                                     "id": loc.id,
                                     "label": loc.name,
+                                    "name": loc.name,
                                     "code": f"BEAT-{loc.name[:4].upper()}",
                                     "type": "locality",
+                                    "level": "locality",
                                     "parent_id": sw.id,
                                     "is_official": False,
                                     "is_active": loc.is_active,
@@ -2744,6 +2778,9 @@ class SqliteIssueRepository:
                             sub_node.update(sub_metrics)
                             ward_node["children"].append(sub_node)
 
+                        if sub_ward_id and len(ward_node["children"]) == 0:
+                            continue
+
                         # All issues belonging to ward
                         direct_w_count = len([i for i in w_issues if not i.sub_ward_id or str(i.sub_ward_id) in ("None", "", "SUB-WARD-PENDING")])
                         all_ward_issues = list({i.id: i for i in (w_issues + w_sub_issues)}.values())
@@ -2752,11 +2789,19 @@ class SqliteIssueRepository:
                         zone_node["children"].append(ward_node)
                         zone_issues.extend(all_ward_issues)
 
+                    # Prune empty zones if ward_code or sub_ward_id filtering is active
+                    if (ward_code or sub_ward_id) and len(zone_node["children"]) == 0:
+                        continue
+
                     all_zone_issues = list({i.id: i for i in zone_issues}.values())
                     zone_metrics = calc_metrics(all_zone_issues, direct_count=0)
                     zone_node.update(zone_metrics)
                     auth_node["children"].append(zone_node)
                     auth_issues.extend(all_zone_issues)
+
+                # Prune empty authorities if ward_code or sub_ward_id filtering is active
+                if (ward_code or sub_ward_id) and len(auth_node["children"]) == 0:
+                    continue
 
                 all_auth_issues = list({i.id: i for i in auth_issues}.values())
                 auth_metrics = calc_metrics(all_auth_issues, direct_count=0)
