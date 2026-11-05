@@ -67,6 +67,7 @@ class SubWardCreate(BaseModel):
     boundary_geojson: Optional[Dict[str, Any]] = None
 
 class SubWardUpdate(BaseModel):
+    sub_ward_code: Optional[str] = None
     name: Optional[str] = None
     supervisor_name: Optional[str] = None
     default_road_team_id: Optional[str] = None
@@ -175,3 +176,10 @@ class LocationVerificationResult(BaseModel):
     has_ward_mismatch: bool = False
     selected_ward: Optional[str] = None
     warning_message: Optional[str] = None
+    # Frontend aliases and geographical routing path
+    is_valid_jurisdiction: Optional[bool] = None
+    is_mismatch: Optional[bool] = None
+    derived_ward: Optional[str] = None
+    mismatch_message: Optional[str] = None
+    review_required: Optional[bool] = None
+    geographic_path: Optional[str] = None

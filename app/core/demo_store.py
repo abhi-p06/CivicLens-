@@ -107,8 +107,13 @@ class DemoDataStore:
     def seed_default_teams_and_wards_if_empty(self) -> None:
         return self.repository.seed_default_teams_and_wards_if_empty()
 
-    def list_teams(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
-        return self.repository.list_teams(category=category)
+    def list_teams(
+        self,
+        category: Optional[str] = None,
+        ward: Optional[str] = None,
+        sub_ward_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        return self.repository.list_teams(category=category, ward=ward, sub_ward_id=sub_ward_id)
 
     def get_team(self, team_id: str) -> Optional[Dict[str, Any]]:
         return self.repository.get_team(team_id)
@@ -247,6 +252,20 @@ class DemoDataStore:
 
     def get_jurisdiction_audit_logs(self, issue_id: Optional[str] = None) -> List[Dict[str, Any]]:
         return self.repository.get_jurisdiction_audit_logs(issue_id=issue_id)
+
+    def verify_jurisdiction(
+        self,
+        issue_id: str,
+        actor: str = "Abhinay",
+        role: str = "inspector",
+        notes: Optional[str] = None
+    ) -> Optional[Issue]:
+        return self.repository.verify_jurisdiction(
+            issue_id=issue_id,
+            actor=actor,
+            role=role,
+            notes=notes
+        )
 
 # Global singleton instance
 demo_store = DemoDataStore()

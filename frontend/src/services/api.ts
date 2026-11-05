@@ -62,14 +62,31 @@ export const api = {
     return res.json()
   },
 
-  async getIssues(params?: { category?: string; priority?: string; status?: string; ward?: string }): Promise<Issue[]> {
+  async getIssues(params?: {
+    category?: string
+    priority?: string
+    status?: string
+    ward?: string
+    sub_ward_id?: string
+    locality_id?: string
+    department?: string
+    assignment_status?: string
+  }): Promise<Issue[]> {
     const query = new URLSearchParams()
-    if (params?.category) query.append('category', params.category)
-    if (params?.priority) query.append('priority', params.priority)
-    if (params?.status) query.append('status', params.status)
-    if (params?.ward) query.append('ward', params.ward)
+    if (params?.category && params.category !== 'ALL') query.append('category', params.category)
+    if (params?.priority && params.priority !== 'ALL') query.append('priority', params.priority)
+    if (params?.status && params.status !== 'ALL') query.append('status', params.status)
+    if (params?.ward && params.ward !== 'ALL' && !params.ward.includes('ALL WARDS')) query.append('ward', params.ward)
+    if (params?.sub_ward_id && params.sub_ward_id !== 'ALL') query.append('sub_ward_id', params.sub_ward_id)
+    if (params?.locality_id && params.locality_id !== 'ALL') query.append('locality_id', params.locality_id)
+    if (params?.department && params.department !== 'ALL') query.append('department', params.department)
+    if (params?.assignment_status && params.assignment_status !== 'ALL') query.append('assignment_status', params.assignment_status)
 
-    const res = await fetch(`${BASE_URL}/issues?${query.toString()}`)
+    const headers: Record<string, string> = {}
+    const auth = getAuthHeader()
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues?${query.toString()}`, { headers })
     if (!res.ok) throw new Error('Failed to fetch issues')
     return res.json()
   },
@@ -310,13 +327,32 @@ export const api = {
     return res.json()
   },
 
-  async getFieldTeams(category?: string): Promise<FieldTeam[]> {
+  async getFieldTeams(
+    params?:
+      | {
+          category?: string
+          ward?: string
+          sub_ward_id?: string
+          department?: string
+        }
+      | string
+  ): Promise<FieldTeam[]> {
     const headers: Record<string, string> = {}
     const auth = getAuthHeader()
     if (auth) headers['Authorization'] = auth
 
-    const query = category ? `?category=${encodeURIComponent(category)}` : ''
-    const res = await fetch(`${BASE_URL}/teams${query}`, { headers })
+    const query = new URLSearchParams()
+    if (typeof params === 'string') {
+      if (params) query.append('category', params)
+    } else if (params) {
+      if (params.category && params.category !== 'ALL') query.append('category', params.category)
+      if (params.ward && params.ward !== 'ALL') query.append('ward', params.ward)
+      if (params.sub_ward_id && params.sub_ward_id !== 'ALL') query.append('sub_ward_id', params.sub_ward_id)
+      if (params.department && params.department !== 'ALL') query.append('department', params.department)
+    }
+
+    const qStr = query.toString() ? `?${query.toString()}` : ''
+    const res = await fetch(`${BASE_URL}/teams${qStr}`, { headers })
     if (!res.ok) throw new Error('Failed to fetch field teams')
     return res.json()
   },
@@ -444,6 +480,23 @@ export const api = {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}))
       throw new Error(err.detail || 'Failed to reopen complaint')
+    }
+    return res.json()
+  },
+
+  async verifyJurisdiction(issueId: string, notes?: string): Promise<Issue> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const auth = getAuthHeader('inspector')
+    if (auth) headers['Authorization'] = auth
+
+    const res = await fetch(`${BASE_URL}/issues/${issueId}/verify-jurisdiction`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ notes }),
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || 'Failed to verify geographical jurisdiction')
     }
     return res.json()
   },

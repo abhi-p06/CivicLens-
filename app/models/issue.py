@@ -333,6 +333,8 @@ class Issue(BaseModel):
     sub_ward_name: Optional[str] = None
     locality_id: Optional[str] = None
     locality_name: Optional[str] = None
+    supervisor_name: Optional[str] = None
+    supervisor_id: Optional[str] = None
     routing_path: Optional[str] = None
     jurisdiction_verified: bool = True
     jurisdiction_review_required: bool = False

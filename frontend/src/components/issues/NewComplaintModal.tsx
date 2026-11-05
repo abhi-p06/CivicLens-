@@ -429,6 +429,46 @@ export const NewComplaintModal: React.FC<NewComplaintModalProps> = ({
               )}
             </div>
 
+          {/* Geographical Routing Path Before Submission */}
+          {locationData.isValid && locationData.latitude && locationData.longitude && (
+            <div className="p-3.5 bg-[#F6F7FC] border border-[#E4E7F1] rounded-xl text-xs space-y-1.5 shadow-2xs">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-[#65708B]">
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#6457E8]" />
+                  <span>Geographical Routing Tree</span>
+                </span>
+                <span className="text-emerald-700 font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 border border-emerald-200">
+                  {locationData.authority_name ? 'POINT-IN-POLYGON VERIFIED' : 'SPATIAL DERIVED'}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#11162A] pt-1">
+                <span className="font-bold text-[#13152E]">
+                  {locationData.authority_name || (locationData.ward?.startsWith('NMMC') ? 'Navi Mumbai Municipal Corporation' : 'Brihanmumbai Municipal Corporation')}
+                </span>
+                <span className="text-[#65708B]">&rsaquo;</span>
+                <span className="font-bold text-[#6457E8] bg-[#6457E8]/10 px-2 py-0.5 rounded">
+                  {locationData.ward}
+                </span>
+                <span className="text-[#65708B]">&rsaquo;</span>
+                <span className={`px-2 py-0.5 rounded font-medium ${
+                  (locationData.sub_ward_name || '').includes('Pending')
+                    ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                    : 'bg-blue-50 text-blue-800 border border-blue-200'
+                }`}>
+                  {locationData.sub_ward_name || 'Sub-Ward Pending Assignment'}
+                </span>
+                {locationData.locality_name && (
+                  <>
+                    <span className="text-[#65708B]">&rsaquo;</span>
+                    <span className="text-[#65708B] font-medium bg-white px-2 py-0.5 rounded border border-[#E4E7F1]">
+                      {locationData.locality_name}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-center gap-2 text-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />

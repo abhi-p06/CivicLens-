@@ -11,7 +11,8 @@ from app.models.issue import (
     ConsistencyLevel,
     EvidenceConsistencyResult,
     HotspotInfo,
-    RecurrenceInfo
+    RecurrenceInfo,
+    TimelineEvent
 )
 from app.core.demo_store import demo_store
 from app.modules.nlp.classifier import nlp_classifier
@@ -261,18 +262,30 @@ class CivicIssueIntelligencePipeline:
             priority=priority_level
         )
 
-        supervisor_name = geo_res.get("supervisor_name") or "Area Supervisor"
+        supervisor_name = geo_res.get("supervisor_name") or "Pending Allocation"
         is_road_cat = "Road" in str(category.value if hasattr(category, "value") else category)
         default_team_id = geo_res.get("default_road_team_id") if is_road_cat else geo_res.get("default_swm_team_id")
         team_rec = demo_store.repository.get_team(default_team_id) if default_team_id else None
-        team_name = team_rec["name"] if team_rec else (
-            "Quick Patch Asphalt Squad (Ward N)" if is_road_cat else "Solid Waste Rapid Response (Ward N)"
-        )
+        team_name = team_rec["name"] if team_rec else None
+
+        auth_label = geo_res.get('authority_name') or geo_res.get('authority_code') or "Pending Allocation"
+        if auth_label and auth_label != "Pending Allocation":
+            if "Brihanmumbai" in auth_label and "BMC" not in auth_label:
+                auth_label = f"{auth_label} (BMC)"
+            elif "Navi Mumbai" in auth_label and "NMMC" not in auth_label:
+                auth_label = f"{auth_label} (NMMC)"
+        zone_label = geo_res.get('zone_name') or "Pending Allocation"
+        ward_label = geo_res.get('ward_name') or geo_res.get('ward_code') or "Pending Allocation"
+        sub_ward_label = geo_res.get('sub_ward_name') if (geo_res.get('sub_ward_name') and "PENDING" not in str(geo_res.get('sub_ward_name', '')).upper()) else "Pending Allocation"
+        loc_label = geo_res.get('locality_name') or "Pending Allocation"
+        dept_label = department or "Pending Allocation"
+        sup_label = supervisor_name if supervisor_name != "Pending Allocation" else "Pending Allocation"
+        crew_label = team_name or "Pending Allocation"
 
         routing_path = (
-            f"{geo_res['authority_code']} → {geo_res['ward_name']} → "
-            f"{geo_res['sub_ward_name']} → {geo_res['locality_name']} → "
-            f"{department} → {supervisor_name} → {team_name}"
+            f"{auth_label} → {zone_label} → {ward_label} → "
+            f"{sub_ward_label} → {loc_label} → "
+            f"{dept_label} → {sup_label} → {crew_label}"
         )
 
         overall_severity = max(text_severity, vis_severity)
@@ -420,6 +433,7 @@ class CivicIssueIntelligencePipeline:
             sub_ward_name=analysis.get("sub_ward_name"),
             locality_id=analysis.get("locality_id"),
             locality_name=analysis.get("locality_name"),
+            supervisor_name=analysis.get("supervisor_name"),
             routing_path=analysis.get("routing_path"),
             jurisdiction_verified=analysis.get("jurisdiction_verified", True),
             jurisdiction_review_required=analysis.get("jurisdiction_review_required", False),

@@ -61,7 +61,7 @@ function AppContent() {
         setActiveView('citizen_portal')
       }
     } else if (user?.role === 'inspector') {
-      const officerAllowed = ['overview', 'explorer', 'map', 'intelligence', 'live', 'analytics']
+      const officerAllowed = ['overview', 'explorer', 'map', 'intelligence', 'live', 'analytics', 'ward_hierarchy']
       if (!officerAllowed.includes(activeView)) {
         setActiveView('overview')
       }

@@ -28,6 +28,7 @@ import { api } from '../../services/api'
 import { Issue, IssueCategory, PriorityLevel } from '../../types'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../common/Toast'
+import { cn } from '../../lib/utils'
 import { useCivicMotion } from '../../lib/motionContext'
 import { LocationPicker, LocationData } from '../common/LocationPicker'
 
@@ -624,6 +625,25 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
                               </>
                             )}
                           </div>
+
+                          {/* Citizen Geographical Jurisdiction Routing Summary */}
+                          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#65708B] flex-wrap">
+                            <span className="px-2 py-0.5 rounded-md bg-[#F0F2F9] font-medium text-[#11162A] border border-[#E4E7F1]">
+                              {issue.authority_name || (issue.authority_code === 'AUTH-NMMC' ? 'NMMC' : 'BMC')}
+                            </span>
+                            <span>&bull;</span>
+                            <span className="font-semibold text-[#11162A]">Ward: {issue.ward || 'N-Ward'}</span>
+                            <span>&bull;</span>
+                            <span className={cn('font-medium', issue.sub_ward_name ? 'text-[#6457E8]' : 'text-amber-600 italic')}>
+                              {issue.sub_ward_name || 'Pending Sub-Ward Allocation'}
+                            </span>
+                            {issue.locality_name && (
+                              <>
+                                <span>&bull;</span>
+                                <span className="text-emerald-700 font-medium">{issue.locality_name}</span>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
 
@@ -638,20 +658,20 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
                       </div>
                     </div>
 
-                    {/* 1. Assigned Team & Expected Date Banner */}
+                    {/* 1. Assigned Field Crew & Scheduled Date Banner (Sanitized for Citizen) */}
                     {issue.assignment?.team_name && (
                       <div className="px-3 py-2 rounded-xl bg-[#6457E8]/10 border border-[#6457E8]/20 text-xs flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-2 font-medium text-[#6457E8]">
                           <Wrench className="w-4 h-4 text-[#6457E8]" />
                           <span>
-                            Assigned Team:{' '}
+                            Assigned Crew:{' '}
                             <strong className="font-semibold text-[#11162A]">
                               {issue.assignment.team_name}
                             </strong>
                           </span>
-                          {issue.assignment.assigned_officer && (
+                          {issue.department && (
                             <span className="text-[#65708B] text-[11px]">
-                              (Officer: {issue.assignment.assigned_officer})
+                              &bull; {issue.department}
                             </span>
                           )}
                         </div>
@@ -839,6 +859,37 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
                 </p>
               </div>
 
+              {/* Civic Hierarchy & Department Routing */}
+              <div className="p-3 rounded-xl bg-[#F0F2F9] border border-[#E4E7F1] space-y-2">
+                <span className="text-[10px] uppercase tracking-wider font-bold text-[#65708B] block">
+                  Municipal Administration & Geographical Jurisdiction
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Municipal Authority</span>
+                    <span className="font-semibold text-[#11162A]">
+                      {selectedIssueDetail.authority_name || (selectedIssueDetail.authority_code === 'AUTH-NMMC' ? 'Navi Mumbai Municipal Corporation' : 'Brihanmumbai Municipal Corporation')}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Administrative Ward</span>
+                    <span className="font-semibold text-[#11162A]">{selectedIssueDetail.ward || 'N-Ward'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Operational Sub-Ward</span>
+                    <span className={cn('font-semibold', selectedIssueDetail.sub_ward_name ? 'text-[#6457E8]' : 'text-amber-700 italic')}>
+                      {selectedIssueDetail.sub_ward_name || 'Pending Sub-Ward Allocation'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Locality / Service Beat</span>
+                    <span className="font-semibold text-emerald-700">
+                      {selectedIssueDetail.locality_name || 'Pending Beat Allocation'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 block">Category</span>
@@ -850,13 +901,25 @@ export const CitizenPortalView: React.FC<CitizenPortalViewProps> = ({ onIssueCre
                 </div>
                 <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 block">Assigned Department</span>
-                  <span className="font-semibold text-slate-800">{selectedIssueDetail.department}</span>
+                  <span className="font-semibold text-slate-800">{selectedIssueDetail.department || 'Municipal Operations'}</span>
                 </div>
                 <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 block">SLA Commitment</span>
                   <span className="font-semibold text-slate-800">{selectedIssueDetail.slaHours} hours</span>
                 </div>
               </div>
+
+              {selectedIssueDetail.assignment?.team_name && (
+                <div className="p-2.5 rounded-lg bg-[#6457E8]/10 border border-[#6457E8]/20 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5 font-medium text-[#6457E8]">
+                    <Wrench className="w-3.5 h-3.5" />
+                    <span>Assigned Crew: <strong className="text-[#11162A]">{selectedIssueDetail.assignment.team_name}</strong></span>
+                  </div>
+                  {selectedIssueDetail.assignment.scheduled_date && (
+                    <span className="text-[11px] text-[#11162A]">Scheduled: <strong>{selectedIssueDetail.assignment.scheduled_date}</strong></span>
+                  )}
+                </div>
+              )}
 
               {selectedIssueDetail.imageUrl && (
                 <div>

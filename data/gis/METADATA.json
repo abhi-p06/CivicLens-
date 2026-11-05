@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CIVILENS Spatial Boundary Dataset Metadata Catalog",
+  "version": "1.0.0",
+  "last_updated": "2026-11-06T00:38:00+05:30",
+  "crs_standard": "EPSG:4326 (WGS 84, Coordinate Order: [longitude, latitude])",
+  "datasets": [
+    {
+      "id": "bmc-24-administrative-wards",
+      "name": "Brihanmumbai Municipal Corporation (BMC) 24 Administrative Wards",
+      "authority_code": "BMC",
+      "source_organization": "DataMeet Municipal Spatial Data / MCGM GIS Cell",
+      "original_url": "https://github.com/datameet/Municipal_Spatial_Data/tree/master/Mumbai",
+      "download_url": "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/Mumbai/BMC_Wards.geojson",
+      "local_filepath": "data/gis/bmc_administrative_wards.geojson",
+      "format": "GeoJSON (RFC 7946)",
+      "coordinate_reference_system": "EPSG:4326",
+      "coordinate_order": "[longitude, latitude]",
+      "feature_count": 24,
+      "geometry_types": ["MultiPolygon"],
+      "geographic_coverage": "Greater Mumbai (Island City: 68.71 sq km; Suburbs: 369 sq km; Total: 437.71 sq km)",
+      "bounding_box": {
+        "min_longitude": 72.7763,
+        "max_longitude": 72.9797,
+        "min_latitude": 18.8940,
+        "max_latitude": 19.2702
+      },
+      "publication_date": "2017 (Verified against 2021 MCGM administrative demarcations)",
+      "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "verified_units": [
+        "A", "B", "C", "D", "E", "F/S", "G/S", "F/N", "G/N",
+        "H/E", "H/W", "K/E", "K/W", "L", "M/E", "M/W", "N",
+        "P/S", "P/N", "R/S", "R/C", "R/N", "S", "T"
+      ],
+      "distinction_from_electoral": "Contains exactly 24 administrative wards (A-T). Decoupled from the 227 electoral wards (prabhags).",
+      "known_limitations": "Does not contain operational beat chowkies or road gang maintenance sections (these are internal municipal operational divisions modeled in CIVILENS as operational sub-wards with is_official=false)."
+    },
+    {
+      "id": "bmc-municipal-authority-boundary",
+      "name": "Brihanmumbai Municipal Corporation Municipal Authority Boundary",
+      "authority_code": "BMC",
+      "source_organization": "CIVILENS Spatial Engine (Derived from 24 BMC Administrative Wards)",
+      "local_filepath": "data/gis/bmc_authority_boundary.geojson",
+      "format": "GeoJSON (RFC 7946)",
+      "coordinate_reference_system": "EPSG:4326",
+      "coordinate_order": "[longitude, latitude]",
+      "feature_count": 1,
+      "geometry_types": ["Polygon"],
+      "geographic_coverage": "Municipal jurisdiction of Greater Mumbai",
+      "bounding_box": {
+        "min_longitude": 72.7763,
+        "max_longitude": 72.9797,
+        "min_latitude": 18.8940,
+        "max_latitude": 19.2702
+      },
+      "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+      "verification_status": "VERIFIED_OFFICIAL_DERIVED"
+    },
+    {
+      "id": "nmmc-111-electoral-wards-source",
+      "name": "Navi Mumbai Municipal Corporation 111 Electoral Wards (Raw Reference)",
+      "authority_code": "NMMC",
+      "source_organization": "DataMeet Municipal Spatial Data / NMMC Election Branch",
+      "original_url": "https://github.com/datameet/Municipal_Spatial_Data/tree/master/NMMC",
+      "download_url": "https://raw.githubusercontent.com/datameet/Municipal_Spatial_Data/master/NMMC/NMC_ElectoralWards.geojson",
+      "local_filepath": "data/gis/nmmc_electoral_wards_source.geojson",
+      "format": "GeoJSON (RFC 7946)",
+      "coordinate_reference_system": "EPSG:4326",
+      "coordinate_order": "[longitude, latitude]",
+      "feature_count": 111,
+      "geometry_types": ["Polygon", "MultiPolygon"],
+      "geographic_coverage": "Navi Mumbai Municipal Corporation territory (approx. 108.5 sq km)",
+      "bounding_box": {
+        "min_longitude": 72.9740,
+        "max_longitude": 73.0513,
+        "min_latitude": 18.9928,
+        "max_latitude": 19.1913
+      },
+      "publication_date": "2015-2020 Delimitation",
+      "license": "Creative Commons Attribution-ShareAlike 2.5 India (CC BY-SA 2.5 IN)",
+      "verification_status": "ELECTORAL_REFERENCE_ONLY",
+      "critical_caution": "Identifies 111 electoral wards. Must NOT be treated as the 8 administrative ward offices. Used strictly for municipal outer boundary validation.",
+      "known_limitations": "Does NOT provide administrative ward office vector boundaries."
+    },
+    {
+      "id": "nmmc-municipal-authority-boundary",
+      "name": "Navi Mumbai Municipal Corporation Municipal Authority Boundary",
+      "authority_code": "NMMC",
+      "source_organization": "CIVILENS Spatial Engine (Derived from NMMC territory delimitation)",
+      "local_filepath": "data/gis/nmmc_authority_boundary.geojson",
+      "format": "GeoJSON (RFC 7946)",
+      "coordinate_reference_system": "EPSG:4326",
+      "coordinate_order": "[longitude, latitude]",
+      "feature_count": 1,
+      "geometry_types": ["Polygon"],
+      "geographic_coverage": "Municipal jurisdiction of Navi Mumbai (Belapur northwards to Digha)",
+      "bounding_box": {
+        "min_longitude": 72.9740,
+        "max_longitude": 73.0513,
+        "min_latitude": 18.9928,
+        "max_latitude": 19.1913
+      },
+      "license": "Creative Commons Attribution-ShareAlike 2.5 India (CC BY-SA 2.5 IN)",
+      "verification_status": "VERIFIED_OFFICIAL_DERIVED",
+      "neighboring_exclusions": [
+        "Kharghar (CIDCO / Panvel Municipal Corporation)",
+        "Ulwe (CIDCO)",
+        "Dronagiri (CIDCO)",
+        "Panvel City (Panvel Municipal Corporation)",
+        "Thane City (Thane Municipal Corporation)"
+      ]
+    },
+    {
+      "id": "nmmc-8-administrative-ward-offices",
+      "name": "Navi Mumbai Municipal Corporation 8 Divisional Ward Offices",
+      "authority_code": "NMMC",
+      "source_organization": "NMMC General Administration Department / Official Directory",
+      "reference_url": "https://www.nmmc.gov.in",
+      "format": "Relational Records with Point Reference Geometries (Vector Polygons Gapped)",
+      "coordinate_reference_system": "EPSG:4326",
+      "license": "Open Government Data (OGD) / Public Administrative Directory",
+      "feature_count": 8,
+      "ward_offices": [
+        {"code": "NMMC-Belapur", "name": "NMMC Belapur Ward Office (Ward A)", "zone": "Zone 1"},
+        {"code": "NMMC-Nerul", "name": "NMMC Nerul Ward Office (Ward B)", "zone": "Zone 1"},
+        {"code": "NMMC-Turbhe", "name": "NMMC Turbhe Ward Office (Ward D)", "zone": "Zone 1"},
+        {"code": "NMMC-Vashi", "name": "NMMC Vashi Ward Office (Ward C)", "zone": "Zone 1"},
+        {"code": "NMMC-KoparKhairane", "name": "NMMC Kopar Khairane Ward Office (Ward E)", "zone": "Zone 2"},
+        {"code": "NMMC-Ghansoli", "name": "NMMC Ghansoli Ward Office (Ward F)", "zone": "Zone 2"},
+        {"code": "NMMC-Airoli", "name": "NMMC Airoli Ward Office (Ward G)", "zone": "Zone 2"},
+        {"code": "NMMC-Digha", "name": "NMMC Digha Ward Office (Ward H)", "zone": "Zone 2"}
+      ],
+      "verification_status": "ADMINISTRATIVE_UNITS_VERIFIED_VECTOR_POLYGONS_GAPPED",
+      "unresolved_gap": "NMMC has not published open-access vector polygons for the 8 administrative ward offices. Boundaries must NOT be fabricated. Point-in-polygon routing operates at the municipal authority level, with ward routing using verified node centroid proximity and operational sub-ward pending configuration."
+    }
+  ]
+}

@@ -14,8 +14,7 @@ from app.modules.gis.hierarchy_data import (
     CIVILENS_OPERATIONAL_SUB_WARDS,
     LOCALITY_BEATS
 )
-
-OUT_OF_BOUNDS_ERROR = "CIVILENS currently supports complaints from Mumbai (BMC) and Navi Mumbai (NMMC) only."
+from app.modules.gis.bounds import OUT_OF_BOUNDS_ERROR
 
 def point_in_polygon(lng: float, lat: float, ring: List[List[float]]) -> bool:
     """
@@ -43,15 +42,29 @@ def point_in_polygon(lng: float, lat: float, ring: List[List[float]]) -> bool:
 def point_in_geometry(lng: float, lat: float, geometry: Dict[str, Any]) -> bool:
     """
     Validates point containment against GeoJSON geometry (Polygon or MultiPolygon).
+    Uses bounding box pre-checks for O(1) rejection.
     """
     if not geometry:
         return False
 
     geom_type = geometry.get("type", "")
     coords = geometry.get("coordinates", [])
+    if not coords:
+        return False
 
     if geom_type == "Polygon":
-        if not coords or not point_in_polygon(lng, lat, coords[0]):
+        ring = coords[0]
+        if not ring:
+            return False
+        # Fast bounding box rejection
+        min_x = min(p[0] for p in ring)
+        max_x = max(p[0] for p in ring)
+        min_y = min(p[1] for p in ring)
+        max_y = max(p[1] for p in ring)
+        if lng < min_x or lng > max_x or lat < min_y or lat > max_y:
+            return False
+
+        if not point_in_polygon(lng, lat, ring):
             return False
         for hole in coords[1:]:
             if point_in_polygon(lng, lat, hole):
@@ -60,7 +73,17 @@ def point_in_geometry(lng: float, lat: float, geometry: Dict[str, Any]) -> bool:
 
     elif geom_type == "MultiPolygon":
         for poly_coords in coords:
-            if poly_coords and point_in_polygon(lng, lat, poly_coords[0]):
+            if not poly_coords or not poly_coords[0]:
+                continue
+            ring = poly_coords[0]
+            min_x = min(p[0] for p in ring)
+            max_x = max(p[0] for p in ring)
+            min_y = min(p[1] for p in ring)
+            max_y = max(p[1] for p in ring)
+            if lng < min_x or lng > max_x or lat < min_y or lat > max_y:
+                continue
+
+            if point_in_polygon(lng, lat, ring):
                 in_hole = False
                 for hole in poly_coords[1:]:
                     if point_in_polygon(lng, lat, hole):
@@ -90,6 +113,7 @@ def resolve_coordinates_hierarchy(
     Authoritative hierarchical spatial resolution.
     Determines Municipal Authority -> Zone -> Ward -> Sub-Ward -> Locality/Beat.
     Strictly differentiates between BMC (Mumbai) and NMMC (Navi Mumbai).
+    Enforces geographic scope: rejects coordinates outside supported municipal boundaries.
     """
     auth_list = authorities if authorities is not None else MUNICIPAL_AUTHORITIES
     zone_list = zones if zones is not None else ADMINISTRATIVE_ZONES
@@ -124,23 +148,15 @@ def resolve_coordinates_hierarchy(
             matched_auth = auth
             break
 
-    # If point is outside both BMC and NMMC authority boundaries
+    # If point is outside both BMC and NMMC authority boundaries -> REJECT
     if not matched_auth:
-        # Broad regional bounding box fallback check to provide exact diagnostic
-        in_mumbai_box = (18.88 <= lat_f <= 19.30) and (72.78 <= lng_f <= 72.98)
-        in_nmmc_box = (18.96 <= lat_f <= 19.22) and (72.97 <= lng_f <= 73.12)
-        if in_mumbai_box:
-            matched_auth = next((a for a in auth_list if a["code"] == "BMC"), auth_list[0])
-        elif in_nmmc_box:
-            matched_auth = next((a for a in auth_list if a["code"] == "NMMC"), auth_list[1])
-        else:
-            return {
-                "is_valid": False,
-                "error": OUT_OF_BOUNDS_ERROR,
-                "latitude": lat_f,
-                "longitude": lng_f,
-                "requires_admin_review": False
-            }
+        return {
+            "is_valid": False,
+            "error": OUT_OF_BOUNDS_ERROR,
+            "latitude": lat_f,
+            "longitude": lng_f,
+            "requires_admin_review": False
+        }
 
     auth_id = matched_auth["id"]
     auth_code = matched_auth["code"]
@@ -158,19 +174,28 @@ def resolve_coordinates_hierarchy(
 
     is_ambiguous_ward = False
     if not matched_ward:
-        # If boundary is ambiguous or on border, select closest ward within same authority
+        # Border corridor, water edge, or ward without vector boundary:
+        # Match closest ward using reference node coordinates or polygon centroid
         closest_dist = float("inf")
         for w in auth_wards:
             geom = w.get("boundary_geojson")
-            if geom and geom.get("coordinates"):
-                # Use centroid approximation
-                ring = geom["coordinates"][0]
-                clng = sum(p[0] for p in ring) / len(ring)
-                clat = sum(p[1] for p in ring) / len(ring)
+            clat = w.get("latitude")
+            clng = w.get("longitude")
+            if clat is not None and clng is not None:
                 d = _euclidean_distance_sq(lat_f, lng_f, clat, clng)
                 if d < closest_dist:
                     closest_dist = d
                     matched_ward = w
+            elif geom and geom.get("coordinates"):
+                coords = geom["coordinates"]
+                ring = coords[0] if geom.get("type") == "Polygon" else (coords[0][0] if coords and coords[0] else None)
+                if ring:
+                    clng = sum(p[0] for p in ring) / len(ring)
+                    clat = sum(p[1] for p in ring) / len(ring)
+                    d = _euclidean_distance_sq(lat_f, lng_f, clat, clng)
+                    if d < closest_dist:
+                        closest_dist = d
+                        matched_ward = w
         is_ambiguous_ward = True
 
     if not matched_ward:
@@ -196,7 +221,6 @@ def resolve_coordinates_hierarchy(
     if zone_id:
         matched_zone = next((z for z in zone_list if z["id"] == zone_id), None)
     if not matched_zone:
-        # Check zone geometry
         auth_zones = [z for z in zone_list if z.get("authority_id") == auth_id]
         for z in auth_zones:
             geom = z.get("boundary_geojson")
@@ -216,35 +240,32 @@ def resolve_coordinates_hierarchy(
             matched_sub = s
             break
 
-    is_ambiguous_sub = False
-    if not matched_sub and ward_subs:
-        # Closest sub-ward within the same ward
-        closest_sub_dist = float("inf")
-        for s in ward_subs:
-            geom = s.get("boundary_geojson")
-            if geom and geom.get("coordinates"):
-                ring = geom["coordinates"][0]
-                clng = sum(p[0] for p in ring) / len(ring)
-                clat = sum(p[1] for p in ring) / len(ring)
-                d = _euclidean_distance_sq(lat_f, lng_f, clat, clng)
-                if d < closest_sub_dist:
-                    closest_sub_dist = d
-                    matched_sub = s
-        is_ambiguous_sub = True
-
-    sub_id = matched_sub["id"] if matched_sub else None
-    sub_code = matched_sub["sub_ward_code"] if matched_sub else None
-    sub_name = matched_sub["name"] if matched_sub else f"Operational Service Area ({ward_code})"
-    sub_supervisor = matched_sub.get("supervisor_name") if matched_sub else matched_ward.get("lead_officer", "Duty Officer")
-    default_road_team = matched_sub.get("default_road_team_id") if matched_sub else None
-    default_swm_team = matched_sub.get("default_swm_team_id") if matched_sub else None
+    if matched_sub:
+        sub_id = matched_sub["id"]
+        sub_code = matched_sub["sub_ward_code"]
+        sub_name = matched_sub["name"]
+        sub_supervisor = matched_sub.get("supervisor_name") or matched_ward.get("lead_officer", "Area Supervisor")
+        default_road_team = matched_sub.get("default_road_team_id")
+        default_swm_team = matched_sub.get("default_swm_team_id")
+        is_sub_pending = False
+    else:
+        # Prompt Requirement 6: "If there is no verified sub-ward polygon, return a verified ward with sub_ward_pending, rather than assigning a nearby unit."
+        sub_id = None
+        sub_code = "SUB-WARD-PENDING"
+        sub_name = f"Sub-Ward Pending ({ward_code})"
+        sub_supervisor = matched_ward.get("lead_officer", "Area Supervisor")
+        default_road_team = None
+        default_swm_team = None
+        is_sub_pending = True
 
     # 5. Determine Locality / Operational Service Beat
-    sub_locs = [l for l in loc_list if (l.get("sub_ward_id") == sub_id or l.get("ward_id") == ward_id) and l.get("is_active", True)]
+    sub_locs = [l for l in loc_list if (l.get("sub_ward_id") == sub_id or (not sub_id and l.get("ward_id") == ward_id)) and l.get("is_active", True)]
     matched_loc: Optional[Dict[str, Any]] = None
     closest_loc_dist = float("inf")
 
-    for loc in (sub_locs or loc_list):
+    candidate_locs = sub_locs if sub_locs else [l for l in loc_list if l.get("ward_id") == ward_id and l.get("is_active", True)]
+
+    for loc in candidate_locs:
         clat = loc.get("latitude")
         clng = loc.get("longitude")
         if clat is not None and clng is not None:
@@ -257,12 +278,12 @@ def resolve_coordinates_hierarchy(
     loc_name = matched_loc["name"] if matched_loc else f"{ward_name} Service Sector"
     landmark = matched_loc.get("landmark") if matched_loc else loc_name
 
-    requires_review = is_ambiguous_ward or (not matched_sub and not ward_subs)
+    requires_review = is_ambiguous_ward or is_sub_pending
     review_reason = None
     if is_ambiguous_ward:
-        review_reason = f"Location point ({lat_f:.4f}, {lng_f:.4f}) is in border zone; nearest ward {ward_code} assigned."
-    elif not matched_sub and not ward_subs:
-        review_reason = f"No operational sub-wards currently configured for {ward_code}."
+        review_reason = f"Location point ({lat_f:.4f}, {lng_f:.4f}) is in border corridor; nearest ward {ward_code} assigned."
+    elif is_sub_pending:
+        review_reason = f"No operational sub-ward currently configured for this location in {ward_code}. Awaiting Admin creation."
 
     return {
         "is_valid": True,
@@ -288,7 +309,7 @@ def resolve_coordinates_hierarchy(
         "supervisor_name": sub_supervisor,
         "default_road_team_id": default_road_team,
         "default_swm_team_id": default_swm_team,
-        "is_ambiguous": is_ambiguous_ward or is_ambiguous_sub,
+        "is_ambiguous": is_ambiguous_ward,
         "requires_admin_review": requires_review,
         "review_reason": review_reason
     }

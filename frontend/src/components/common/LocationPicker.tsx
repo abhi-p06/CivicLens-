@@ -40,6 +40,7 @@ export interface LocationData {
   mismatchMessage?: string
   reviewRequired?: boolean
   reviewReason?: string
+  geographic_path?: string
 }
 
 interface LocationPickerProps {
@@ -192,7 +193,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       // 2. Spatial Hierarchy & Point-in-Polygon Check
       const verifyRes = await api.hierarchy.verifyLocation(latRounded, lngRounded, value.ward)
 
-      if (!verifyRes.is_valid_jurisdiction) {
+      if (verifyRes.is_valid === false && verifyRes.is_valid_jurisdiction === false) {
         setBoundaryError('Location coordinates do not fall within any supported BMC or NMMC administrative wards.')
         setLocationStatus(null)
         setMismatchAlert(null)
@@ -250,6 +251,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         mismatchMessage: verifyRes.mismatch_message,
         reviewRequired: verifyRes.review_required,
         reviewReason: verifyRes.review_reason,
+        geographic_path: verifyRes.geographic_path,
       })
 
       setLocationStatus(`Locked: ${latRounded}° N, ${lngRounded}° E • ${verifyRes.authority_name || 'BMC'} (${derivedWard})`)
@@ -589,7 +591,11 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             {value.sub_ward_name && (
               <>
                 <span className="text-emerald-700 font-bold">&rsaquo;</span>
-                <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-medium border border-blue-200">
+                <span className={`px-2 py-0.5 rounded font-medium border ${
+                  value.sub_ward_name.includes('Pending')
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-blue-100 text-blue-800 border-blue-200'
+                }`}>
                   Sub-Ward: {value.sub_ward_name}
                 </span>
               </>

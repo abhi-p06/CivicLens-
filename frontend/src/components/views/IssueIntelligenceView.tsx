@@ -181,6 +181,105 @@ export const IssueIntelligenceView: React.FC<IssueIntelligenceViewProps> = ({
         </div>
       </div>
 
+      {/* 8-Tier Geographical Routing Path Card */}
+      <div className="p-4 bg-white border border-[#E4E7F1] rounded-2xl shadow-xs space-y-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-[#13152E] text-white">
+              <Building className="w-4 h-4 text-[#8B5CF6]" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-[#11162A] tracking-tight block">
+                Geographical Jurisdiction & Dispatch Path
+              </span>
+              <span className="text-[10px] text-[#65708B]">
+                Authoritative 8-tier municipal operations routing
+              </span>
+            </div>
+          </div>
+
+          {current.routing_path && (
+            <div className="text-[11px] font-mono text-[#6457E8] bg-[#6457E8]/10 px-2.5 py-1 rounded-lg border border-[#6457E8]/20">
+              {current.routing_path}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 text-xs pt-1">
+          {/* 1. Municipal Authority */}
+          <span className="px-2.5 py-1 rounded-lg bg-[#13152E] text-white font-bold text-[11px] shadow-xs">
+            {current.authority_name || (current.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : current.authority_code === 'BMC' ? 'Brihanmumbai (BMC)' : 'Pending Allocation')}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 2. Administrative Zone */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-bold text-[11px]",
+            current.zone_name ? "bg-[#8B5CF6]/15 text-[#6457E8]" : "bg-slate-100 text-[#65708B] italic"
+          )}>
+            {current.zone_name || 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 3. Administrative Ward */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-bold text-[11px] border",
+            current.ward ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+          )}>
+            {current.ward || 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 4. CIVILENS Sub-Ward */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+            (current.sub_ward_name && !current.sub_ward_name.toUpperCase().includes('PENDING'))
+              ? "bg-blue-50 text-blue-800 border-blue-200"
+              : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+          )}>
+            {(current.sub_ward_name && !current.sub_ward_name.toUpperCase().includes('PENDING')) ? current.sub_ward_name : 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 5. Locality / Service Beat */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-medium text-[11px]",
+            current.locality_name ? "bg-slate-100 text-slate-800" : "bg-slate-100 text-[#65708B] italic"
+          )}>
+            {current.locality_name || 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 6. Responsible Department */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+            current.department ? "bg-indigo-50 text-indigo-800 border-indigo-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+          )}>
+            {current.department || 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 7. Supervisor */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+            (current.supervisor_name || current.assignment?.assigned_officer)
+              ? "bg-purple-50 text-purple-800 border-purple-200"
+              : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+          )}>
+            {current.supervisor_name || current.assignment?.assigned_officer || 'Pending Allocation'}
+          </span>
+          <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+          {/* 8. Assigned Crew */}
+          <span className={cn(
+            "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+            current.assignment?.team_name ? "bg-teal-50 text-teal-800 border-teal-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+          )}>
+            {current.assignment?.team_name || 'Pending Allocation'}
+          </span>
+        </div>
+      </div>
+
       {/* Main Grid: Complaint & Vision Detections */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left: Complaint Text & NLP Analytics */}

@@ -90,6 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           title: 'OPERATIONS',
           items: [
             { id: 'overview', label: 'Command Center', icon: LayoutDashboard },
+            { id: 'ward_hierarchy', label: 'Ward Hierarchy & Allocation', icon: Network },
             { id: 'explorer', label: 'My Action Queue', icon: FolderOpen },
             { id: 'map', label: 'Tactical GIS Map', icon: Map },
             { id: 'intelligence', label: 'Issue Dossier', icon: Activity },

@@ -3,77 +3,19 @@ Official Municipal Administrative Hierarchy & Geographic Boundary Dataset
 for CIVILENS (Mumbai — BMC and Navi Mumbai — NMMC).
 
 Contains:
-1. Municipal Authorities (BMC, NMMC)
-2. Administrative Zones
-3. Administrative Wards (24 official BMC wards, 8 official NMMC wards)
-4. CIVILENS Operational Sub-Wards (explicitly flagged as non-official operational units)
+1. Municipal Authorities (BMC, NMMC) with validated spatial boundaries
+2. Administrative Zones (7 BMC zones, 2 NMMC zones)
+3. Administrative Wards (24 official BMC wards, 8 official NMMC ward offices)
+4. CIVILENS Operational Sub-Wards (explicitly flagged is_official=False)
 5. Localities / Operational Service Beats
 """
 from typing import Dict, Any, List
+from scripts.import_gis_boundaries import load_authorities, load_bmc_wards, NMMC_WARDS_LIST
 
 # -----------------------------------------------------------------------------
-# 1. MUNICIPAL AUTHORITIES
+# 1. MUNICIPAL AUTHORITIES (Validated outer boundaries)
 # -----------------------------------------------------------------------------
-MUNICIPAL_AUTHORITIES: List[Dict[str, Any]] = [
-    {
-        "id": "AUTH-BMC",
-        "code": "BMC",
-        "name": "Brihanmumbai Municipal Corporation",
-        "short_name": "BMC (MCGM)",
-        "city": "Mumbai",
-        "headquarters": "Mahapalika Marg, Fort, Mumbai 400001",
-        "is_active": True,
-        # Outer bounding polygon for Mumbai (Island City + Suburbs)
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.810, 18.890],
-                [72.845, 18.905],
-                [72.860, 18.960],
-                [72.880, 19.010],
-                [72.920, 19.040],
-                [72.955, 19.070],
-                [72.975, 19.120],
-                [72.970, 19.190],
-                [72.945, 19.260],
-                [72.880, 19.285],
-                [72.835, 19.255],
-                [72.805, 19.170],
-                [72.800, 19.100],
-                [72.810, 19.030],
-                [72.800, 18.950],
-                [72.810, 18.890]
-            ]]
-        }
-    },
-    {
-        "id": "AUTH-NMMC",
-        "code": "NMMC",
-        "name": "Navi Mumbai Municipal Corporation",
-        "short_name": "NMMC",
-        "city": "Navi Mumbai",
-        "headquarters": "NMMC Headquarters, Plot No. 1, Sector 15A, CBD Belapur, Navi Mumbai 400614",
-        "is_active": True,
-        # Bounding polygon for Navi Mumbai Municipal jurisdiction
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.975, 19.200],
-                [73.020, 19.200],
-                [73.035, 19.150],
-                [73.045, 19.100],
-                [73.055, 19.050],
-                [73.065, 19.000],
-                [73.090, 18.970],
-                [73.075, 18.960],
-                [73.020, 18.995],
-                [72.990, 19.040],
-                [72.975, 19.100],
-                [72.975, 19.200]
-            ]]
-        }
-    }
-]
+MUNICIPAL_AUTHORITIES: List[Dict[str, Any]] = load_authorities()
 
 # -----------------------------------------------------------------------------
 # 2. ADMINISTRATIVE ZONES
@@ -220,376 +162,12 @@ ADMINISTRATIVE_ZONES: List[Dict[str, Any]] = [
 ]
 
 # -----------------------------------------------------------------------------
-# 3. ADMINISTRATIVE WARDS
+# 3. ADMINISTRATIVE WARDS (24 BMC Administrative Wards + 8 NMMC Ward Offices)
 # -----------------------------------------------------------------------------
-ADMINISTRATIVE_WARDS: List[Dict[str, Any]] = [
-    # BMC Eastern Suburbs
-    {
-        "id": "WARD-BMC-N",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-06",
-        "ward_code": "N-Ward",
-        "ward_name": "N-Ward (Vidyavihar / Ghatkopar)",
-        "office_address": "N Ward Municipal Office, Jawahar Road, Ghatkopar East, Mumbai 400077",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.890, 19.065],
-                [72.935, 19.065],
-                [72.935, 19.108],
-                [72.890, 19.108],
-                [72.890, 19.065]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-L",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-05",
-        "ward_code": "L-Ward",
-        "ward_name": "L-Ward (Kurla / Sakinaka)",
-        "office_address": "L Ward Office, LBS Marg, Kurla West, Mumbai 400070",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.855, 19.055],
-                [72.890, 19.055],
-                [72.890, 19.088],
-                [72.855, 19.088],
-                [72.855, 19.055]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-GN",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-02",
-        "ward_code": "G/North",
-        "ward_name": "G/North (Dharavi / Dadar / Mahim)",
-        "office_address": "G/North Ward Office, Harishchandra Yelve Marg, Dadar West, Mumbai 400028",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.835, 19.015],
-                [72.868, 19.015],
-                [72.868, 19.055],
-                [72.835, 19.055],
-                [72.835, 19.015]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-HW",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-03",
-        "ward_code": "H/West",
-        "ward_name": "H/West (Bandra West / Khar)",
-        "office_address": "H/West Ward Office, Saint Martin Road, Bandra West, Mumbai 400050",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.815, 19.045],
-                [72.845, 19.045],
-                [72.845, 19.080],
-                [72.815, 19.080],
-                [72.815, 19.045]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-KE",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-03",
-        "ward_code": "K/East",
-        "ward_name": "K/East (Andheri East / Jogeshwari East)",
-        "office_address": "K/East Ward Office, Azad Road, Gundavali, Andheri East, Mumbai 400069",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.840, 19.100],
-                [72.885, 19.100],
-                [72.885, 19.145],
-                [72.840, 19.145],
-                [72.840, 19.100]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-KW",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-04",
-        "ward_code": "K/West",
-        "ward_name": "K/West (Andheri West / Versova)",
-        "office_address": "K/West Ward Office, Paliram Road, Andheri West, Mumbai 400058",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.805, 19.105],
-                [72.845, 19.105],
-                [72.845, 19.155],
-                [72.805, 19.155],
-                [72.805, 19.105]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-S",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-06",
-        "ward_code": "S-Ward",
-        "ward_name": "S-Ward (Powai / Bhandup)",
-        "office_address": "S Ward Office, Lal Bahadur Shastri Marg, Bhandup West, Mumbai 400078",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.885, 19.108],
-                [72.945, 19.108],
-                [72.945, 19.165],
-                [72.885, 19.165],
-                [72.885, 19.108]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-MW",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-05",
-        "ward_code": "M/West",
-        "ward_name": "M/West (Chembur)",
-        "office_address": "M/West Ward Office, Sharadbhau Acharya Marg, Chembur, Mumbai 400071",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.885, 19.040],
-                [72.918, 19.040],
-                [72.918, 19.075],
-                [72.885, 19.075],
-                [72.885, 19.040]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-ME",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-05",
-        "ward_code": "M/East",
-        "ward_name": "M/East (Govandi / Mankhurd)",
-        "office_address": "M/East Ward Office, Deonar Colony, Govandi, Mumbai 400043",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.918, 19.035],
-                [72.955, 19.035],
-                [72.955, 19.075],
-                [72.918, 19.075],
-                [72.918, 19.035]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-RC",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-07",
-        "ward_code": "R/Central",
-        "ward_name": "R/Central (Borivali)",
-        "office_address": "R/Central Ward Office, Chandavarkar Road, Borivali West, Mumbai 400092",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.835, 19.215],
-                [72.875, 19.215],
-                [72.875, 19.250],
-                [72.835, 19.250],
-                [72.835, 19.215]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-E",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-01",
-        "ward_code": "E-Ward",
-        "ward_name": "E-Ward (Byculla)",
-        "office_address": "E Ward Office, Ramchandra Bhatt Marg, Byculla, Mumbai 400008",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.815, 18.965],
-                [72.845, 18.965],
-                [72.845, 18.995],
-                [72.815, 18.995],
-                [72.815, 18.965]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-BMC-A",
-        "authority_id": "AUTH-BMC",
-        "zone_id": "ZONE-BMC-01",
-        "ward_code": "A-Ward",
-        "ward_name": "A-Ward (Colaba / Fort / Marine Drive)",
-        "office_address": "A Ward Office, 134-E, Shahid Bhagat Singh Marg, Fort, Mumbai 400001",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.805, 18.890],
-                [72.845, 18.890],
-                [72.845, 18.945],
-                [72.805, 18.945],
-                [72.805, 18.890]
-            ]]
-        }
-    },
-
-    # NMMC Administrative Wards (Navi Mumbai)
-    {
-        "id": "WARD-NMMC-VASHI",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-01",
-        "ward_code": "NMMC-Vashi",
-        "ward_name": "NMMC Vashi Ward Office",
-        "office_address": "Vashi Ward Office, Sector 5, Near Shabari Hotel, Vashi, Navi Mumbai 400703",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.980, 19.065],
-                [73.018, 19.065],
-                [73.018, 19.092],
-                [72.980, 19.092],
-                [72.980, 19.065]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-NMMC-BELAPUR",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-01",
-        "ward_code": "NMMC-Belapur",
-        "ward_name": "NMMC Belapur Ward Office",
-        "office_address": "CBD Belapur Ward Office, Sector 11, CBD Belapur, Navi Mumbai 400614",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [73.015, 18.995],
-                [73.075, 18.995],
-                [73.075, 19.030],
-                [73.015, 19.030],
-                [73.015, 18.995]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-NMMC-NERUL",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-01",
-        "ward_code": "NMMC-Nerul",
-        "ward_name": "NMMC Nerul Ward Office",
-        "office_address": "Nerul Ward Office, Sector 3, Near Nerul Gymkhana, Nerul, Navi Mumbai 400706",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [73.000, 19.020],
-                [73.045, 19.020],
-                [73.045, 19.055],
-                [73.000, 19.055],
-                [73.000, 19.020]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-NMMC-TURBHE",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-01",
-        "ward_code": "NMMC-Turbhe",
-        "ward_name": "NMMC Turbhe Ward Office",
-        "office_address": "Turbhe Ward Office, Sector 20, Turbhe, Navi Mumbai 400705",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [73.000, 19.055],
-                [73.045, 19.055],
-                [73.045, 19.095],
-                [73.000, 19.095],
-                [73.000, 19.055]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-NMMC-KK",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-02",
-        "ward_code": "NMMC-KoparKhairane",
-        "ward_name": "NMMC Kopar Khairane Ward Office",
-        "office_address": "Kopar Khairane Ward Office, Sector 5, Kopar Khairane, Navi Mumbai 400709",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.985, 19.092],
-                [73.030, 19.092],
-                [73.030, 19.125],
-                [72.985, 19.125],
-                [72.985, 19.092]
-            ]]
-        }
-    },
-    {
-        "id": "WARD-NMMC-AIROLI",
-        "authority_id": "AUTH-NMMC",
-        "zone_id": "ZONE-NMMC-02",
-        "ward_code": "NMMC-Airoli",
-        "ward_name": "NMMC Airoli Ward Office",
-        "office_address": "Airoli Ward Office, Sector 5, Airoli, Navi Mumbai 400708",
-        "lead_officer": "Abhinay",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.980, 19.145],
-                [73.025, 19.145],
-                [73.025, 19.185],
-                [72.980, 19.185],
-                [72.980, 19.145]
-            ]]
-        }
-    }
-]
+ADMINISTRATIVE_WARDS: List[Dict[str, Any]] = load_bmc_wards() + NMMC_WARDS_LIST
 
 # -----------------------------------------------------------------------------
-# 4. CIVILENS OPERATIONAL SUB-WARDS (Clearly marked as CIVILENS operational service units)
+# 4. CIVILENS OPERATIONAL SUB-WARDS (is_official=False)
 # -----------------------------------------------------------------------------
 CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
     # N-Ward Operational Sub-Wards
@@ -601,7 +179,7 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "name": "CIVILENS Operational Sub-Ward N-01 (Vidyavihar East Beat)",
         "is_official": False,
         "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
-        "supervisor_name": "Supervisor A. Jadhav",
+        "supervisor_name": "Junior Overseer M. Patil",
         "default_road_team_id": "TEAM-ROAD-01",
         "default_swm_team_id": "TEAM-SWM-01",
         "is_active": True,
@@ -621,21 +199,21 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "ward_id": "WARD-BMC-N",
         "authority_id": "AUTH-BMC",
         "sub_ward_code": "N-02",
-        "name": "CIVILENS Operational Sub-Ward N-02 (Ghatkopar West / LBS Marg Beat)",
+        "name": "CIVILENS Operational Sub-Ward N-02 (Ghatkopar West LBS Commercial Corridor)",
         "is_official": False,
         "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
-        "supervisor_name": "Supervisor R. Mhatre",
+        "supervisor_name": "Supervisor R. Shinde",
         "default_road_team_id": "TEAM-ROAD-01",
         "default_swm_team_id": "TEAM-SWM-01",
         "is_active": True,
         "boundary_geojson": {
             "type": "Polygon",
             "coordinates": [[
-                [72.890, 19.082],
-                [72.925, 19.082],
-                [72.925, 19.108],
-                [72.890, 19.108],
-                [72.890, 19.082]
+                [72.905, 19.082],
+                [72.935, 19.082],
+                [72.935, 19.108],
+                [72.905, 19.108],
+                [72.905, 19.082]
             ]]
         }
     },
@@ -644,10 +222,10 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "ward_id": "WARD-BMC-N",
         "authority_id": "AUTH-BMC",
         "sub_ward_code": "N-03",
-        "name": "CIVILENS Operational Sub-Ward N-03 (Pant Nagar / Eastern Express Beat)",
+        "name": "CIVILENS Operational Sub-Ward N-03 (Pant Nagar / Eastern Express Highway)",
         "is_official": False,
         "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
-        "supervisor_name": "Supervisor K. Deshmukh",
+        "supervisor_name": "Supervisor P. More",
         "default_road_team_id": "TEAM-ROAD-01",
         "default_swm_team_id": "TEAM-SWM-01",
         "is_active": True,
@@ -656,8 +234,8 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
             "coordinates": [[
                 [72.915, 19.065],
                 [72.935, 19.065],
-                [72.935, 19.095],
-                [72.915, 19.095],
+                [72.935, 19.085],
+                [72.915, 19.085],
                 [72.915, 19.065]
             ]]
         }
@@ -669,10 +247,10 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "ward_id": "WARD-BMC-L",
         "authority_id": "AUTH-BMC",
         "sub_ward_code": "L-01",
-        "name": "CIVILENS Operational Sub-Ward L-01 (Kurla West Station & Link Road Beat)",
+        "name": "CIVILENS Operational Sub-Ward L-01 (Kurla West Station & Market Beat)",
         "is_official": False,
         "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
-        "supervisor_name": "Supervisor M. Ansari",
+        "supervisor_name": "Junior Overseer A. Shaikh",
         "default_road_team_id": "TEAM-ROAD-02",
         "default_swm_team_id": "TEAM-SWM-03",
         "is_active": True,
@@ -680,8 +258,8 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
             "type": "Polygon",
             "coordinates": [[
                 [72.855, 19.055],
-                [72.875, 19.055],
-                [72.875, 19.075],
+                [72.880, 19.055],
+                [72.880, 19.075],
                 [72.855, 19.075],
                 [72.855, 19.055]
             ]]
@@ -692,30 +270,7 @@ CIVILENS_OPERATIONAL_SUB_WARDS: List[Dict[str, Any]] = [
         "ward_id": "WARD-BMC-L",
         "authority_id": "AUTH-BMC",
         "sub_ward_code": "L-02",
-        "name": "CIVILENS Operational Sub-Ward L-02 (Kurla East / Nehru Nagar Beat)",
-        "is_official": False,
-        "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
-        "supervisor_name": "Supervisor P. Shinde",
-        "default_road_team_id": "TEAM-ROAD-02",
-        "default_swm_team_id": "TEAM-SWM-03",
-        "is_active": True,
-        "boundary_geojson": {
-            "type": "Polygon",
-            "coordinates": [[
-                [72.875, 19.055],
-                [72.890, 19.055],
-                [72.890, 19.075],
-                [72.875, 19.075],
-                [72.875, 19.055]
-            ]]
-        }
-    },
-    {
-        "id": "SUB-BMC-L-03",
-        "ward_id": "WARD-BMC-L",
-        "authority_id": "AUTH-BMC",
-        "sub_ward_code": "L-03",
-        "name": "CIVILENS Operational Sub-Ward L-03 (Sakinaka & Asalpha Junction Beat)",
+        "name": "CIVILENS Operational Sub-Ward L-02 (Sakinaka Junction Industrial Corridor)",
         "is_official": False,
         "operational_type": "CIVILENS_OPERATIONAL_SUB_WARD",
         "supervisor_name": "Supervisor S. Khan",

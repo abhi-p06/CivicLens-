@@ -49,23 +49,23 @@ def test_mumbai_and_navi_mumbai_coordinates_accepted():
     assert data_vashi.get("location_method") == "manual"
     assert data_vashi["metadata"].get("locationMethod") == "manual"
 
-    # 3. Kharghar, Navi Mumbai
-    res_kharghar = client.post(
+    # 3. CBD Belapur, Navi Mumbai
+    res_belapur = client.post(
         "/api/v1/issues",
         json={
-            "complaintText": "Asphalt depression near Utsav Chowk Kharghar",
-            "location": "Utsav Chowk, Kharghar",
-            "latitude": 19.0473,
-            "longitude": 73.0699,
+            "complaintText": "Asphalt depression near Sector 11 CBD Belapur",
+            "location": "Sector 11, CBD Belapur",
+            "latitude": 19.0144,
+            "longitude": 73.0380,
             "location_method": "gps",
             "category": "Roads & Footpaths",
             "source": "citizen_portal"
         }
     )
-    assert res_kharghar.status_code == 201
-    data_kharghar = res_kharghar.json()
-    assert data_kharghar["latitude"] == pytest.approx(19.0473, abs=0.001)
-    assert data_kharghar["longitude"] == pytest.approx(73.0699, abs=0.001)
+    assert res_belapur.status_code == 201
+    data_belapur = res_belapur.json()
+    assert data_belapur["latitude"] == pytest.approx(19.0144, abs=0.001)
+    assert data_belapur["longitude"] == pytest.approx(73.0380, abs=0.001)
 
 def test_coordinates_outside_supported_boundary_rejected():
     """Verify complaints with coordinates outside Mumbai/Navi Mumbai are rejected with 400."""

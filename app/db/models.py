@@ -72,6 +72,7 @@ class IssueRecord(Base):
     sub_ward_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     locality_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     locality_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    supervisor_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     routing_path: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     jurisdiction_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     jurisdiction_review_required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)

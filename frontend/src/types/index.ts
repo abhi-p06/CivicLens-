@@ -245,6 +245,10 @@ export interface FieldTeam {
   category: string
   status: 'AVAILABLE' | 'BUSY' | 'OFF_DUTY'
   ward: string
+  sub_ward_id?: string
+  authority_id?: string
+  supervisor_name?: string
+  capacity?: number
   contact_lead: string
   active_tasks_count?: number
 }
@@ -329,6 +333,8 @@ export interface Issue {
   sub_ward_name?: string
   locality_id?: string
   locality_name?: string
+  supervisor_name?: string
+  supervisor_id?: string
   routing_path?: string
   jurisdiction_verified?: boolean
   jurisdiction_review_required?: boolean
@@ -354,6 +360,13 @@ export interface AuthUser {
   email: string
   name: string
   role: UserRole
+  jurisdiction?: {
+    user_id: string
+    authority_id: string
+    ward_code: string
+    sub_ward_id?: string
+    jurisdiction_level: string
+  }
 }
 
 export interface AuthResponse {
@@ -615,8 +628,8 @@ export interface HierarchyTreeNode {
   label?: string
   name: string
   code: string
-  type?: 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
-  level: 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
+  type?: 'city' | 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
+  level: 'city' | 'authority' | 'zone' | 'ward' | 'sub_ward' | 'locality'
   parent_id?: string
   is_official: boolean
   is_active: boolean
@@ -627,8 +640,10 @@ export interface HierarchyTreeNode {
   department?: string
   assigned_crews_count?: number
   assigned_crews?: any[]
+  assigned_teams?: FieldTeam[]
   available_crews?: number
   total_complaints: number
+  direct_complaints?: number
   unassigned_complaints: number
   assigned_complaints: number
   in_progress_tasks: number
@@ -686,6 +701,7 @@ export interface LocationVerificationResult {
   derived_ward?: string
   mismatch_message?: string
   review_required?: boolean
+  geographic_path?: string
 }
 
 

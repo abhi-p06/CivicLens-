@@ -49,6 +49,12 @@ export const MapView: React.FC<MapViewProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL')
   const [selectedDateHorizon, setSelectedDateHorizon] = useState<string>('ALL')
 
+  // Geographical Hierarchy Filter State
+  const [selectedAuthority, setSelectedAuthority] = useState<string>('ALL')
+  const [selectedWard, setSelectedWard] = useState<string>('ALL')
+  const [selectedSubWard, setSelectedSubWard] = useState<string>('ALL')
+  const [selectedLocality, setSelectedLocality] = useState<string>('ALL')
+
   // Selected Entities
   const [inspectingIssue, setInspectingIssue] = useState<Issue | null>(null)
   const [inspectingHotspot, setInspectingHotspot] = useState<HotspotInfo | null>(null)
@@ -63,6 +69,37 @@ export const MapView: React.FC<MapViewProps> = ({
     'Storm Water Drains',
     'Traffic & Safety',
   ]
+
+  // Available geographical units
+  const availableWards = useMemo(() => {
+    const set = new Set<string>()
+    issues.forEach((i) => {
+      if (selectedAuthority !== 'ALL' && i.authority_code !== selectedAuthority && i.authority_id !== selectedAuthority) return
+      if (i.ward) set.add(i.ward)
+    })
+    return Array.from(set).sort()
+  }, [issues, selectedAuthority])
+
+  const availableSubWards = useMemo(() => {
+    const map = new Map<string, string>()
+    issues.forEach((i) => {
+      if (selectedAuthority !== 'ALL' && i.authority_code !== selectedAuthority && i.authority_id !== selectedAuthority) return
+      if (selectedWard !== 'ALL' && i.ward !== selectedWard) return
+      if (i.sub_ward_id && i.sub_ward_name) map.set(i.sub_ward_id, i.sub_ward_name)
+    })
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }))
+  }, [issues, selectedAuthority, selectedWard])
+
+  const availableLocalities = useMemo(() => {
+    const set = new Set<string>()
+    issues.forEach((i) => {
+      if (selectedAuthority !== 'ALL' && i.authority_code !== selectedAuthority && i.authority_id !== selectedAuthority) return
+      if (selectedWard !== 'ALL' && i.ward !== selectedWard) return
+      if (selectedSubWard !== 'ALL' && i.sub_ward_id !== selectedSubWard && i.sub_ward_name !== selectedSubWard) return
+      if (i.locality_name) set.add(i.locality_name)
+    })
+    return Array.from(set).sort()
+  }, [issues, selectedAuthority, selectedWard, selectedSubWard])
 
   // Filtered Issues Calculation
   const filteredIssues = useMemo(() => {
@@ -97,9 +134,33 @@ export const MapView: React.FC<MapViewProps> = ({
         if (selectedDateHorizon === '30D') matchDate = diffHours <= 24 * 30
       }
 
-      return matchCat && matchPri && matchStat && matchDate
+      // 5. Geographic Hierarchy Filters
+      const matchAuth =
+        selectedAuthority === 'ALL' ||
+        i.authority_code === selectedAuthority ||
+        i.authority_id === selectedAuthority
+      const matchWard = selectedWard === 'ALL' || i.ward === selectedWard
+      const matchSubWard =
+        selectedSubWard === 'ALL' ||
+        i.sub_ward_id === selectedSubWard ||
+        i.sub_ward_name === selectedSubWard
+      const matchLoc =
+        selectedLocality === 'ALL' ||
+        i.locality_name === selectedLocality
+
+      return matchCat && matchPri && matchStat && matchDate && matchAuth && matchWard && matchSubWard && matchLoc
     })
-  }, [issues, selectedCategory, selectedPriority, selectedStatus, selectedDateHorizon])
+  }, [
+    issues,
+    selectedCategory,
+    selectedPriority,
+    selectedStatus,
+    selectedDateHorizon,
+    selectedAuthority,
+    selectedWard,
+    selectedSubWard,
+    selectedLocality,
+  ])
 
   // Reset all filters
   const resetFilters = () => {
@@ -107,13 +168,21 @@ export const MapView: React.FC<MapViewProps> = ({
     setSelectedPriority('ALL')
     setSelectedStatus('ALL')
     setSelectedDateHorizon('ALL')
+    setSelectedAuthority('ALL')
+    setSelectedWard('ALL')
+    setSelectedSubWard('ALL')
+    setSelectedLocality('ALL')
   }
 
   const isFiltered =
     selectedCategory !== 'ALL' ||
     selectedPriority !== 'ALL' ||
     selectedStatus !== 'ALL' ||
-    selectedDateHorizon !== 'ALL'
+    selectedDateHorizon !== 'ALL' ||
+    selectedAuthority !== 'ALL' ||
+    selectedWard !== 'ALL' ||
+    selectedSubWard !== 'ALL' ||
+    selectedLocality !== 'ALL'
 
   // Handling Issue Selection
   const handleMarkerClick = (issue: Issue) => {
@@ -211,6 +280,90 @@ export const MapView: React.FC<MapViewProps> = ({
             <Radar className="w-3.5 h-3.5 text-[#EF4444]" />
             <span>Hotspots ({hotspots.length})</span>
           </button>
+
+          {/* Separator */}
+          <div className="h-4 w-px bg-[#212348] hidden md:block" />
+
+          {/* Authority Filter */}
+          <div className="flex items-center gap-1 bg-[#1D1B48] border border-[#2C2964] rounded-lg px-2 py-1">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">Auth:</span>
+            <select
+              value={selectedAuthority}
+              onChange={(e) => {
+                setSelectedAuthority(e.target.value)
+                setSelectedWard('ALL')
+                setSelectedSubWard('ALL')
+                setSelectedLocality('ALL')
+              }}
+              className="bg-transparent text-slate-200 text-[11px] outline-none cursor-pointer max-w-[110px] truncate"
+            >
+              <option value="ALL" className="bg-[#13152E]">All Auth</option>
+              <option value="AUTH-BMC" className="bg-[#13152E]">BMC</option>
+              <option value="AUTH-NMMC" className="bg-[#13152E]">NMMC</option>
+            </select>
+          </div>
+
+          {/* Ward Filter */}
+          <div className="flex items-center gap-1 bg-[#1D1B48] border border-[#2C2964] rounded-lg px-2 py-1">
+            <span className="text-[10px] text-slate-400 uppercase font-semibold">Ward:</span>
+            <select
+              value={selectedWard}
+              onChange={(e) => {
+                setSelectedWard(e.target.value)
+                setSelectedSubWard('ALL')
+                setSelectedLocality('ALL')
+              }}
+              className="bg-transparent text-slate-200 text-[11px] outline-none cursor-pointer max-w-[100px] truncate"
+            >
+              <option value="ALL" className="bg-[#13152E]">All Wards</option>
+              {availableWards.map((w) => (
+                <option key={w} value={w} className="bg-[#13152E]">
+                  {w}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sub-Ward Filter */}
+          {availableSubWards.length > 0 && (
+            <div className="flex items-center gap-1 bg-[#1D1B48] border border-[#2C2964] rounded-lg px-2 py-1">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Sub-Ward:</span>
+              <select
+                value={selectedSubWard}
+                onChange={(e) => {
+                  setSelectedSubWard(e.target.value)
+                  setSelectedLocality('ALL')
+                }}
+                className="bg-transparent text-slate-200 text-[11px] outline-none cursor-pointer max-w-[120px] truncate"
+              >
+                <option value="ALL" className="bg-[#13152E]">All Sub-Wards</option>
+                {availableSubWards.map((sw) => (
+                  <option key={sw.id} value={sw.id} className="bg-[#13152E]">
+                    {sw.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Locality Beat Filter */}
+          {availableLocalities.length > 0 && (
+            <div className="flex items-center gap-1 bg-[#1D1B48] border border-[#2C2964] rounded-lg px-2 py-1">
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Beat:</span>
+              <select
+                value={selectedLocality}
+                onChange={(e) => setSelectedLocality(e.target.value)}
+                className="bg-transparent text-slate-200 text-[11px] outline-none cursor-pointer max-w-[110px] truncate"
+              >
+                <option value="ALL" className="bg-[#13152E]">All Beats</option>
+                {availableLocalities.map((loc) => (
+                  <option key={loc} value={loc} className="bg-[#13152E]">
+                    {loc}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Separator */}
           <div className="h-4 w-px bg-[#212348] hidden md:block" />
@@ -376,6 +529,68 @@ export const MapView: React.FC<MapViewProps> = ({
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3.5 font-sans">
+              {/* 8-Tier Geographical Hierarchy Routing Path */}
+              <div className="p-3 bg-[#1D1B48]/90 rounded-xl border border-[#2C2964] space-y-2">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  <div className="flex items-center gap-1.5 text-[#8B5CF6]">
+                    <Compass className="w-3.5 h-3.5" />
+                    <span>Geographical Routing</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-slate-400">8 Tiers</span>
+                </div>
+
+                <div className="space-y-1 text-xs">
+                  {/* Tier 1: Authority */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Authority</span>
+                    <span className="font-semibold text-white">{inspectingIssue.authority_name || (inspectingIssue.authority_code === 'AUTH-NMMC' ? 'NMMC' : 'BMC')}</span>
+                  </div>
+                  {/* Tier 2: Zone */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Admin Zone</span>
+                    <span className="font-semibold text-white">{inspectingIssue.zone_name || (inspectingIssue.zone_id || 'Pending Allocation')}</span>
+                  </div>
+                  {/* Tier 3: Ward */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Admin Ward</span>
+                    <span className="font-semibold text-white">{inspectingIssue.ward || 'Pending Allocation'}</span>
+                  </div>
+                  {/* Tier 4: Sub-Ward */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">CIVILENS Sub-Ward</span>
+                    <span className={cn('font-semibold', inspectingIssue.sub_ward_name ? 'text-[#8B5CF6]' : 'text-amber-400 italic')}>
+                      {inspectingIssue.sub_ward_name || 'Pending Allocation'}
+                    </span>
+                  </div>
+                  {/* Tier 5: Locality Beat */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Locality Beat</span>
+                    <span className={cn('font-semibold', inspectingIssue.locality_name ? 'text-emerald-400' : 'text-amber-400 italic')}>
+                      {inspectingIssue.locality_name || 'Pending Allocation'}
+                    </span>
+                  </div>
+                  {/* Tier 6: Department */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Department</span>
+                    <span className="font-semibold text-white">{inspectingIssue.department || 'Pending Allocation'}</span>
+                  </div>
+                  {/* Tier 7: Supervisor */}
+                  <div className="flex items-center justify-between py-0.5 border-b border-[#2C2964]/60">
+                    <span className="text-slate-400 text-[11px]">Supervisor</span>
+                    <span className={cn('font-semibold', inspectingIssue.supervisor_name ? 'text-white' : 'text-amber-400 italic')}>
+                      {inspectingIssue.supervisor_name || 'Pending Allocation'}
+                    </span>
+                  </div>
+                  {/* Tier 8: Assigned Crew */}
+                  <div className="flex items-center justify-between py-0.5">
+                    <span className="text-slate-400 text-[11px]">Assigned Crew</span>
+                    <span className={cn('font-semibold', inspectingIssue.assignment?.team_name ? 'text-[#8B5CF6]' : 'text-amber-400 italic')}>
+                      {inspectingIssue.assignment?.team_name || 'Pending Allocation'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* 1. Category */}
               <div className="p-2.5 bg-[#1D1B48]/80 rounded-xl border border-[#2C2964]">
                 <div className="text-[9px] uppercase font-bold text-slate-400">1. Category</div>

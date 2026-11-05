@@ -170,6 +170,20 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
     }
   }
 
+  const [verifyingJurisdiction, setVerifyingJurisdiction] = useState(false)
+  const handleVerifyJurisdiction = async () => {
+    if (!issue) return
+    setVerifyingJurisdiction(true)
+    try {
+      const updated = await api.verifyJurisdiction(issue.issueId, 'Geographical boundary verified on-site by supervisor')
+      onUpdateIssue(updated)
+    } catch (err: any) {
+      alert(err?.message || 'Failed to verify geographical jurisdiction')
+    } finally {
+      setVerifyingJurisdiction(false)
+    }
+  }
+
   // Load field teams on mount
   useEffect(() => {
     let mounted = true
@@ -423,8 +437,23 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 
   const isResolved = issue?.status === 'RESOLVED' || issue?.status === 'Verified Closed'
 
-  // Pre-filter teams by active department
-  const filteredTeams = teams.filter((t) => !assignedDept || t.department === assignedDept || teams.length <= 4)
+  // Pre-filter teams by active department and issue category
+  const filteredTeams = React.useMemo(() => {
+    return teams.filter((t) => {
+      if (assignedDept) {
+        if (assignedDept.includes('Road') && (t.department?.includes('Road') || t.category?.includes('Road'))) return true
+        if (assignedDept.includes('Sanitation') && (t.department?.includes('Sanitation') || t.department?.includes('Waste') || t.category?.includes('Sanitation'))) return true
+        return t.department === assignedDept
+      }
+      if (isRoadCategory) {
+        return t.department?.includes('Road') || t.category?.includes('Road')
+      }
+      if (isSanitationCategory) {
+        return t.department?.includes('Sanitation') || t.department?.includes('Waste') || t.category?.includes('Sanitation')
+      }
+      return true
+    })
+  }, [teams, assignedDept, isRoadCategory, isSanitationCategory])
 
   return (
     <Portal>
@@ -513,7 +542,24 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {(user?.role === 'admin' || user?.role === 'inspector') && (
+                        <button
+                          type="button"
+                          disabled={verifyingJurisdiction}
+                          onClick={handleVerifyJurisdiction}
+                          className={cn(
+                            "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition shadow-xs cursor-pointer flex items-center gap-1",
+                            issue.jurisdiction_verified && !issue.jurisdiction_review_required
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
+                              : "bg-emerald-600 text-white hover:bg-emerald-700"
+                          )}
+                          title="Confirm geographical boundary assignment"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{issue.jurisdiction_verified && !issue.jurisdiction_review_required ? 'Jurisdiction Verified' : 'Verify Jurisdiction'}</span>
+                        </button>
+                      )}
                       {issue.jurisdiction_history && issue.jurisdiction_history.length > 0 && (
                         <button
                           type="button"
@@ -548,57 +594,93 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                     </div>
                   )}
 
-                  {/* Complete 7-Tier Routing Path Breadcrumb Strip */}
+                  {/* Complete 8-Tier Routing Path Breadcrumb Strip */}
                   <div className="p-3 bg-[#F6F7FC] rounded-xl border border-[#E4E7F1] space-y-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#65708B] block">
-                      Persisted Complaint Routing Tree
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#65708B] block">
+                        Persisted Complaint Geographical Path
+                      </span>
+                      <span className="text-[10px] font-semibold text-[#6457E8]">
+                        8-Tier Administrative & Dispatch Routing
+                      </span>
+                    </div>
                     <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                      {/* Authority */}
+                      {/* 1. Municipal Authority */}
                       <span className="px-2.5 py-1 rounded-lg bg-[#13152E] text-white font-bold text-[11px] shadow-xs">
-                        {issue.authority_name || (issue.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : 'Mumbai (BMC)')}
+                        {issue.authority_name || (issue.authority_id === 'AUTH-NMMC' ? 'Navi Mumbai (NMMC)' : issue.authority_code === 'BMC' ? 'Brihanmumbai (BMC)' : 'Pending Allocation')}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Zone */}
-                      <span className="px-2.5 py-1 rounded-lg bg-[#8B5CF6]/15 text-[#6457E8] font-bold text-[11px]">
-                        {issue.zone_name || 'Zone VI'}
+                      {/* 2. Administrative Zone */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-bold text-[11px]",
+                        issue.zone_name ? "bg-[#8B5CF6]/15 text-[#6457E8]" : "bg-slate-100 text-[#65708B] italic"
+                      )}>
+                        {issue.zone_name || 'Pending Allocation'}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Ward */}
-                      <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-[11px]">
-                        {issue.ward || 'N-Ward'}
+                      {/* 3. Administrative Ward */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-bold text-[11px] border",
+                        issue.ward ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+                      )}>
+                        {issue.ward || 'Pending Allocation'}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Sub-Ward */}
-                      <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold text-[11px]">
-                        {issue.sub_ward_name || 'Sub-Ward N-01'}
+                      {/* 4. CIVILENS Sub-Ward */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+                        (issue.sub_ward_name && !issue.sub_ward_name.toUpperCase().includes('PENDING'))
+                          ? "bg-blue-50 text-blue-800 border-blue-200"
+                          : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+                      )}>
+                        {(issue.sub_ward_name && !issue.sub_ward_name.toUpperCase().includes('PENDING')) ? issue.sub_ward_name : 'Pending Allocation'}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Locality / Beat */}
-                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium text-[11px]">
-                        {issue.locality_name || 'Service Beat'}
+                      {/* 5. Locality / Service Beat */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-medium text-[11px]",
+                        issue.locality_name ? "bg-slate-100 text-slate-800" : "bg-slate-100 text-[#65708B] italic"
+                      )}>
+                        {issue.locality_name || 'Pending Allocation'}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Department */}
-                      <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold text-[11px]">
-                        {issue.department || 'Road Maintenance'}
+                      {/* 6. Responsible Department */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+                        issue.department ? "bg-indigo-50 text-indigo-800 border-indigo-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+                      )}>
+                        {issue.department || 'Pending Allocation'}
                       </span>
                       <ArrowRight className="w-3 h-3 text-[#65708B]" />
 
-                      {/* Assigned Crew */}
-                      <span className="px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 border border-teal-200 font-semibold text-[11px]">
-                        {issue.assignment?.team_name || 'Area Crew 01'}
+                      {/* 7. Supervisor */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+                        (issue.supervisor_name || issue.assignment?.assigned_officer)
+                          ? "bg-purple-50 text-purple-800 border-purple-200"
+                          : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+                      )}>
+                        {issue.supervisor_name || issue.assignment?.assigned_officer || 'Pending Allocation'}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-[#65708B]" />
+
+                      {/* 8. Assigned Crew */}
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-lg font-semibold text-[11px] border",
+                        issue.assignment?.team_name ? "bg-teal-50 text-teal-800 border-teal-200" : "bg-slate-100 text-[#65708B] border-slate-200 italic"
+                      )}>
+                        {issue.assignment?.team_name || 'Pending Allocation'}
                       </span>
                     </div>
 
                     {issue.routing_path && (
                       <div className="text-[10px] text-[#65708B] font-mono pt-1">
-                        System Routing String: {issue.routing_path}
+                        Persisted System Routing String: {issue.routing_path}
                       </div>
                     )}
                   </div>
@@ -799,14 +881,15 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                             onChange={(e) => setAssignedDept(e.target.value)}
                             className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8]"
                           >
-                            <option value="Roads & Footpaths">Roads & Footpaths</option>
-                            <option value="Sanitation & Garbage">Sanitation & Garbage</option>
+                            <option value="Road Infrastructure Maintenance">Road Infrastructure Maintenance</option>
+                            <option value="Solid Waste Management & Sanitation">Solid Waste Management & Sanitation</option>
+                            <option value="Storm Water & Drainage">Storm Water & Drainage</option>
                           </select>
                         </div>
 
                         <div>
                           <label className="text-xs font-semibold text-[#65708B] block mb-1">
-                            Predefined Field Team
+                            Predefined Field Crew
                           </label>
                           <select
                             value={assignedTeamId}
@@ -815,7 +898,7 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
                           >
                             {filteredTeams.map((team) => (
                               <option key={team.id} value={team.id}>
-                                {team.name} ({team.status})
+                                {team.name} ({team.status} &bull; Cap: {team.capacity || 6})
                               </option>
                             ))}
                           </select>
@@ -823,13 +906,13 @@ export const IssueDetailDrawer: React.FC<IssueDetailDrawerProps> = ({
 
                         <div>
                           <label className="text-xs font-semibold text-[#65708B] block mb-1">
-                            Assigned Officer
+                            Assigned Supervisor / Lead Officer
                           </label>
                           <input
                             type="text"
                             value={assignedOfficer}
                             onChange={(e) => setAssignedOfficer(e.target.value)}
-                            placeholder="Officer Name"
+                            placeholder="Supervisor Name"
                             className="w-full bg-[#F0F2F9] border border-[#E4E7F1] text-[#11162A] rounded-xl p-2 text-xs outline-none focus:border-[#6457E8]"
                           />
                         </div>

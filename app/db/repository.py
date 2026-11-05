@@ -75,6 +75,10 @@ DEFAULT_TEAMS = [
         "category": "Roads & Footpaths",
         "status": "AVAILABLE",
         "ward": "N-Ward",
+        "sub_ward_id": "SW-BMC-N-01",
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Supervisor R. Shinde",
+        "capacity": 6,
         "contact_lead": "Supervisor R. Shinde",
     },
     {
@@ -84,6 +88,10 @@ DEFAULT_TEAMS = [
         "category": "Roads & Footpaths",
         "status": "AVAILABLE",
         "ward": "ALL",
+        "sub_ward_id": None,
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Officer P. Mane",
+        "capacity": 10,
         "contact_lead": "Officer P. Mane",
     },
     {
@@ -93,6 +101,10 @@ DEFAULT_TEAMS = [
         "category": "Roads & Footpaths",
         "status": "BUSY",
         "ward": "K/West",
+        "sub_ward_id": "SW-BMC-KW-01",
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Eng. V. Kadam",
+        "capacity": 8,
         "contact_lead": "Eng. V. Kadam",
     },
     {
@@ -102,6 +114,10 @@ DEFAULT_TEAMS = [
         "category": "Roads & Footpaths",
         "status": "AVAILABLE",
         "ward": "NMMC-Vashi",
+        "sub_ward_id": "SW-NMMC-V-01",
+        "authority_id": "AUTH-NMMC",
+        "supervisor_name": "Supervisor S. Sawant",
+        "capacity": 6,
         "contact_lead": "Supervisor S. Sawant",
     },
     {
@@ -111,6 +127,10 @@ DEFAULT_TEAMS = [
         "category": "Sanitation & Garbage",
         "status": "AVAILABLE",
         "ward": "N-Ward",
+        "sub_ward_id": "SW-BMC-N-01",
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Inspector A. Jadhav",
+        "capacity": 6,
         "contact_lead": "Inspector A. Jadhav",
     },
     {
@@ -120,6 +140,10 @@ DEFAULT_TEAMS = [
         "category": "Sanitation & Garbage",
         "status": "AVAILABLE",
         "ward": "G/North",
+        "sub_ward_id": "SW-BMC-GN-01",
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Foreman D. Kamble",
+        "capacity": 6,
         "contact_lead": "Foreman D. Kamble",
     },
     {
@@ -129,6 +153,10 @@ DEFAULT_TEAMS = [
         "category": "Sanitation & Garbage",
         "status": "BUSY",
         "ward": "L-Ward",
+        "sub_ward_id": "SW-BMC-L-01",
+        "authority_id": "AUTH-BMC",
+        "supervisor_name": "Supervisor M. Ansari",
+        "capacity": 6,
         "contact_lead": "Supervisor M. Ansari",
     },
     {
@@ -138,6 +166,10 @@ DEFAULT_TEAMS = [
         "category": "Sanitation & Garbage",
         "status": "AVAILABLE",
         "ward": "NMMC-Vashi",
+        "sub_ward_id": "SW-NMMC-V-01",
+        "authority_id": "AUTH-NMMC",
+        "supervisor_name": "Officer B. Patil",
+        "capacity": 6,
         "contact_lead": "Officer B. Patil",
     },
 ]
@@ -175,6 +207,31 @@ DEFAULT_WARDS = [
     },
 ]
 
+def build_hierarchical_routing_path(
+    authority_name: Optional[str] = None,
+    zone_name: Optional[str] = None,
+    ward_name: Optional[str] = None,
+    sub_ward_name: Optional[str] = None,
+    locality_name: Optional[str] = None,
+    department: Optional[str] = None,
+    supervisor_name: Optional[str] = None,
+    crew_name: Optional[str] = None,
+) -> str:
+    auth = authority_name or "Pending Allocation"
+    if auth != "Pending Allocation":
+        if "Brihanmumbai" in auth and "BMC" not in auth:
+            auth = f"{auth} (BMC)"
+        elif "Navi Mumbai" in auth and "NMMC" not in auth:
+            auth = f"{auth} (NMMC)"
+    zone = zone_name or "Pending Allocation"
+    ward = ward_name or "Pending Allocation"
+    sub_ward = sub_ward_name if (sub_ward_name and "PENDING" not in str(sub_ward_name).upper()) else "Pending Allocation"
+    loc = locality_name or "Pending Allocation"
+    dept = department or "Pending Allocation"
+    sup = supervisor_name or "Pending Allocation"
+    crew = crew_name or "Pending Allocation"
+    return f"{auth} → {zone} → {ward} → {sub_ward} → {loc} → {dept} → {sup} → {crew}"
+
 def _ensure_hierarchy(issue: Issue) -> Issue:
     if not getattr(issue, "sub_ward_id", None) or not getattr(issue, "routing_path", None):
         res = resolve_coordinates_hierarchy(issue.latitude, issue.longitude)
@@ -191,10 +248,21 @@ def _ensure_hierarchy(issue: Issue) -> Issue:
             issue.sub_ward_name = res.get("sub_ward_name")
             issue.locality_id = res.get("locality_id")
             issue.locality_name = res.get("locality_name")
+            if not getattr(issue, "supervisor_name", None):
+                issue.supervisor_name = res.get("supervisor_name")
             if not getattr(issue, "routing_path", None):
-                dept_name = "Road Infrastructure Maintenance" if "Road" in str(issue.category) else "Solid Waste Management"
-                crew_name = "Quick Patch Asphalt Squad (Ward N)" if "Road" in str(issue.category) else "Solid Waste Rapid Response (Ward N)"
-                issue.routing_path = f"{issue.authority_code} → {issue.ward} → {issue.sub_ward_name} → {issue.locality_name or issue.location} → {dept_name} → {res.get('supervisor_name', 'Area Supervisor')} → {crew_name}"
+                dept_name = issue.department or ("Road Infrastructure Maintenance" if "Road" in str(issue.category) else "Solid Waste Management")
+                crew_name = issue.assignment.team_name if (issue.assignment and issue.assignment.team_name) else None
+                issue.routing_path = build_hierarchical_routing_path(
+                    authority_name=issue.authority_name or issue.authority_code,
+                    zone_name=issue.zone_name,
+                    ward_name=issue.ward,
+                    sub_ward_name=issue.sub_ward_name,
+                    locality_name=issue.locality_name or issue.location,
+                    department=dept_name,
+                    supervisor_name=issue.supervisor_name,
+                    crew_name=crew_name,
+                )
     return issue
 
 def _ensure_timeline(issue: Issue) -> Issue:
@@ -604,6 +672,7 @@ class SqliteIssueRepository:
             sub_ward_name=getattr(issue, "sub_ward_name", None),
             locality_id=getattr(issue, "locality_id", None),
             locality_name=getattr(issue, "locality_name", None),
+            supervisor_name=getattr(issue, "supervisor_name", None),
             routing_path=getattr(issue, "routing_path", None),
             jurisdiction_verified=bool(getattr(issue, "jurisdiction_verified", True)),
             jurisdiction_review_required=bool(getattr(issue, "jurisdiction_review_required", False)),
@@ -655,6 +724,7 @@ class SqliteIssueRepository:
         record.sub_ward_name = getattr(issue, "sub_ward_name", record.sub_ward_name)
         record.locality_id = getattr(issue, "locality_id", record.locality_id)
         record.locality_name = getattr(issue, "locality_name", record.locality_name)
+        record.supervisor_name = getattr(issue, "supervisor_name", record.supervisor_name)
         record.routing_path = getattr(issue, "routing_path", record.routing_path)
         record.jurisdiction_verified = bool(getattr(issue, "jurisdiction_verified", True))
         record.jurisdiction_review_required = bool(getattr(issue, "jurisdiction_review_required", False))
@@ -903,7 +973,12 @@ class SqliteIssueRepository:
                         category=t["category"],
                         status=t.get("status", "AVAILABLE"),
                         ward=t.get("ward", "ALL"),
-                        contact_lead=t.get("contact_lead", "Duty Supervisor")
+                        sub_ward_id=t.get("sub_ward_id"),
+                        authority_id=t.get("authority_id", "AUTH-BMC"),
+                        supervisor_name=t.get("supervisor_name") or t.get("contact_lead"),
+                        capacity=t.get("capacity", 6),
+                        contact_lead=t.get("contact_lead", "Duty Supervisor"),
+                        active_tasks_count=t.get("active_tasks_count", 0)
                     )
                     session.add(rec)
                 logger.info(f"Seeded {len(DEFAULT_TEAMS)} default operational field teams.")
@@ -922,12 +997,21 @@ class SqliteIssueRepository:
 
         self.seed_hierarchy_if_empty()
 
-    def list_teams(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_teams(
+        self,
+        category: Optional[str] = None,
+        ward: Optional[str] = None,
+        sub_ward_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         self.seed_default_teams_and_wards_if_empty()
         with self._get_session() as session:
             stmt = select(TeamRecord)
             if category:
                 stmt = stmt.where(TeamRecord.category == category)
+            if ward:
+                stmt = stmt.where((TeamRecord.ward == ward) | (TeamRecord.ward == "ALL"))
+            if sub_ward_id:
+                stmt = stmt.where(TeamRecord.sub_ward_id == sub_ward_id)
             stmt = stmt.order_by(TeamRecord.category, TeamRecord.name)
             teams = session.scalars(stmt).all()
             return [
@@ -938,6 +1022,10 @@ class SqliteIssueRepository:
                     "category": t.category,
                     "status": t.status,
                     "ward": t.ward,
+                    "sub_ward_id": t.sub_ward_id,
+                    "authority_id": t.authority_id,
+                    "supervisor_name": t.supervisor_name,
+                    "capacity": t.capacity,
                     "contact_lead": t.contact_lead,
                     "active_tasks_count": t.active_tasks_count
                 }
@@ -957,6 +1045,10 @@ class SqliteIssueRepository:
                 "category": t.category,
                 "status": t.status,
                 "ward": t.ward,
+                "sub_ward_id": t.sub_ward_id,
+                "authority_id": t.authority_id,
+                "supervisor_name": t.supervisor_name,
+                "capacity": t.capacity,
                 "contact_lead": t.contact_lead,
                 "active_tasks_count": t.active_tasks_count
             }
@@ -971,6 +1063,10 @@ class SqliteIssueRepository:
                 category=team_data.get("category", "Roads & Footpaths"),
                 status=team_data.get("status", "AVAILABLE").upper(),
                 ward=team_data.get("ward", "ALL"),
+                sub_ward_id=team_data.get("sub_ward_id"),
+                authority_id=team_data.get("authority_id", "AUTH-BMC"),
+                supervisor_name=team_data.get("supervisor_name"),
+                capacity=int(team_data.get("capacity", 6)),
                 contact_lead=team_data.get("contact_lead", "Duty Supervisor")
             )
             session.add(rec)
@@ -981,6 +1077,10 @@ class SqliteIssueRepository:
                 "category": rec.category,
                 "status": rec.status,
                 "ward": rec.ward,
+                "sub_ward_id": rec.sub_ward_id,
+                "authority_id": rec.authority_id,
+                "supervisor_name": rec.supervisor_name,
+                "capacity": rec.capacity,
                 "contact_lead": rec.contact_lead,
                 "active_tasks_count": 0
             }
@@ -991,17 +1091,25 @@ class SqliteIssueRepository:
             rec = session.scalar(stmt)
             if not rec:
                 return None
-            if "name" in team_data:
+            if "name" in team_data and team_data["name"] is not None:
                 rec.name = team_data["name"]
-            if "department" in team_data:
+            if "department" in team_data and team_data["department"] is not None:
                 rec.department = team_data["department"]
-            if "category" in team_data:
+            if "category" in team_data and team_data["category"] is not None:
                 rec.category = team_data["category"]
-            if "status" in team_data:
-                rec.status = team_data["status"].upper()
-            if "ward" in team_data:
+            if "status" in team_data and team_data["status"] is not None:
+                rec.status = str(team_data["status"]).upper()
+            if "ward" in team_data and team_data["ward"] is not None:
                 rec.ward = team_data["ward"]
-            if "contact_lead" in team_data:
+            if "sub_ward_id" in team_data:
+                rec.sub_ward_id = team_data["sub_ward_id"]
+            if "authority_id" in team_data and team_data["authority_id"] is not None:
+                rec.authority_id = team_data["authority_id"]
+            if "supervisor_name" in team_data:
+                rec.supervisor_name = team_data["supervisor_name"]
+            if "capacity" in team_data and team_data["capacity"] is not None:
+                rec.capacity = int(team_data["capacity"])
+            if "contact_lead" in team_data and team_data["contact_lead"] is not None:
                 rec.contact_lead = team_data["contact_lead"]
             return {
                 "id": rec.id,
@@ -1010,6 +1118,10 @@ class SqliteIssueRepository:
                 "category": rec.category,
                 "status": rec.status,
                 "ward": rec.ward,
+                "sub_ward_id": rec.sub_ward_id,
+                "authority_id": rec.authority_id,
+                "supervisor_name": rec.supervisor_name,
+                "capacity": rec.capacity,
                 "contact_lead": rec.contact_lead,
                 "active_tasks_count": rec.active_tasks_count
             }
@@ -1080,10 +1192,27 @@ class SqliteIssueRepository:
             instructions = assignment_data.get("instructions")
             assigned_off = assignment_data.get("assigned_officer") or actor
 
+            # Track field team task allocation and availability
+            old_team_id = issue.assignment.team_id if (issue.assignment and issue.assignment.team_id) else None
+            new_team_id = assignment_data.get("team_id")
+            if old_team_id and old_team_id != new_team_id:
+                old_team = session.scalar(select(TeamRecord).where(TeamRecord.id == old_team_id))
+                if old_team:
+                    old_team.active_tasks_count = max(0, old_team.active_tasks_count - 1)
+                    if old_team.active_tasks_count < old_team.capacity and old_team.status == "BUSY":
+                        old_team.status = "AVAILABLE"
+
+            if new_team_id:
+                new_team = session.scalar(select(TeamRecord).where(TeamRecord.id == new_team_id))
+                if new_team:
+                    new_team.active_tasks_count += 1
+                    if new_team.active_tasks_count >= new_team.capacity:
+                        new_team.status = "BUSY"
+
             assignment = TaskAssignment(
                 department=dept,
                 team_name=team_name,
-                team_id=assignment_data.get("team_id"),
+                team_id=new_team_id,
                 assigned_officer=assigned_off,
                 priority=pri,
                 scheduled_date=sched_date,
@@ -1093,6 +1222,19 @@ class SqliteIssueRepository:
             )
             issue.assignment = assignment
             issue.department = dept
+            issue.supervisor_name = assigned_off
+
+            # Rebuild authoritative 8-tier routing path
+            issue.routing_path = build_hierarchical_routing_path(
+                authority_name=issue.authority_name or issue.authority_code,
+                zone_name=issue.zone_name,
+                ward_name=issue.ward,
+                sub_ward_name=issue.sub_ward_name,
+                locality_name=issue.locality_name or issue.location,
+                department=dept,
+                supervisor_name=assigned_off,
+                crew_name=team_name
+            )
 
             new_status = IssueStatus.SCHEDULED if sched_date else IssueStatus.ASSIGNED
             issue.status = new_status
@@ -1123,6 +1265,8 @@ class SqliteIssueRepository:
 
             record.status = new_status.value
             record.department = dept
+            record.supervisor_name = assigned_off
+            record.routing_path = issue.routing_path
             record.data_json = issue.model_dump_json()
             return issue
 
@@ -1357,6 +1501,14 @@ class SqliteIssueRepository:
             )
             issue.status = IssueStatus.RESOLVED
 
+            # Release field team capacity upon completion
+            if issue.assignment and issue.assignment.team_id:
+                team_rec = session.scalar(select(TeamRecord).where(TeamRecord.id == issue.assignment.team_id))
+                if team_rec:
+                    team_rec.active_tasks_count = max(0, team_rec.active_tasks_count - 1)
+                    if team_rec.active_tasks_count < team_rec.capacity and team_rec.status == "BUSY":
+                        team_rec.status = "AVAILABLE"
+
             desc = f"Closure Reason: {closure_reason}. Note: {completion_note.strip()}"
             evt = TimelineEvent(
                 id=f"evt-comp-{now_iso[-6:]}",
@@ -1426,7 +1578,67 @@ class SqliteIssueRepository:
                 "note": desc
             })
 
+            # Re-engage field team capacity upon reopening
+            if issue.assignment and issue.assignment.team_id:
+                team_rec = session.scalar(select(TeamRecord).where(TeamRecord.id == issue.assignment.team_id))
+                if team_rec:
+                    team_rec.active_tasks_count += 1
+                    if team_rec.active_tasks_count >= team_rec.capacity:
+                        team_rec.status = "BUSY"
+
             record.status = IssueStatus.REOPENED.value
+            record.data_json = issue.model_dump_json()
+            return issue
+
+    def verify_jurisdiction(
+        self,
+        issue_id: str,
+        actor: str = "Abhinay",
+        role: str = "inspector",
+        notes: Optional[str] = None
+    ) -> Optional[Issue]:
+        """
+        Confirms geographical jurisdiction assignment,
+        marking the complaint verified and recording a verification audit event.
+        """
+        with self._get_session() as session:
+            stmt = select(IssueRecord).where(IssueRecord.id == issue_id)
+            record = session.scalar(stmt)
+            if record is None:
+                return None
+
+            issue = Issue.model_validate_json(record.data_json)
+            _ensure_timeline(issue)
+
+            now_iso = datetime.now(timezone.utc).isoformat()
+            issue.jurisdiction_verified = True
+            issue.jurisdiction_review_required = False
+            issue.jurisdiction_review_reason = None
+
+            desc = f"Geographical jurisdiction verified and confirmed by {actor} ({role})."
+            if notes:
+                desc += f" Field Note: {notes}."
+
+            event = TimelineEvent(
+                id=f"evt-geo-{now_iso[-6:]}",
+                event_type="GEOGRAPHIC_VERIFIED",
+                title="Geographical Assignment Verified",
+                description=desc,
+                actor=actor,
+                role=role,
+                timestamp=now_iso,
+                metadata={
+                    "authority": issue.authority_name or issue.authority_code,
+                    "ward": issue.ward,
+                    "sub_ward": issue.sub_ward_name,
+                    "locality": issue.locality_name,
+                    "notes": notes
+                }
+            )
+            issue.timeline.append(event)
+            record.jurisdiction_verified = True
+            record.jurisdiction_review_required = False
+            record.jurisdiction_review_reason = None
             record.data_json = issue.model_dump_json()
             return issue
 
@@ -1713,52 +1925,71 @@ class SqliteIssueRepository:
         init_db(self._session_factory().get_bind())
         with self._get_session() as session:
             auth_count = session.scalar(select(func.count()).select_from(MunicipalAuthorityRecord)) or 0
-            if auth_count == 0:
+            if auth_count < len(MUNICIPAL_AUTHORITIES):
                 for a in MUNICIPAL_AUTHORITIES:
-                    rec = MunicipalAuthorityRecord(
-                        id=a["id"],
-                        code=a["code"],
-                        name=a["name"],
-                        short_name=a.get("short_name"),
-                        city=a["city"],
-                        headquarters=a.get("headquarters"),
-                        is_active=a.get("is_active", True),
-                        boundary_geojson=json.dumps(a.get("boundary_geojson")) if a.get("boundary_geojson") else None
-                    )
-                    session.add(rec)
-                logger.info(f"Seeded {len(MUNICIPAL_AUTHORITIES)} municipal authorities (BMC & NMMC).")
+                    rec = session.get(MunicipalAuthorityRecord, a["id"])
+                    if not rec:
+                        rec = MunicipalAuthorityRecord(
+                            id=a["id"],
+                            code=a["code"],
+                            name=a["name"],
+                            short_name=a.get("short_name"),
+                            city=a["city"],
+                            headquarters=a.get("headquarters"),
+                            is_active=a.get("is_active", True),
+                            boundary_geojson=json.dumps(a.get("boundary_geojson")) if a.get("boundary_geojson") else None
+                        )
+                        session.add(rec)
+                    else:
+                        rec.boundary_geojson = json.dumps(a.get("boundary_geojson")) if a.get("boundary_geojson") else None
+                logger.info(f"Seeded/Updated {len(MUNICIPAL_AUTHORITIES)} municipal authorities (BMC & NMMC).")
 
             zone_count = session.scalar(select(func.count()).select_from(AdminZoneRecord)) or 0
-            if zone_count == 0:
+            if zone_count < len(ADMINISTRATIVE_ZONES):
                 for z in ADMINISTRATIVE_ZONES:
-                    rec = AdminZoneRecord(
-                        id=z["id"],
-                        authority_id=z["authority_id"],
-                        code=z["code"],
-                        name=z["name"],
-                        zonal_officer=z.get("zonal_officer"),
-                        is_active=z.get("is_active", True),
-                        boundary_geojson=json.dumps(z.get("boundary_geojson")) if z.get("boundary_geojson") else None
-                    )
-                    session.add(rec)
-                logger.info(f"Seeded {len(ADMINISTRATIVE_ZONES)} administrative zones.")
+                    rec = session.get(AdminZoneRecord, z["id"])
+                    if not rec:
+                        rec = AdminZoneRecord(
+                            id=z["id"],
+                            authority_id=z["authority_id"],
+                            code=z["code"],
+                            name=z["name"],
+                            zonal_officer=z.get("zonal_officer"),
+                            is_active=z.get("is_active", True),
+                            boundary_geojson=json.dumps(z.get("boundary_geojson")) if z.get("boundary_geojson") else None
+                        )
+                        session.add(rec)
+                    else:
+                        rec.boundary_geojson = json.dumps(z.get("boundary_geojson")) if z.get("boundary_geojson") else None
+                logger.info(f"Seeded/Updated {len(ADMINISTRATIVE_ZONES)} administrative zones.")
 
             ward_count = session.scalar(select(func.count()).select_from(AdminWardRecord)) or 0
-            if ward_count == 0:
+            if ward_count < len(ADMINISTRATIVE_WARDS):
                 for w in ADMINISTRATIVE_WARDS:
-                    rec = AdminWardRecord(
-                        id=w["id"],
-                        authority_id=w["authority_id"],
-                        zone_id=w.get("zone_id"),
-                        ward_code=w["ward_code"],
-                        ward_name=w["ward_name"],
-                        office_address=w.get("office_address"),
-                        lead_officer=w.get("lead_officer", "Abhinay"),
-                        is_active=w.get("is_active", True),
-                        boundary_geojson=json.dumps(w.get("boundary_geojson")) if w.get("boundary_geojson") else None
+                    stmt = select(AdminWardRecord).where(
+                        (AdminWardRecord.ward_code == w["ward_code"]) | (AdminWardRecord.id == w["id"])
                     )
-                    session.add(rec)
-                logger.info(f"Seeded {len(ADMINISTRATIVE_WARDS)} administrative wards.")
+                    rec = session.scalar(stmt)
+                    if not rec:
+                        rec = AdminWardRecord(
+                            id=w["id"],
+                            authority_id=w["authority_id"],
+                            zone_id=w.get("zone_id"),
+                            ward_code=w["ward_code"],
+                            ward_name=w["ward_name"],
+                            office_address=w.get("office_address"),
+                            lead_officer=w.get("lead_officer", "Abhinay"),
+                            is_active=w.get("is_active", True),
+                            boundary_geojson=json.dumps(w.get("boundary_geojson")) if w.get("boundary_geojson") else None
+                        )
+                        session.add(rec)
+                    else:
+                        rec.boundary_geojson = json.dumps(w.get("boundary_geojson")) if w.get("boundary_geojson") else None
+                        rec.ward_name = w["ward_name"]
+                        if w.get("office_address"):
+                            rec.office_address = w["office_address"]
+                session.commit()
+                logger.info(f"Seeded/Updated {len(ADMINISTRATIVE_WARDS)} administrative wards.")
 
             sub_count = session.scalar(select(func.count()).select_from(SubWardRecord)) or 0
             if sub_count == 0:
@@ -1966,6 +2197,8 @@ class SqliteIssueRepository:
             rec = session.scalar(select(SubWardRecord).where(SubWardRecord.id == sub_ward_id))
             if not rec:
                 return None
+            if "sub_ward_code" in sub_ward_data and sub_ward_data["sub_ward_code"] is not None:
+                rec.sub_ward_code = sub_ward_data["sub_ward_code"]
             if "name" in sub_ward_data and sub_ward_data["name"] is not None:
                 rec.name = sub_ward_data["name"]
             if "supervisor_name" in sub_ward_data and sub_ward_data["supervisor_name"] is not None:
@@ -2188,8 +2421,19 @@ class SqliteIssueRepository:
 
             # 3. Construct new routing path
             dept_name = issue.department or ("Road Infrastructure Maintenance" if "Road" in str(issue.category) else "Solid Waste Management")
-            crew_name = "Quick Patch Asphalt Squad (Ward N)" if "Road" in str(issue.category) else "Solid Waste Rapid Response (Ward N)"
-            new_routing_path = f"{auth_code} → {new_ward_code} → {sub_name} → {loc_name} → {dept_name} → {supervisor} → {crew_name}"
+            crew_name = issue.assignment.team_name if (issue.assignment and issue.assignment.team_name) else None
+            zone_rec = session.scalar(select(AdminZoneRecord).where(AdminZoneRecord.id == ward_rec.zone_id)) if (ward_rec and ward_rec.zone_id) else None
+            zone_label = zone_rec.name if zone_rec else "Pending Allocation"
+            new_routing_path = build_hierarchical_routing_path(
+                authority_name=auth_name,
+                zone_name=zone_label,
+                ward_name=new_ward_code,
+                sub_ward_name=sub_name,
+                locality_name=loc_name,
+                department=dept_name,
+                supervisor_name=supervisor,
+                crew_name=crew_name
+            )
 
             new_jurisdiction = {
                 "authority_id": auth_id,
@@ -2309,13 +2553,30 @@ class SqliteIssueRepository:
             # Map teams by ward and sub_ward
             teams_by_ward: Dict[str, List[str]] = {}
             teams_by_sub_ward: Dict[str, List[str]] = {}
+            team_objs_by_ward: Dict[str, List[Dict[str, Any]]] = {}
+            team_objs_by_sub_ward: Dict[str, List[Dict[str, Any]]] = {}
             for t in teams:
+                td = {
+                    "id": t.id,
+                    "name": t.name,
+                    "department": t.department,
+                    "category": t.category,
+                    "status": t.status,
+                    "ward": t.ward,
+                    "sub_ward_id": t.sub_ward_id,
+                    "capacity": t.capacity,
+                    "supervisor_name": t.supervisor_name,
+                    "contact_lead": t.contact_lead,
+                    "active_tasks_count": t.active_tasks_count
+                }
                 w = t.ward
                 if w:
                     teams_by_ward.setdefault(w, []).append(t.name)
+                    team_objs_by_ward.setdefault(w, []).append(td)
                 sw = t.sub_ward_id
                 if sw:
                     teams_by_sub_ward.setdefault(sw, []).append(t.name)
+                    team_objs_by_sub_ward.setdefault(sw, []).append(td)
 
             # Map issues by sub_ward_id and ward
             issues_by_sub_ward: Dict[str, List[IssueRecord]] = {}
@@ -2328,7 +2589,7 @@ class SqliteIssueRepository:
                 if sw:
                     issues_by_sub_ward.setdefault(sw, []).append(iss)
 
-            def calc_metrics(iss_list: List[IssueRecord]) -> Dict[str, int]:
+            def calc_metrics(iss_list: List[IssueRecord], direct_count: int = 0) -> Dict[str, int]:
                 total = len(iss_list)
                 unassigned = 0
                 assigned = 0
@@ -2354,6 +2615,7 @@ class SqliteIssueRepository:
                             unassigned += 1
                 return {
                     "total_complaints": total,
+                    "direct_complaints": direct_count,
                     "unassigned_complaints": unassigned,
                     "assigned_complaints": assigned,
                     "in_progress_tasks": in_progress,
@@ -2376,7 +2638,8 @@ class SqliteIssueRepository:
                     "boundary_geojson": json.loads(auth.boundary_geojson) if auth.boundary_geojson else None,
                     "children": [],
                     "assigned_crews": [],
-                    "assigned_crews_count": 0
+                    "assigned_crews_count": 0,
+                    "assigned_teams": []
                 }
 
                 auth_zones = [z for z in zones if z.authority_id == auth.id]
@@ -2395,7 +2658,8 @@ class SqliteIssueRepository:
                         "boundary_geojson": json.loads(zone.boundary_geojson) if zone.boundary_geojson else None,
                         "children": [],
                         "assigned_crews": [],
-                        "assigned_crews_count": 0
+                        "assigned_crews_count": 0,
+                        "assigned_teams": []
                     }
 
                     zone_wards = [w for w in wards if w.zone_id == zone.id or (not w.zone_id and w.authority_id == auth.id)]
@@ -2406,6 +2670,7 @@ class SqliteIssueRepository:
                             continue
 
                         ward_teams = teams_by_ward.get(w.ward_code, []) + teams_by_ward.get(w.id, [])
+                        ward_team_objs = team_objs_by_ward.get(w.ward_code, []) + team_objs_by_ward.get(w.id, [])
                         w_issues = issues_by_ward.get(w.ward_code, [])
 
                         ward_node = {
@@ -2420,6 +2685,7 @@ class SqliteIssueRepository:
                             "boundary_geojson": json.loads(w.boundary_geojson) if w.boundary_geojson else None,
                             "assigned_crews": ward_teams,
                             "assigned_crews_count": len(ward_teams),
+                            "assigned_teams": ward_team_objs,
                             "children": []
                         }
 
@@ -2428,6 +2694,7 @@ class SqliteIssueRepository:
 
                         for sw in w_subs:
                             sw_teams = teams_by_sub_ward.get(sw.id, [])
+                            sw_team_objs = team_objs_by_sub_ward.get(sw.id, [])
                             sw_issues = issues_by_sub_ward.get(sw.id, [])
                             w_sub_issues.extend(sw_issues)
 
@@ -2443,12 +2710,14 @@ class SqliteIssueRepository:
                                 "supervisor_name": sw.supervisor_name,
                                 "assigned_crews": sw_teams,
                                 "assigned_crews_count": len(sw_teams),
+                                "assigned_teams": sw_team_objs,
                                 "boundary_geojson": json.loads(sw.boundary_geojson) if sw.boundary_geojson else None,
                                 "children": []
                             }
 
                             sw_locs = [l for l in localities if l.sub_ward_id == sw.id]
                             for loc in sw_locs:
+                                loc_issues = [i for i in sw_issues if i.locality_id == loc.id or (i.location and loc.name.lower() in i.location.lower())]
                                 loc_node = {
                                     "id": loc.id,
                                     "label": loc.name,
@@ -2461,36 +2730,36 @@ class SqliteIssueRepository:
                                     "latitude": loc.latitude,
                                     "longitude": loc.longitude,
                                     "radius_meters": loc.radius_meters,
-                                    "total_complaints": 0,
-                                    "unassigned_complaints": 0,
-                                    "assigned_complaints": 0,
-                                    "in_progress_tasks": 0,
-                                    "completed_complaints": 0,
                                     "assigned_crews": [],
                                     "assigned_crews_count": 0,
+                                    "assigned_teams": [],
                                     "children": []
                                 }
+                                loc_metrics = calc_metrics(loc_issues, direct_count=len(loc_issues))
+                                loc_node.update(loc_metrics)
                                 sub_node["children"].append(loc_node)
 
-                            sub_metrics = calc_metrics(sw_issues)
+                            direct_sw_count = len([i for i in sw_issues if not i.locality_id or str(i.locality_id) in ("None", "")])
+                            sub_metrics = calc_metrics(sw_issues, direct_count=direct_sw_count)
                             sub_node.update(sub_metrics)
                             ward_node["children"].append(sub_node)
 
                         # All issues belonging to ward
+                        direct_w_count = len([i for i in w_issues if not i.sub_ward_id or str(i.sub_ward_id) in ("None", "", "SUB-WARD-PENDING")])
                         all_ward_issues = list({i.id: i for i in (w_issues + w_sub_issues)}.values())
-                        ward_metrics = calc_metrics(all_ward_issues)
+                        ward_metrics = calc_metrics(all_ward_issues, direct_count=direct_w_count)
                         ward_node.update(ward_metrics)
                         zone_node["children"].append(ward_node)
                         zone_issues.extend(all_ward_issues)
 
                     all_zone_issues = list({i.id: i for i in zone_issues}.values())
-                    zone_metrics = calc_metrics(all_zone_issues)
+                    zone_metrics = calc_metrics(all_zone_issues, direct_count=0)
                     zone_node.update(zone_metrics)
                     auth_node["children"].append(zone_node)
                     auth_issues.extend(all_zone_issues)
 
                 all_auth_issues = list({i.id: i for i in auth_issues}.values())
-                auth_metrics = calc_metrics(all_auth_issues)
+                auth_metrics = calc_metrics(all_auth_issues, direct_count=0)
                 auth_node.update(auth_metrics)
                 tree.append(auth_node)
 

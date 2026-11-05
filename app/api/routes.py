@@ -442,16 +442,22 @@ def login_endpoint(payload: LoginRequest) -> Dict[str, Any]:
         username=user["username"]
     )
 
+    user_data = {
+        "userId": user["id"],
+        "username": user["username"],
+        "email": user["email"],
+        "name": user["name"],
+        "role": user["role"]
+    }
+    if user["role"] == "inspector":
+        oj = demo_store.get_officer_jurisdiction(user["id"])
+        if oj:
+            user_data["jurisdiction"] = oj
+
     return {
         "token": token,
         "tokenType": "Bearer",
-        "user": {
-            "userId": user["id"],
-            "username": user["username"],
-            "email": user["email"],
-            "name": user["name"],
-            "role": user["role"]
-        }
+        "user": user_data
     }
 
 @router.post("/auth/register")
@@ -525,13 +531,18 @@ def get_current_user_profile(
             detail="Authentication required: No valid session token provided.",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    return {
+    res = {
         "userId": current_user.user_id,
         "username": current_user.username or current_user.user_id,
         "email": current_user.email or "",
         "name": current_user.name,
         "role": current_user.role.value
     }
+    if current_user.role == UserRole.INSPECTOR:
+        oj = demo_store.get_officer_jurisdiction(current_user.user_id)
+        if oj:
+            res["jurisdiction"] = oj
+    return res
 
 @router.post("/auth/logout")
 def logout_endpoint() -> Dict[str, Any]:
@@ -547,6 +558,42 @@ def list_admin_users(
 # Civic Issues Endpoints
 # -----------------------------------------------------------------------------
 
+def sanitize_issue_for_citizen(issue: Issue) -> Issue:
+    """Sanitizes an issue before returning to citizen, omitting internal staff details and notes."""
+    sanitized = issue.model_copy(deep=True)
+    if sanitized.assignment:
+        sanitized.assignment.assigned_officer = None
+        sanitized.assignment.instructions = None
+    sanitized.supervisor_name = None
+    sanitized.supervisor_id = None
+    if sanitized.timeline:
+        clean_timeline = []
+        for evt in sanitized.timeline:
+            evt_copy = evt.model_copy(deep=True)
+            if evt_copy.actor and evt_copy.actor not in ("Citizen", "Automated Patrol", "AI Pipeline"):
+                evt_copy.actor = "Municipal Operations"
+            clean_timeline.append(evt_copy)
+        sanitized.timeline = clean_timeline
+    return sanitized
+
+def check_inspector_jurisdiction(current_user: AuthenticatedUser, issue: Issue) -> None:
+    """Enforces jurisdiction boundary constraints for municipal officers / supervisors."""
+    if current_user.role == "inspector":
+        oj = demo_store.get_officer_jurisdiction(current_user.user_id)
+        if oj:
+            if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id"):
+                if issue.sub_ward_id != oj["sub_ward_id"]:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Access denied: complaint is outside your authorized sub-ward jurisdiction."
+                    )
+            elif oj.get("ward_code"):
+                if issue.ward != oj["ward_code"] and (not issue.ward or oj["ward_code"] not in issue.ward):
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Access denied: complaint is outside your authorized municipal ward jurisdiction."
+                    )
+
 @router.get("/issues", response_model=List[Issue])
 def get_issues(
     category: Optional[IssueCategory] = None,
@@ -556,18 +603,29 @@ def get_issues(
     citizen_id: Optional[str] = None,
     ward: Optional[str] = None,
     sub_ward_id: Optional[str] = None,
+    locality_id: Optional[str] = None,
+    department: Optional[str] = None,
+    assignment_status: Optional[str] = None,
     current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
 ) -> List[Issue]:
     effective_ward = ward
     effective_sub_ward = sub_ward_id
 
-    # If Municipal Officer has an assigned jurisdiction and no explicit override is provided, scope issues
+    # If Municipal Officer has an assigned jurisdiction, scope strictly to authorized boundaries
     if current_user and current_user.role == "inspector":
         oj = demo_store.get_officer_jurisdiction(current_user.user_id)
-        if oj and oj.get("ward_code") and not ward:
-            effective_ward = oj["ward_code"]
-            if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id") and not sub_ward_id:
+        if oj:
+            if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id"):
+                effective_ward = oj.get("ward_code")
                 effective_sub_ward = oj["sub_ward_id"]
+            elif oj.get("ward_code"):
+                effective_ward = oj["ward_code"]
+                if sub_ward_id:
+                    effective_sub_ward = sub_ward_id
+        else:
+            effective_ward = "N-Ward"
+    elif current_user and current_user.role == "citizen":
+        citizen_id = current_user.user_id
 
     issues = demo_store.list_issues(
         category=category,
@@ -579,8 +637,29 @@ def get_issues(
 
     if effective_ward and effective_ward != "ALL" and "ALL WARDS" not in effective_ward.upper():
         issues = [i for i in issues if i.ward == effective_ward or (i.ward and effective_ward in i.ward)]
-    if effective_sub_ward:
+    if effective_sub_ward and effective_sub_ward != "ALL":
         issues = [i for i in issues if getattr(i, "sub_ward_id", None) == effective_sub_ward]
+    if locality_id and locality_id != "ALL":
+        issues = [i for i in issues if getattr(i, "locality_id", None) == locality_id or (getattr(i, "locality_name", None) and locality_id.lower() in getattr(i, "locality_name", "").lower())]
+    if department and department != "ALL":
+        issues = [i for i in issues if getattr(i, "department", None) == department or (department.lower() in getattr(i, "department", "").lower())]
+    if assignment_status and assignment_status != "ALL":
+        norm_stat = assignment_status.upper().replace(" ", "_")
+        if norm_stat == "UNASSIGNED":
+            issues = [i for i in issues if not i.assignment or not i.assignment.team_name]
+        elif norm_stat == "ASSIGNED":
+            issues = [i for i in issues if i.status == IssueStatus.ASSIGNED]
+        elif norm_stat == "SCHEDULED":
+            issues = [i for i in issues if i.status == IssueStatus.SCHEDULED]
+        elif norm_stat in ("IN_PROGRESS", "ACTION_IN_PROGRESS"):
+            issues = [i for i in issues if i.status in (IssueStatus.ACTION_IN_PROGRESS, IssueStatus.IN_PROGRESS)]
+        elif norm_stat in ("RESOLVED", "COMPLETED", "VERIFIED_CLOSED"):
+            issues = [i for i in issues if i.status in (IssueStatus.RESOLVED, IssueStatus.VERIFIED_CLOSED)]
+        elif norm_stat in ("JURISDICTION_REVIEW", "REVIEW_REQUIRED"):
+            issues = [i for i in issues if getattr(i, "jurisdiction_review_required", False)]
+
+    if current_user and current_user.role == "citizen":
+        issues = [sanitize_issue_for_citizen(i) for i in issues]
 
     return issues
 
@@ -588,8 +667,9 @@ def get_issues(
 def get_my_issues(
     current_user: AuthenticatedUser = Depends(require_citizen)
 ) -> List[Issue]:
-    """Returns complaints owned by the authenticated citizen."""
-    return demo_store.list_issues(citizen_id=current_user.user_id)
+    """Returns complaints owned by the authenticated citizen with internal staff notes redacted."""
+    issues = demo_store.list_issues(citizen_id=current_user.user_id)
+    return [sanitize_issue_for_citizen(i) for i in issues]
 
 @router.post("/issues", response_model=Issue, status_code=status.HTTP_201_CREATED)
 def submit_complaint(
@@ -610,10 +690,22 @@ def submit_complaint(
         )
 
 @router.get("/issues/{issue_id}", response_model=Issue)
-def get_issue_by_id(issue_id: str) -> Issue:
+def get_issue_by_id(
+    issue_id: str,
+    current_user: Optional[AuthenticatedUser] = Depends(get_current_user)
+) -> Issue:
     issue = demo_store.get_issue(issue_id)
     if not issue:
         raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+
+    if current_user:
+        if current_user.role == "inspector":
+            check_inspector_jurisdiction(current_user, issue)
+        elif current_user.role == "citizen":
+            if issue.citizen_id and issue.citizen_id != current_user.user_id:
+                raise HTTPException(status_code=403, detail="Access denied: cannot view another citizen's grievance")
+            return sanitize_issue_for_citizen(issue)
+
     return issue
 
 @router.patch("/issues/{issue_id}/status", response_model=Issue)
@@ -672,6 +764,11 @@ def assign_issue_task(
     Assigns task to a predefined field team with scheduled date and instructions.
     Persists assignment in database and appends to issue activity timeline.
     """
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.assign_task(
         issue_id=issue_id,
         assignment_data=payload.model_dump(),
@@ -691,6 +788,11 @@ def schedule_issue_task(
     """
     Schedules an inspection or repair work date for an issue.
     """
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.schedule_task(
         issue_id=issue_id,
         scheduled_date=payload.scheduled_date,
@@ -714,6 +816,11 @@ def record_issue_action(
     - Roads: temporary safety measures, inspection completed, work progress
     - Sanitation: waste collection scheduled, repeat collection, cleanup progress
     """
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.record_action(
         issue_id=issue_id,
         action_type=payload.action_type,
@@ -737,6 +844,11 @@ def complete_issue_task(
     if not payload.completion_note or not payload.completion_note.strip():
         raise HTTPException(status_code=400, detail="Completion note is strictly required to close a complaint.")
     
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.complete_task(
         issue_id=issue_id,
         completion_note=payload.completion_note,
@@ -761,12 +873,43 @@ def reopen_issue_task(
     if not payload.reason or not payload.reason.strip():
         raise HTTPException(status_code=400, detail="Reopen reason is required.")
         
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.reopen_task(
         issue_id=issue_id,
         reason=payload.reason,
         note=payload.note,
         actor=current_user.name or current_user.user_id,
         role=current_user.role.value
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    return updated
+
+@router.post("/issues/{issue_id}/verify-jurisdiction", response_model=Issue)
+def verify_issue_jurisdiction(
+    issue_id: str,
+    payload: Optional[Dict[str, Any]] = None,
+    current_user: AuthenticatedUser = Depends(require_inspector)
+) -> Issue:
+    """
+    Municipal Officer / Admin: Confirms geographical assignment,
+    clearing review flags and recording a verification audit event.
+    """
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
+    notes = payload.get("notes") if payload else None
+    updated = demo_store.verify_jurisdiction(
+        issue_id=issue_id,
+        actor=current_user.name or current_user.user_id,
+        role=current_user.role.value,
+        notes=notes
     )
     if not updated:
         raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
@@ -801,9 +944,33 @@ def submit_citizen_feedback(
 # -----------------------------------------------------------------------------
 
 @router.get("/teams")
-def list_field_teams(category: Optional[str] = None) -> List[Dict[str, Any]]:
+def list_field_teams(
+    category: Optional[str] = None,
+    ward: Optional[str] = None,
+    sub_ward_id: Optional[str] = None,
+    department: Optional[str] = None
+) -> List[Dict[str, Any]]:
     """Returns list of municipal field teams and availability status."""
-    return demo_store.list_teams(category=category)
+    cat_filter = category
+    if category:
+        cat_lower = category.lower()
+        if "road" in cat_lower or "pothole" in cat_lower or "footpath" in cat_lower:
+            cat_filter = "Roads & Footpaths"
+        elif "sanitation" in cat_lower or "garbage" in cat_lower or "waste" in cat_lower:
+            cat_filter = "Sanitation & Garbage"
+
+    teams = demo_store.list_teams(category=cat_filter, ward=ward, sub_ward_id=sub_ward_id)
+    if department and department != "ALL":
+        teams = [t for t in teams if t.get("department") == department or (department.lower() in str(t.get("department", "")).lower())]
+
+    # Dynamically verify tracked capacity against active tasks
+    for t in teams:
+        active = t.get("active_tasks_count", 0)
+        cap = t.get("capacity", 6)
+        if t.get("status") != "OFF_DUTY":
+            t["status"] = "BUSY" if active >= cap else "AVAILABLE"
+
+    return teams
 
 @router.post("/admin/teams")
 def create_field_team(
@@ -945,6 +1112,7 @@ def verify_location(payload: LocationVerificationRequest) -> LocationVerificatio
     if not res.get("is_valid"):
         return LocationVerificationResult(
             is_valid=False,
+            is_valid_jurisdiction=False,
             error=res.get("error", "Location outside supported boundaries"),
             latitude=payload.latitude,
             longitude=payload.longitude
@@ -952,9 +1120,11 @@ def verify_location(payload: LocationVerificationRequest) -> LocationVerificatio
 
     derived_ward = res["ward_code"]
     mismatch = check_ward_mismatch(payload.selected_ward, derived_ward)
+    geo_path = f"{res.get('authority_code')} → {res.get('zone_name')} → {res.get('ward_name')} → {res.get('sub_ward_name')} → {res.get('locality_name')}"
 
     return LocationVerificationResult(
         is_valid=True,
+        is_valid_jurisdiction=True,
         latitude=payload.latitude,
         longitude=payload.longitude,
         authority_id=res.get("authority_id"),
@@ -979,7 +1149,12 @@ def verify_location(payload: LocationVerificationRequest) -> LocationVerificatio
         review_reason=res.get("review_reason"),
         has_ward_mismatch=mismatch.get("is_mismatch", False),
         selected_ward=payload.selected_ward,
-        warning_message=mismatch.get("warning_message")
+        warning_message=mismatch.get("warning_message"),
+        is_mismatch=mismatch.get("is_mismatch", False),
+        derived_ward=derived_ward,
+        mismatch_message=mismatch.get("warning_message"),
+        review_required=res.get("requires_admin_review", False),
+        geographic_path=geo_path
     )
 
 @router.get("/hierarchy/jurisdiction/me")
@@ -996,7 +1171,7 @@ def assign_supervisor_jurisdiction(
 ) -> Dict[str, Any]:
     """Admin: Assigns officer/supervisor to a ward or operational sub-ward."""
     user_id = payload.get("user_id")
-    ward_code = payload.get("ward_code")
+    ward_code = payload.get("ward_code") or payload.get("ward_id")
     sub_ward_id = payload.get("sub_ward_id")
     authority_id = payload.get("authority_id", "AUTH-BMC")
     level = payload.get("jurisdiction_level", "WARD_OFFICER")
@@ -1021,6 +1196,11 @@ def correct_issue_jurisdiction(
     Municipal Officer / Admin: Corrects jurisdiction assignment of a complaint,
     updating routing tree path and recording an immutable audit log.
     """
+    issue = demo_store.get_issue(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
+    check_inspector_jurisdiction(current_user, issue)
+
     updated = demo_store.update_issue_jurisdiction(
         issue_id=issue_id,
         new_ward_code=payload.ward_code,
