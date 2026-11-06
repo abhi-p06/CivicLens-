@@ -648,6 +648,11 @@ export interface HierarchyTreeNode {
   assigned_complaints: number
   in_progress_tasks: number
   completed_complaints: number
+  is_authorized?: boolean
+  is_readonly?: boolean
+  has_authorized_descendant?: boolean
+  authority_code?: string
+  ward_code?: string
   children: HierarchyTreeNode[]
 }
 

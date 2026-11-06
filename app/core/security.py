@@ -37,6 +37,13 @@ DEV_TOKENS = {
         email="inspector@civilens.org",
         username="inspector"
     ),
+    "demo-nmmc-inspector-token": AuthenticatedUser(
+        user_id="INSP-NMMC-01",
+        name="Officer Deshmukh",
+        role=UserRole.INSPECTOR,
+        email="inspector.nmmc@civilens.org",
+        username="inspector_nmmc"
+    ),
     "demo-admin-token": AuthenticatedUser(
         user_id="ADMIN-SYS-01",
         name="Municipal Operations Administrator",

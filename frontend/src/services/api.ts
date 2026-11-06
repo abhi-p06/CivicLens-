@@ -932,11 +932,16 @@ export const api = {
     },
 
     async getMyJurisdiction(): Promise<{
+      id?: string
       user_id: string
-      role: string
+      authority_id?: string
+      ward_code?: string
+      sub_ward_id?: string
+      jurisdiction_level?: string
+      role?: string
       assigned_ward_id?: string
       assigned_sub_ward_id?: string
-    }> {
+    } | null> {
       const headers: Record<string, string> = {}
       const auth = getAuthHeader()
       if (auth) headers['Authorization'] = auth

@@ -60,6 +60,15 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
   const isInspector = user?.role === 'inspector'
   const isCitizen = user?.role === 'citizen'
 
+  const [officerJurisdiction, setOfficerJurisdiction] = useState<{
+    id?: string
+    user_id: string
+    authority_id?: string
+    ward_code?: string
+    sub_ward_id?: string
+    jurisdiction_level?: string
+  } | null>(null)
+
   const [rawAuthorities, setRawAuthorities] = useState<HierarchyTreeNode[]>([])
   const [treeData, setTreeData] = useState<HierarchyTreeNode[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -172,10 +181,10 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       const bmcAuth = data.find((a) => a.code === 'BMC' || a.id.includes('BMC'))
       const nmmcAuth = data.find((a) => a.code === 'NMMC' || a.id.includes('NMMC'))
 
-      const cityTree: HierarchyTreeNode[] = []
+      const rawCityTree: HierarchyTreeNode[] = []
 
       if (bmcAuth) {
-        cityTree.push({
+        rawCityTree.push({
           id: 'CITY-MUMBAI',
           label: 'Mumbai',
           name: 'Mumbai',
@@ -197,7 +206,7 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       }
 
       if (nmmcAuth) {
-        cityTree.push({
+        rawCityTree.push({
           id: 'CITY-NAVI-MUMBAI',
           label: 'Navi Mumbai',
           name: 'Navi Mumbai',
@@ -221,33 +230,119 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
       // If data has other authorities not matching BMC or NMMC, include them
       const otherAuths = data.filter((a) => a !== bmcAuth && a !== nmmcAuth)
       if (otherAuths.length > 0) {
-        if (cityTree.length > 0) {
-          cityTree[0].children.push(...otherAuths)
+        if (rawCityTree.length > 0) {
+          rawCityTree[0].children.push(...otherAuths)
         } else {
-          cityTree.push(...otherAuths)
+          rawCityTree.push(...otherAuths)
         }
       }
 
+      // Fetch officer's assigned jurisdiction if logged in as Municipal Officer (Inspector)
+      let myOj = officerJurisdiction
+      if (isInspector && !myOj) {
+        try {
+          myOj = await api.hierarchy.getMyJurisdiction()
+          setOfficerJurisdiction(myOj)
+        } catch (err) {
+          console.warn('Could not fetch officer jurisdiction:', err)
+        }
+      }
+
+      const normalizeStr = (s?: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+
+      // Tag each node with permission metadata (Authorized vs Read-Only)
+      const tagNode = (node: HierarchyTreeNode, parentAuthorized = false): HierarchyTreeNode => {
+        let isAuth = false
+        let isReadonly = false
+
+        if (isAdmin) {
+          isAuth = true
+          isReadonly = false
+        } else if (isInspector && myOj) {
+          const ojWardNorm = normalizeStr(myOj.ward_code)
+          const nodeCodeNorm = normalizeStr(node.code)
+          const nodeNameNorm = normalizeStr(node.name)
+          const nodeIdNorm = normalizeStr(node.id)
+
+          if (node.level === 'ward') {
+            const wardMatches =
+              Boolean(ojWardNorm) && (
+                nodeCodeNorm === ojWardNorm ||
+                nodeNameNorm.includes(ojWardNorm) ||
+                ojWardNorm.includes(nodeCodeNorm) ||
+                nodeIdNorm.includes(ojWardNorm)
+              )
+            isAuth = Boolean(wardMatches)
+            isReadonly = !isAuth
+          } else if (node.level === 'sub_ward') {
+            if (myOj.jurisdiction_level === 'SUB_WARD_SUPERVISOR' && myOj.sub_ward_id) {
+              isAuth = node.id === myOj.sub_ward_id || normalizeStr(node.code) === normalizeStr(myOj.sub_ward_id)
+            } else {
+              isAuth = parentAuthorized
+            }
+            isReadonly = !isAuth
+          } else if (node.level === 'locality') {
+            isAuth = parentAuthorized
+            isReadonly = !isAuth
+          } else {
+            // City, Authority, Zone are metropolitan containers, read-only for field officers
+            isAuth = false
+            isReadonly = true
+          }
+        } else {
+          isAuth = false
+          isReadonly = true
+        }
+
+        const taggedChildren = (node.children || []).map((child) => tagNode(child, isAuth))
+
+        const hasAuthorizedDescendant = taggedChildren.some(
+          (c) => c.is_authorized || c.has_authorized_descendant
+        )
+
+        return {
+          ...node,
+          is_authorized: isAuth,
+          is_readonly: isReadonly,
+          has_authorized_descendant: hasAuthorizedDescendant,
+          children: taggedChildren,
+        }
+      }
+
+      const cityTree = rawCityTree.map((c) => tagNode(c, false))
       setTreeData(cityTree)
 
-      // Default expand nodes
+      // Default expand all nodes across Mumbai and Navi Mumbai
       const initialExpanded = new Set<string>()
-      cityTree.forEach((city) => {
-        initialExpanded.add(city.id)
-        city.children.forEach((auth) => {
-          initialExpanded.add(auth.id)
-          ;(auth.children || []).forEach((zone) => {
-            initialExpanded.add(zone.id)
-            ;(zone.children || []).forEach((ward) => {
-              initialExpanded.add(ward.id)
-            })
-          })
+      const expandAll = (nodes: HierarchyTreeNode[]) => {
+        nodes.forEach((n) => {
+          initialExpanded.add(n.id)
+          if (n.children && n.children.length > 0) expandAll(n.children)
         })
-      })
+      }
+      expandAll(cityTree)
       setExpandedNodeIds(initialExpanded)
 
-      // Select first ward or authority if none selected
-      if (!selectedNode && cityTree.length > 0) {
+      // Automatic Selection:
+      // For Inspector, auto-select their authorized working ward/sub-ward immediately.
+      // For Admin, auto-select first ward.
+      let defaultSelected: HierarchyTreeNode | null = null
+
+      if (isInspector && myOj) {
+        const findAuthorized = (nodes: HierarchyTreeNode[]): HierarchyTreeNode | null => {
+          for (const n of nodes) {
+            if (n.is_authorized && (n.level === 'ward' || n.level === 'sub_ward')) return n
+            if (n.children && n.children.length > 0) {
+              const res = findAuthorized(n.children)
+              if (res) return res
+            }
+          }
+          return null
+        }
+        defaultSelected = findAuthorized(cityTree)
+      }
+
+      if (!defaultSelected && cityTree.length > 0) {
         const firstCity = cityTree[0]
         const firstAuth = firstCity.children[0]
         if (
@@ -257,13 +352,15 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
           firstAuth.children[0].children &&
           firstAuth.children[0].children[0]
         ) {
-          setSelectedNode(firstAuth.children[0].children[0])
+          defaultSelected = firstAuth.children[0].children[0]
         } else if (firstAuth) {
-          setSelectedNode(firstAuth)
+          defaultSelected = firstAuth
         } else {
-          setSelectedNode(firstCity)
+          defaultSelected = firstCity
         }
       }
+
+      setSelectedNode(defaultSelected)
     } catch (err: any) {
       setError(err?.message || 'Failed to load administrative hierarchy tree')
     } finally {
@@ -975,6 +1072,9 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
     const isExpanded = expandedNodeIds.has(node.id)
     const isSelected = selectedNode?.id === node.id
     const hasChildren = node.children && node.children.length > 0
+    const isAuth = Boolean(node.is_authorized)
+    const isReadonly = Boolean(node.is_readonly)
+    const hasAuthChild = Boolean(node.has_authorized_descendant)
 
     const getLevelBadge = () => {
       switch (node.level) {
@@ -1027,7 +1127,11 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
           className={cn(
             'flex items-center justify-between py-2 pr-3 rounded-xl cursor-pointer text-xs transition border group',
             isSelected
-              ? 'bg-[#6457E8]/10 border-[#6457E8]/30 font-medium text-[#11162A]'
+              ? isAuth
+                ? 'bg-emerald-50/90 border-emerald-400 font-semibold text-[#11162A] shadow-xs'
+                : 'bg-[#6457E8]/10 border-[#6457E8]/30 font-medium text-[#11162A]'
+              : isAuth
+              ? 'bg-emerald-50/30 border-emerald-200/60 hover:bg-emerald-50/60 text-[#11162A]'
               : 'border-transparent hover:bg-black/[0.03] text-[#11162A]'
           )}
         >
@@ -1047,6 +1151,29 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
               {getLevelBadge()}
               <span className="font-semibold text-xs text-[#11162A] truncate">{node.name}</span>
               <span className="text-[11px] font-mono text-[#65708B]">({node.code})</span>
+
+              {/* Inspector Jurisdiction Scope Indicators */}
+              {isInspector && (
+                <>
+                  {isAuth && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs">
+                      <Shield className="w-2.5 h-2.5 text-emerald-700" />
+                      <span>Authorized Working Area</span>
+                    </span>
+                  )}
+                  {!isAuth && (node.level === 'ward' || node.level === 'sub_ward') && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                      <Lock className="w-2.5 h-2.5 text-slate-400" />
+                      <span>Read-Only</span>
+                    </span>
+                  )}
+                  {!isAuth && hasAuthChild && (node.level === 'zone' || node.level === 'authority') && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-violet-50 text-[#6457E8] border border-violet-200">
+                      <span>Contains Active Ward</span>
+                    </span>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
@@ -1211,14 +1338,52 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
         </div>
       </div>
 
-      {/* Role Banner for Ward Officers (Inspectors) */}
+      {/* Metropolitan Tree Banner for Ward Officers (Inspectors) */}
       {isInspector && (
-        <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-center gap-2.5">
-          <Info className="w-4 h-4 text-amber-600 shrink-0" />
-          <span>
-            <strong>Ward Officer Notice:</strong> You are viewing operational data scoped to your authorized municipal jurisdiction.
-            Master hierarchy restructuring, sub-ward creation, and city-wide crew assignments are reserved for Administrators.
-          </span>
+        <div className="p-3.5 bg-gradient-to-r from-[#13152E]/5 to-[#6457E8]/10 border border-[#6457E8]/20 rounded-2xl text-xs text-[#11162A] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#6457E8]/10 text-[#6457E8] flex items-center justify-center shrink-0">
+              <Eye className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-bold text-[#11162A] flex items-center gap-2 flex-wrap">
+                <span>Metropolitan Administrative Tree (Mumbai BMC + Navi Mumbai NMMC)</span>
+                {officerJurisdiction?.ward_code && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#6457E8] text-white">
+                    Assigned Working Area: {officerJurisdiction.ward_code}
+                  </span>
+                )}
+              </div>
+              <div className="text-[11px] text-[#65708B] mt-0.5">
+                Complete geographical tree across all 24 BMC wards and 8 NMMC ward offices is visible for regional situational awareness. Operational assignments, complaint triage, and crew allocations are active strictly within your authorized working jurisdiction ({officerJurisdiction?.ward_code || 'Assigned Ward'}), while external entities remain read-only.
+              </div>
+            </div>
+          </div>
+          {officerJurisdiction?.ward_code && (
+            <button
+              onClick={() => {
+                const findAuthorized = (nodes: HierarchyTreeNode[]): HierarchyTreeNode | null => {
+                  for (const n of nodes) {
+                    if (n.is_authorized && (n.level === 'ward' || n.level === 'sub_ward')) return n
+                    if (n.children && n.children.length > 0) {
+                      const res = findAuthorized(n.children)
+                      if (res) return res
+                    }
+                  }
+                  return null
+                }
+                const authNode = findAuthorized(treeData)
+                if (authNode) {
+                  setSelectedNode(authNode)
+                  setExpandedNodeIds((prev) => new Set([...prev, 'CITY-MUMBAI', 'CITY-NAVI-MUMBAI', authNode.parent_id || '', authNode.id]))
+                }
+              }}
+              className="px-3 py-1.5 text-xs font-semibold bg-white border border-[#6457E8]/30 text-[#6457E8] rounded-xl hover:bg-[#6457E8]/10 transition shadow-xs shrink-0 cursor-pointer flex items-center gap-1.5"
+            >
+              <Shield className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Go to My Ward ({officerJurisdiction.ward_code})</span>
+            </button>
+          )}
         </div>
       )}
 
@@ -1331,6 +1496,45 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
             <>
               {/* Selected Node Summary Card */}
               <div className="bg-white border border-[#E4E7F1] rounded-2xl p-5 shadow-xs space-y-4">
+                {/* Inspector Scope Indicator Banner */}
+                {isInspector && (
+                  selectedNode.is_authorized ? (
+                    <div className="p-3.5 bg-emerald-50/90 border border-emerald-200 rounded-xl text-xs text-emerald-950 flex items-start gap-3 shadow-xs">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                        <Shield className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold flex items-center gap-2">
+                          <span>Authorized Working Jurisdiction</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-700 text-white">
+                            OPERATIONAL SCOPE
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                          You are the designated operations officer for <strong>{selectedNode.name}</strong> ({selectedNode.code}). You have active operational authority to review incoming citizen reports, verify contractor completion evidence, and inspect local service beats.
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 flex items-start gap-3 shadow-xs">
+                      <div className="w-8 h-8 rounded-lg bg-slate-200/80 text-slate-600 flex items-center justify-center shrink-0">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold text-[#11162A] flex items-center gap-2">
+                          <span>Read-Only Jurisdiction (Outside Authorized Scope)</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-200 text-slate-700 border border-slate-300">
+                            READ ONLY
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-600 mt-0.5 leading-relaxed">
+                          This administrative unit ({selectedNode.name} • {selectedNode.code}) is outside your assigned working area ({officerJurisdiction?.ward_code || 'Assigned Ward'}). You have metropolitan situational visibility across Greater Mumbai and Navi Mumbai, but task reassignments, crew dispatching, and operational mutations are locked.
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
+
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -1366,41 +1570,57 @@ export const WardHierarchyAllocationView: React.FC<WardHierarchyAllocationViewPr
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {isAdmin && (selectedNode.level === 'ward' || selectedNode.level === 'sub_ward') && (
+                    {isAdmin ? (
                       <>
-                        <button
-                          onClick={handleOpenTeamModal}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#F0F2F9] text-[#11162A] border border-[#E4E7F1] rounded-xl hover:bg-slate-200 transition cursor-pointer"
-                        >
-                          <Wrench className="w-3.5 h-3.5 text-[#6457E8]" />
-                          <span>Manage Crews</span>
-                        </button>
-                        <button
-                          onClick={() => handleOpenAssignSupervisor(selectedNode)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#F0F2F9] text-[#11162A] border border-[#E4E7F1] rounded-xl hover:bg-slate-200 transition cursor-pointer"
-                        >
-                          <UserCheck className="w-3.5 h-3.5 text-[#6457E8]" />
-                          <span>Assign Lead</span>
-                        </button>
+                        {(selectedNode.level === 'ward' || selectedNode.level === 'sub_ward') && (
+                          <>
+                            <button
+                              onClick={handleOpenTeamModal}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#F0F2F9] text-[#11162A] border border-[#E4E7F1] rounded-xl hover:bg-slate-200 transition cursor-pointer"
+                            >
+                              <Wrench className="w-3.5 h-3.5 text-[#6457E8]" />
+                              <span>Manage Crews</span>
+                            </button>
+                            <button
+                              onClick={() => handleOpenAssignSupervisor(selectedNode)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#F0F2F9] text-[#11162A] border border-[#E4E7F1] rounded-xl hover:bg-slate-200 transition cursor-pointer"
+                            >
+                              <UserCheck className="w-3.5 h-3.5 text-[#6457E8]" />
+                              <span>Assign Lead</span>
+                            </button>
+                          </>
+                        )}
+                        {selectedNode.level === 'ward' && (
+                          <button
+                            onClick={() => handleOpenAddSubWard(selectedNode.id)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#6457E8] text-white rounded-xl hover:bg-[#5145CF] transition shadow-xs cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>New Sub-Ward</span>
+                          </button>
+                        )}
+                        {selectedNode.level === 'sub_ward' && (
+                          <button
+                            onClick={() => handleOpenEditSubWard(selectedNode)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[#11162A] rounded-xl hover:bg-slate-200 transition cursor-pointer"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                            <span>Edit Sub-Ward</span>
+                          </button>
+                        )}
                       </>
-                    )}
-                    {isAdmin && selectedNode.level === 'ward' && (
-                      <button
-                        onClick={() => handleOpenAddSubWard(selectedNode.id)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#6457E8] text-white rounded-xl hover:bg-[#5145CF] transition shadow-xs cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>New Sub-Ward</span>
-                      </button>
-                    )}
-                    {isAdmin && selectedNode.level === 'sub_ward' && (
-                      <button
-                        onClick={() => handleOpenEditSubWard(selectedNode)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-[#11162A] rounded-xl hover:bg-slate-200 transition cursor-pointer"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                        <span>Edit Sub-Ward</span>
-                      </button>
+                    ) : (
+                      selectedNode.is_authorized ? (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 text-xs font-semibold shadow-xs">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Authorized Working Area</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 text-xs font-medium">
+                          <Lock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>Read-Only Node</span>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>

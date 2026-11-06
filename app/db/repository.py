@@ -925,10 +925,6 @@ class SqliteIssueRepository:
             return 0
 
         with self._get_session() as session:
-            count = session.scalar(select(func.count()).select_from(UserRecord)) or 0
-            if count > 0:
-                return 0
-
             citizen_pwd = os.getenv("CIVILENS_DEV_CITIZEN_PASSWORD", "Citizen@123")
             inspector_pwd = os.getenv("CIVILENS_DEV_INSPECTOR_PASSWORD", "Inspector@123")
             admin_pwd = os.getenv("CIVILENS_DEV_ADMIN_PASSWORD", "Admin@123")
@@ -936,24 +932,29 @@ class SqliteIssueRepository:
             defaults = [
                 ("CITIZEN-001", "citizen", "citizen@civilens.org", "Abhinay", citizen_pwd, "citizen"),
                 ("INSP-MUMBAI-01", "inspector", "inspector@civilens.org", "Abhinay", inspector_pwd, "inspector"),
+                ("INSP-NMMC-01", "inspector_nmmc", "inspector.nmmc@civilens.org", "Officer Deshmukh", inspector_pwd, "inspector"),
                 ("ADMIN-SYS-01", "admin", "admin@civilens.org", "Municipal Operations Administrator", admin_pwd, "admin"),
             ]
             inserted = 0
             for uid, uname, uemail, uname_full, pwd, urole in defaults:
-                pw_hash, salt = hash_password(pwd)
-                rec = UserRecord(
-                    id=uid,
-                    username=uname,
-                    email=uemail,
-                    name=uname_full,
-                    password_hash=pw_hash,
-                    salt=salt,
-                    role=urole,
-                    is_active=True
-                )
-                session.add(rec)
-                inserted += 1
-            logger.info(f"Seeded {inserted} default authentication accounts.")
+                rec = session.get(UserRecord, uid)
+                if not rec:
+                    pw_hash, salt = hash_password(pwd)
+                    rec = UserRecord(
+                        id=uid,
+                        username=uname,
+                        email=uemail,
+                        name=uname_full,
+                        password_hash=pw_hash,
+                        salt=salt,
+                        role=urole,
+                        is_active=True
+                    )
+                    session.add(rec)
+                    inserted += 1
+            if inserted > 0:
+                session.commit()
+                logger.info(f"Seeded {inserted} default authentication accounts.")
             return inserted
 
     # --------------------------------------------------------------------------
@@ -1158,6 +1159,9 @@ class SqliteIssueRepository:
                 return None
             if "lead_officer" in ward_data:
                 rec.lead_officer = ward_data["lead_officer"]
+                adm_ward = session.scalar(select(AdminWardRecord).where((AdminWardRecord.ward_code == ward_code) | (AdminWardRecord.id == ward_code)))
+                if adm_ward:
+                    adm_ward.lead_officer = ward_data["lead_officer"]
             if "active_teams" in ward_data:
                 teams = ward_data["active_teams"]
                 rec.active_teams = json.dumps(teams) if isinstance(teams, list) else str(teams)
@@ -2010,9 +2014,10 @@ class SqliteIssueRepository:
                     )
                     session.add(rec)
                 else:
-                    rec.boundary_geojson = json.dumps(s.get("boundary_geojson")) if s.get("boundary_geojson") else None
-                    rec.name = s["name"]
-                    if s.get("supervisor_name"):
+                    # Preserve user modifications across server restarts
+                    if not rec.boundary_geojson and s.get("boundary_geojson"):
+                        rec.boundary_geojson = json.dumps(s.get("boundary_geojson"))
+                    if not rec.supervisor_name and s.get("supervisor_name"):
                         rec.supervisor_name = s["supervisor_name"]
             session.commit()
             logger.info(f"Seeded/Synchronized {len(CIVILENS_OPERATIONAL_SUB_WARDS)} CIVILENS operational sub-wards.")
@@ -2035,9 +2040,9 @@ class SqliteIssueRepository:
                     session.add(rec)
                 logger.info(f"Seeded {len(LOCALITY_BEATS)} operational locality beats.")
 
-            # Assign default officer jurisdiction: Inspector Abhinay assigned to N-Ward
-            oj_count = session.scalar(select(func.count()).select_from(OfficerJurisdictionRecord)) or 0
-            if oj_count == 0:
+            # Assign default officer jurisdictions
+            oj_bmc = session.scalar(select(OfficerJurisdictionRecord).where(OfficerJurisdictionRecord.user_id == "INSP-MUMBAI-01"))
+            if not oj_bmc:
                 oj = OfficerJurisdictionRecord(
                     id="OJ-INSP-01",
                     user_id="INSP-MUMBAI-01",
@@ -2047,6 +2052,18 @@ class SqliteIssueRepository:
                     jurisdiction_level="WARD_OFFICER"
                 )
                 session.add(oj)
+
+            oj_nmmc = session.scalar(select(OfficerJurisdictionRecord).where(OfficerJurisdictionRecord.user_id == "INSP-NMMC-01"))
+            if not oj_nmmc:
+                oj_n = OfficerJurisdictionRecord(
+                    id="OJ-INSP-NMMC-01",
+                    user_id="INSP-NMMC-01",
+                    authority_id="AUTH-NMMC",
+                    ward_code="NMMC-Belapur",
+                    sub_ward_id="SUB-NMMC-B-01",
+                    jurisdiction_level="WARD_OFFICER"
+                )
+                session.add(oj_n)
 
             # Update teams with authority_id and default sub_ward_id if missing
             team_recs = session.scalars(select(TeamRecord)).all()
@@ -2346,6 +2363,19 @@ class SqliteIssueRepository:
                 rec.ward_code = ward_code
                 rec.sub_ward_id = sub_ward_id
                 rec.jurisdiction_level = jurisdiction_level
+
+            # Synchronize supervisor and lead officer fields on linked hierarchy records
+            user_rec = session.get(UserRecord, user_id)
+            if sub_ward_id:
+                sw = session.get(SubWardRecord, sub_ward_id)
+                if sw:
+                    sw.supervisor_id = user_id
+                    if user_rec:
+                        sw.supervisor_name = user_rec.name
+            if ward_code:
+                w = session.scalar(select(AdminWardRecord).where((AdminWardRecord.ward_code == ward_code) | (AdminWardRecord.id == ward_code)))
+                if w and user_rec:
+                    w.lead_officer = user_rec.name
 
             return {
                 "id": rec.id,

@@ -580,19 +580,39 @@ def check_inspector_jurisdiction(current_user: AuthenticatedUser, issue: Issue) 
     """Enforces jurisdiction boundary constraints for municipal officers / supervisors."""
     if current_user.role == "inspector":
         oj = demo_store.get_officer_jurisdiction(current_user.user_id)
-        if oj:
-            if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id"):
-                if issue.sub_ward_id != oj["sub_ward_id"]:
-                    raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail="Access denied: complaint is outside your authorized sub-ward jurisdiction."
-                    )
-            elif oj.get("ward_code"):
-                if issue.ward != oj["ward_code"] and (not issue.ward or oj["ward_code"] not in issue.ward):
-                    raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail="Access denied: complaint is outside your authorized municipal ward jurisdiction."
-                    )
+        if not oj or not oj.get("ward_code"):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: no administrative jurisdiction has been assigned to your account."
+            )
+        
+        # Enforce Municipal Authority boundary (BMC vs NMMC)
+        if oj.get("authority_id"):
+            auth_id = oj["authority_id"]
+            if getattr(issue, "authority_id", None) and issue.authority_id != auth_id:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Access denied: complaint is outside your authorized municipal authority."
+                )
+
+        if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" and oj.get("sub_ward_id"):
+            if getattr(issue, "sub_ward_id", None) != oj["sub_ward_id"]:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Access denied: complaint is outside your authorized sub-ward jurisdiction."
+                )
+        elif oj.get("ward_code"):
+            oj_ward = oj["ward_code"].strip().upper()
+            issue_ward = (issue.ward or "").strip().upper()
+            if (oj_ward != issue_ward and
+                oj_ward not in issue_ward and
+                issue_ward not in oj_ward and
+                f"WARD-BMC-{oj_ward}" != (issue.ward_id or "").upper() and
+                f"WARD-NMMC-{oj_ward}" != (issue.ward_id or "").upper()):
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Access denied: complaint is outside your authorized municipal ward jurisdiction."
+                )
 
 @router.get("/issues", response_model=List[Issue])
 def get_issues(
@@ -1034,30 +1054,15 @@ def get_hierarchy_tree(
 ) -> List[Dict[str, Any]]:
     """
     Returns complete collapsible tree structure with real-time calculated workloads.
-    - Admin: Full Mumbai (BMC) and Navi Mumbai (NMMC) hierarchy.
-    - Inspector: Scoped strictly to their assigned municipal jurisdiction (e.g. N-Ward). Returns [] if unassigned.
+    - Admin & Inspector: Complete geographical hierarchy across both Mumbai (BMC, 24 wards)
+      and Navi Mumbai (NMMC, 8 ward offices).
     - Citizen: HTTP 403 Forbidden.
     """
-    if current_user:
-        if current_user.role == "citizen":
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Citizens are not authorized to access administrative hierarchy management."
-            )
-        elif current_user.role == "inspector":
-            oj = demo_store.get_officer_jurisdiction(current_user.user_id)
-            if not oj or not oj.get("ward_code"):
-                return []
-            
-            assigned_ward = oj.get("ward_code")
-            auth_id = oj.get("authority_id")
-            auth_code = "BMC" if auth_id and "BMC" in auth_id else ("NMMC" if auth_id and "NMMC" in auth_id else None)
-            sub_id = oj.get("sub_ward_id") if oj.get("jurisdiction_level") == "SUB_WARD_SUPERVISOR" else None
-            return demo_store.get_hierarchy_tree(
-                authority_code=auth_code,
-                ward_code=assigned_ward,
-                sub_ward_id=sub_id
-            )
+    if current_user and current_user.role == "citizen":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Citizens are not authorized to access administrative hierarchy management."
+        )
 
     return demo_store.get_hierarchy_tree(authority_code=authority, ward_code=ward)
 
@@ -1227,6 +1232,18 @@ def correct_issue_jurisdiction(
     if not issue:
         raise HTTPException(status_code=404, detail=f"Issue {issue_id} not found")
     check_inspector_jurisdiction(current_user, issue)
+
+    if current_user.role == "inspector":
+        oj = demo_store.get_officer_jurisdiction(current_user.user_id)
+        if oj and oj.get("authority_id"):
+            is_officer_nmmc = "NMMC" in oj["authority_id"]
+            target_upper = payload.ward_code.upper()
+            is_target_nmmc = "NMMC" in target_upper
+            if is_officer_nmmc != is_target_nmmc:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Access denied: municipal officers cannot transfer complaints across municipal authorities."
+                )
 
     updated = demo_store.update_issue_jurisdiction(
         issue_id=issue_id,
